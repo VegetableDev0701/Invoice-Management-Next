@@ -1,0 +1,12 @@
+.custom-file-input {
+  color: transparent;
+  display: none;
+}
+
+.custom-file-input:hover {
+  cursor: pointer;
+}
+
+.custom-file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}

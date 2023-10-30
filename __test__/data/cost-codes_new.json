@@ -1,0 +1,80 @@
+{
+  "format": "Custom",
+  "updated": true,
+  "divisions": [
+    {
+      "subItems": [
+        {
+          "number": 1.11,
+          "id": "1.1100",
+          "value": "",
+          "name": "Project Supervision",
+          "type": "text",
+          "required": false,
+          "inputType": "toggleInput",
+          "isCurrency": true,
+                "subItems": [
+        {
+          "number": 1.11,
+          "id": "1.1100",
+          "value": "",
+          "name": "Project Supervision",
+          "type": "text",
+          "required": false,
+          "inputType": "toggleInput",
+          "isCurrency": true,
+          "subItems": []
+        },
+        {
+          "number": 1.12,
+          "id": "1.1200",
+          "value": "",
+          "name": "Project Management",
+          "type": "text",
+          "required": false,
+          "inputType": "toggleInput",
+          "isCurrency": true,
+          "subItems": []
+        },
+        {
+          "number": 1.13,
+          "id": "1.1300",
+          "value": "",
+          "name": "Project Assistant",
+          "type": "text",
+          "required": false,
+          "inputType": "toggleInput",
+          "isCurrency": true,
+          "subItems": []
+        }
+      ]
+        },
+        {
+          "number": 1.12,
+          "id": "1.1200",
+          "value": "",
+          "name": "Project Management",
+          "type": "text",
+          "required": false,
+          "inputType": "toggleInput",
+          "isCurrency": true,
+          "subItems": []
+        },
+        {
+          "number": 1.13,
+          "id": "1.1300",
+          "value": "",
+          "name": "Project Assistant",
+          "type": "text",
+          "required": false,
+          "inputType": "toggleInput",
+          "isCurrency": true,
+          "subItems": []
+        }
+      ],
+      "name": "Hello",
+      "number": 1
+    }
+  ],
+  "currency": "USD"
+}

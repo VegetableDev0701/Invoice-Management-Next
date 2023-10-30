@@ -1,0 +1,23 @@
+.main-dashboard-tiles {
+  width: calc(
+    100vw -
+      (
+        calc(var(--main-border-horizontal-margins) + 2rem) * 2 +
+          var(--main-border-thickness)
+      )
+  );
+
+  height: 100%;
+
+  background-color: var(--main-bg);
+
+  margin: calc(var(--main-border-vertical-margins) + 2rem)
+    calc(var(--main-border-horizontal-margins) + 2rem) 0
+    calc(var(--main-border-horizontal-margins) + 2rem);
+
+  gap: 36px;
+
+  /* outline: auto; */
+
+  z-index: -1;
+}

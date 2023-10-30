@@ -1,0 +1,24 @@
+.button {
+  position: relative;
+
+  border: none;
+  color: white;
+  border-radius: var(--border-radius-50);
+  transition: 0.1s ease-in-out;
+}
+.button__active {
+  background-color: var(--stak-dark-green);
+}
+
+.button__active:hover,
+.button__active:active {
+  cursor: pointer;
+  background-color: var(--stak-dark-green-hover);
+  border: none;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.button__disabled {
+  cursor: not-allowed;
+  background-color: var(--stak-dark-green-50);
+}

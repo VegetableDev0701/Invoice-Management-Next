@@ -1,0 +1,63 @@
+{
+  "numCostCodes": 1,
+  "mainCategories": [
+    {
+      "name": "Labor Details",
+      "inputElements": [
+        {
+          "items": [
+            {
+              "label": "Employee Name",
+              "id": "employee-name",
+              "type": "text",
+              "required": true,
+              "errormessage": "Employee name is required.",
+              "value": "",
+              "isOnOverlay": true
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Project Name",
+              "id": "project-name",
+              "inputType": "dropdownWithSearch",
+              "required": true,
+              "errormessage": "Project is required.",
+              "value": "",
+              "isOnOverlay": true
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Rate ($/(hour/Qty.))",
+              "id": "rate-per-hour",
+              "type": "text",
+              "inputmode": "numeric",
+              "isCurrency": true,
+              "required": true,
+              "errormessage": "Rate per hour/qty. is required.",
+              "value": "",
+              "isOnOverlay": true
+            },
+            {
+              "label": "Pay Period",
+              "id": "pay-period",
+              "type": "date",
+              "required": false,
+              "value": "",
+              "isOnOverlay": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Labor Cost Codes",
+      "inputElements": []
+    }
+  ]
+}
