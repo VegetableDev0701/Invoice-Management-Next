@@ -1,4 +1,4 @@
-import { FormStateItem } from './formStateModels';
+import { FormStateItem } from "./formStateModels";
 
 export interface CostCodesData {
   format: string;
@@ -10,9 +10,10 @@ export interface CostCodesData {
 }
 
 export interface Divisions {
-  name: string;
+  name?: string;
   number: number;
-  subdivisions: SubDivisions[];
+  subdivisions?: SubDivisions[];
+  subItems?: CostCodeItem[];
 }
 
 export interface SubDivisions {
@@ -22,15 +23,17 @@ export interface SubDivisions {
 }
 
 export interface CostCodeItem {
-  label: string;
   number: number;
-  value: string;
-  id: string;
-  type: string;
-  required: boolean;
+  name?: string;
+  label?: string;
+  value?: string;
+  id?: string;
+  type?: string;
+  required?: boolean;
   isCurrency: boolean;
-  inputType: string;
+  inputType?: string;
   subdivisions?: SubDivisions[];
+  subItems?: CostCodeItem[];
 }
 
 export interface CostCodeFormState {
@@ -71,7 +74,7 @@ export interface AggregatedBudgetTotals {
 }
 
 export interface BudgetTotalItem {
-  type: 'BudgetTotal';
+  type: "BudgetTotal";
   value: string;
   isValid?: boolean;
   isTouched?: boolean;
@@ -139,7 +142,7 @@ export interface CurrentActualsItem {
   changeOrder: string | null;
   invoiceIds?: string[];
   laborFeeIds?: string[];
-  group: 'Labor and Fees' | 'Invoices' | 'Change Orders';
+  group: "Labor and Fees" | "Invoices" | "Change Orders";
 }
 
 export interface CurrentActuals {
