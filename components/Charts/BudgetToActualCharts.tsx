@@ -50,19 +50,19 @@ export const createIndividualChartData = ({
   filterZeroElements?: boolean;
 }) => {
   const title = `${division} - ${_title}`;
-  const fullData = chartData;
+  const fullData = chartData || [];
   const chartDataResult = {
-    labels: chartData.map((item) => `${item.number} - ${item.name}`),
+    labels: chartData?.map((item) => `${item.number} - ${item.name}`),
     datasets: [
       {
         label: "Budget",
         backgroundColor: "rgba(86, 144, 146, 1)",
-        data: chartData.map((item) => calculateCostCode(item)),
+        data: chartData?.map((item) => calculateCostCode(item)),
       },
       {
         label: "Actual",
         backgroundColor: "rgba(223, 153, 32, 1)",
-        data: chartData.map((_) => 5000),
+        data: chartData?.map((_) => 5000),
       },
     ],
   };
@@ -459,8 +459,8 @@ export default function BudgetToActualCharts(props: Props) {
                   className="w-full h-96 px-10"
                   id={formatNameForID(fullData.name)}
                 >
-                  {(chartData.datasets[0].data.some((data) => data > 0) ||
-                    chartData.datasets[1].data.some((data) => data > 0)) && (
+                  {(chartData.datasets[0].data?.some((data) => data > 0) ||
+                    chartData.datasets[1].data?.some((data) => data > 0)) && (
                     <BarChart
                       title={title}
                       fullData={fullData}
@@ -472,8 +472,8 @@ export default function BudgetToActualCharts(props: Props) {
                       dropZeroSubDivIndex={dropZeroSubDivIndex}
                     />
                   )}
-                  {chartData.datasets[0].data.every((data) => data === 0) &&
-                    chartData.datasets[1].data.every((data) => data === 0) && (
+                  {chartData.datasets[0].data?.every((data) => data === 0) &&
+                    chartData.datasets[1].data?.every((data) => data === 0) && (
                       <span className="font-sans text-[24px] font-semibold line-through">
                         {title}
                       </span>
