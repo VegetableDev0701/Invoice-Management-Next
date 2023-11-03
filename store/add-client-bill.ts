@@ -238,17 +238,17 @@ export const createBudgetActuals = createAsyncThunk(
       }
 
       // TODO uncomment this block after test
-      // if (projectInvoices.some((invoice) => !invoice.approved)) {
-      //   dispatch(
-      //     uiActions.setModalContent({
-      //       openModal: true,
-      //       message:
-      //         "All invoices must be approved before building the client's bill.",
-      //       title: 'Warning',
-      //     })
-      //   );
-      //   return false;
-      // }
+      if (projectInvoices.some((invoice) => !invoice.approved)) {
+        dispatch(
+          uiActions.setModalContent({
+            openModal: true,
+            message:
+              "All invoices must be approved before building the client's bill.",
+            title: 'Warning',
+          })
+        );
+        return false;
+      }
 
       // Create the actuals for this client's bill for just the invoices
       // and labor. this will be used to calculate the tax, profit etc.
@@ -632,6 +632,7 @@ export const createBudgetActuals = createAsyncThunk(
       //   return false;
       // }
       dispatch(uiActions.setLoadingState({ isLoading: false }));
+      console.log("dionY [createBudgetActuals] end !!!!!!!!!!!!!!!!!!!!!!!");
       return {
         clientBillObj: {
           actuals: invoiceCurrentActuals,
@@ -639,7 +640,6 @@ export const createBudgetActuals = createAsyncThunk(
         },
       };
 
-      console.log("dionY [createBudgetActuals] end !!!!!!!!!!!!!!!!!!!!!!!");
     } catch (error: any) {
       console.error(error);
       dispatch(uiActions.setLoadingState({ isLoading: false }));

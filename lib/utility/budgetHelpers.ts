@@ -126,7 +126,7 @@ export const createBudgetActualsObject = ({
           invoiceBudgetActualsChangeOrders,
         });
       } else {
-        // handleError({ invoice, dispatch });
+        handleError({ invoice, dispatch });
       }
     });
 
