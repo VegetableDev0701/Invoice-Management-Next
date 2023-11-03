@@ -192,6 +192,7 @@ function ProcessInvoiceForm(props: Props) {
                                   showError={showError}
                                   actions={actions}
                                   form={form}
+                                  projectId={projectId}
                                   changeOrdersSummary={changeOrdersSummary}
                                   onMouseEnter={() =>
                                     onMouseEnterHandler(currentData, item.id)

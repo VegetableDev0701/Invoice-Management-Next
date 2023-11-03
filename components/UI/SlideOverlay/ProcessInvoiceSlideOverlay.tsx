@@ -243,7 +243,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
                           <Dialog.Title className="text-base font-sans font-semibold leading-6 text-gray-500">
                             <p>{`${invoiceObj.clickedInvoice?.vendor_name}`}</p>
                             <div className="flex items-end gap-4">
-                              Project123123:{' '}
+                              Project:{' '}
                               {dropdown && (
                                 <span className="min-w-[14rem]">
                                   <TableDropdown
