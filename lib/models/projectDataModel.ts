@@ -2,7 +2,7 @@ import {
   CostCodesData,
   CurrentActualsChangeOrders,
 } from './budgetCostCodeModel';
-import { ChangeOrderChartData, ChartData } from './chartDataModels';
+import { ChangeOrderChartData, ChartData, ChartDataV2 } from './chartDataModels';
 import { ChangeOrderData, Labor, ProjectFormData, SelectMenuOptions } from './formDataModel';
 import {
   ChangeOrderSummary,
@@ -14,7 +14,7 @@ import {
 } from './summaryDataModel';
 
 export interface B2A {
-  b2aChartData: ChartData;
+  b2aChartData: ChartData | ChartDataV2;
   currentGrandTotal: { value: number };
   currentBudgetedTotal: { value: number };
   currentChangeOrderTotal: { value: number };

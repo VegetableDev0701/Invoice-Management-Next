@@ -9,6 +9,11 @@ import {
 } from "@/lib/models/budgetCostCodeModel";
 import { SelectMenuOptions } from "../models/formDataModel";
 import { FormState } from "../models/formStateModels";
+import {
+  ChartDataV2,
+  CostCodeItemB2AData,
+  DivisionDataV2,
+} from "../models/chartDataModels";
 
 function insertSorted<
   T extends Divisions | SubDivisions | CostCodeItem,
@@ -38,7 +43,7 @@ export const iterateData = ({
   data?.subItems?.forEach((item, index) => {
     if (item?.subItems?.length > 0)
       iterateData({ data: item, level: [...level, index], cb });
-    else if (item?.isCurrency) cb(item, level);
+    else if (item?.isCurrency) cb(item, [...level, index]);
   });
 };
 
@@ -281,7 +286,7 @@ export const createInitBudgetState = ({
 
   const addState = (item: CostCodeItem, level: Array<number>) => {
     const isAdded = item.value === "" ? false : true;
-    const isShowing = isCollapsed && item.value === "" ? false : true;
+    const isShowing = isCollapsed && item.value === "" ? false : true;``
     initState[item.id || String(item.number)] = {
       value: item.value,
       costCodeName: item.name,
@@ -379,4 +384,37 @@ export const costCodeData2NLevel = (oldCostCodeData: any) => {
   });
 
   return newCostCodeData;
+};
+
+export const getDataByRecursiveLevel = ({
+  fullData,
+  level,
+}: {
+  fullData: Divisions[] | DivisionDataV2[];
+  level: Array<number>;
+}) => {
+  if (level?.length === 0) return;
+
+  let levelData:
+    | Divisions
+    | CostCodeItem
+    | DivisionDataV2
+    | CostCodeItemB2AData = fullData[level[0]];
+  let prefix = "";
+  for (let i = 1; i < level.length; i++) {
+    let index = level[i];
+    if (levelData.subItems?.length <= index) {
+      console.error("[getDataByRecursiveLevel]: Error!");
+      return;
+    }
+
+    if (levelData.name)
+      prefix += `${levelData.number} - ${levelData.name}  /  `;
+    levelData = levelData.subItems[index];
+  }
+
+  return {
+    data: levelData,
+    prefix,
+  };
 };

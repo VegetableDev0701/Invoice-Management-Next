@@ -11,6 +11,7 @@ import { formatNumber } from "@/lib/utility/formatter";
 import { CostCodeItem, Divisions } from "@/lib/models/budgetCostCodeModel";
 import { ChartEvent } from "chart.js/dist/core/core.plugins";
 import { createIndividualChartData } from "./BudgetToActualCharts";
+import { CostCodeItemB2AData, DivisionDataV2 } from "@/lib/models/chartDataModels";
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
 
@@ -21,7 +22,7 @@ interface BarChartProps {
   title: string;
   division: string;
   subDivision?: string | null;
-  fullData: Divisions;
+  fullData: DivisionDataV2;
   filterZeroElements?: boolean;
   dropZeroSubDivIndex?: number[] | null;
 }
@@ -46,7 +47,7 @@ const BarChart = (props: BarChartProps) => {
   const totalBarWidth = minBarWidth * (chartData.labels?.length || 0);
 
   const getCurrentLevelData = () => {
-    let levelData: Divisions | CostCodeItem = fullData;
+    let levelData: DivisionDataV2 | CostCodeItemB2AData = fullData;
     let prefix = "";
     for (let i = 0; i < level.length; i++) {
       let index = level[i];
