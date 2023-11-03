@@ -13,6 +13,7 @@ import {
 import { calculateTotals } from '@/lib/utility/budgetHelpers';
 import {
   BudgetTotals,
+  BudgetTotalsV2,
   CostCodesData,
   UpdateBudget,
 } from '@/lib/models/budgetCostCodeModel';
@@ -182,6 +183,7 @@ const initialBudgetFormState: {
   };
   totalDivisions: { [key: string]: { value: string; name: string } };
   budget: BudgetTotals;
+  budgetV2: BudgetTotalsV2;
   updateBudget: UpdateBudget;
 } = {
   isCollapsed: false,
@@ -189,6 +191,7 @@ const initialBudgetFormState: {
   totalSubDivisions: {},
   totalDivisions: {},
   budget: {},
+  budgetV2: {},
   updateBudget: {
     addCostCodes: null,
     addSubDivisions: null,
@@ -380,7 +383,8 @@ const addBudgetFormSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(initializeBudgetThunk.fulfilled, (state, action) => {
-      state.budget = { ...action.payload } as BudgetTotals;
+      // state.budget = { ...action.payload } as BudgetTotals;
+      state.budgetV2 = { ...action.payload } as BudgetTotalsV2;
     });
   },
 });

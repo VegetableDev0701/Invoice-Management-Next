@@ -5,9 +5,10 @@ import {
   BudgetFormState,
   SubDivisions,
   BudgetTotals,
-} from '@/lib/models/budgetCostCodeModel';
-import { SelectMenuOptions } from '../models/formDataModel';
-import { FormState } from '../models/formStateModels';
+  BudgetTotalsV2,
+} from "@/lib/models/budgetCostCodeModel";
+import { SelectMenuOptions } from "../models/formDataModel";
+import { FormState } from "../models/formStateModels";
 
 function insertSorted<
   T extends Divisions | SubDivisions | CostCodeItem,
@@ -24,6 +25,23 @@ function insertSorted<
   }
 }
 
+export const iterateData = ({
+  data,
+  level,
+  cb,
+}: {
+  data: Divisions | CostCodeItem;
+  level: Array<number>;
+  cb: (item: CostCodeItem, level: Array<number>) => void;
+}) => {
+  if (data?.subItems?.length === 0) return;
+  data?.subItems?.forEach((item, index) => {
+    if (item?.subItems?.length > 0)
+      iterateData({ data: item, level: [...level, index], cb });
+    else if (item?.isCurrency) cb(item, level);
+  });
+};
+
 export function addDivision(
   costCodes: CostCodesData,
   newDivision: Divisions,
@@ -36,7 +54,7 @@ export function addDivision(
       ),
     };
   } else {
-    insertSorted(costCodes.divisions, newDivision, 'number', false);
+    insertSorted(costCodes.divisions, newDivision, "number", false);
   }
 }
 
@@ -63,7 +81,7 @@ export function addSubDivision(
 ) {
   const division = costCodes.divisions.find((d) => d.number === divisionNumber);
   if (!division) {
-    console.error('Division not found.');
+    console.error("Division not found.");
     return;
   }
   if (isAddToProject) {
@@ -77,7 +95,7 @@ export function addSubDivision(
       ),
     };
   } else {
-    insertSorted(division.subdivisions, subdivision, 'number', false);
+    insertSorted(division.subdivisions, subdivision, "number", false);
   }
 }
 
@@ -109,14 +127,14 @@ export function addCostCode(
 ) {
   const division = costCodes.divisions.find((d) => d.number === divisionNumber);
   if (!division) {
-    console.error('Division not found.');
+    console.error("Division not found.");
     return;
   }
   const subdivision = division.subdivisions.find(
     (s) => s.number === subdivisionNumber
   );
   if (!subdivision) {
-    console.error('Subdivision not found.');
+    console.error("Subdivision not found.");
     return;
   }
 
@@ -135,7 +153,7 @@ export function addCostCode(
       ),
     };
   } else {
-    insertSorted(subdivision.items, item, 'number', false);
+    insertSorted(subdivision.items, item, "number", false);
   }
 }
 
@@ -167,25 +185,52 @@ export function deleteCostCode(
 }
 
 export function createCostCodeList(costCodes: CostCodesData) {
-  const costCodeList: SelectMenuOptions[] = [];
-  const costCodeNameList: SelectMenuOptions[] = [];
+  const costCodeList: SelectMenuOptions[] = [{ id: 0, label: "None" }];
+  const costCodeNameList: SelectMenuOptions[] = [{ id: 0, label: "None" }];
+
+  if (!costCodes) {
+    return {
+      costCodeList,
+      costCodeNameList,
+    };
+  }
+
   let count = 1;
-  costCodes.divisions?.forEach((division) => {
-    division.subdivisions?.forEach((subDivision) => {
-      subDivision.items?.forEach((item) => {
-        costCodeList.push({ id: count, label: item.number.toFixed(4) });
-        costCodeNameList.push({
-          id: count,
-          label: item.label,
-          costCode: item.number.toFixed(4),
-        });
-        count++;
-      });
+  // costCodes.divisions?.forEach((division) => {
+  //   division.subdivisions?.forEach((subDivision) => {
+  //     subDivision.items?.forEach((item) => {
+  //       costCodeList.push({ id: count, label: item.number.toFixed(4) });
+  //       costCodeNameList.push({
+  //         id: count,
+  //         label: item.label,
+  //         costCode: item.number.toFixed(4),
+  //       });
+  //       count++;
+  //     });
+  //   });
+  // });
+
+  const addState = (item: CostCodeItem, _: Array<number>) => {
+    costCodeList.push({ id: count, label: String(item.number) });
+    costCodeNameList.push({
+      id: count,
+      label: item.label || item.name,
+      costCode: String(item.number),
+    });
+    count++;
+  };
+
+  costCodes.divisions.forEach((div, index) => {
+    iterateData({
+      data: div,
+      level: [index],
+      cb: addState,
     });
   });
+
   return {
-    costCodeList: [{ id: 0, label: 'None' }, ...costCodeList],
-    costCodeNameList: [{ id: 0, label: 'None' }, ...costCodeNameList],
+    costCodeList,
+    costCodeNameList,
   };
 }
 
@@ -196,7 +241,7 @@ export function getCostCodeDescriptionFromNumber(
   const matchedItem = costCodeNameList.filter(
     (item) => item.costCode === costCodeNumber
   )[0];
-  return matchedItem.label;
+  return matchedItem?.label;
 }
 
 export const createInitBudgetState = ({
@@ -206,30 +251,54 @@ export const createInitBudgetState = ({
   costCodeFormData: CostCodesData | null | undefined;
   isCollapsed: boolean;
 }) => {
-  const initState: BudgetTotals = {};
-  if (!costCodeFormData) return;
+  // const initState: BudgetTotals = {};
+  // if (!costCodeFormData) return;
   // Some conditional here that looks into the current project state for a budget
-  costCodeFormData.divisions.forEach((div) => {
-    div.subdivisions.forEach((subdiv) => {
-      subdiv.items.forEach((item) => {
-        const isAdded = item.value === '' ? false : true;
-        const isShowing = isCollapsed && item.value === '' ? false : true;
-        initState[item.id] = {
-          value: item.value,
-          type: 'BudgetTotal',
-          isTouched: false,
-          isValid: false,
-          isAdded,
-          isShowing,
-          division: div.number,
-          divisionName: div.name,
-          subDivision: subdiv.number,
-          subDivisionName: subdiv.name,
-          costCodeName: item.label,
-        };
-      });
-    });
+  // costCodeFormData.divisions.forEach((div) => {
+  //   div.subdivisions.forEach((subdiv) => {
+  //     subdiv.items.forEach((item) => {
+  //       const isAdded = item.value === '' ? false : true;
+  //       const isShowing = isCollapsed && item.value === '' ? false : true;
+  //       initState[item.id] = {
+  //         value: item.value,
+  //         type: 'BudgetTotal',
+  //         isTouched: false,
+  //         isValid: false,
+  //         isAdded,
+  //         isShowing,
+  //         division: div.number,
+  //         divisionName: div.name,
+  //         subDivision: subdiv.number,
+  //         subDivisionName: subdiv.name,
+  //         costCodeName: item.label,
+  //       };
+  //     });
+  //   });
+  // });
+
+  const initState: BudgetTotalsV2 = {};
+  if (!costCodeFormData) return;
+
+  const addState = (item: CostCodeItem, level: Array<number>) => {
+    const isAdded = item.value === "" ? false : true;
+    const isShowing = isCollapsed && item.value === "" ? false : true;
+    initState[item.id || String(item.number)] = {
+      value: item.value,
+      costCodeName: item.name,
+      type: "BudgetTotalV2",
+      isTouched: false,
+      isValid: false,
+      isAdded,
+      isShowing,
+      recursiveLevel: [...level],
+    };
+  };
+
+  costCodeFormData.divisions.forEach((div, index) => {
+    iterateData({ data: div, level: [index], cb: addState });
   });
+
+  console.log("dionY [createInitBudgetState] initState: ", initState);
   return initState;
 };
 
@@ -244,7 +313,7 @@ export const setCollapsed = ({
     (obj: BudgetTotals, [costCode, costCodeObj]) => {
       const isShow =
         (isCollapsed && !costCodeObj.isAdded) ||
-        (isCollapsed && costCodeObj.value === '')
+        (isCollapsed && costCodeObj.value === "")
           ? false
           : true;
       obj[costCode] = { ...costCodeObj, isShowing: isShow };
@@ -253,4 +322,61 @@ export const setCollapsed = ({
     {}
   );
   return updated;
+};
+
+export const costCodeData2NLevel = (oldCostCodeData: any) => {
+  if (oldCostCodeData && oldCostCodeData.updated)
+    return oldCostCodeData as CostCodesData;
+
+  const isValidNumber = (currentNumber: number, parentNumber: number) => {
+    return String(currentNumber).startsWith(String(parentNumber));
+  };
+
+  const newCostCodeData: CostCodesData = {
+    currency: oldCostCodeData.currency,
+    divisions: [],
+    format: oldCostCodeData.format,
+    updated: true,
+  };
+
+  oldCostCodeData.divisions.forEach((div, index: number) => {
+    const newDivision: Divisions = {
+      number: div?.number || index + 1,
+      name: div?.name,
+      subItems: [],
+    };
+
+    div.subdivisions.forEach((subdiv, subIndex: number) => {
+      const newItem: CostCodeItem = {
+        number: subdiv?.number || index + (subIndex + 1) / 10,
+        name: subdiv?.name,
+        subItems: [],
+      };
+
+      subdiv.items.forEach((item, ssubIndex: number) => {
+        let _number = item?.number;
+        if (!isValidNumber(_number, newItem.number)) {
+          _number = +(String(newItem.number) + (ssubIndex + 1));
+        }
+
+        newItem.subItems.push({
+          number: _number,
+          name: item?.name || item?.label,
+          label: item?.label,
+          id: String(_number.toFixed(4)),
+          inputType: item?.inputType,
+          isCurrency: item?.isCurrency,
+          required: item?.required,
+          type: item?.type,
+          value: item?.value || "0",
+        } as CostCodeItem);
+      });
+
+      newDivision.subItems.push(newItem);
+    });
+
+    newCostCodeData.divisions.push(newDivision);
+  });
+
+  return newCostCodeData;
 };

@@ -1,16 +1,16 @@
-import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 
-import { uiActions } from '@/store/ui-slice';
+import { uiActions } from "@/store/ui-slice";
 
-import { formatNumber } from './formatter';
+import { formatNumber } from "./formatter";
 import {
   ChangeOrderSummary,
   LaborLineItem,
   LaborSummaryItem,
   ProjectSummaryItem,
-} from '../models/summaryDataModel';
-import { getCostCodeDescriptionFromNumber } from './costCodeHelpers';
-import { SelectMenuOptions } from '../models/formDataModel';
+} from "../models/summaryDataModel";
+import { getCostCodeDescriptionFromNumber } from "./costCodeHelpers";
+import { SelectMenuOptions } from "../models/formDataModel";
 import {
   AggregatedBudgetTotals,
   BudgetTotals,
@@ -21,13 +21,21 @@ import {
   InvoiceCurrentActuals,
   BudgetProfitTaxesObject,
   ProfitTaxes,
-} from '../models/budgetCostCodeModel';
-import { isBudgetTotalItem } from '../models/types';
+  BudgetTotalsV2,
+  CurrentActualsV2,
+  CurrentActualsChangeOrdersV2,
+  InvoiceCurrentActualsChangeOrdersV2,
+  InvoiceCurrentActualsV2,
+  CurrentActualsItemV2,
+  BudgetTotalItemV2,
+  BudgetTotalItem,
+} from "../models/budgetCostCodeModel";
+import { isBudgetTotalItem, isBudgetTotalItemV2 } from "../models/types";
 import {
   InvoiceItem,
   InvoiceLineItem,
   InvoiceLineItemItem,
-} from '../models/invoiceDataModels';
+} from "../models/invoiceDataModels";
 
 type MakeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
@@ -38,26 +46,31 @@ export const createBudgetActualsObject = ({
   costCodeNameList,
   dispatch,
 }: {
-  projectInvoices: MakeRequired<InvoiceItem, 'processedData'>[];
+  projectInvoices: MakeRequired<InvoiceItem, "processedData">[];
   projectLaborFees: LaborSummaryItem[];
-  budgetTotals: BudgetTotals;
+  budgetTotals: BudgetTotalsV2;
   changeOrdersSummary: ChangeOrderSummary;
   costCodeNameList: SelectMenuOptions[];
   dispatch: ThunkDispatch<unknown, unknown, AnyAction>;
 }) => {
   let dates: Date[] = [];
   try {
-    let budgetActuals: CurrentActuals = {};
-    let budgetActualsChangeOrders: CurrentActualsChangeOrders = {};
-    let invoiceBudgetActualsChangeOrders: InvoiceCurrentActualsChangeOrders =
+    let budgetActuals: CurrentActualsV2 = {};
+    let budgetActualsChangeOrders: CurrentActualsChangeOrdersV2 = {};
+    let invoiceBudgetActualsChangeOrders: InvoiceCurrentActualsChangeOrdersV2 =
       {};
-    let invoiceBudgetActuals: InvoiceCurrentActuals = {
+    let invoiceBudgetActuals: InvoiceCurrentActualsV2 = {
       invoice: {},
       laborFee: {},
     };
 
+    console.log(
+      "dionY [createBudgetActualsObject] start ----------------------"
+    );
+
     // loop through all invoices attached for this current client bill
     projectInvoices.forEach((invoice) => {
+      if (!invoice.processedData) return;
       dates.push(new Date(invoice.processedData.date_received));
       // init the invoice current actuals object
       invoiceBudgetActuals.invoice[invoice.doc_id] =
@@ -82,7 +95,7 @@ export const createBudgetActualsObject = ({
           Object.values(
             lineItems as InvoiceLineItem | {}
           ) as InvoiceLineItemItem[]
-        ).some((item) => !item.cost_code || item.amount !== '');
+        ).some((item) => !item.cost_code || item.amount !== "");
       if (hasProcessedLineItems && hasValidLineItems) {
         handleLineItem({
           lineItems: lineItems as InvoiceLineItem,
@@ -113,7 +126,7 @@ export const createBudgetActualsObject = ({
           invoiceBudgetActualsChangeOrders,
         });
       } else {
-        handleError({ invoice, dispatch });
+        // handleError({ invoice, dispatch });
       }
     });
 
@@ -121,7 +134,7 @@ export const createBudgetActualsObject = ({
       // init the invoice budget actuals object for the laborFee
       invoiceBudgetActuals.laborFee[laborFee.uuid] =
         invoiceBudgetActuals.laborFee[laborFee.uuid] || {};
-      dates.push(new Date(laborFee.payPeriod as string));
+      laborFee.payPeriod != "" && dates.push(new Date(laborFee.payPeriod as string));
       handleLineItem({
         lineItems: laborFee.line_items as LaborLineItem,
         vendorName: laborFee.name,
@@ -141,9 +154,10 @@ export const createBudgetActualsObject = ({
     // super clunky but we shouldn't ever have lists of more than 50 - 100, so this shouldn't be that slow
     // TODO reimagine this part
     const maxDate = new Date(Math.max(...dates.map((date) => date.getTime())));
-    const maxMonth = String(maxDate.getMonth() + 1).padStart(2, '0');
-    const maxMonthName = maxDate.toLocaleString('default', {
-      month: 'long',
+    console.log("dionY [createBudgetActualsObject] dates", dates, maxDate);
+    const maxMonth = String(maxDate.getMonth() + 1).padStart(2, "0");
+    const maxMonthName = maxDate.toLocaleString("default", {
+      month: "long",
     });
     const maxYear = maxDate.getFullYear();
     const billTitle = `${maxYear}-${maxMonth} (${maxMonthName})`;
@@ -200,54 +214,54 @@ export const calculateTotals = ({
   budget,
   isChangeOrder,
 }: {
-  budget: CurrentActuals | CurrentActualsChangeOrders | BudgetTotals;
+  budget: CurrentActualsV2 | CurrentActualsChangeOrdersV2 | BudgetTotalsV2;
   isChangeOrder: boolean;
 }): AggregatedBudgetTotals => {
   // calculate the totals by division and subdivision for all data including change orders
   // likely won't need this, but having it is low cost and it may come in handy to have
   // this calculation done
-  let totalByDivision: { [key: string]: { value: number; name: string } } = {};
-  let totalBySubDivision: {
-    [key: string]: { value: number; division: number; name: string };
-  } = {};
+
+  // TODO reexamine the need for totals calculation by division in n-level recursive structure
+  // let totalByDivision: { [key: string]: { value: number; name: string } } = {};
+  // let totalBySubDivision: {
+  //   [key: string]: { value: number; division: number; name: string };
+  // } = {};
   let amount: number;
   let total: Number = 0;
   const changeOrderTotals: { [changeOrderId: string]: number } = {};
-  if (isChangeOrder) {
-    Object.entries(budget as CurrentActualsChangeOrders).forEach(
-      ([changeOrderId, changeOrderObject]) => {
-        if (changeOrderId !== 'profitTaxesLiability') {
-          Object.values(changeOrderObject).forEach((costCodeObj) => {
-            amount = isBudgetTotalItem(costCodeObj)
-              ? +costCodeObj.value.replaceAll(',', '')
-              : +costCodeObj.totalAmt.replaceAll(',', '');
-            if (costCodeObj.division !== undefined && costCodeObj.subDivision) {
-              totalByDivision[costCodeObj.division] = {
-                value:
-                  (totalByDivision[costCodeObj.division]?.value || 0) + amount,
-                name: costCodeObj.divisionName,
-              };
-              totalBySubDivision[costCodeObj.subDivision] = {
-                value:
-                  (totalBySubDivision[costCodeObj.subDivision]?.value || 0) +
-                  amount,
-                division: costCodeObj.division,
-                name: costCodeObj.subDivisionName,
-              };
-            }
-          });
-        }
-      }
-    );
 
-    Object.entries(budget as CurrentActualsChangeOrders).forEach(
+  // TODO rearrange total value calculation
+  if (isChangeOrder) {
+    // Object.entries(budget as CurrentActualsChangeOrdersV2).forEach(
+    //   ([changeOrderId, changeOrderObject]) => {
+    //     if (changeOrderId !== "profitTaxesLiability") {
+    //       Object.values(changeOrderObject).forEach((costCodeObj) => {
+    //         amount = +costCodeObj.totalAmt.replaceAll(",", "");
+    //         // if (costCodeObj.division !== undefined && costCodeObj.subDivision) {
+    //         //   totalByDivision[costCodeObj.division] = {
+    //         //     value:
+    //         //       (totalByDivision[costCodeObj.division]?.value || 0) + amount,
+    //         //     name: costCodeObj.divisionName,
+    //         //   };
+    //         //   totalBySubDivision[costCodeObj.subDivision] = {
+    //         //     value:
+    //         //       (totalBySubDivision[costCodeObj.subDivision]?.value || 0) +
+    //         //       amount,
+    //         //     division: costCodeObj.division,
+    //         //     name: costCodeObj.subDivisionName,
+    //         //   };
+    //         // }
+    //       });
+    //     }
+    //   }
+    // );
+
+    Object.entries(budget as CurrentActualsChangeOrdersV2).forEach(
       ([changeOrderId, changeOrder]) => {
-        if (changeOrderId !== 'profitTaxesLiability') {
+        if (changeOrderId !== "profitTaxesLiability") {
           changeOrderTotals[changeOrderId] = Object.values(changeOrder)
             .map((costCodeObj) => {
-              return isBudgetTotalItem(costCodeObj)
-                ? +costCodeObj.value.replaceAll(',', '')
-                : +costCodeObj.totalAmt.replaceAll(',', '');
+              return +costCodeObj.totalAmt.replaceAll(",", "");
             })
             .reduce((acc, curr) => {
               return acc + curr;
@@ -262,45 +276,50 @@ export const calculateTotals = ({
   }
   // NOT A CHANGE ORDER
   else {
-    Object.values(budget as CurrentActuals | BudgetTotals).forEach(
-      (costCodeObj) => {
-        amount = isBudgetTotalItem(costCodeObj)
-          ? costCodeObj.value
-          : costCodeObj.totalAmt;
-        let value = +formatNumber(amount, false, true);
-        if (costCodeObj.division !== undefined && costCodeObj.subDivision) {
-          totalByDivision[costCodeObj.division] = {
-            value: (totalByDivision[costCodeObj.division]?.value || 0) + value,
-            name: costCodeObj.divisionName,
-          };
-          totalBySubDivision[costCodeObj.subDivision] = {
-            value:
-              (totalBySubDivision[costCodeObj.subDivision]?.value || 0) + value,
-            division: costCodeObj.division,
-            name: costCodeObj.subDivisionName,
-          };
-        }
-      }
-    );
-    total = Object.values(budget as CurrentActuals | BudgetTotals)
-      .map((costCodeObj) => {
-        amount = isBudgetTotalItem(costCodeObj)
-          ? costCodeObj.value
-          : costCodeObj.totalAmt;
+    // Object.values(budget as CurrentActualsV2 | BudgetTotalsV2).forEach(
+    //   (costCodeObj: CurrentActualsItemV2 | BudgetTotalItemV2) => {
+    //     amount = isBudgetTotalItemV2(costCodeObj)
+    //       ? +costCodeObj.value.replaceAll(",", "")
+    //       : +costCodeObj.totalAmt.replaceAll(",", "");
+    //     let value = +formatNumber(amount, false, true);
+    //     // if (costCodeObj.division !== undefined && costCodeObj.subDivision) {
+    //     //   totalByDivision[costCodeObj.division] = {
+    //     //     value: (totalByDivision[costCodeObj.division]?.value || 0) + value,
+    //     //     name: costCodeObj.divisionName,
+    //     //   };
+    //     //   totalBySubDivision[costCodeObj.subDivision] = {
+    //     //     value:
+    //     //       (totalBySubDivision[costCodeObj.subDivision]?.value || 0) + value,
+    //     //     division: costCodeObj.division,
+    //     //     name: costCodeObj.subDivisionName,
+    //     //   };
+    //     // }
+    //   }
+    // );
+
+    total = Object.values(budget as CurrentActualsV2 | BudgetTotalsV2)
+      .map((costCodeObj: CurrentActualsItemV2 | BudgetTotalItemV2) => {
+        amount = isBudgetTotalItemV2(costCodeObj)
+          ? +costCodeObj.value.replaceAll(",", "")
+          : +costCodeObj.totalAmt.replaceAll(",", "");
+        console.log("dionY [calculateTotals] amount: ", costCodeObj, amount);
         return +formatNumber(amount, false, true);
       })
       .reduce((acc, curr) => {
         return acc + curr;
       }, 0);
+    console.log("dionY [calculateTotals] total: ", total);
   }
-  const { totalByDivisionTransformed, totalBySubDivisionTransformed } =
-    transformTotals({ totalByDivision, totalBySubDivision });
+  // const { totalByDivisionTransformed, totalBySubDivisionTransformed } =
+  //   transformTotals({ totalByDivision, totalBySubDivision });
 
   return {
     total: formatNumber(total.toFixed(2)),
     changeOrderTotals,
-    divisionTotals: totalByDivisionTransformed,
-    subDivisionTotals: totalBySubDivisionTransformed,
+    // divisionTotals: totalByDivisionTransformed,
+    // subDivisionTotals: totalBySubDivisionTransformed,
+    divisionTotals: {},
+    subDivisionTotals: {},
   };
 };
 
@@ -379,7 +398,7 @@ export const createFullBudgetObject = ({
   changeOrder,
   group,
 }: {
-  budgetTotals: BudgetTotals;
+  budgetTotals: BudgetTotalsV2;
   totalAmt: string;
   costCode: string;
   qtyAmt?: string;
@@ -387,18 +406,25 @@ export const createFullBudgetObject = ({
   vendor: string;
   description: string;
   changeOrder: string | null;
-  group: 'Labor and Fees' | 'Invoices' | 'Change Orders';
-}): CurrentActualsItem => {
-  const { division, divisionName, subDivision, subDivisionName, costCodeName } =
-    budgetTotals[(+costCode).toFixed(4)];
+  group: "Labor and Fees" | "Invoices" | "Change Orders";
+}): CurrentActualsItemV2 => {
+  // const { division, divisionName, subDivision, subDivisionName, costCodeName } = budgetTotals[(+costCode).toFixed(4)];
+  console.log("dionY [createFullBudgetObject] budgetTotals: ", budgetTotals);
+  console.log("dionY [createFullBudgetObject] costCode: ", costCode);
+  const { recursiveLevel, costCodeName } = budgetTotals[String(costCode)] ||
+    budgetTotals[(+costCode).toFixed(4)] || {
+      recursiveLevel: [],
+      costCodeName: "",
+    };
 
   return {
     totalAmt,
     changeOrder,
-    division,
-    divisionName,
-    subDivision,
-    subDivisionName,
+    recursiveLevel,
+    // division,
+    // divisionName,
+    // subDivision,
+    // subDivisionName,
     costCodeName,
     qtyAmt,
     rateAmt,
@@ -429,12 +455,12 @@ const handleLineItem = ({
   isCredit: boolean;
   isInvoice: boolean;
   isLaborFee: boolean;
-  budgetTotals: BudgetTotals;
+  budgetTotals: BudgetTotalsV2;
   costCodeNameList: SelectMenuOptions[];
-  budgetActuals: CurrentActuals;
-  budgetActualsChangeOrders: CurrentActualsChangeOrders;
-  invoiceBudgetActuals: InvoiceCurrentActuals;
-  invoiceBudgetActualsChangeOrders: InvoiceCurrentActualsChangeOrders;
+  budgetActuals: CurrentActualsV2;
+  budgetActualsChangeOrders: CurrentActualsChangeOrdersV2;
+  invoiceBudgetActuals: InvoiceCurrentActualsV2;
+  invoiceBudgetActualsChangeOrders: InvoiceCurrentActualsChangeOrdersV2;
 }) => {
   // loop through all line items for the current invoice
   Object.values(lineItems).forEach((item) => {
@@ -442,28 +468,35 @@ const handleLineItem = ({
     const costCode = item.cost_code as string; // in order to run this function, cost_code was checked
     const changeOrder = item.change_order;
 
-    let amount = +item.amount.replaceAll(',', '');
-    let amountInvoice = +item.amount.replaceAll(',', '');
-    // check if a change order exists with the current item costCode
-    // check to make sure the costCode was filled was also filled
-    // CHANGE ORDER
+    let amount = +item.amount?.replaceAll(",", "");
+    let amountInvoice = +item.amount?.replaceAll(",", "");
+
+    if (
+      Object.keys(budgetTotals).findIndex(
+        (v) => v == costCode || v == (+costCode).toFixed(4)
+      ) === -1
+    )
+      return;
     if (changeOrder) {
+      // check if a change order exists with the current item costCode
+      // check to make sure the costCode was filled was also filled
+      // CHANGE ORDER
       let invoiceIds: string[] = [];
       let laborFeeIds: string[] = [];
       if (isInvoice) {
-        invoiceIds = (budgetActualsChangeOrders as CurrentActualsChangeOrders)[
-          changeOrder.uuid
-        ]?.[costCode]?.invoiceIds
-          ? ((budgetActualsChangeOrders as CurrentActualsChangeOrders)[
+        invoiceIds = (
+          budgetActualsChangeOrders as CurrentActualsChangeOrdersV2
+        )[changeOrder.uuid]?.[costCode]?.invoiceIds
+          ? ((budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
               changeOrder.uuid
             ][costCode].invoiceIds as string[])
           : [];
       }
       if (isLaborFee) {
-        laborFeeIds = (budgetActualsChangeOrders as CurrentActualsChangeOrders)[
-          changeOrder.uuid
-        ]?.[costCode]?.laborFeeIds
-          ? ((budgetActualsChangeOrders as CurrentActualsChangeOrders)[
+        laborFeeIds = (
+          budgetActualsChangeOrders as CurrentActualsChangeOrdersV2
+        )[changeOrder.uuid]?.[costCode]?.laborFeeIds
+          ? ((budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
               changeOrder.uuid
             ][costCode].laborFeeIds as string[])
           : [];
@@ -504,7 +537,7 @@ const handleLineItem = ({
         budgetTotals,
         totalAmt: formatNumber(amount.toFixed(2)),
         costCode,
-        qtyAmt: '1',
+        qtyAmt: "1",
         rateAmt: formatNumber(amount.toFixed(2)),
         description: getCostCodeDescriptionFromNumber(
           (+costCode).toFixed(4),
@@ -512,13 +545,13 @@ const handleLineItem = ({
         ),
         vendor: vendorName,
         changeOrder: changeOrder.name,
-        group: 'Change Orders',
+        group: "Change Orders",
       });
       const budgetObjectInvoice = createFullBudgetObject({
         budgetTotals,
         totalAmt: formatNumber(amount.toFixed(2)),
         costCode,
-        qtyAmt: '1',
+        qtyAmt: "1",
         rateAmt: formatNumber(amount.toFixed(2)),
         description: getCostCodeDescriptionFromNumber(
           (+costCode).toFixed(4),
@@ -526,7 +559,7 @@ const handleLineItem = ({
         ),
         vendor: vendorName,
         changeOrder: changeOrder.name,
-        group: 'Change Orders',
+        group: "Change Orders",
       });
       // the current line item amount
       budgetActualsChangeOrders[changeOrder.uuid][costCode] = budgetObject;
@@ -541,20 +574,20 @@ const handleLineItem = ({
         laborFeeIds.push(uuid);
       }
       if (isInvoice) {
-        (budgetActualsChangeOrders as CurrentActualsChangeOrders)[
+        (budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
           changeOrder.uuid
         ][costCode] = {
-          ...(budgetActualsChangeOrders as CurrentActualsChangeOrders)[
+          ...(budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
             changeOrder.uuid
           ][costCode],
           invoiceIds: [...new Set(invoiceIds)],
         };
       }
       if (isLaborFee) {
-        (budgetActualsChangeOrders as CurrentActualsChangeOrders)[
+        (budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
           changeOrder.uuid
         ][costCode] = {
-          ...(budgetActualsChangeOrders as CurrentActualsChangeOrders)[
+          ...(budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
             changeOrder.uuid
           ][costCode],
           laborFeeIds: [...new Set(laborFeeIds)],
@@ -606,7 +639,7 @@ const handleLineItem = ({
         budgetTotals,
         totalAmt: formatNumber(amount.toFixed(2)),
         costCode,
-        qtyAmt: '1',
+        qtyAmt: "1",
         rateAmt: formatNumber(amount.toFixed(2)),
         description: getCostCodeDescriptionFromNumber(
           (+costCode).toFixed(4),
@@ -614,14 +647,14 @@ const handleLineItem = ({
         ),
         vendor: vendorName,
         changeOrder: null,
-        group: 'Invoices',
+        group: "Invoices",
       });
 
       const budgetObjInvoice = createFullBudgetObject({
         budgetTotals,
         totalAmt: formatNumber(amountInvoice.toFixed(2)),
         costCode,
-        qtyAmt: '1',
+        qtyAmt: "1",
         rateAmt: formatNumber(amountInvoice.toFixed(2)),
         description: getCostCodeDescriptionFromNumber(
           (+costCode).toFixed(4),
@@ -629,7 +662,7 @@ const handleLineItem = ({
         ),
         vendor: vendorName,
         changeOrder: null,
-        group: 'Invoices',
+        group: "Invoices",
       });
 
       budgetActuals[costCode] = budgetObj;
@@ -667,26 +700,34 @@ const handleWholeInvoice = ({
   invoiceBudgetActuals,
   invoiceBudgetActualsChangeOrders,
 }: {
-  invoice: MakeRequired<InvoiceItem, 'processedData'>;
-  budgetTotals: BudgetTotals;
+  invoice: MakeRequired<InvoiceItem, "processedData">;
+  budgetTotals: BudgetTotalsV2;
   costCodeNameList: SelectMenuOptions[];
-  budgetActuals: CurrentActuals;
-  budgetActualsChangeOrders: CurrentActualsChangeOrders;
-  invoiceBudgetActuals: InvoiceCurrentActuals;
-  invoiceBudgetActualsChangeOrders: InvoiceCurrentActualsChangeOrders;
+  budgetActuals: CurrentActualsV2;
+  budgetActualsChangeOrders: CurrentActualsChangeOrdersV2;
+  invoiceBudgetActuals: InvoiceCurrentActualsV2;
+  invoiceBudgetActualsChangeOrders: InvoiceCurrentActualsChangeOrdersV2;
 }) => {
   // grab cost code, if a change order and amount for the whole invoice
   // always subtract the tax from the amount.
   const costCode = invoice.processedData.cost_code as string;
+
+  if (
+    Object.keys(budgetTotals).findIndex(
+      (v) => v == costCode || v == (+costCode).toFixed(4)
+    ) === -1
+  )
+    return;
+
   const changeOrder: { name: string; uuid: string } | null =
     invoice.processedData?.change_order;
   let amount =
-    +invoice.processedData.total_amount.replaceAll(',', '') -
-    +invoice.processedData.total_tax_amount.replaceAll(',', '');
+    +invoice.processedData.total_amount.replaceAll(",", "") -
+    +invoice.processedData.total_tax_amount.replaceAll(",", "");
 
   let amountInvoice =
-    +invoice.processedData.total_amount.replaceAll(',', '') -
-    +invoice.processedData.total_tax_amount.replaceAll(',', '');
+    +invoice.processedData.total_amount.replaceAll(",", "") -
+    +invoice.processedData.total_tax_amount.replaceAll(",", "");
 
   // CHANGE ORDER
   if (changeOrder) {
@@ -728,7 +769,7 @@ const handleWholeInvoice = ({
       budgetTotals,
       totalAmt: formatNumber(amount.toFixed(2)),
       costCode,
-      qtyAmt: '1',
+      qtyAmt: "1",
       rateAmt: formatNumber(amount.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(
         (+costCode).toFixed(4),
@@ -736,13 +777,13 @@ const handleWholeInvoice = ({
       ),
       vendor: invoice.processedData.vendor_name,
       changeOrder: changeOrder.name,
-      group: 'Change Orders',
+      group: "Change Orders",
     });
     const budgetObjInvoice = createFullBudgetObject({
       budgetTotals,
       totalAmt: formatNumber(amountInvoice.toFixed(2)),
       costCode,
-      qtyAmt: '1',
+      qtyAmt: "1",
       rateAmt: formatNumber(amountInvoice.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(
         (+costCode).toFixed(4),
@@ -750,7 +791,7 @@ const handleWholeInvoice = ({
       ),
       vendor: invoice.processedData.vendor_name,
       changeOrder: changeOrder.name,
-      group: 'Change Orders',
+      group: "Change Orders",
     });
     budgetActualsChangeOrders[changeOrder.uuid][costCode] = budgetObj;
     invoiceBudgetActualsChangeOrders[changeOrder.uuid][invoice.doc_id][
@@ -796,29 +837,29 @@ const handleWholeInvoice = ({
       budgetTotals,
       totalAmt: formatNumber(amount.toFixed(2)),
       costCode,
-      qtyAmt: '1',
+      qtyAmt: "1",
       rateAmt: formatNumber(amount.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(
         (+costCode).toFixed(4),
         costCodeNameList
       ),
       vendor: invoice.processedData.vendor_name,
-      changeOrder,
-      group: 'Invoices',
+      changeOrder: null,
+      group: "Invoices",
     });
     const budgetObjInvoice = createFullBudgetObject({
       budgetTotals,
       totalAmt: formatNumber(amountInvoice.toFixed(2)),
       costCode,
-      qtyAmt: '1',
+      qtyAmt: "1",
       rateAmt: formatNumber(amountInvoice.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(
         (+costCode).toFixed(4),
         costCodeNameList
       ),
       vendor: invoice.processedData.vendor_name,
-      changeOrder,
-      group: 'Invoices',
+      changeOrder: null,
+      group: "Invoices",
     });
     budgetActuals[costCode] = budgetObj;
     invoiceBudgetActuals.invoice[invoice.doc_id][costCode] = budgetObjInvoice;
@@ -836,7 +877,7 @@ const handleError = ({
   invoice,
   dispatch,
 }: {
-  invoice: MakeRequired<InvoiceItem, 'processedData'>;
+  invoice: MakeRequired<InvoiceItem, "processedData">;
   dispatch: ThunkDispatch<unknown, unknown, AnyAction>;
 }) => {
   console.error(
@@ -851,19 +892,19 @@ const handleError = ({
         Amount: ${invoice.processedData.total_amount} is missing 
         necessary information such as cost code, total, and/or tax. 
         You cannot build a client's bill without all necessary information.`,
-      title: 'Warning',
+      title: "Warning",
     })
   );
-  throw new Error('An invoice is missing necessary information');
+  throw new Error("An invoice is missing necessary information");
 };
 
 type BudgetObject =
-  | CurrentActuals
-  | CurrentActualsChangeOrders
-  | InvoiceCurrentActuals
-  | InvoiceCurrentActualsChangeOrders;
+  | CurrentActualsV2
+  | CurrentActualsChangeOrdersV2
+  | InvoiceCurrentActualsV2
+  | InvoiceCurrentActualsChangeOrdersV2;
 
-type ChangeOrder = { [invoiceId: string]: CurrentActuals } | CurrentActuals;
+type ChangeOrder = { [invoiceId: string]: CurrentActualsV2 } | CurrentActualsV2;
 
 const iterateAmountOnCostCode = ({
   budgetObj,
@@ -907,7 +948,7 @@ const getExistingBudgetData = (
   costCode: string,
   isInvoice: boolean,
   isLaborFee: boolean
-): CurrentActualsItem => {
+): CurrentActualsItemV2 => {
   if (changeOrder) {
     const coBudget = budgetObj[changeOrder.uuid] as ChangeOrder;
     if (uuid in coBudget) {
@@ -915,23 +956,23 @@ const getExistingBudgetData = (
         costCode
       ];
     }
-    return (coBudget as CurrentActuals)[costCode];
+    return (coBudget as CurrentActualsV2)[costCode];
   }
   if (isInvoice) {
-    return (budgetObj as InvoiceCurrentActuals).invoice[uuid][costCode];
+    return (budgetObj as InvoiceCurrentActualsV2).invoice[uuid][costCode];
   }
   if (isLaborFee) {
-    return (budgetObj as InvoiceCurrentActuals).laborFee[uuid][costCode];
+    return (budgetObj as InvoiceCurrentActualsV2).laborFee[uuid][costCode];
   }
-  return (budgetObj as CurrentActuals)[costCode];
+  return (budgetObj as CurrentActualsV2)[costCode];
 };
 
 const calculateAmount = (
   isCredit: boolean,
-  existingActuals: CurrentActualsItem,
+  existingActuals: CurrentActualsItemV2,
   amount: number
 ): number => {
-  const processedAmount = +existingActuals.totalAmt.replaceAll(',', '');
+  const processedAmount = +existingActuals.totalAmt.replaceAll(",", "");
   return isCredit ? processedAmount - amount : processedAmount + amount;
 };
 
@@ -943,8 +984,8 @@ export const calculateBillTotal = ({
   subTotal: string | number;
 }) => {
   let subTotalNumber: number;
-  if (typeof subTotal === 'string') {
-    subTotalNumber = +subTotal.replaceAll(',', '');
+  if (typeof subTotal === "string") {
+    subTotalNumber = +subTotal.replaceAll(",", "");
   } else {
     subTotalNumber = subTotal;
   }
@@ -988,20 +1029,20 @@ export const getBillProfitTaxes = ({
 export const createBillProfitTaxesObject = ({
   profitTaxes,
   projectSummary,
-  prefix = '',
+  prefix = "",
 }: {
   profitTaxes: ProfitTaxes;
   projectSummary: ProjectSummaryItem;
   prefix: string;
 }) => {
   const descriptions = {
-    profit: { name: 'Overhead and Profit', key: 'profitPercent' },
+    profit: { name: "Overhead and Profit", key: "profitPercent" },
     liability: {
       name: "Builder's Risk and Liability Insurance (Rate per $1,000)",
-      key: 'insuranceRate',
+      key: "insuranceRate",
     },
-    boTax: { name: 'Business and Occupation Tax', key: 'boTax' },
-    salesTax: { name: 'Sales Tax', key: 'salesTax' },
+    boTax: { name: "Business and Occupation Tax", key: "boTax" },
+    salesTax: { name: "Sales Tax", key: "salesTax" },
   };
 
   return Object.entries(descriptions).reduce(
@@ -1012,7 +1053,7 @@ export const createBillProfitTaxesObject = ({
       acc[actualKey] = {
         totalAmt: profitTaxes[totalsKey],
         rateAmt: projectSummary[projectSummaryKey] as string,
-        qtyAmt: '1',
+        qtyAmt: "1",
         description: description.name,
       };
       return acc;
@@ -1029,9 +1070,9 @@ export const updateActuals = ({
   budgetTotals,
 }: {
   billProfitTaxesObject: BudgetProfitTaxesObject;
-  actuals: CurrentActuals | CurrentActualsChangeOrders | null;
+  actuals: CurrentActualsV2 | CurrentActualsChangeOrdersV2 | null;
   summaryCostCodes: Record<string, string>;
-  budgetTotals: BudgetTotals;
+  budgetTotals: BudgetTotalsV2;
 }) => {
   if (!actuals) return;
   Object.entries(billProfitTaxesObject).forEach(([key, value]) => {
@@ -1042,9 +1083,9 @@ export const updateActuals = ({
       description: value.description,
       qtyAmt: value.qtyAmt,
       rateAmt: formatNumber(parseFloat(value.rateAmt).toFixed(2)),
-      vendor: '',
+      vendor: "",
       changeOrder: null,
-      group: key.includes('changeOrder') ? 'Change Orders' : 'Invoices',
+      group: key.includes("changeOrder") ? "Change Orders" : "Invoices",
     });
   });
 };

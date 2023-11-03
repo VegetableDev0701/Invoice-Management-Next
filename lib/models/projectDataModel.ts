@@ -3,7 +3,7 @@ import {
   CurrentActualsChangeOrders,
 } from './budgetCostCodeModel';
 import { ChangeOrderChartData, ChartData } from './chartDataModels';
-import { ChangeOrderData, Labor, ProjectFormData } from './formDataModel';
+import { ChangeOrderData, Labor, ProjectFormData, SelectMenuOptions } from './formDataModel';
 import {
   ChangeOrderSummary,
   ClientBillSummary,
@@ -35,6 +35,8 @@ export interface ProjectDataItems {
   b2a: B2A;
   'client-bills-summary': ClientBillSummary | {};
   'client-bills': ClientBills;
+  costCodeList: SelectMenuOptions[];
+  costCodeNameList: SelectMenuOptions[];
 }
 
 export interface ProjectData {

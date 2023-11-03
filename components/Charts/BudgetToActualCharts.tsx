@@ -26,7 +26,7 @@ interface Props {
 
 export const calculateCostCode = (data: CostCodeItem) => {
   let total = 0;
-  if (data.subItems.length > 0) {
+  if (data.subItems?.length > 0) {
     data.subItems.forEach((item) => (total += calculateCostCode(item)));
   } else if (data.isCurrency) {
     total = Number(data.value);
@@ -62,7 +62,7 @@ export const createIndividualChartData = ({
       {
         label: "Actual",
         backgroundColor: "rgba(223, 153, 32, 1)",
-        data: chartData?.map((_) => 5000),
+        data: chartData?.map((_) => 0),
       },
     ],
   };

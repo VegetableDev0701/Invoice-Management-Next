@@ -47,23 +47,28 @@ const BarChart = (props: BarChartProps) => {
 
   const getCurrentLevelData = () => {
     let levelData: Divisions | CostCodeItem = fullData;
+    let prefix = "";
     for (let i = 0; i < level.length; i++) {
       let index = level[i];
-      if (levelData.subItems.length <= index) {
+      if (levelData.subItems?.length <= index) {
         console.error("[getCurrentLevelData]: Error!");
         return;
       }
 
+      if (levelData.name) prefix += `${levelData.number} - ${levelData.name}  /  `;
       levelData = levelData.subItems[index];
     }
 
-    return levelData;
+    return  {
+      data: levelData,
+      prefix
+    };
   };
 
   const zoomIn = (index: number) => {
-    const currentLevelData = getCurrentLevelData();
+    const { data: currentLevelData } = getCurrentLevelData();
     const selectedData = currentLevelData.subItems[index];
-    if (selectedData.subItems.length === 0) {
+    if (selectedData.subItems?.length === 0) {
       console.warn("[getCurrentLevelData]: There is no sub-items");
       return;
     }
@@ -83,7 +88,7 @@ const BarChart = (props: BarChartProps) => {
   };
 
   useEffect(() => {
-    const currentLevelData = getCurrentLevelData();
+    const { data: currentLevelData, prefix } = getCurrentLevelData();
 
     const { chartDataResult, title, dropZeroSubDivIndex } =
       createIndividualChartData({
@@ -93,9 +98,9 @@ const BarChart = (props: BarChartProps) => {
         chartData: currentLevelData.subItems,
         filterZeroElements: filterZeroElements,
       });
-    
+
     setChartData(chartDataResult);
-    setTitle(title);
+    setTitle(`${prefix}${title}`);
   }, [fullData, level]);
 
   useEffect(() => {

@@ -29,6 +29,7 @@ export interface Props {
   showError?: boolean;
   currentData: InvoiceTableRow | null;
   changeOrdersSummary?: ChangeOrderSummary | undefined;
+  projectId?: string;
   onMouseEnterHandler: (
     currentData: InvoiceTableRow | null,
     id: string
@@ -41,6 +42,7 @@ function LineItems(props: Props) {
     actions,
     form,
     currentData,
+    projectId,
     changeOrdersSummary,
     onMouseEnterHandler,
     onMouseLeaveHandler,
@@ -73,8 +75,10 @@ function LineItems(props: Props) {
   // but also still rename to make the code easier to read further down
   const lineItemsGPT: InvoiceLineItemItem[] | null = currentData?.line_items_gpt
     ? Object.values(currentData.line_items_gpt)
+    
     : null;
 
+  console.log('dionY [LineItems] lineItemsGPT: ', lineItemsGPT);
   const lineItemsJSX = [];
   for (let i = 0; i < (numLineItems as number); i++) {
     lineItemsJSX.push(
@@ -100,6 +104,7 @@ function LineItems(props: Props) {
               isCurrency: false,
               isOnOverlay: true,
             }}
+            projectId={projectId}
             actions={actions}
             onMouseEnter={() =>
               onMouseEnterHandler(currentData, `${i + 1}-description`)
@@ -130,6 +135,7 @@ function LineItems(props: Props) {
               isOnOverlay: true,
             }}
             icon={<DollarSign width={null} height={null} />}
+            projectId={projectId}
             actions={actions}
             onMouseEnter={() =>
               onMouseEnterHandler(currentData, `${i + 1}-description`)
@@ -157,6 +163,7 @@ function LineItems(props: Props) {
               required: false,
               isOnOverlay: true,
             }}
+            projectId={projectId}
             actions={actions}
             onMouseEnter={() =>
               onMouseEnterHandler(currentData, `${i + 1}-description`)
@@ -186,6 +193,7 @@ function LineItems(props: Props) {
               isCurrency: false,
               isOnOverlay: true,
             }}
+            projectId={projectId}
             actions={actions}
             onMouseEnter={() =>
               onMouseEnterHandler(currentData, `${i + 1}-description`)
@@ -222,6 +230,7 @@ function LineItems(props: Props) {
               isCurrency: false,
               isOnOverlay: true,
             }}
+            projectId={projectId}
             actions={actions}
             changeOrdersSummary={changeOrdersSummary}
             onMouseEnter={() =>

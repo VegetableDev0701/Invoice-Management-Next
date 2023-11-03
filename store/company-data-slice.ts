@@ -1,40 +1,41 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
-import { addUpdatedChangeOrderContent } from './add-change-order';
-import { invoiceActions } from './invoice-slice';
-import { uiActions } from './ui-slice';
-import { projectDataActions } from './projects-data-slice';
+import { addUpdatedChangeOrderContent } from "./add-change-order";
+import { invoiceActions } from "./invoice-slice";
+import { uiActions } from "./ui-slice";
+import { projectDataActions } from "./projects-data-slice";
 
 import {
   ProjectSummary,
   ProjectSummaryItem,
   SummaryProjects,
   VendorSummary,
-} from '@/lib/models/summaryDataModel';
+} from "@/lib/models/summaryDataModel";
 import {
   addCostCode,
   addDivision,
   addSubDivision,
+  costCodeData2NLevel,
   createCostCodeList,
   deleteCostCode,
   deleteDivision,
   deleteSubDivision,
-} from '@/lib/utility/costCodeHelpers';
-import { RootState } from '.';
-import { VendorData } from '@/lib/models/formDataModel';
-import { getChangeOrderIdFromName } from '@/lib/utility/processInvoiceHelpers';
-import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
-import { CostCodesData as UpdatedCostCodesData } from '@/components/Budget/CostCodes/CostCodesTreeData';
-import { fetchWithRetry } from '@/lib/utility/ioUtils';
-import { processingActions } from './processing-slice';
-import { CostCodeObjType } from '@/lib/models/projectDataModel';
-import { FormState, FormStateItem } from '@/lib/models/formStateModels';
+} from "@/lib/utility/costCodeHelpers";
+import { RootState } from ".";
+import { VendorData } from "@/lib/models/formDataModel";
+import { getChangeOrderIdFromName } from "@/lib/utility/processInvoiceHelpers";
+import { CostCodesData } from "@/lib/models/budgetCostCodeModel";
+import { CostCodesData as UpdatedCostCodesData } from "@/components/Budget/CostCodes/CostCodesTreeData";
+import { fetchWithRetry } from "@/lib/utility/ioUtils";
+import { processingActions } from "./processing-slice";
+import { CostCodeObjType } from "@/lib/models/projectDataModel";
+import { FormState, FormStateItem } from "@/lib/models/formStateModels";
 import {
   extractLineItems,
   groupLineItems,
   sortLineItems,
-} from '@/lib/utility/invoiceHelpers';
-import { formatNumber } from '@/lib/utility/formatter';
+} from "@/lib/utility/invoiceHelpers";
+import { formatNumber } from "@/lib/utility/formatter";
 import {
   InvoiceItem,
   InvoiceProject,
@@ -42,17 +43,20 @@ import {
   InvoiceLineItem,
   InvoiceLineItemItem,
   ProcessedInvoiceData,
-} from '@/lib/models/invoiceDataModels';
+} from "@/lib/models/invoiceDataModels";
 import {
   ChangeOrderContent,
   ChangeOrderContentItem,
-} from '@/lib/models/changeOrderModel';
-import { CompanyData } from '@/lib/models/companyDataModel';
-import { snapshotCopy } from '@/lib/utility/utils';
-import { type CostCodeTreeData, type TreeData } from '@/components/Budget/CostCodes/CostCodesTreeData'
+} from "@/lib/models/changeOrderModel";
+import { CompanyData } from "@/lib/models/companyDataModel";
+import { snapshotCopy } from "@/lib/utility/utils";
+import {
+  type CostCodeTreeData,
+  type TreeData,
+} from "@/components/Budget/CostCodes/CostCodesTreeData";
 
 export const fetchCompanyData = createAsyncThunk(
-  'companyDataAsync/fetch',
+  "companyDataAsync/fetch",
   async (
     { companyId }: { companyId: string; projectId?: string },
     thunkAPI
@@ -70,14 +74,14 @@ export const fetchCompanyData = createAsyncThunk(
       };
 
       const promises = Object.values(urls).map((url) =>
-        fetchWithRetry(url, { method: 'GET' })
+        fetchWithRetry(url, { method: "GET" })
       );
       const results = await Promise.allSettled(promises);
       const data = Object.keys(urls).reduce<any>((acc, key, index) => {
-        if (results[index].status === 'fulfilled') {
+        if (results[index].status === "fulfilled") {
           const fulfilledResult = results[index] as PromiseFulfilledResult<any>;
           acc[key] = fulfilledResult;
-        } else if (results[index].status === 'rejected') {
+        } else if (results[index].status === "rejected") {
           const rejectedResult = results[index] as PromiseRejectedResult;
           console.error(`Error fetching ${key}:`, rejectedResult.reason);
         }
@@ -97,7 +101,7 @@ export const fetchCompanyData = createAsyncThunk(
 );
 
 export const updateInvoices = createAsyncThunk(
-  'invoiceUpdates/updateInvoices',
+  "invoiceUpdates/updateInvoices",
   async (invoicesToUpdate: string[], thunkAPI) => {
     try {
       const state = thunkAPI.getState() as RootState;
@@ -137,7 +141,7 @@ export const updateInvoices = createAsyncThunk(
 );
 
 export const patchInvoiceUpdates = createAsyncThunk(
-  'invoiceUpdates/patchInvoiceUpdates',
+  "invoiceUpdates/patchInvoiceUpdates",
   async (
     {
       companyId,
@@ -160,14 +164,14 @@ export const patchInvoiceUpdates = createAsyncThunk(
       const data = await fetchWithRetry(
         `/api/${companyId}/invoices/update-projects`,
         {
-          method: 'PATCH',
+          method: "PATCH",
           body: JSON.stringify(filteredInvoiceProjects),
         }
       );
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
           content: data.message,
-          icon: 'save',
+          icon: "save",
           openNotification: true,
         })
       );
@@ -175,8 +179,8 @@ export const patchInvoiceUpdates = createAsyncThunk(
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
           content:
-            'Something went wrong with saving invoices to projects. Please try again.',
-          icon: 'error',
+            "Something went wrong with saving invoices to projects. Please try again.",
+          icon: "error",
           openNotification: true,
         })
       );
@@ -187,7 +191,7 @@ export const patchInvoiceUpdates = createAsyncThunk(
 );
 
 export const addProcessedInvoiceData = createAsyncThunk(
-  'invoiceUpdates/addProcessedInvoiceData',
+  "invoiceUpdates/addProcessedInvoiceData",
   async (
     {
       companyId,
@@ -222,38 +226,38 @@ export const addProcessedInvoiceData = createAsyncThunk(
       ).filter((project) => project.projectName === projectName)[0];
 
       const changeOrdersSummary =
-        state.projects[projectData.uuid as string]['change-orders-summary'];
+        state.projects[projectData.uuid as string]["change-orders-summary"];
 
       let processedInvoiceData = {
-        invoice_id: processInvoiceFormState?.['invoice-number']?.value
-          ? (processInvoiceFormState['invoice-number'].value as string)
-          : '',
-        vendor_name: processInvoiceFormState?.['vendor-name']?.value
-          ? (processInvoiceFormState['vendor-name'].value as string)
-          : '',
+        invoice_id: processInvoiceFormState?.["invoice-number"]?.value
+          ? (processInvoiceFormState["invoice-number"].value as string)
+          : "",
+        vendor_name: processInvoiceFormState?.["vendor-name"]?.value
+          ? (processInvoiceFormState["vendor-name"].value as string)
+          : "",
         cost_code:
-          processInvoiceFormState?.['cost-code']?.value &&
-          processInvoiceFormState['cost-code'].value !== 'None' &&
-          processInvoiceFormState['cost-code'].value !== ''
-            ? (processInvoiceFormState['cost-code'].value as string)
+          processInvoiceFormState?.["cost-code"]?.value &&
+          processInvoiceFormState["cost-code"].value !== "None" &&
+          processInvoiceFormState["cost-code"].value !== ""
+            ? (processInvoiceFormState["cost-code"].value as string)
             : null,
-        total_tax_amount: processInvoiceFormState?.['total-tax']?.value
-          ? (processInvoiceFormState['total-tax'].value as string)
-          : '',
-        total_amount: processInvoiceFormState?.['invoice-total']?.value
-          ? (processInvoiceFormState['invoice-total'].value as string)
-          : '',
-        approver: processInvoiceFormState?.['approver']?.value
-          ? (processInvoiceFormState['approver'].value as string)
-          : '',
-        is_credit: processInvoiceFormState?.['credit']?.value
-          ? (processInvoiceFormState['credit'].value as boolean)
+        total_tax_amount: processInvoiceFormState?.["total-tax"]?.value
+          ? (processInvoiceFormState["total-tax"].value as string)
+          : "",
+        total_amount: processInvoiceFormState?.["invoice-total"]?.value
+          ? (processInvoiceFormState["invoice-total"].value as string)
+          : "",
+        approver: processInvoiceFormState?.["approver"]?.value
+          ? (processInvoiceFormState["approver"].value as string)
+          : "",
+        is_credit: processInvoiceFormState?.["credit"]?.value
+          ? (processInvoiceFormState["credit"].value as boolean)
           : false,
-        date_received: processInvoiceFormState?.['date-received']?.value
-          ? (processInvoiceFormState['date-received'].value as string)
-          : '',
-        line_items_toggle: processInvoiceFormState?.['line-item-toggle']?.value
-          ? (processInvoiceFormState['line-item-toggle'].value as boolean)
+        date_received: processInvoiceFormState?.["date-received"]?.value
+          ? (processInvoiceFormState["date-received"].value as string)
+          : "",
+        line_items_toggle: processInvoiceFormState?.["line-item-toggle"]?.value
+          ? (processInvoiceFormState["line-item-toggle"].value as boolean)
           : false,
       };
 
@@ -289,20 +293,20 @@ export const addProcessedInvoiceData = createAsyncThunk(
           Object.values(groupedLineItems).some((lineItem) => {
             return lineItem.change_order !== null;
           }) &&
-          processInvoiceFormState['change-order'].value !== 'None' &&
-          processInvoiceFormState['change-order'].value !== '' &&
-          processInvoiceFormState['change-order'].value !== null
+          processInvoiceFormState["change-order"].value !== "None" &&
+          processInvoiceFormState["change-order"].value !== "" &&
+          processInvoiceFormState["change-order"].value !== null
         ) {
           thunkAPI.dispatch(
             uiActions.setModalContent({
               openModal: true,
-              title: 'Warning',
+              title: "Warning",
               message:
-                'You cannot set a change order for the whole invoice AND any of the line items. The whole invoice will include all line items and this may not be the desired result.',
+                "You cannot set a change order for the whole invoice AND any of the line items. The whole invoice will include all line items and this may not be the desired result.",
             })
           );
           throw new Error(
-            'Cannot have change orders for a line item and the entire invoice.'
+            "Cannot have change orders for a line item and the entire invoice."
           );
         }
       } catch (error) {
@@ -321,15 +325,15 @@ export const addProcessedInvoiceData = createAsyncThunk(
         Object.values(groupedLineItems).every(isChangeOrderNone);
 
       const wholeInvoiceChangeOrderValue =
-        processInvoiceFormState['change-order'].value;
+        processInvoiceFormState["change-order"].value;
       const wholeInvoiceCostCodeValue =
-        processInvoiceFormState['cost-code'].value;
+        processInvoiceFormState["cost-code"].value;
 
       // NO LINE ITEMS
       if (
         isNoLineItemsSelected &&
         wholeInvoiceChangeOrderValue &&
-        wholeInvoiceChangeOrderValue !== 'None' &&
+        wholeInvoiceChangeOrderValue !== "None" &&
         wholeInvoiceCostCodeValue
       ) {
         const id = costCodeList.find(
@@ -360,17 +364,17 @@ export const addProcessedInvoiceData = createAsyncThunk(
               costCode: wholeInvoiceCostCodeValue as string,
               totalAmt: formatNumber(
                 (+(
-                  processInvoiceFormState['invoice-total'].value as string
-                ).replaceAll(',', '')).toFixed(2)
+                  processInvoiceFormState["invoice-total"].value as string
+                ).replaceAll(",", "")).toFixed(2)
               ),
-              qtyAmt: '1',
+              qtyAmt: "1",
               rateAmt: formatNumber(
                 (+(
-                  processInvoiceFormState['invoice-total'].value as string
-                ).replaceAll(',', '')).toFixed(2)
+                  processInvoiceFormState["invoice-total"].value as string
+                ).replaceAll(",", "")).toFixed(2)
               ),
               description: (description as CostCodeObjType).label,
-              vendor: processInvoiceFormState['vendor-name'].value as string,
+              vendor: processInvoiceFormState["vendor-name"].value as string,
               uuid: invoiceId,
               isInvoice: true,
               isLaborFee: null,
@@ -390,13 +394,13 @@ export const addProcessedInvoiceData = createAsyncThunk(
               const newItem: ChangeOrderContentItem = {
                 costCode: lineItem.cost_code as string,
                 totalAmt: formatNumber(
-                  (+(lineItem.amount as string).replaceAll(',', '')).toFixed(2)
+                  (+(lineItem.amount as string).replaceAll(",", "")).toFixed(2)
                 ),
                 description: lineItem.work_description as string,
-                vendor: processInvoiceFormState['vendor-name'].value as string,
-                qtyAmt: '1',
+                vendor: processInvoiceFormState["vendor-name"].value as string,
+                qtyAmt: "1",
                 rateAmt: formatNumber(
-                  (+(lineItem.amount as string).replaceAll(',', '')).toFixed(2)
+                  (+(lineItem.amount as string).replaceAll(",", "")).toFixed(2)
                 ),
                 uuid: invoiceId,
                 isInvoice: true,
@@ -444,15 +448,15 @@ export const addProcessedInvoiceData = createAsyncThunk(
       // if the formState has a value for this change-order we know that it is for
       // the whole invoice, and therefore no line items can have a change order on them
       if (
-        processInvoiceFormState?.['change-order']?.value &&
-        processInvoiceFormState['change-order'].value !== 'None'
+        processInvoiceFormState?.["change-order"]?.value &&
+        processInvoiceFormState["change-order"].value !== "None"
       ) {
         // You can't select a change order unless it already exists in the data so this
         // can never be undefined or null so force with !
         const changeOrder = Object.values(changeOrdersSummary).find(
           (changeOrder) => {
             return (
-              changeOrder.name === processInvoiceFormState['change-order'].value
+              changeOrder.name === processInvoiceFormState["change-order"].value
             );
           }
         )!;
@@ -502,15 +506,15 @@ export const addProcessedInvoiceData = createAsyncThunk(
       );
 
       const project = {
-        address: projectData['address'],
-        uuid: projectData['uuid'],
-        name: projectData['projectName'],
+        address: projectData["address"],
+        uuid: projectData["uuid"],
+        name: projectData["projectName"],
       };
 
       const data = await fetchWithRetry(
         `/api/${companyId}/invoices/update-invoice-data`,
         {
-          method: 'PATCH',
+          method: "PATCH",
           body: JSON.stringify({
             isProcessed: state.addProcessInvoiceForm.isUpdated.value,
             invoiceId,
@@ -523,7 +527,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
           content: data.message,
-          icon: 'save',
+          icon: "save",
           openNotification: true,
         })
       );
@@ -531,8 +535,8 @@ export const addProcessedInvoiceData = createAsyncThunk(
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
           content:
-            'Something went wrong with saving processed invoice. Please try again.',
-          icon: 'error',
+            "Something went wrong with saving processed invoice. Please try again.",
+          icon: "error",
           openNotification: true,
         })
       );
@@ -543,7 +547,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
 );
 
 export const approveInvoice = createAsyncThunk(
-  'invoiceUpdates/approveInvoice',
+  "invoiceUpdates/approveInvoice",
   async (
     {
       companyId,
@@ -560,7 +564,7 @@ export const approveInvoice = createAsyncThunk(
       const data = await fetchWithRetry(
         `/api/${companyId}/invoices/approve-invoice`,
         {
-          method: 'PATCH',
+          method: "PATCH",
           body: invoiceId,
           headers: {
             isapproved: isApproved.toString(),
@@ -571,7 +575,7 @@ export const approveInvoice = createAsyncThunk(
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
           content: data.message,
-          icon: 'save',
+          icon: "save",
           openNotification: true,
         })
       );
@@ -583,8 +587,8 @@ export const approveInvoice = createAsyncThunk(
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
           content:
-            'Something went wrong with saving processed invoice. Please try again.',
-          icon: 'error',
+            "Something went wrong with saving processed invoice. Please try again.",
+          icon: "error",
           openNotification: true,
         })
       );
@@ -596,7 +600,7 @@ export const approveInvoice = createAsyncThunk(
 
 // run this when deleting an invoice
 export const removeInvoiceFromChangeOrderThunk = createAsyncThunk(
-  'invoiceUpdates/removeInvoiceFromChangeOrder',
+  "invoiceUpdates/removeInvoiceFromChangeOrder",
   async (
     {
       projectId,
@@ -629,7 +633,7 @@ export const removeInvoiceFromChangeOrderThunk = createAsyncThunk(
       const data: any = fetchWithRetry(
         `/api/${companyId}/projects/${projectId}/remove-invoices-from-change-order`,
         {
-          method: 'PATCH',
+          method: "PATCH",
           body: JSON.stringify(invoiceChangeOrders),
         }
       );
@@ -637,7 +641,7 @@ export const removeInvoiceFromChangeOrderThunk = createAsyncThunk(
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
           content: data.message,
-          icon: 'success',
+          icon: "success",
           openNotification: true,
         })
       );
@@ -648,7 +652,7 @@ export const removeInvoiceFromChangeOrderThunk = createAsyncThunk(
 );
 
 export const removeChangeOrderFromInvoiceThunk = createAsyncThunk(
-  'invoiceUpdates/removeChangeOrderFromInvoice',
+  "invoiceUpdates/removeChangeOrderFromInvoice",
   async (
     {
       removeFromObj,
@@ -707,7 +711,7 @@ export const removeChangeOrderFromInvoiceThunk = createAsyncThunk(
           ...invoicesToUpdate,
         };
         // send the needed data to update invoice to the backend here
-        throw new Error('STOP');
+        throw new Error("STOP");
         return true;
       } else {
         console.error(`${invoiceId}: Does not exists`);
@@ -718,8 +722,8 @@ export const removeChangeOrderFromInvoiceThunk = createAsyncThunk(
 );
 
 type ExtendedCompanyData = {
-  treeData: CostCodeTreeData
-} & CompanyData
+  treeData: CostCodeTreeData;
+} & CompanyData;
 
 const initialDataState = {} as ExtendedCompanyData;
 
@@ -737,7 +741,7 @@ interface DeleteItem {
 }
 
 export const companyDataSlice = createSlice({
-  name: 'data',
+  name: "data",
   initialState: initialDataState,
   reducers: {
     // Cost Codes
@@ -749,8 +753,11 @@ export const companyDataSlice = createSlice({
       state.costCodes.updated = action.payload;
     },
     changeUpdateTreeStatus(state, action: PayloadAction<CostCodeTreeData>) {
-      const newData: string = JSON.stringify(action.payload.data)
-      state.treeData = {data: JSON.parse(newData) as TreeData, updated: action.payload.updated}
+      const newData: string = JSON.stringify(action.payload.data);
+      state.treeData = {
+        data: JSON.parse(newData) as TreeData,
+        updated: action.payload.updated,
+      };
     },
     // Project Summary
     addToProjectsSummaryData(state, action: PayloadAction<ProjectSummary>) {
@@ -862,8 +869,8 @@ export const companyDataSlice = createSlice({
             const orderedLineItemKeys = Object.keys(
               invoiceObj.line_items_gpt
             ).sort((a: string, b: string) => {
-              let numA = Number(a.split('_').pop());
-              let numB = Number(b.split('_').pop());
+              let numA = Number(a.split("_").pop());
+              let numB = Number(b.split("_").pop());
               return numA - numB;
             });
 
@@ -913,9 +920,9 @@ export const companyDataSlice = createSlice({
         ...state.invoices.allInvoices[invoiceId],
         ...{
           project: {
-            address: projectData['address'],
-            uuid: projectData['uuid'],
-            name: projectData['projectName'],
+            address: projectData["address"],
+            uuid: projectData["uuid"],
+            name: projectData["projectName"],
           },
         },
         ...{ processedData: processedInvoiceData },
@@ -1071,12 +1078,15 @@ export const companyDataSlice = createSlice({
             },
           };
 
-          const costCodes = JSON.parse(action.payload.costCodes.value);
+          const costCodes = costCodeData2NLevel(
+            JSON.parse(action.payload.costCodes.value)
+          );
           const codes = {
             status: action.payload.costCodes.status,
             ...costCodes,
           };
-          state.costCodes = { ...codes, updated: false };
+
+          state.costCodes = codes;
 
           const { costCodeList, costCodeNameList } =
             createCostCodeList(costCodes);

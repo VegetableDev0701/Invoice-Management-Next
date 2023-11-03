@@ -1,44 +1,44 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '.';
-import { uiActions } from './ui-slice';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { RootState } from ".";
+import { uiActions } from "./ui-slice";
 import {
   ClientBillSummary,
   LaborSummary,
   LaborSummaryItem,
-} from '@/lib/models/summaryDataModel';
+} from "@/lib/models/summaryDataModel";
 import {
   calculateTotals,
   createBillProfitTaxesObject,
   createBudgetActualsObject,
   getBillProfitTaxes,
   updateActuals,
-} from '@/lib/utility/budgetHelpers';
-import { projectDataActions } from './projects-data-slice';
-import { companyDataActions } from './company-data-slice';
-import { createSingleClientBillSummary } from '@/lib/utility/createSummaryDataHelpers';
-import { fetchWithRetry } from '@/lib/utility/ioUtils';
-import { SUMMARY_COST_CODES } from '@/lib/globals';
-import { snapshotCopy } from '@/lib/utility/utils';
+} from "@/lib/utility/budgetHelpers";
+import { projectDataActions } from "./projects-data-slice";
+import { companyDataActions } from "./company-data-slice";
+import { createSingleClientBillSummary } from "@/lib/utility/createSummaryDataHelpers";
+import { fetchWithRetry } from "@/lib/utility/ioUtils";
+import { SUMMARY_COST_CODES } from "@/lib/globals";
+import { snapshotCopy } from "@/lib/utility/utils";
 import {
   createB2AChartData,
   addActualsToTotals,
   addNewChangeOrderValuesToPreviousData,
   createB2AChangeOrderChartData,
-} from '@/lib/utility/chartHelpers';
+} from "@/lib/utility/chartHelpers";
 import {
   CurrentActuals,
   InvoiceCurrentActuals,
   InvoiceCurrentActualsChangeOrders,
-} from '@/lib/models/budgetCostCodeModel';
+} from "@/lib/models/budgetCostCodeModel";
 import {
   InvoiceItem,
   Invoices,
   InvoiceLineItemItem,
-} from '@/lib/models/invoiceDataModels';
+} from "@/lib/models/invoiceDataModels";
 
 // TODO Fix delete bill logic
 export const deleteClientBillDataFromB2A = createAsyncThunk(
-  'addClientBill/deleteClientBill',
+  "addClientBill/deleteClientBill",
   async (
     {
       projectId,
@@ -54,10 +54,10 @@ export const deleteClientBillDataFromB2A = createAsyncThunk(
       const data = await fetchWithRetry(
         `/api/${companyId}/projects/${projectId}/get-single-client-bill`,
         {
-          method: 'GET',
+          method: "GET",
           headers: {
             clientBillId,
-            isOnlyCurrentActuals: 'true',
+            isOnlyCurrentActuals: "true",
           },
         }
       );
@@ -95,11 +95,11 @@ export const deleteClientBillDataFromB2A = createAsyncThunk(
             currentBudgetedTotal: {
               value:
                 currentBudgetedTotal -
-                +Number(totals.total.replaceAll(',', '')).toFixed(2),
+                +Number(totals.total.replaceAll(",", "")).toFixed(2),
             },
           },
           projectId,
-          stateKey: 'b2a',
+          stateKey: "b2a",
         })
       );
       // TODO doesn't currently look like we are pushing the updated `FullData` after
@@ -115,7 +115,7 @@ export const deleteClientBillDataFromB2A = createAsyncThunk(
 type MakeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
 export const createBudgetActuals = createAsyncThunk(
-  'addClientBill/createBudgetActuals',
+  "addClientBill/createBudgetActuals",
   async (
     {
       projectId,
@@ -132,21 +132,56 @@ export const createBudgetActuals = createAsyncThunk(
       const state = getState() as RootState;
       const projectSummary = state.data.projectsSummary.allProjects[projectId];
       const budgetTotals = state.addBudgetForm.budget;
+      const budgetTotalsV2 = state.addBudgetForm.budgetV2;
       const allInvoices: Invoices = state.data.invoices.allInvoices;
-      const currentLaborSummary = state.projects[projectId]['labor-summary'];
+      const currentLaborSummary = state.projects[projectId]["labor-summary"];
       const changeOrdersSummary =
-        state.projects[projectId]['change-orders-summary'];
+        state.projects[projectId]["change-orders-summary"];
       const previousCurrentActualsChangeOrders =
         state.projects[projectId].b2a?.updatedCurrentActualsChangeOrders;
       const costCodeNameList = state.data.costCodeNameList;
+
+      console.log(
+        "dionY [createBudgetActuals] start ##########################"
+      );
+      console.log(
+        "dionY [createBudgetActuals] projectSummary: ",
+        projectSummary
+      );
+      console.log("dionY [createBudgetActuals] budgetTotals: ", budgetTotals);
+      console.log(
+        "dionY [createBudgetActuals] budgetTotalsV2: ",
+        budgetTotalsV2
+      );
+      console.log("dionY [createBudgetActuals] allInvoices: ", allInvoices);
+      console.log(
+        "dionY [createBudgetActuals] currentLaborSummary: ",
+        currentLaborSummary
+      );
+      console.log(
+        "dionY [createBudgetActuals] changeOrdersSummary: ",
+        changeOrdersSummary
+      );
+      console.log(
+        "dionY [createBudgetActuals] previousCurrentActualsChangeOrders: ",
+        previousCurrentActualsChangeOrders
+      );
+      console.log(
+        "dionY [createBudgetActuals] costCodeNameList: ",
+        costCodeNameList
+      );
 
       // filter all invoices down to this project only
       const projectInvoices = (
         Object.values(allInvoices) as MakeRequired<
           InvoiceItem,
-          'processedData'
+          "processedData"
         >[]
       ).filter((invoice) => invoice.project.uuid === projectId);
+      console.log(
+        "dionY [createBudgetActuals] projectInvoices: ",
+        projectInvoices
+      );
 
       // make sure any labor calculated is `current` (right now 10/11/23, i don't think a labor can be `not current`)
       const projectLaborFees = Object.values(currentLaborSummary).filter(
@@ -157,8 +192,8 @@ export const createBudgetActuals = createAsyncThunk(
         projectLaborFees.some(
           (laborFee) =>
             Object.values(laborFee.line_items).some(
-              (item) => item.cost_code === '' || item.cost_code === 'None'
-            ) || laborFee.totalAmt === ''
+              (item) => item.cost_code === "" || item.cost_code === "None"
+            ) || laborFee.totalAmt === ""
         )
       ) {
         dispatch(
@@ -166,7 +201,7 @@ export const createBudgetActuals = createAsyncThunk(
             openModal: true,
             message:
               "All Labor and Fees must have a cost cost and amount before building the client's bill. Please update missing information.",
-            title: 'Warning',
+            title: "Warning",
           })
         );
         return false;
@@ -184,10 +219,10 @@ export const createBudgetActuals = createAsyncThunk(
                 invoice.processedData.line_items
               ) as InvoiceLineItemItem[]
             ).some((item) => {
-              return item.cost_code === null || item.amount === '';
+              return item.cost_code === null || item.amount === "";
             }) &&
             (invoice.processedData.cost_code === null ||
-              invoice.processedData.total_amount === '')
+              invoice.processedData.total_amount === "")
           );
         })
       ) {
@@ -196,23 +231,24 @@ export const createBudgetActuals = createAsyncThunk(
             openModal: true,
             message:
               "All Invoices must have a cost cost and amount before building the client's bill. Please update missing information.",
-            title: 'Warning',
+            title: "Warning",
           })
         );
         return false;
       }
 
-      if (projectInvoices.some((invoice) => !invoice.approved)) {
-        dispatch(
-          uiActions.setModalContent({
-            openModal: true,
-            message:
-              "All invoices must be approved before building the client's bill.",
-            title: 'Warning',
-          })
-        );
-        return false;
-      }
+      // TODO uncomment this block after test
+      // if (projectInvoices.some((invoice) => !invoice.approved)) {
+      //   dispatch(
+      //     uiActions.setModalContent({
+      //       openModal: true,
+      //       message:
+      //         "All invoices must be approved before building the client's bill.",
+      //       title: 'Warning',
+      //     })
+      //   );
+      //   return false;
+      // }
 
       // Create the actuals for this client's bill for just the invoices
       // and labor. this will be used to calculate the tax, profit etc.
@@ -231,14 +267,37 @@ export const createBudgetActuals = createAsyncThunk(
       } = createBudgetActualsObject({
         projectInvoices,
         projectLaborFees,
-        budgetTotals,
+        budgetTotals: budgetTotalsV2,
         changeOrdersSummary,
         costCodeNameList,
         dispatch,
       });
 
+      console.log(
+        "dionY [createBudgetActuals] currentActuals: ",
+        currentActuals
+      );
+      console.log(
+        "dionY [createBudgetActuals] currentActualsChangeOrders: ",
+        currentActualsChangeOrders
+      );
+      console.log("dionY [createBudgetActuals] billTitle: ", billTitle);
+      console.log("dionY [createBudgetActuals] numInvoices: ", numInvoices);
+      console.log(
+        "dionY [createBudgetActuals] numChangeOrders: ",
+        numChangeOrders
+      );
+      console.log(
+        "dionY [createBudgetActuals] invoiceCurrentActuals: ",
+        invoiceCurrentActuals
+      );
+      console.log(
+        "dionY [createBudgetActuals] invoiceCurrentActualsChangeOrders: ",
+        invoiceCurrentActualsChangeOrders
+      );
+
       // subtotals without tax, profit and liability
-      console.log('before adding profit, tax, liability');
+      console.log("before adding profit, tax, liability");
       console.log(snapshotCopy(currentActuals));
       console.log(snapshotCopy(currentActualsChangeOrders));
       console.log(snapshotCopy(invoiceCurrentActualsChangeOrders));
@@ -262,6 +321,15 @@ export const createBudgetActuals = createAsyncThunk(
         isChangeOrder: true,
       });
 
+      console.log(
+        "dionY [createBudgetActuals] budgetedTotals: ",
+        budgetedTotals
+      );
+      console.log(
+        "dionY [createBudgetActuals] changeOrderTotals: ",
+        changeOrderTotals
+      );
+
       // use this subtotal before adding profits in the client bill summary
       // make a deep copy just to be certain this value does not get changed
       // on reference
@@ -276,15 +344,30 @@ export const createBudgetActuals = createAsyncThunk(
       const currentBudgetedProfitTaxesObject = createBillProfitTaxesObject({
         profitTaxes: budgetedProfitTaxes,
         projectSummary,
-        prefix: '',
+        prefix: "",
       });
+
+      console.log(
+        "dionY [createBudgetActuals] budgetedProfitTaxes: ",
+        budgetedProfitTaxes
+      );
+      console.log(
+        "dionY [createBudgetActuals] currentBudgetedProfitTaxesObject: ",
+        currentBudgetedProfitTaxesObject
+      );
+
       // update the currentActuals with the tax, profit, liability etc.
       updateActuals({
         billProfitTaxesObject: currentBudgetedProfitTaxesObject,
         actuals: currentActuals,
         summaryCostCodes: SUMMARY_COST_CODES,
-        budgetTotals,
+        budgetTotals: budgetTotalsV2,
       });
+
+      console.log(
+        "dionY [createBudgetActuals] currentActuals: ",
+        currentActuals
+      );
 
       // Same for CHANGE ORDERS, need to keep them separate; for ALL change orders combined
       const changeOrderProfitTaxes = getBillProfitTaxes({
@@ -294,17 +377,22 @@ export const createBudgetActuals = createAsyncThunk(
       const currentChangeOrderProfitTaxesObject = createBillProfitTaxesObject({
         profitTaxes: changeOrderProfitTaxes,
         projectSummary,
-        prefix: '',
+        prefix: "",
       });
-      if (!currentActualsChangeOrders?.['profitTaxesLiability']) {
-        currentActualsChangeOrders['profitTaxesLiability'] = {};
+      if (!currentActualsChangeOrders?.["profitTaxesLiability"]) {
+        currentActualsChangeOrders["profitTaxesLiability"] = {};
       }
       updateActuals({
         billProfitTaxesObject: currentChangeOrderProfitTaxesObject,
-        actuals: currentActualsChangeOrders?.['profitTaxesLiability'],
+        actuals: currentActualsChangeOrders?.["profitTaxesLiability"],
         summaryCostCodes: SUMMARY_COST_CODES,
-        budgetTotals,
+        budgetTotals: budgetTotalsV2,
       });
+
+      console.log(
+        "dionY [createBudgetActuals] currentActualsChangeOrders: ",
+        currentActualsChangeOrders
+      );
 
       // create the profit subtotals taxes for EACH CHANGE ORDER
       // good to have all this separate for each change order in case we want to
@@ -321,17 +409,17 @@ export const createBudgetActuals = createAsyncThunk(
         const tempChangeOrderProfitTaxesObject = createBillProfitTaxesObject({
           profitTaxes: tempChangeOrderProfitTaxes,
           projectSummary,
-          prefix: '',
+          prefix: "",
         });
         updateActuals({
           billProfitTaxesObject: tempChangeOrderProfitTaxesObject,
           actuals: currentActualsChangeOrders[changeOrderId],
           summaryCostCodes: SUMMARY_COST_CODES,
-          budgetTotals,
+          budgetTotals: budgetTotalsV2,
         });
       });
 
-      console.log('after adding profit, tax, liability');
+      console.log("after adding profit, tax, liability");
       console.log(snapshotCopy(currentActuals));
       console.log(snapshotCopy(budgetedTotals.total));
       console.log(snapshotCopy(currentActualsChangeOrders));
@@ -381,59 +469,59 @@ export const createBudgetActuals = createAsyncThunk(
         isChangeOrder: true,
       });
 
-      // actualsChartData will give all the budgeted totals, and any actuals from previous bills
-      // NO CHANGE ORDERS
-      const {
-        chartData: actualsChartData,
-        grandActualsTotal: grandActualsBudgetedTotal,
-      } = createB2AChartData({
-        divisionTotals: budgetedTotals.divisionTotals,
-        subDivTotals: budgetedTotals.subDivisionTotals,
-        costCodeTotals: currentActuals,
-        currentBudgetedTotal,
-        initActualsToZeros: true,
-      });
-      // add previous actuals to this current invoice actuals
-      // NO CHANGE ORDERS
-      const updatedB2AData = addActualsToTotals({
-        totals: state.projects[projectId].b2a.b2aChartData,
-        actuals: actualsChartData,
-        isDeleteBill: false,
-      });
+      // // actualsChartData will give all the budgeted totals, and any actuals from previous bills
+      // // NO CHANGE ORDERS
+      // const {
+      //   chartData: actualsChartData,
+      //   grandActualsTotal: grandActualsBudgetedTotal,
+      // } = createB2AChartData({
+      //   divisionTotals: budgetedTotals.divisionTotals,
+      //   subDivTotals: budgetedTotals.subDivisionTotals,
+      //   costCodeTotals: currentActuals,
+      //   currentBudgetedTotal,
+      //   initActualsToZeros: true,
+      // });
+      // // add previous actuals to this current invoice actuals
+      // // NO CHANGE ORDERS
+      // const updatedB2AData = addActualsToTotals({
+      //   totals: state.projects[projectId].b2a.b2aChartData,
+      //   actuals: actualsChartData,
+      //   isDeleteBill: false,
+      // });
 
-      // CHANGE ORDERS
-      // if there is previous data it will add that data to the currentActualsChangeOrders
-      // this will be a running sum of all change orders from previous client bills
-      const { updatedCurrentActualsChangeOrders } =
-        addNewChangeOrderValuesToPreviousData({
-          currentActualsChangeOrders,
-          previousCurrentActualsChangeOrders,
-        });
+      // // CHANGE ORDERS
+      // // if there is previous data it will add that data to the currentActualsChangeOrders
+      // // this will be a running sum of all change orders from previous client bills
+      // const { updatedCurrentActualsChangeOrders } =
+      //   addNewChangeOrderValuesToPreviousData({
+      //     currentActualsChangeOrders,
+      //     previousCurrentActualsChangeOrders,
+      //   });
 
-      // create the data to be displayed on the chart for change orders. this will be the cumulative
-      // data from current and previous change orders
-      const { changeOrderChartData, grandTotal: changeOrderTotal } =
-        createB2AChangeOrderChartData({
-          updatedCurrentActualsChangeOrders,
-          changeOrdersSummary,
-        });
+      // // create the data to be displayed on the chart for change orders. this will be the cumulative
+      // // data from current and previous change orders
+      // const { changeOrderChartData, grandTotal: changeOrderTotal } =
+      //   createB2AChangeOrderChartData({
+      //     updatedCurrentActualsChangeOrders,
+      //     changeOrdersSummary,
+      //   });
 
-      dispatch(
-        projectDataActions.addFullData({
-          newData: {
-            b2aChartData: updatedB2AData,
-            b2aChartDataChangeOrder: changeOrderChartData,
-            updatedCurrentActualsChangeOrders,
-            currentGrandTotal: {
-              value: grandActualsBudgetedTotal + changeOrderTotal,
-            },
-            currentBudgetedTotal: { value: grandActualsBudgetedTotal },
-            currentChangeOrderTotal: { value: changeOrderTotal },
-          },
-          projectId,
-          stateKey: 'b2a',
-        })
-      );
+      // dispatch(
+      //   projectDataActions.addFullData({
+      //     newData: {
+      //       b2aChartData: updatedB2AData,
+      //       b2aChartDataChangeOrder: changeOrderChartData,
+      //       updatedCurrentActualsChangeOrders,
+      //       currentGrandTotal: {
+      //         value: grandActualsBudgetedTotal + changeOrderTotal,
+      //       },
+      //       currentBudgetedTotal: { value: grandActualsBudgetedTotal },
+      //       currentChangeOrderTotal: { value: changeOrderTotal },
+      //     },
+      //     projectId,
+      //     stateKey: 'b2a',
+      //   })
+      // );
 
       // combine all laborFeeIds and invoiceIds to attach to bill summary data
       // If we have broken out individual cost codes in currentActuals, we can get
@@ -494,55 +582,55 @@ export const createBudgetActuals = createAsyncThunk(
         })
       );
 
-      // build the change order plot
-      console.log({
-        b2aChartData: updatedB2AData,
-        b2aChartDataChangeOrder: changeOrderChartData,
-        updatedCurrentActualsChangeOrders,
-        currentGrandTotal: {
-          value: +(grandActualsBudgetedTotal + changeOrderTotal).toFixed(2),
-        },
-        currentBudgetedTotal: { value: grandActualsBudgetedTotal },
-        currentChangeOrderTotal: { value: changeOrderTotal },
-      });
-      try {
-        const data = await fetchWithRetry(
-          `/api/${companyId}/projects/${projectId}/add-b2achartdata`,
-          {
-            method: 'POST',
-            body: JSON.stringify({
-              b2aChartData: updatedB2AData,
-              b2aChartDataChangeOrder: changeOrderChartData,
-              updatedCurrentActualsChangeOrders,
-              currentGrandTotal: {
-                value: +(grandActualsBudgetedTotal + changeOrderTotal).toFixed(
-                  2
-                ),
-              },
-              currentBudgetedTotal: { value: grandActualsBudgetedTotal },
-              currentChangeOrderTotal: { value: changeOrderTotal },
-            }),
-          }
-        );
-        dispatch(
-          uiActions.setNotificationContent({
-            content: 'Succesfully added and saved new client bill.',
-            openNotification: true,
-            icon: 'success',
-          })
-        );
-      } catch (error) {
-        console.error(error);
-        dispatch(uiActions.setLoadingState({ isLoading: false }));
-        dispatch(
-          uiActions.setNotificationContent({
-            content: 'Error when trying to save budget to actuals data.',
-            openNotification: true,
-            icon: 'error',
-          })
-        );
-        return false;
-      }
+      // // build the change order plot
+      // console.log({
+      //   b2aChartData: updatedB2AData,
+      //   b2aChartDataChangeOrder: changeOrderChartData,
+      //   updatedCurrentActualsChangeOrders,
+      //   currentGrandTotal: {
+      //     value: +(grandActualsBudgetedTotal + changeOrderTotal).toFixed(2),
+      //   },
+      //   currentBudgetedTotal: { value: grandActualsBudgetedTotal },
+      //   currentChangeOrderTotal: { value: changeOrderTotal },
+      // });
+      // try {
+      //   const data = await fetchWithRetry(
+      //     `/api/${companyId}/projects/${projectId}/add-b2achartdata`,
+      //     {
+      //       method: 'POST',
+      //       body: JSON.stringify({
+      //         b2aChartData: updatedB2AData,
+      //         b2aChartDataChangeOrder: changeOrderChartData,
+      //         updatedCurrentActualsChangeOrders,
+      //         currentGrandTotal: {
+      //           value: +(grandActualsBudgetedTotal + changeOrderTotal).toFixed(
+      //             2
+      //           ),
+      //         },
+      //         currentBudgetedTotal: { value: grandActualsBudgetedTotal },
+      //         currentChangeOrderTotal: { value: changeOrderTotal },
+      //       }),
+      //     }
+      //   );
+      //   dispatch(
+      //     uiActions.setNotificationContent({
+      //       content: 'Succesfully added and saved new client bill.',
+      //       openNotification: true,
+      //       icon: 'success',
+      //     })
+      //   );
+      // } catch (error) {
+      //   console.error(error);
+      //   dispatch(uiActions.setLoadingState({ isLoading: false }));
+      //   dispatch(
+      //     uiActions.setNotificationContent({
+      //       content: 'Error when trying to save budget to actuals data.',
+      //       openNotification: true,
+      //       icon: 'error',
+      //     })
+      //   );
+      //   return false;
+      // }
       dispatch(uiActions.setLoadingState({ isLoading: false }));
       return {
         clientBillObj: {
@@ -550,6 +638,8 @@ export const createBudgetActuals = createAsyncThunk(
           actualsChangeOrders: invoiceCurrentActualsChangeOrders,
         },
       };
+
+      console.log("dionY [createBudgetActuals] end !!!!!!!!!!!!!!!!!!!!!!!");
     } catch (error: any) {
       console.error(error);
       dispatch(uiActions.setLoadingState({ isLoading: false }));
@@ -558,13 +648,13 @@ export const createBudgetActuals = createAsyncThunk(
 );
 
 export const moveAllBillData = createAsyncThunk(
-  'addClientBill/moveAllBillData',
+  "addClientBill/moveAllBillData",
   async (
     { projectId, clientBillId }: { projectId: string; clientBillId: string },
     thunkAPI
   ) => {
     const state = thunkAPI.getState() as RootState;
-    const projectLabor = state.projects[projectId]['labor-summary'];
+    const projectLabor = state.projects[projectId]["labor-summary"];
     const allInvoices = {
       ...(state.data.invoices.allInvoices as Invoices),
     };
@@ -587,7 +677,7 @@ export const moveAllBillData = createAsyncThunk(
     const updatedInvoices = Object.entries(allInvoices)
       .filter(
         ([_, invoice]) =>
-          invoice.project.uuid === projectId && !invoice['client_bill_id']
+          invoice.project.uuid === projectId && !invoice["client_bill_id"]
       )
       .reduce((obj: Invoices, [invoiceId, invoice]: [string, any]) => {
         obj[invoiceId] = {
@@ -620,7 +710,7 @@ export const moveAllBillData = createAsyncThunk(
 );
 
 export const moveBillDataInFirestore = createAsyncThunk(
-  'addClientBill/moveAllBillDataFirestore',
+  "addClientBill/moveAllBillDataFirestore",
   async (
     {
       projectId,
@@ -639,12 +729,12 @@ export const moveBillDataInFirestore = createAsyncThunk(
     thunkAPI
   ) => {
     const state = thunkAPI.getState() as RootState;
-    const clientBill = state.projects[projectId]['client-bills'][clientBillId];
+    const clientBill = state.projects[projectId]["client-bills"][clientBillId];
 
     // if we are moving data we have build a client bill and therefore it can't
     // be {} type, so assert it here
     const clientBillSummary = (
-      state.projects[projectId]['client-bills-summary'] as ClientBillSummary
+      state.projects[projectId]["client-bills-summary"] as ClientBillSummary
     )[clientBillId];
 
     const invoiceIds = Object.keys(clientBill.invoices);
@@ -654,7 +744,7 @@ export const moveBillDataInFirestore = createAsyncThunk(
       await fetchWithRetry(
         `/api/${companyId}/projects/${projectId}/add-client-bill`,
         {
-          method: 'POST',
+          method: "POST",
           body: JSON.stringify({
             invoiceIds,
             laborIds,
@@ -673,7 +763,7 @@ export const moveBillDataInFirestore = createAsyncThunk(
 const initialBillState = {};
 
 const addClientBillSlice = createSlice({
-  name: 'addClientBill',
+  name: "addClientBill",
   initialState: initialBillState,
   reducers: {},
 });

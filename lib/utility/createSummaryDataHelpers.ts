@@ -2,6 +2,7 @@ import { SUMMARY_COST_CODES } from '../globals';
 import {
   AggregatedBudgetTotals,
   CurrentActuals,
+  CurrentActualsV2,
 } from '../models/budgetCostCodeModel';
 import { ChangeOrderContent } from '../models/changeOrderModel';
 import {
@@ -409,7 +410,7 @@ export const createSingleClientBillSummary = ({
 }: {
   subTotal: string;
   billTitle: string;
-  currentActuals: CurrentActuals;
+  currentActuals: CurrentActualsV2;
   changeOrderTotals: AggregatedBudgetTotals;
   totals: AggregatedBudgetTotals;
   uuid: string;

@@ -16,7 +16,7 @@ import { addContractFormActions } from '@/store/add-contract';
 import { addBudgetFormActions } from '@/store/add-budget-slice';
 import { addProcessInvoiceFormActions } from '@/store/add-process-invoice';
 import { invoiceActions } from '@/store/invoice-slice';
-import { BudgetTotalItem } from './budgetCostCodeModel';
+import { BudgetTotalItem, BudgetTotalItemV2 } from './budgetCostCodeModel';
 import { InvoiceLineItemItem } from './invoiceDataModels';
 
 export type AddProjectActions = typeof addProjectFormActions;
@@ -55,6 +55,10 @@ export type FormData =
  */
 export function isBudgetTotalItem(item: any): item is BudgetTotalItem {
   return item.type === 'BudgetTotal';
+}
+
+export function isBudgetTotalItemV2(item: any): item is BudgetTotalItemV2 {
+  return item.type === 'BudgetTotalV2';
 }
 
 export function isKeyOfLineItemItem(
