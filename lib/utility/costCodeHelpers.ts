@@ -35,15 +35,15 @@ export const iterateData = ({
   level,
   cb,
 }: {
-  data: Divisions | CostCodeItem;
+  data: Divisions | CostCodeItem | DivisionDataV2 | CostCodeItemB2AData;
   level: Array<number>;
-  cb: (item: CostCodeItem, level: Array<number>) => void;
+  cb: (item: CostCodeItem | CostCodeItemB2AData, level: Array<number>) => void;
 }) => {
   if (data?.subItems?.length === 0) return;
   data?.subItems?.forEach((item, index) => {
     if (item?.subItems?.length > 0)
       iterateData({ data: item, level: [...level, index], cb });
-    else if (item?.isCurrency) cb(item, [...level, index]);
+    else if (item?.isCurrency || item?.value || item?.actual) cb(item, [...level, index]);
   });
 };
 
@@ -404,8 +404,8 @@ export const getDataByRecursiveLevel = ({
   for (let i = 1; i < level.length; i++) {
     let index = level[i];
     if (levelData.subItems?.length <= index) {
-      console.error("[getDataByRecursiveLevel]: Error!");
-      return;
+      console.warn("[getDataByRecursiveLevel]: No data");
+      return null;
     }
 
     if (levelData.name)

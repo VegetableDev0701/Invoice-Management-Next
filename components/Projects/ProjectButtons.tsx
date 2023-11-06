@@ -13,6 +13,8 @@ import { nanoid } from '@/lib/config';
 import {
   InvoiceCurrentActuals,
   InvoiceCurrentActualsChangeOrders,
+  InvoiceCurrentActualsChangeOrdersV2,
+  InvoiceCurrentActualsV2,
 } from '@/lib/models/budgetCostCodeModel';
 import ButtonWithLoader from '../UI/Buttons/ButtonWithLoader';
 import { uiActions } from '@/store/ui-slice';
@@ -39,8 +41,8 @@ const ProjectButtons = ({ projectId }: { projectId: string }) => {
       if (result.payload) {
         const { clientBillObj } = result.payload as {
           clientBillObj: {
-            actuals: InvoiceCurrentActuals;
-            actualsChangeOrders: InvoiceCurrentActualsChangeOrders;
+            actuals: InvoiceCurrentActualsV2;
+            actualsChangeOrders: InvoiceCurrentActualsChangeOrdersV2;
           };
         };
         dispatch(

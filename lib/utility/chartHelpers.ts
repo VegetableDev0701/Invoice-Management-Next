@@ -143,7 +143,7 @@ export const createB2AChartDataV2 = ({
   previousData,
 }: {
   budget: CostCodesData;
-  costCodeTotals: CurrentActualsV2 | BudgetTotalsV2;
+  costCodeTotals?: CurrentActualsV2 | BudgetTotalsV2;
   currentBudgetedTotal: number;
   initActualsToZeros: boolean;
   previousData?: ChartDataV2;
@@ -168,27 +168,50 @@ export const createB2AChartDataV2 = ({
   let amount: string;
   let currentInvoiceTotals = currentBudgetedTotal ?? 0;
 
-  console.log("dionY [chartHelper] chartData", chartData, costCodeTotals);
+  const initActualFromPreviousData = (
+    item: CostCodeItemB2AData,
+    level: Array<number>
+  ) => {
+    if (!item.actual) return;
 
-  Object.entries(costCodeTotals).forEach(([costCodeNumber, obj]) => {
-    const costCodeObj: CurrentActualsItemV2 | BudgetTotalItemV2 = obj;
-    const recursiveLevel = costCodeObj.recursiveLevel;
-    if (!recursiveLevel || recursiveLevel.length === 0) return;
-
-    amount = isBudgetTotalItemV2(costCodeObj)
-      ? costCodeObj.value
-      : costCodeObj.totalAmt;
-
-    currentInvoiceTotals += Number(amount.replaceAll(",", ""));
-
-    console.log("dionY [chartHelper] recursiveLevel", recursiveLevel);
-    const { data } = getDataByRecursiveLevel({
+    const data = getDataByRecursiveLevel({
       fullData: chartData.divisions,
-      level: recursiveLevel,
+      level: level,
     });
 
-    (data as CostCodeItemB2AData).actual = +amount.replaceAll(",", "");
-  });
+    if (data && data.data)
+      (data.data as CostCodeItemB2AData).actual = String(item.actual);
+  };
+
+  !initActualsToZeros &&
+    previousData &&
+    previousData.divisions.forEach((div, index) => {
+      iterateData({
+        data: div,
+        level: [index],
+        cb: initActualFromPreviousData,
+      });
+    });
+
+  costCodeTotals &&
+    Object.entries(costCodeTotals).forEach(([costCodeNumber, obj]) => {
+      const costCodeObj: CurrentActualsItemV2 | BudgetTotalItemV2 = obj;
+      const recursiveLevel = costCodeObj.recursiveLevel;
+      if (!recursiveLevel || recursiveLevel.length === 0) return;
+
+      amount = isBudgetTotalItemV2(costCodeObj)
+        ? costCodeObj.value
+        : costCodeObj.totalAmt;
+
+      currentInvoiceTotals += Number(amount.replaceAll(",", ""));
+
+      const { data } = getDataByRecursiveLevel({
+        fullData: chartData.divisions,
+        level: recursiveLevel,
+      });
+
+      (data as CostCodeItemB2AData).actual = String(amount.replaceAll(",", ""));
+    });
 
   return {
     chartData,
@@ -285,20 +308,21 @@ export const createB2AChangeOrderChartData = ({
     Object.keys(updatedCurrentActualsChangeOrders[changeOrderId]).forEach(
       (costCode) => {
         if (changeOrderId === "profitTaxesLiability") {
-          const name =
-            updatedCurrentActualsChangeOrders[changeOrderId][costCode]
-              .costCodeName;
-          actualValue = Number(
-            updatedCurrentActualsChangeOrders[changeOrderId][
-              costCode
-            ].totalAmt.replaceAll(",", "")
-          );
-          grandTotal += actualValue;
-          changeOrderChartData[name] = {
-            totalValue,
-            actualValue,
-            costCodeObj: null,
-          };
+          // TODO ???
+          // const name =
+          //   updatedCurrentActualsChangeOrders[changeOrderId][costCode]
+          //     .costCodeName;
+          // actualValue = Number(
+          //   updatedCurrentActualsChangeOrders[changeOrderId][
+          //     costCode
+          //   ].totalAmt.replaceAll(",", "")
+          // );
+          // grandTotal += actualValue;
+          // changeOrderChartData[name] = {
+          //   totalValue,
+          //   actualValue,
+          //   costCodeObj: null,
+          // };
         } else {
           actualValue += Number(
             updatedCurrentActualsChangeOrders[changeOrderId][
@@ -404,5 +428,74 @@ export const addActualsToTotals = ({
       });
     }
   });
+  return newTotals;
+};
+
+export const addActualsToTotalsV2 = ({
+  budget,
+  totals,
+  actuals,
+  isDeleteBill,
+}: {
+  budget: CostCodesData;
+  totals: ChartDataV2;
+  actuals: ChartDataV2;
+  isDeleteBill: boolean;
+}): ChartDataV2 => {
+  const newTotals: ChartDataV2 = {
+    divisions: [],
+  };
+
+  budget.divisions.forEach((div) => {
+    const divisionData: DivisionDataV2 = {
+      number: div.number,
+      name: div.name,
+      subItems: [],
+    };
+
+    divisionData.subItems = snapshotCopy(div.subItems) as CostCodeItemB2AData[];
+
+    newTotals.divisions.push(divisionData);
+  });
+
+  let isAdd = true;
+
+  const updateChartDataActual = (
+    item: CostCodeItemB2AData,
+    level: Array<number>
+  ) => {
+    if (!item.actual) return;
+
+    const data = getDataByRecursiveLevel({
+      fullData: newTotals.divisions,
+      level: level,
+    });
+
+    if (data && data.data)
+      (data.data as CostCodeItemB2AData).actual =
+        (Number((data.data as CostCodeItemB2AData).actual) || 0) +
+        (Number(item.actual) || 0) * (isAdd ? 1 : -1);
+  };
+
+  totals &&
+    totals.divisions?.forEach((div, index) => {
+      iterateData({
+        data: div,
+        level: [index],
+        cb: updateChartDataActual,
+      });
+    });
+
+  isAdd = !isDeleteBill;
+
+  actuals &&
+    actuals.divisions?.forEach((div, index) => {
+      iterateData({
+        data: div,
+        level: [index],
+        cb: updateChartDataActual,
+      });
+    });
+
   return newTotals;
 };

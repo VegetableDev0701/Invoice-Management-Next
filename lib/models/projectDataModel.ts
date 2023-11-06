@@ -1,8 +1,9 @@
 import {
   CostCodesData,
   CurrentActualsChangeOrders,
+  CurrentActualsChangeOrdersV2,
 } from './budgetCostCodeModel';
-import { ChangeOrderChartData, ChartData, ChartDataV2 } from './chartDataModels';
+import { ChangeOrderChartData, ChangeOrderChartDataV2, ChartData, ChartDataV2 } from './chartDataModels';
 import { ChangeOrderData, Labor, ProjectFormData, SelectMenuOptions } from './formDataModel';
 import {
   ChangeOrderSummary,
@@ -18,8 +19,8 @@ export interface B2A {
   currentGrandTotal: { value: number };
   currentBudgetedTotal: { value: number };
   currentChangeOrderTotal: { value: number };
-  b2aChartDataChangeOrder: ChangeOrderChartData;
-  updatedCurrentActualsChangeOrders: CurrentActualsChangeOrders;
+  b2aChartDataChangeOrder: ChangeOrderChartData | ChangeOrderChartDataV2;
+  updatedCurrentActualsChangeOrders: CurrentActualsChangeOrders | CurrentActualsChangeOrdersV2;
 }
 
 export interface ProjectDataItems {

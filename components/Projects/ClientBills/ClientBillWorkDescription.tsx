@@ -1,26 +1,29 @@
 import {
   BillWorkDescription,
+  BillWorkDescriptionV2,
   CurrentActualsClientBill,
+  CurrentActualsClientBillV2,
   SubTotals,
-} from '@/lib/models/clientBillModel';
+  SubTotalsV2,
+} from "@/lib/models/clientBillModel";
 
-import ClientBillWorkDescriptionTable from '@/components/Tables/Invoices/ClientBillWorkDescriptionTable';
-import { useAppSelector as useSelector } from '@/store/hooks';
-import { ClientBillSummary } from '@/lib/models/summaryDataModel';
+import ClientBillWorkDescriptionTable from "@/components/Tables/Invoices/ClientBillWorkDescriptionTable";
+import { useAppSelector as useSelector } from "@/store/hooks";
+import { ClientBillSummary } from "@/lib/models/summaryDataModel";
 
 interface Props {
   projectId: string;
   clientBillId: string;
-  currentActuals: CurrentActualsClientBill;
-  tableData: BillWorkDescription | null;
+  currentActuals: CurrentActualsClientBillV2;
+  tableData: BillWorkDescriptionV2 | null;
 }
 
 const tableHeadings = {
-  qtyAmt: 'Qty',
-  description: 'Description',
-  rateAmt: 'Rate',
-  vendor: 'Vendor',
-  totalAmt: 'Total ($)',
+  qtyAmt: "Qty",
+  description: "Description",
+  rateAmt: "Rate",
+  vendor: "Vendor",
+  totalAmt: "Total ($)",
 };
 
 export default function ClientBillWorkDescription(props: Props) {
@@ -28,22 +31,23 @@ export default function ClientBillWorkDescription(props: Props) {
 
   const clientBillSummary = useSelector(
     (state) =>
-      (state.projects[projectId]['client-bills-summary'] as ClientBillSummary)[
+      (state.projects[projectId]["client-bills-summary"] as ClientBillSummary)[
         clientBillId
       ]
   );
 
   const changeOrderSummary = useSelector(
-    (state) => state.projects[projectId]['change-orders-summary']
+    (state) => state.projects[projectId]["change-orders-summary"]
   );
 
-  const subTotals: SubTotals | null = currentActuals
+  const subTotals: SubTotalsV2 | null = currentActuals
     ? {
         budgeted: Object.fromEntries(
           Object.entries(currentActuals.currentActuals).filter(
             ([_, currentActual]) => {
               return (
-                currentActual.divisionName === 'Profit, Taxes, and Liability'
+                // currentActual.divisionName === 'Profit, Taxes, and Liability'
+                currentActual.costCodeName === ""
               );
             }
           )

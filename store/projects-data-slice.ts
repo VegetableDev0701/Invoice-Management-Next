@@ -1109,6 +1109,7 @@ const projectDataSlice = createSlice({
 
         Object.entries(action.payload).forEach(([projectId, value]) => {
           const newData = JSON.parse(value.value);
+          if (!newData) return;
 
           // transform data to n-level structure
           if (newData.budget && !newData.budget.updated) {

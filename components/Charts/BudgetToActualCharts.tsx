@@ -190,7 +190,6 @@ export default function BudgetToActualCharts(props: Props) {
       });
     });
 
-    console.log("formdata: ", formData, chartIndicies);
     setChartData(chartIndicies);
   }, [b2aChartData, formData]);
 

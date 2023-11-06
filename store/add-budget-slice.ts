@@ -2,6 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import {
   ChangeOrderFormState,
+  ChangeOrderFormStateV2,
   IsTouchedPayload,
 } from '@/lib/models/formStateModels';
 import { resetAllFormValidation } from '@/lib/utility/formHelpers';
@@ -17,9 +18,9 @@ import {
   CostCodesData,
   UpdateBudget,
 } from '@/lib/models/budgetCostCodeModel';
-import { createB2AChartData } from '@/lib/utility/chartHelpers';
+import { createB2AChartData, createB2AChartDataV2 } from '@/lib/utility/chartHelpers';
 import { projectDataActions } from './projects-data-slice';
-import { ChangeOrderChartData, ChartData } from '@/lib/models/chartDataModels';
+import { ChangeOrderChartData, ChangeOrderChartDataV2, ChartData, ChartDataV2 } from '@/lib/models/chartDataModels';
 
 type ProjectBudgetTotals = PayloadAction<{
   total: string;
@@ -58,7 +59,7 @@ export const initializeBudgetTotalsThunk = createAsyncThunk(
   async (_, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     const { total, subDivisionTotals, divisionTotals } = calculateTotals({
-      budget: state.addBudgetForm.budget,
+      budget: state.addBudgetForm.budgetV2,
       isChangeOrder: false,
     });
     thunkAPI.dispatch(
@@ -78,16 +79,16 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
     thunkAPI
   ) => {
     const state = thunkAPI.getState() as RootState;
-    let b2aChartDataChangeOrder: ChangeOrderChartData | null = {};
-    let updatedCurrentActualsChangeOrders: ChangeOrderFormState | null = {};
+    let b2aChartDataChangeOrder: ChangeOrderChartDataV2 | null = {};
+    let updatedCurrentActualsChangeOrders: ChangeOrderFormStateV2 | null = {};
     let initActualsToZeros: boolean = false;
-    let previousData: ChartData | undefined = undefined;
+    let previousData: ChartDataV2 | undefined = undefined;
     if (
       state.projects[projectId].b2a?.b2aChartData &&
       Object.keys(state.projects[projectId].b2a.b2aChartData).length > 0
     ) {
       initActualsToZeros = false;
-      previousData = state.projects[projectId].b2a.b2aChartData;
+      previousData = state.projects[projectId].b2a.b2aChartData as ChartDataV2;
     } else {
       initActualsToZeros = true;
     }
@@ -99,7 +100,7 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
         .length > 0
     ) {
       b2aChartDataChangeOrder = state.projects[projectId].b2a
-        .b2aChartDataChangeOrder as unknown as ChangeOrderChartData;
+        .b2aChartDataChangeOrder as unknown as ChangeOrderChartDataV2;
     } else {
       b2aChartDataChangeOrder = null;
     }
@@ -112,7 +113,7 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
       ).length > 0
     ) {
       updatedCurrentActualsChangeOrders = state.projects[projectId].b2a
-        .updatedCurrentActualsChangeOrders as unknown as ChangeOrderFormState;
+        .updatedCurrentActualsChangeOrders as unknown as ChangeOrderFormStateV2;
     } else {
       updatedCurrentActualsChangeOrders = null;
     }
@@ -124,14 +125,17 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
     const currentChangeOrderTotal =
       state.projects[projectId].b2a.currentChangeOrderTotal.value ?? 0;
 
-    const { chartData: b2aChartData } = createB2AChartData({
-      divisionTotals: state.addBudgetForm.totalDivisions,
-      subDivTotals: state.addBudgetForm.totalSubDivisions,
-      costCodeTotals: state.addBudgetForm.budget,
+    const { chartData: b2aChartData } = createB2AChartDataV2({
+      // divisionTotals: state.addBudgetForm.totalDivisions,
+      // subDivTotals: state.addBudgetForm.totalSubDivisions,
+      budget: state.projects[projectId].budget,
       currentBudgetedTotal,
       initActualsToZeros,
       previousData,
     });
+
+    console.log('dionY [initializeB2AChartDataThunk] previousData: ', previousData);
+    console.log('dionY [initializeB2AChartDataThunk] b2aChartData: ', b2aChartData);
 
     thunkAPI.dispatch(
       projectDataActions.addFullData({
@@ -148,27 +152,27 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
       })
     );
     try {
-      const response = await fetch(
-        `/api/${companyId}/projects/${projectId}/add-b2achartdata`,
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            b2aChartData,
-            b2aChartDataChangeOrder,
-            updatedCurrentActualsChangeOrders,
-            currentBudgetedTotal: {
-              value: Number(currentBudgetedTotal.toFixed(2)),
-            },
-            currentGrandTotal: { value: Number(currentGrandTotal.toFixed(2)) },
-            currentChangeOrderTotal: {
-              value: Number(currentChangeOrderTotal.toFixed(2)),
-            },
-          }),
-        }
-      );
-      if (!response.ok) {
-        throw new Error(`Error in pushing B2A Chart Data ${response.status}`);
-      }
+      // const response = await fetch(
+      //   `/api/${companyId}/projects/${projectId}/add-b2achartdata`,
+      //   {
+      //     method: 'POST',
+      //     body: JSON.stringify({
+      //       b2aChartData,
+      //       b2aChartDataChangeOrder,
+      //       updatedCurrentActualsChangeOrders,
+      //       currentBudgetedTotal: {
+      //         value: Number(currentBudgetedTotal.toFixed(2)),
+      //       },
+      //       currentGrandTotal: { value: Number(currentGrandTotal.toFixed(2)) },
+      //       currentChangeOrderTotal: {
+      //         value: Number(currentChangeOrderTotal.toFixed(2)),
+      //       },
+      //     }),
+      //   }
+      // );
+      // if (!response.ok) {
+      //   throw new Error(`Error in pushing B2A Chart Data ${response.status}`);
+      // }
     } catch (error) {
       console.error(error);
     }
