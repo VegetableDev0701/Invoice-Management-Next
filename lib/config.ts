@@ -10,16 +10,21 @@ export const LINE_ITEM_WIDTH = 0.8;
 export const CHECK_INTERVAL = 2 * 60 * 1000; // 2 minutes in milliseconds
 export const PRE_REFRESH_INTERVAL = 10 * 60 * 1000; // 10 minutes in milliseconds
 
-export const getAPIUrl = () => {
-  if (process.env.NEXT_PUBLIC_STAK_NODE_ENV === 'development') {
-    return process.env.NEXT_PUBLIC_DEV_API_URL;
-  } else if (process.env.NEXT_PUBLIC_STAK_NODE_ENV === 'staging') {
-    return process.env.NEXT_PUBLIC_STAGING_API_URL;
-  } else if (process.env.NEXT_PUBLIC_STAK_NODE_ENV === 'production') {
-    return process.env.NEXT_PUBLIC_PRODUCTION_API_URL;
+export const getAPIUrl = ({
+  node_env = process.env.NEXT_PUBLIC_STAK_NODE_ENV,
+  dev_api_url = process.env.NEXT_PUBLIC_DEV_API_URL,
+  staging_api_url = process.env.NEXT_PUBLIC_STAGING_API_URL,
+  production_api_url = process.env.NEXT_PUBLIC_PRODUCTION_API_URL,
+} = {}) => {
+  if (node_env === 'development') {
+    return dev_api_url;
+  } else if (node_env === 'staging') {
+    return staging_api_url;
+  } else if (node_env === 'production') {
+    return production_api_url;
   } else {
     throw new Error(
-      `${process.env.NEXT_PUBLIC_STAK_NODE_ENV} does not exist. Please use 'development', 'staging', or 'production'.`
+      `${node_env} does not exist. Please use 'development', 'staging', or 'production'.`
     );
   }
 };

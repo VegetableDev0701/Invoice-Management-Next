@@ -33,6 +33,8 @@ import contractSlice from './contract-slice';
 import addBudgetFormSlice from './add-budget-slice';
 import addProcessInvoiceFormSlice from './add-process-invoice';
 import addClientBillSlice from './add-client-bill';
+import nodeEnvSlice from './node-env-slice';
+import onboardUserFormSlice from './onboard-user-slice';
 
 const rootReducer = combineReducers({
   path: currentPathSlice.reducer,
@@ -44,6 +46,7 @@ const rootReducer = combineReducers({
   addBudgetForm: addBudgetFormSlice.reducer,
   addProcessInvoiceForm: addProcessInvoiceFormSlice.reducer,
   addClientBill: addClientBillSlice.reducer,
+  addNewUserForm: onboardUserFormSlice.reducer,
   accountSettingsForm: accountSettingsFormSlice.reducer,
   user: userSlice.reducer,
   data: companyDataSlice.reducer,
@@ -54,6 +57,7 @@ const rootReducer = combineReducers({
   processing: processingSlice.reducer,
   sse: sseSlice.reducer,
   overlay: overlaySlice.reducer,
+  nodeEnv: nodeEnvSlice.reducer,
 });
 
 const createNoopStorage = () => {

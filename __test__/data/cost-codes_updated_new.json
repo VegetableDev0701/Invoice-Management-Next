@@ -3,15 +3,15 @@
   "updated": true,
   "divisions": [
     {
-      "subdivisions": [
+      "subItems": [
         {
           "number": 1.1,
-          "items": [
+          "subItems": [
             {
               "number": 1.11,
               "id": "1.1100",
               "value": "",
-              "label": "Project Supervision",
+              "name": "Project Supervision",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -21,7 +21,7 @@
               "number": 1.12,
               "id": "1.1200",
               "value": "",
-              "label": "Project Management",
+              "name": "Project Management",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -31,7 +31,7 @@
               "number": 1.13,
               "id": "1.1300",
               "value": "",
-              "label": "Project Assistant",
+              "name": "Project Assistant",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -42,12 +42,12 @@
         },
         {
           "number": 1.2,
-          "items": [
+          "subItems": [
             {
               "number": 1.21,
               "id": "1.2100",
               "value": "",
-              "label": "Architectural Design",
+              "name": "Architectural Design",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -57,7 +57,7 @@
               "number": 1.22,
               "id": "1.2200",
               "value": "",
-              "label": "Engineering",
+              "name": "Engineering",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -67,7 +67,7 @@
               "number": 1.23,
               "id": "1.2300",
               "value": "",
-              "label": "Interior Design",
+              "name": "Interior Design",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -77,7 +77,7 @@
               "number": 1.24,
               "id": "1.2400",
               "value": "",
-              "label": "Landscape Design",
+              "name": "Landscape Design",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -87,7 +87,7 @@
               "number": 1.25,
               "id": "1.2500",
               "value": "",
-              "label": "Surveying",
+              "name": "Surveying",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -97,7 +97,7 @@
               "number": 1.26,
               "id": "1.2600",
               "value": "",
-              "label": "Blueprints",
+              "name": "Blueprints",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -108,12 +108,12 @@
         },
         {
           "number": 1.3,
-          "items": [
+          "subItems": [
             {
               "number": 1.31,
               "id": "1.3100",
               "value": "",
-              "label": "Equipment Rental",
+              "name": "Equipment Rental",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -123,7 +123,7 @@
               "number": 1.32,
               "id": "1.3200",
               "value": "",
-              "label": "Job Shack",
+              "name": "Job Shack",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -133,7 +133,7 @@
               "number": 1.33,
               "id": "1.3300",
               "value": "",
-              "label": "Small Tools",
+              "name": "Small Tools",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -143,7 +143,7 @@
               "number": 1.34,
               "id": "1.3400",
               "value": "",
-              "label": "Temporary Fence Rental",
+              "name": "Temporary Fence Rental",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -153,7 +153,7 @@
               "number": 1.35,
               "id": "1.3500",
               "value": "",
-              "label": "Temporary Generator",
+              "name": "Temporary Generator",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -163,7 +163,7 @@
               "number": 1.36,
               "id": "1.3600",
               "value": "",
-              "label": "Truck Rental",
+              "name": "Truck Rental",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -173,7 +173,7 @@
               "number": 1.37,
               "id": "1.3700",
               "value": "",
-              "label": "Travel Per Diem",
+              "name": "Travel Per Diem",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -184,12 +184,12 @@
         },
         {
           "number": 1.4,
-          "items": [
+          "subItems": [
             {
               "number": 1.41,
               "id": "1.4100",
               "value": "",
-              "label": "Final Interior Clean",
+              "name": "Final Interior Clean",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -199,7 +199,7 @@
               "number": 1.415,
               "id": "1.4150",
               "value": "",
-              "label": "Final Exterior Clean",
+              "name": "Final Exterior Clean",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -209,7 +209,7 @@
               "number": 1.42,
               "id": "1.4200",
               "value": "",
-              "label": "Window Cleaning",
+              "name": "Window Cleaning",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -219,7 +219,7 @@
               "number": 1.425,
               "id": "1.4250",
               "value": "",
-              "label": "Duct Cleaning",
+              "name": "Duct Cleaning",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -228,15 +228,15 @@
           ],
           "name": "Closeout"
         },
-        { "number": 1.6, "items": [], "name": "Permits" },
+        { "number": 1.6, "subItems": [], "name": "Permits" },
         {
           "number": 1.7,
-          "items": [
+          "subItems": [
             {
               "number": 1.71,
               "id": "1.7100",
               "value": "",
-              "label": "Site Phone",
+              "name": "Site Phone",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -246,7 +246,7 @@
               "number": 1.72,
               "id": "1.7200",
               "value": "",
-              "label": "Water",
+              "name": "Water",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -256,7 +256,7 @@
               "number": 1.73,
               "id": "1.7300",
               "value": "",
-              "label": "Power and Natural Gas",
+              "name": "Power and Natural Gas",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -266,7 +266,7 @@
               "number": 1.74,
               "id": "1.7400",
               "value": "",
-              "label": "Sanican",
+              "name": "Sanican",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -277,13 +277,13 @@
         },
         {
           "number": 1.9,
-          "items": [
+          "subItems": [
             {
               "number": 1.91,
 
               "id": "1.9100",
               "value": "",
-              "label": "Temporary Erosion Control",
+              "name": "Temporary Erosion Control",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -293,7 +293,7 @@
               "number": 1.92,
               "id": "1.9200",
               "value": "",
-              "label": "Temporary Protection",
+              "name": "Temporary Protection",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -303,17 +303,7 @@
               "number": 1.93,
               "id": "1.9300",
               "value": "",
-              "label": "Construction Aids and Temporary Control",
-              "type": "text",
-              "required": false,
-              "inputType": "toggleInput",
-              "isCurrency": true
-            },
-            {
-              "number": 1.94,
-              "id": "1.9400",
-              "value": "",
-              "label": "Special Inspections",
+              "name": "Construction Aids and Temporary Control",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -323,7 +313,7 @@
               "number": 1.95,
               "id": "1.9500",
               "value": "",
-              "label": "General Conditions",
+              "name": "General Conditions",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -337,15 +327,15 @@
       "name": "General Conditions"
     },
     {
-      "subdivisions": [
+      "subItems": [
         {
           "number": 2.1,
-          "items": [
+          "subItems": [
             {
               "number": 2.11,
               "id": "2.1100",
               "value": "",
-              "label": "Hazardous Material Abatement",
+              "name": "Hazardous Material Abatement",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -355,7 +345,7 @@
               "number": 2.12,
               "id": "2.1200",
               "value": "",
-              "label": "Tank Removal",
+              "name": "Tank Removal",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -365,7 +355,7 @@
               "number": 2.13,
               "id": "2.1300",
               "value": "",
-              "label": "Building Demolition",
+              "name": "Building Demolition",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -376,12 +366,12 @@
         },
         {
           "number": 2.2,
-          "items": [
+          "subItems": [
             {
               "number": 2.205,
               "id": "2.2050",
               "value": "",
-              "label": "Mobilization",
+              "name": "Mobilization",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -391,7 +381,7 @@
               "number": 2.21,
               "id": "2.2100",
               "value": "",
-              "label": "Site Clearing",
+              "name": "Site Clearing",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -401,7 +391,7 @@
               "number": 2.22,
               "id": "2.2200",
               "value": "",
-              "label": "Excavation",
+              "name": "Excavation",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -411,7 +401,7 @@
               "number": 2.23,
               "id": "2.2300",
               "value": "",
-              "label": "Backfill",
+              "name": "Backfill",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -421,7 +411,7 @@
               "number": 2.24,
               "id": "2.2400",
               "value": "",
-              "label": "Compaction",
+              "name": "Compaction",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -431,7 +421,7 @@
               "number": 2.25,
               "id": "2.2500",
               "value": "",
-              "label": "Final Grade",
+              "name": "Final Grade",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -441,7 +431,7 @@
               "number": 2.26,
               "id": "2.2600",
               "value": "",
-              "label": "Import and Export Fill",
+              "name": "Import and Export Fill",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -451,7 +441,7 @@
               "number": 2.27,
               "id": "2.2700",
               "value": "",
-              "label": "Drilling, Piles, and Soil Nails",
+              "name": "Drilling, Piles, and Soil Nails",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -461,7 +451,7 @@
               "number": 2.28,
               "id": "2.2800",
               "value": "",
-              "label": "Erosion Control",
+              "name": "Erosion Control",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -471,7 +461,7 @@
               "number": 2.29,
               "id": "2.2900",
               "value": "",
-              "label": "Temporary Road",
+              "name": "Temporary Road",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -482,12 +472,12 @@
         },
         {
           "number": 2.3,
-          "items": [
+          "subItems": [
             {
               "number": 2.31,
               "id": "2.3100",
               "value": "",
-              "label": "Dump Fees",
+              "name": "Dump Fees",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -498,12 +488,12 @@
         },
         {
           "number": 2.4,
-          "items": [
+          "subItems": [
             {
               "number": 2.41,
               "id": "2.4100",
               "value": "",
-              "label": "Drain Rock",
+              "name": "Drain Rock",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -513,7 +503,7 @@
               "number": 2.42,
               "id": "2.4200",
               "value": "",
-              "label": "Filter Fabric",
+              "name": "Filter Fabric",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -523,7 +513,7 @@
               "number": 2.43,
               "id": "2.4300",
               "value": "",
-              "label": "Foundation Drains",
+              "name": "Foundation Drains",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -533,7 +523,7 @@
               "number": 2.44,
               "id": "2.4400",
               "value": "",
-              "label": "Storm Sewer Materials",
+              "name": "Storm Sewer Materials",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -544,12 +534,12 @@
         },
         {
           "number": 2.5,
-          "items": [
+          "subItems": [
             {
               "number": 2.51,
               "id": "2.5100",
               "value": "",
-              "label": "Phone/Power/Sewer/Storm",
+              "name": "Phone/Power/Sewer/Storm",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -559,7 +549,7 @@
               "number": 2.52,
               "id": "2.5200",
               "value": "",
-              "label": "Sanitary Sewer",
+              "name": "Sanitary Sewer",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -569,7 +559,7 @@
               "number": 2.53,
               "id": "2.5300",
               "value": "",
-              "label": "Septic System",
+              "name": "Septic System",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -579,7 +569,7 @@
               "number": 2.54,
               "id": "2.5400",
               "value": "",
-              "label": "Sewerage and Drainage",
+              "name": "Sewerage and Drainage",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -589,7 +579,7 @@
               "number": 2.55,
               "id": "2.5500",
               "value": "",
-              "label": "Utility Trenching",
+              "name": "Utility Trenching",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -599,7 +589,7 @@
               "number": 2.56,
               "id": "2.5600",
               "value": "",
-              "label": "Water Line and Meter",
+              "name": "Water Line and Meter",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -609,7 +599,7 @@
               "number": 2.565,
               "id": "2.5650",
               "value": "",
-              "label": "Fire Department Connection",
+              "name": "Fire Department Connection",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -619,7 +609,7 @@
               "number": 2.57,
               "id": "2.5700",
               "value": "",
-              "label": "Well Construction",
+              "name": "Well Construction",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -630,12 +620,12 @@
         },
         {
           "number": 2.6,
-          "items": [
+          "subItems": [
             {
               "number": 2.61,
               "id": "2.6100",
               "value": "",
-              "label": "Fences and Gates",
+              "name": "Fences and Gates",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -645,7 +635,7 @@
               "number": 2.62,
               "id": "2.6200",
               "value": "",
-              "label": "Irrigation Systems",
+              "name": "Irrigation Systems",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -655,7 +645,7 @@
               "number": 2.63,
               "id": "2.6300",
               "value": "",
-              "label": "Trees, Plants and Groundcover",
+              "name": "Trees, Plants and Groundcover",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -666,12 +656,12 @@
         },
         {
           "number": 2.7,
-          "items": [
+          "subItems": [
             {
               "number": 2.71,
               "id": "2.7100",
               "value": "",
-              "label": "Pavers",
+              "name": "Pavers",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -681,7 +671,7 @@
               "number": 2.72,
               "id": "2.7200",
               "value": "",
-              "label": "Rockeries and Retaining Walls",
+              "name": "Rockeries and Retaining Walls",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -690,22 +680,22 @@
           ],
           "name": "Hardscape"
         },
-        { "number": 2.8, "items": [], "name": "Marine Construction" },
-        { "number": 2.9, "items": [], "name": "Other Site Work" }
+        { "number": 2.8, "subItems": [], "name": "Marine Construction" },
+        { "number": 2.9, "subItems": [], "name": "Other Site Work" }
       ],
       "number": 2.0,
       "name": "Site Work"
     },
     {
-      "subdivisions": [
+      "subItems": [
         {
           "number": 3.1,
-          "items": [
+          "subItems": [
             {
               "number": 3.105,
               "id": "3.1050",
               "value": "",
-              "label": "Foundation Piles",
+              "name": "Foundation Piles",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -715,7 +705,7 @@
               "number": 3.11,
               "id": "3.1100",
               "value": "",
-              "label": "Foundation Forming",
+              "name": "Foundation Forming",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -725,7 +715,7 @@
               "number": 3.12,
               "id": "3.1200",
               "value": "",
-              "label": "Foundation Rebar",
+              "name": "Foundation Rebar",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -735,7 +725,7 @@
               "number": 3.13,
               "id": "3.1300",
               "value": "",
-              "label": "Foundation Concrete Pump",
+              "name": "Foundation Concrete Pump",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -745,7 +735,7 @@
               "number": 3.14,
               "id": "3.1400",
               "value": "",
-              "label": "Foundation Concrete",
+              "name": "Foundation Concrete",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -755,7 +745,7 @@
               "number": 3.15,
               "id": "3.1500",
               "value": "",
-              "label": "Foundation Place & Finish Labor",
+              "name": "Foundation Place & Finish Labor",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -766,12 +756,12 @@
         },
         {
           "number": 3.2,
-          "items": [
+          "subItems": [
             {
               "number": 3.21,
               "id": "3.2100",
               "value": "",
-              "label": "Garage Slab Grading and Forming",
+              "name": "Garage Slab Grading and Forming",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -781,7 +771,7 @@
               "number": 3.22,
               "id": "3.2200",
               "value": "",
-              "label": "Garage Slab Rebar",
+              "name": "Garage Slab Rebar",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -791,7 +781,7 @@
               "number": 3.23,
               "id": "3.2300",
               "value": "",
-              "label": "Garage Slab Concrete Pump",
+              "name": "Garage Slab Concrete Pump",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -801,7 +791,7 @@
               "number": 3.24,
               "id": "3.2400",
               "value": "",
-              "label": "Garage Slab Concrete",
+              "name": "Garage Slab Concrete",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -811,7 +801,7 @@
               "number": 3.25,
               "id": "3.2500",
               "value": "",
-              "label": "Garage Slab Place and Finish Labor",
+              "name": "Garage Slab Place and Finish Labor",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -822,12 +812,12 @@
         },
         {
           "number": 3.3,
-          "items": [
+          "subItems": [
             {
               "number": 3.31,
               "id": "3.3100",
               "value": "",
-              "label": "Basement Slab Grading and Forming",
+              "name": "Basement Slab Grading and Forming",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -837,7 +827,7 @@
               "number": 3.32,
               "id": "3.3200",
               "value": "",
-              "label": "Basement Slab Insulation Board",
+              "name": "Basement Slab Insulation Board",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -847,7 +837,7 @@
               "number": 3.33,
               "id": "3.3300",
               "value": "",
-              "label": "Basement Slab Rebar",
+              "name": "Basement Slab Rebar",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -857,7 +847,7 @@
               "number": 3.34,
               "id": "3.3400",
               "value": "",
-              "label": "Basement Slab Concrete Pump",
+              "name": "Basement Slab Concrete Pump",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -867,7 +857,7 @@
               "number": 3.35,
               "id": "3.3500",
               "value": "",
-              "label": "Basement Slab Concrete",
+              "name": "Basement Slab Concrete",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -877,7 +867,7 @@
               "number": 3.36,
               "id": "3.3600",
               "value": "",
-              "label": "Basement Slab Place and Finish Labor",
+              "name": "Basement Slab Place and Finish Labor",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -888,12 +878,12 @@
         },
         {
           "number": 3.4,
-          "items": [
+          "subItems": [
             {
               "number": 3.41,
               "id": "3.4100",
               "value": "",
-              "label": "Steps and Walk Grading and Forming",
+              "name": "Steps and Walk Grading and Forming",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -903,7 +893,7 @@
               "number": 3.42,
               "id": "3.4200",
               "value": "",
-              "label": "Steps and Walks Rebar",
+              "name": "Steps and Walks Rebar",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -913,7 +903,7 @@
               "number": 3.43,
               "id": "3.4300",
               "value": "",
-              "label": "Steps and Walks Concrete Pump",
+              "name": "Steps and Walks Concrete Pump",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -923,7 +913,7 @@
               "number": 3.44,
               "id": "3.4400",
               "value": "",
-              "label": "Steps and Walks Concrete",
+              "name": "Steps and Walks Concrete",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -933,7 +923,7 @@
               "number": 3.45,
               "id": "3.4500",
               "value": "",
-              "label": "Steps and Walks Place and Finish Labor",
+              "name": "Steps and Walks Place and Finish Labor",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -944,12 +934,12 @@
         },
         {
           "number": 3.5,
-          "items": [
+          "subItems": [
             {
               "number": 3.51,
               "id": "3.5100",
               "value": "",
-              "label": "Driveway Grading and Forming",
+              "name": "Driveway Grading and Forming",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -959,7 +949,7 @@
               "number": 3.52,
               "id": "3.5200",
               "value": "",
-              "label": "Driveway Rebar",
+              "name": "Driveway Rebar",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -969,7 +959,7 @@
               "number": 3.53,
               "id": "3.5300",
               "value": "",
-              "label": "Driveway Concrete Pump",
+              "name": "Driveway Concrete Pump",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -979,7 +969,7 @@
               "number": 3.54,
               "id": "3.5400",
               "value": "",
-              "label": "Driveway Concrete",
+              "name": "Driveway Concrete",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -989,7 +979,7 @@
               "number": 3.55,
               "id": "3.5500",
               "value": "",
-              "label": "Driveway Place and Finish Labor",
+              "name": "Driveway Place and Finish Labor",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1000,12 +990,12 @@
         },
         {
           "number": 3.6,
-          "items": [],
+          "subItems": [],
           "name": "Gypcrete"
         },
         {
           "number": 3.9,
-          "items": [],
+          "subItems": [],
           "name": "Other Concrete"
         }
       ],
@@ -1013,15 +1003,15 @@
       "name": "Concrete"
     },
     {
-      "subdivisions": [
+      "subItems": [
         {
           "number": 4.1,
-          "items": [
+          "subItems": [
             {
               "number": 4.11,
               "id": "4.1100",
               "value": "",
-              "label": "Real Stone",
+              "name": "Real Stone",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1031,7 +1021,7 @@
               "number": 4.12,
               "id": "4.1200",
               "value": "",
-              "label": "Simulated Stone",
+              "name": "Simulated Stone",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1041,7 +1031,7 @@
               "number": 4.13,
               "id": "4.1300",
               "value": "",
-              "label": "Unit Masonry",
+              "name": "Unit Masonry",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1052,12 +1042,12 @@
         },
         {
           "number": 4.2,
-          "items": [
+          "subItems": [
             {
               "number": 4.21,
               "id": "4.2100",
               "value": "",
-              "label": "Chimney",
+              "name": "Chimney",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1067,7 +1057,7 @@
               "number": 4.22,
               "id": "4.2200",
               "value": "",
-              "label": "Hearth and Face",
+              "name": "Hearth and Face",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1078,12 +1068,12 @@
         },
         {
           "number": 4.9,
-          "items": [
+          "subItems": [
             {
               "number": 4.91,
               "id": "4.9100",
               "value": "",
-              "label": "Masonry Restoration and Cleaning",
+              "name": "Masonry Restoration and Cleaning",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1093,7 +1083,7 @@
               "number": 4.92,
               "id": "4.9200",
               "value": "",
-              "label": "Other Masonry",
+              "name": "Other Masonry",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1107,18 +1097,18 @@
       "name": "Masonry"
     },
     {
-      "subdivisions": [
-        { "number": 5.1, "items": [], "name": "Structural Steel" },
-        { "number": 5.2, "items": [], "name": "Metal Decking" },
-        { "number": 5.3, "items": [], "name": "Welding" },
+      "subItems": [
+        { "number": 5.1, "subItems": [], "name": "Structural Steel" },
+        { "number": 5.2, "subItems": [], "name": "Metal Decking" },
+        { "number": 5.3, "subItems": [], "name": "Welding" },
         {
           "number": 5.4,
-          "items": [
+          "subItems": [
             {
               "number": 5.41,
               "id": "5.4100",
               "value": "",
-              "label": "Sheet Metal Siding",
+              "name": "Sheet Metal Siding",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1128,7 +1118,7 @@
               "number": 5.42,
               "id": "5.4200",
               "value": "",
-              "label": "Miscellaneous Sheet Metal",
+              "name": "Miscellaneous Sheet Metal",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1139,12 +1129,12 @@
         },
         {
           "number": 5.5,
-          "items": [
+          "subItems": [
             {
               "number": 5.51,
               "id": "5.5100",
               "value": "",
-              "label": "Enclosures",
+              "name": "Enclosures",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1154,7 +1144,7 @@
               "number": 5.52,
               "id": "5.5200",
               "value": "",
-              "label": "Gratings",
+              "name": "Gratings",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1164,7 +1154,7 @@
               "number": 5.53,
               "id": "5.5300",
               "value": "",
-              "label": "Ladders",
+              "name": "Ladders",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1174,7 +1164,7 @@
               "number": 5.55,
               "id": "5.5500",
               "value": "",
-              "label": "Stairs",
+              "name": "Stairs",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1183,22 +1173,22 @@
           ],
           "name": "Fabrications"
         },
-        { "number": 5.6, "items": [], "name": "Framing Hardware" },
-        { "number": 5.9, "items": [], "name": "Other Metals" }
+        { "number": 5.6, "subItems": [], "name": "Framing Hardware" },
+        { "number": 5.9, "subItems": [], "name": "Other Metals" }
       ],
       "number": 5.0,
       "name": "Metals"
     },
     {
-      "subdivisions": [
+      "subItems": [
         {
           "number": 6.1,
-          "items": [
+          "subItems": [
             {
               "number": 6.11,
               "id": "6.1100",
               "value": "",
-              "label": "Framing Material",
+              "name": "Framing Material",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1208,7 +1198,7 @@
               "number": 6.12,
               "id": "6.1200",
               "value": "",
-              "label": "Wood Trusses",
+              "name": "Wood Trusses",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1218,7 +1208,7 @@
               "number": 6.13,
               "id": "6.1300",
               "value": "",
-              "label": "Framing Labor",
+              "name": "Framing Labor",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1229,12 +1219,12 @@
         },
         {
           "number": 6.2,
-          "items": [
+          "subItems": [
             {
               "number": 6.21,
               "id": "6.2100",
               "value": "",
-              "label": "Cabinets",
+              "name": "Cabinets",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1244,7 +1234,7 @@
               "number": 6.215,
               "id": "6.2150",
               "value": "",
-              "label": "Cabinets Installation",
+              "name": "Cabinets Installation",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1254,7 +1244,7 @@
               "number": 6.22,
               "id": "6.2200",
               "value": "",
-              "label": "Spiral Stairs",
+              "name": "Spiral Stairs",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1264,7 +1254,7 @@
               "number": 6.23,
               "id": "6.2300",
               "value": "",
-              "label": "Stairs",
+              "name": "Stairs",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1274,7 +1264,7 @@
               "number": 6.24,
               "id": "6.2400",
               "value": "",
-              "label": "Millwork Labor",
+              "name": "Millwork Labor",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1284,7 +1274,7 @@
               "number": 6.25,
               "id": "6.2500",
               "value": "",
-              "label": "Millwork Material",
+              "name": "Millwork Material",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1295,12 +1285,12 @@
         },
         {
           "number": 6.3,
-          "items": [
+          "subItems": [
             {
               "number": 6.24,
               "id": "6.2400",
               "value": "",
-              "label": "Wood Gates",
+              "name": "Wood Gates",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1310,7 +1300,7 @@
               "number": 6.31,
               "id": "6.3100",
               "value": "",
-              "label": "Enclosed Soffits",
+              "name": "Enclosed Soffits",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1320,7 +1310,7 @@
               "number": 6.32,
               "id": "6.3200",
               "value": "",
-              "label": "Trelisses and Arbors",
+              "name": "Trelisses and Arbors",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1330,7 +1320,7 @@
               "number": 6.33,
               "id": "6.3300",
               "value": "",
-              "label": "Wood Decks",
+              "name": "Wood Decks",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1340,7 +1330,7 @@
               "number": 6.35,
               "id": "6.3500",
               "value": "",
-              "label": "Wood Siding",
+              "name": "Wood Siding",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1351,12 +1341,12 @@
         },
         {
           "number": 6.4,
-          "items": [
+          "subItems": [
             {
               "number": 6.41,
               "id": "6.4100",
               "value": "",
-              "label": "Plastic Laminate",
+              "name": "Plastic Laminate",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1366,7 +1356,7 @@
               "number": 6.42,
               "id": "6.4200",
               "value": "",
-              "label": "Structural Plastics",
+              "name": "Structural Plastics",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1376,7 +1366,7 @@
               "number": 6.43,
               "id": "6.4300",
               "value": "",
-              "label": "Plastic Fabrications",
+              "name": "Plastic Fabrications",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1385,21 +1375,21 @@
           ],
           "name": "Plastics"
         },
-        { "number": 6.9, "items": [], "name": "Other Wood & Plastics" }
+        { "number": 6.9, "subItems": [], "name": "Other Wood & Plastics" }
       ],
       "number": 6.0,
       "name": "Wood & Plastic"
     },
     {
-      "subdivisions": [
+      "subItems": [
         {
           "number": 7.1,
-          "items": [
+          "subItems": [
             {
               "number": 7.11,
               "id": "7.1100",
               "value": "",
-              "label": "Batt Insulation",
+              "name": "Batt Insulation",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1409,7 +1399,7 @@
               "number": 7.12,
               "id": "7.1200",
               "value": "",
-              "label": "Blown Insulation",
+              "name": "Blown Insulation",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1419,7 +1409,7 @@
               "number": 7.13,
               "id": "7.1300",
               "value": "",
-              "label": "Rigid Insulation",
+              "name": "Rigid Insulation",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1429,7 +1419,7 @@
               "number": 7.14,
               "id": "7.1400",
               "value": "",
-              "label": "Sound Deadening Insualtion",
+              "name": "Sound Deadening Insualtion",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1439,7 +1429,7 @@
               "number": 7.15,
               "id": "7.1500",
               "value": "",
-              "label": "Fire Proofing",
+              "name": "Fire Proofing",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1450,12 +1440,12 @@
         },
         {
           "number": 7.2,
-          "items": [
+          "subItems": [
             {
               "number": 7.21,
               "id": "7.2100",
               "value": "",
-              "label": "Membrane Roofing",
+              "name": "Membrane Roofing",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1465,7 +1455,7 @@
               "number": 7.22,
               "id": "7.2200",
               "value": "",
-              "label": "PVC Roofing",
+              "name": "PVC Roofing",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1475,7 +1465,7 @@
               "number": 7.23,
               "id": "7.2300",
               "value": "",
-              "label": "Metal Roofing",
+              "name": "Metal Roofing",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1485,7 +1475,7 @@
               "number": 7.24,
               "id": "7.2400",
               "value": "",
-              "label": "Wood Shake and Shingle Roofing",
+              "name": "Wood Shake and Shingle Roofing",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1495,7 +1485,7 @@
               "number": 7.25,
               "id": "7.2500",
               "value": "",
-              "label": "Slate Roofing",
+              "name": "Slate Roofing",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1505,7 +1495,7 @@
               "number": 7.26,
               "id": "7.2600",
               "value": "",
-              "label": "Composition Roofing",
+              "name": "Composition Roofing",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1515,7 +1505,7 @@
               "number": 7.27,
               "id": "7.2700",
               "value": "",
-              "label": "Tile Roofing",
+              "name": "Tile Roofing",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1526,12 +1516,12 @@
         },
         {
           "number": 7.3,
-          "items": [
+          "subItems": [
             {
               "number": 7.31,
               "id": "7.3100",
               "value": "",
-              "label": "Gutters and Downspouts",
+              "name": "Gutters and Downspouts",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1541,7 +1531,7 @@
               "number": 7.32,
               "id": "7.3200",
               "value": "",
-              "label": "Skylights",
+              "name": "Skylights",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1552,12 +1542,12 @@
         },
         {
           "number": 7.9,
-          "items": [
+          "subItems": [
             {
               "number": 7.91,
               "id": "7.9100",
               "value": "",
-              "label": "Caulking and Sealants",
+              "name": "Caulking and Sealants",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1567,7 +1557,7 @@
               "number": 7.92,
               "id": "7.9200",
               "value": "",
-              "label": "Flashings",
+              "name": "Flashings",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1577,7 +1567,7 @@
               "number": 7.93,
               "id": "7.9300",
               "value": "",
-              "label": "Foundation Waterproofing",
+              "name": "Foundation Waterproofing",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1587,7 +1577,7 @@
               "number": 7.94,
               "id": "7.9400",
               "value": "",
-              "label": "Weatherstripping",
+              "name": "Weatherstripping",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1601,15 +1591,15 @@
       "name": "Thermal & Moisture Protection"
     },
     {
-      "subdivisions": [
+      "subItems": [
         {
           "number": 8.1,
-          "items": [
+          "subItems": [
             {
               "number": 8.11,
               "id": "8.1100",
               "value": "",
-              "label": "Metal Windows",
+              "name": "Metal Windows",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1619,7 +1609,7 @@
               "number": 8.12,
               "id": "8.1200",
               "value": "",
-              "label": "Vinyl Windows",
+              "name": "Vinyl Windows",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1629,7 +1619,7 @@
               "number": 8.13,
               "id": "8.1300",
               "value": "",
-              "label": "Wood Windows",
+              "name": "Wood Windows",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1639,7 +1629,7 @@
               "number": 8.14,
               "id": "8.1400",
               "value": "",
-              "label": "Window Installation",
+              "name": "Window Installation",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1649,7 +1639,7 @@
               "number": 8.15,
               "id": "8.1500",
               "value": "",
-              "label": "Window and Door Pans",
+              "name": "Window and Door Pans",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1660,12 +1650,12 @@
         },
         {
           "number": 8.2,
-          "items": [
+          "subItems": [
             {
               "number": 8.21,
               "id": "8.2100",
               "value": "",
-              "label": "Decorative Glass",
+              "name": "Decorative Glass",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1675,7 +1665,7 @@
               "number": 8.22,
               "id": "8.2200",
               "value": "",
-              "label": "Door Hardware",
+              "name": "Door Hardware",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1685,7 +1675,7 @@
               "number": 8.23,
               "id": "8.2300",
               "value": "",
-              "label": "Exterior Doors",
+              "name": "Exterior Doors",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1695,7 +1685,7 @@
               "number": 8.24,
               "id": "8.2400",
               "value": "",
-              "label": "Folding Doors",
+              "name": "Folding Doors",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1705,7 +1695,7 @@
               "number": 8.25,
               "id": "8.2500",
               "value": "",
-              "label": "Front Door Allowance",
+              "name": "Front Door Allowance",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1715,7 +1705,7 @@
               "number": 8.26,
               "id": "8.2600",
               "value": "",
-              "label": "Garage Doors and Openers",
+              "name": "Garage Doors and Openers",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1725,7 +1715,7 @@
               "number": 8.27,
               "id": "8.2700",
               "value": "",
-              "label": "Interior Doors",
+              "name": "Interior Doors",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1735,7 +1725,7 @@
               "number": 8.28,
               "id": "8.2800",
               "value": "",
-              "label": "Roof Access Doors",
+              "name": "Roof Access Doors",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1745,7 +1735,7 @@
               "number": 8.29,
               "id": "8.2900",
               "value": "",
-              "label": "Shower Doors",
+              "name": "Shower Doors",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1754,22 +1744,22 @@
           ],
           "name": "Doors"
         },
-        { "number": 8.3, "items": [], "name": "Other Windows & Doors" }
+        { "number": 8.3, "subItems": [], "name": "Other Windows & Doors" }
       ],
       "number": 8.0,
       "name": "Windows & Doors"
     },
     {
-      "subdivisions": [
-        { "number": 9.1, "items": [], "name": "Drywall" },
+      "subItems": [
+        { "number": 9.1, "subItems": [], "name": "Drywall" },
         {
           "number": 9.2,
-          "items": [
+          "subItems": [
             {
               "number": 9.21,
               "id": "9.2100",
               "value": "",
-              "label": "Dryvit/Stucco",
+              "name": "Dryvit/Stucco",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1779,7 +1769,7 @@
               "number": 9.22,
               "id": "9.2200",
               "value": "",
-              "label": "Lathe and Plastering",
+              "name": "Lathe and Plastering",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1790,12 +1780,12 @@
         },
         {
           "number": 9.3,
-          "items": [
+          "subItems": [
             {
               "number": 9.31,
               "id": "9.3100",
               "value": "",
-              "label": "Exterior Panting",
+              "name": "Exterior Panting",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1805,7 +1795,7 @@
               "number": 9.32,
               "id": "9.3200",
               "value": "",
-              "label": "Interior Painting",
+              "name": "Interior Painting",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1815,7 +1805,7 @@
               "number": 9.33,
               "id": "9.3300",
               "value": "",
-              "label": "Special Painting",
+              "name": "Special Painting",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1825,7 +1815,7 @@
               "number": 9.34,
               "id": "9.3400",
               "value": "",
-              "label": "Cabinet Finishing",
+              "name": "Cabinet Finishing",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1836,12 +1826,12 @@
         },
         {
           "number": 9.4,
-          "items": [
+          "subItems": [
             {
               "number": 9.41,
               "id": "9.4100",
               "value": "",
-              "label": "Carpet",
+              "name": "Carpet",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1851,7 +1841,7 @@
               "number": 9.42,
               "id": "9.4200",
               "value": "",
-              "label": "Concrete Flooring",
+              "name": "Concrete Flooring",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1861,7 +1851,7 @@
               "number": 9.43,
               "id": "9.4300",
               "value": "",
-              "label": "Marble and Stone Flooring",
+              "name": "Marble and Stone Flooring",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1871,7 +1861,7 @@
               "number": 9.44,
               "id": "9.4400",
               "value": "",
-              "label": "Terazzo Flooring",
+              "name": "Terazzo Flooring",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1881,7 +1871,7 @@
               "number": 9.45,
               "id": "9.4500",
               "value": "",
-              "label": "Tile Flooring",
+              "name": "Tile Flooring",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1891,7 +1881,7 @@
               "number": 9.46,
               "id": "9.4600",
               "value": "",
-              "label": "Vinyl Flooring",
+              "name": "Vinyl Flooring",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1901,7 +1891,7 @@
               "number": 9.47,
               "id": "9.4700",
               "value": "",
-              "label": "Wood Strip Flooring",
+              "name": "Wood Strip Flooring",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1912,12 +1902,12 @@
         },
         {
           "number": 9.5,
-          "items": [
+          "subItems": [
             {
               "number": 9.51,
               "id": "9.5100",
               "value": "",
-              "label": "Composite Counters (Corian etc.)",
+              "name": "Composite Counters (Corian etc.)",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1927,7 +1917,7 @@
               "number": 9.52,
               "id": "9.5200",
               "value": "",
-              "label": "Laminate Counters",
+              "name": "Laminate Counters",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1937,7 +1927,7 @@
               "number": 9.53,
               "id": "9.5300",
               "value": "",
-              "label": "Slab Countertops",
+              "name": "Slab Countertops",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1948,12 +1938,12 @@
         },
         {
           "number": 9.6,
-          "items": [
+          "subItems": [
             {
               "number": 9.61,
               "id": "9.6100",
               "value": "",
-              "label": "Ceramic Tile",
+              "name": "Ceramic Tile",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1963,7 +1953,7 @@
               "number": 9.62,
               "id": "9.6200",
               "value": "",
-              "label": "Glass Tile",
+              "name": "Glass Tile",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1973,7 +1963,7 @@
               "number": 9.63,
               "id": "9.6300",
               "value": "",
-              "label": "Marble and Stone Tile",
+              "name": "Marble and Stone Tile",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1983,7 +1973,7 @@
               "number": 9.64,
               "id": "9.6400",
               "value": "",
-              "label": "Mosaic Tile",
+              "name": "Mosaic Tile",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -1993,7 +1983,7 @@
               "number": 9.65,
               "id": "9.6500",
               "value": "",
-              "label": "Backer Board",
+              "name": "Backer Board",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2003,7 +1993,7 @@
               "number": 9.66,
               "id": "9.6600",
               "value": "",
-              "label": "Tile Labor",
+              "name": "Tile Labor",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2014,12 +2004,12 @@
         },
         {
           "number": 9.9,
-          "items": [
+          "subItems": [
             {
               "number": 9.91,
               "id": "9.9100",
               "value": "",
-              "label": "Glass Block",
+              "name": "Glass Block",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2029,7 +2019,7 @@
               "number": 9.92,
               "id": "9.9200",
               "value": "",
-              "label": "Suspended Ceilings",
+              "name": "Suspended Ceilings",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2043,15 +2033,15 @@
       "name": "Finishes"
     },
     {
-      "subdivisions": [
+      "subItems": [
         {
           "number": 10.1,
-          "items": [
+          "subItems": [
             {
               "number": 10.11,
               "id": "10.1100",
               "value": "",
-              "label": "Prefab Fireplaces and Stoves",
+              "name": "Prefab Fireplaces and Stoves",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2061,7 +2051,7 @@
               "number": 10.12,
               "id": "10.1200",
               "value": "",
-              "label": "Fireplace Doors",
+              "name": "Fireplace Doors",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2072,17 +2062,17 @@
         },
         {
           "number": 10.2,
-          "items": [],
+          "subItems": [],
           "name": "Closet Packages"
         },
         {
           "number": 10.3,
-          "items": [
+          "subItems": [
             {
               "number": 10.31,
               "id": "10.3100",
               "value": "",
-              "label": "Awnings",
+              "name": "Awnings",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2092,7 +2082,7 @@
               "number": 10.32,
               "id": "10.3200",
               "value": "",
-              "label": "Window Shutters",
+              "name": "Window Shutters",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2103,12 +2093,12 @@
         },
         {
           "number": 10.4,
-          "items": [
+          "subItems": [
             {
               "number": 10.41,
               "id": "10.4100",
               "value": "",
-              "label": "Bath Hardware",
+              "name": "Bath Hardware",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2118,7 +2108,7 @@
               "number": 10.42,
               "id": "10.4200",
               "value": "",
-              "label": "Mirrors",
+              "name": "Mirrors",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2129,12 +2119,12 @@
         },
         {
           "number": 10.9,
-          "items": [
+          "subItems": [
             {
               "number": 10.91,
               "id": "10.9100",
               "value": "",
-              "label": "Fire Extinguishers",
+              "name": "Fire Extinguishers",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2144,7 +2134,7 @@
               "number": 10.92,
               "id": "10.9200",
               "value": "",
-              "label": "Louvers and Vents",
+              "name": "Louvers and Vents",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2154,7 +2144,7 @@
               "number": 10.93,
               "id": "10.9300",
               "value": "",
-              "label": "Mail Boxes",
+              "name": "Mail Boxes",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2168,15 +2158,15 @@
       "name": "Specialties"
     },
     {
-      "subdivisions": [
+      "subItems": [
         {
           "number": 11.1,
-          "items": [
+          "subItems": [
             {
               "number": 11.11,
               "id": "11.1100",
               "value": "",
-              "label": "Dishwasher",
+              "name": "Dishwasher",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2186,7 +2176,7 @@
               "number": 11.11,
               "id": "11.11000",
               "value": "",
-              "label": "Washing Machine",
+              "name": "Washing Machine",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2196,7 +2186,7 @@
               "number": 11.111,
               "id": "11.11100",
               "value": "",
-              "label": "Wine Cooler",
+              "name": "Wine Cooler",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2206,7 +2196,7 @@
               "number": 11.12,
               "id": "11.1200",
               "value": "",
-              "label": "Disposal",
+              "name": "Disposal",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2216,7 +2206,7 @@
               "number": 11.13,
               "id": "11.1300",
               "value": "",
-              "label": "Dryer",
+              "name": "Dryer",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2226,7 +2216,7 @@
               "number": 11.14,
               "id": "11.1400",
               "value": "",
-              "label": "Microwave",
+              "name": "Microwave",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2236,7 +2226,7 @@
               "number": 11.15,
               "id": "11.1500",
               "value": "",
-              "label": "Oven",
+              "name": "Oven",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2246,7 +2236,7 @@
               "number": 11.16,
               "id": "11.1600",
               "value": "",
-              "label": "Range Hood",
+              "name": "Range Hood",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2256,7 +2246,7 @@
               "number": 11.17,
               "id": "11.1700",
               "value": "",
-              "label": "Range/Cook Top",
+              "name": "Range/Cook Top",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2266,7 +2256,7 @@
               "number": 11.18,
               "id": "11.1800",
               "value": "",
-              "label": "Refrigerator",
+              "name": "Refrigerator",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2276,7 +2266,7 @@
               "number": 11.19,
               "id": "11.1900",
               "value": "",
-              "label": "BBQ",
+              "name": "BBQ",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2287,12 +2277,12 @@
         },
         {
           "number": 11.9,
-          "items": [
+          "subItems": [
             {
               "number": 11.91,
               "id": "11.9100",
               "value": "",
-              "label": "Built in Vacuum System",
+              "name": "Built in Vacuum System",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2302,7 +2292,7 @@
               "number": 11.92,
               "id": "11.9200",
               "value": "",
-              "label": "Generator",
+              "name": "Generator",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2312,7 +2302,7 @@
               "number": 11.93,
               "id": "11.9300",
               "value": "",
-              "label": "Ironing Board",
+              "name": "Ironing Board",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2326,11 +2316,11 @@
       "name": "Equipment"
     },
     {
-      "subdivisions": [
-        { "number": 12.1, "items": [], "name": "Window Shades" },
+      "subItems": [
+        { "number": 12.1, "subItems": [], "name": "Window Shades" },
         {
           "number": 12.9,
-          "items": [],
+          "subItems": [],
           "name": "Other Furnishings"
         }
       ],
@@ -2338,15 +2328,15 @@
       "name": "Furnishings"
     },
     {
-      "subdivisions": [
+      "subItems": [
         {
           "number": 13.1,
-          "items": [
+          "subItems": [
             {
               "number": 13.11,
               "id": "13.1100",
               "value": "",
-              "label": "Aquariums",
+              "name": "Aquariums",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2356,7 +2346,7 @@
               "number": 13.12,
               "id": "13.1200",
               "value": "",
-              "label": "Hot tubs",
+              "name": "Hot tubs",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2366,7 +2356,7 @@
               "number": 13.13,
               "id": "13.1300",
               "value": "",
-              "label": "Swimming Pools",
+              "name": "Swimming Pools",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2376,7 +2366,7 @@
               "number": 13.14,
               "id": "13.1400",
               "value": "",
-              "label": "Water Features",
+              "name": "Water Features",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2387,12 +2377,12 @@
         },
         {
           "number": 13.9,
-          "items": [
+          "subItems": [
             {
               "number": 13.91,
               "id": "13.9100",
               "value": "",
-              "label": "Greenhouse",
+              "name": "Greenhouse",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2402,7 +2392,7 @@
               "number": 13.92,
               "id": "13.9200",
               "value": "",
-              "label": "Sauna",
+              "name": "Sauna",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2412,7 +2402,7 @@
               "number": 13.93,
               "id": "13.9300",
               "value": "",
-              "label": "Sport Court and Sporting Equipment",
+              "name": "Sport Court and Sporting Equipment",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2422,7 +2412,7 @@
               "number": 13.94,
               "id": "13.9400",
               "value": "",
-              "label": "Wine Cellar",
+              "name": "Wine Cellar",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2432,7 +2422,7 @@
               "number": 13.96,
               "id": "13.9600",
               "value": "",
-              "label": "Automated Gate",
+              "name": "Automated Gate",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2446,11 +2436,11 @@
       "name": "Special Construction"
     },
     {
-      "subdivisions": [
-        { "number": 14.1, "items": [], "name": "Elevators" },
+      "subItems": [
+        { "number": 14.1, "subItems": [], "name": "Elevators" },
         {
           "number": 14.9,
-          "items": [],
+          "subItems": [],
           "name": "Other Conveying Systems"
         }
       ],
@@ -2458,21 +2448,21 @@
       "name": "Conveying Systems"
     },
     {
-      "subdivisions": [
+      "subItems": [
         {
           "number": 15.1,
 
-          "items": [],
+          "subItems": [],
           "name": "Fire Protection"
         },
         {
           "number": 15.2,
-          "items": [
+          "subItems": [
             {
               "number": 15.21,
               "id": "15.2100",
               "value": "",
-              "label": "Plumbing Groundwork",
+              "name": "Plumbing Groundwork",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2482,7 +2472,7 @@
               "number": 15.22,
               "id": "15.2200",
               "value": "",
-              "label": "Plumbing Rough-in and Finish",
+              "name": "Plumbing Rough-in and Finish",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2492,7 +2482,7 @@
               "number": 15.23,
               "id": "15.300",
               "value": "",
-              "label": "Plumbing Fixtures",
+              "name": "Plumbing Fixtures",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2503,12 +2493,12 @@
         },
         {
           "number": 15.3,
-          "items": [
+          "subItems": [
             {
               "number": 15.31,
               "id": "15.3100",
               "value": "",
-              "label": "Air Conditioning System",
+              "name": "Air Conditioning System",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2518,7 +2508,7 @@
               "number": 15.32,
               "id": "15.3200",
               "value": "",
-              "label": "Fan & Dryer Ducting",
+              "name": "Fan & Dryer Ducting",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2528,7 +2518,7 @@
               "number": 15.33,
               "id": "15.3300",
               "value": "",
-              "label": "Forced Air Heating",
+              "name": "Forced Air Heating",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2538,7 +2528,7 @@
               "number": 15.34,
               "id": "15.3400",
               "value": "",
-              "label": "Gas Piping",
+              "name": "Gas Piping",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2548,7 +2538,7 @@
               "number": 15.35,
               "id": "15.3500",
               "value": "",
-              "label": "In Floor Hydronic Heating",
+              "name": "In Floor Hydronic Heating",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2558,7 +2548,7 @@
               "number": 15.36,
               "id": "15.3600",
               "value": "",
-              "label": "Geo-Thermal",
+              "name": "Geo-Thermal",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2569,7 +2559,7 @@
         },
         {
           "number": 15.9,
-          "items": [],
+          "subItems": [],
           "name": "Other Mechanical"
         }
       ],
@@ -2577,15 +2567,15 @@
       "name": "Mechanical"
     },
     {
-      "subdivisions": [
+      "subItems": [
         {
           "number": 16.1,
-          "items": [
+          "subItems": [
             {
               "number": 16.11,
               "id": "16.1100",
               "value": "",
-              "label": "Line Voltage Groundwork",
+              "name": "Line Voltage Groundwork",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2595,7 +2585,7 @@
               "number": 16.12,
               "id": "16.1200",
               "value": "",
-              "label": "Line Voltage Rough In and Finish",
+              "name": "Line Voltage Rough In and Finish",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2605,7 +2595,7 @@
               "number": 16.13,
               "id": "16.1300",
               "value": "",
-              "label": "Lighting Fixtures",
+              "name": "Lighting Fixtures",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2616,12 +2606,12 @@
         },
         {
           "number": 16.2,
-          "items": [
+          "subItems": [
             {
               "number": 16.21,
               "id": "16.2100",
               "value": "",
-              "label": "Audio, Video and Security",
+              "name": "Audio, Video and Security",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2631,7 +2621,7 @@
               "number": 16.22,
               "id": "16.2200",
               "value": "",
-              "label": "In Floor Heat Mat",
+              "name": "In Floor Heat Mat",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2641,7 +2631,7 @@
               "number": 16.23,
               "id": "16.2300",
               "value": "",
-              "label": "Landscape Lighting",
+              "name": "Landscape Lighting",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2651,7 +2641,7 @@
               "number": 16.24,
               "id": "16.2400",
               "value": "",
-              "label": "Low Voltage",
+              "name": "Low Voltage",
               "type": "text",
               "required": false,
               "inputType": "toggleInput",
@@ -2662,7 +2652,7 @@
         },
         {
           "number": 16.9,
-          "items": [],
+          "subItems": [],
           "name": "Other Electrical"
         }
       ],

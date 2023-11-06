@@ -36,7 +36,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     // Send the new expiration time in the response
     res.status(200).json({ tokenExpiration });
   } catch (error: any) {
-    res.status(error.status || 500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 }
 

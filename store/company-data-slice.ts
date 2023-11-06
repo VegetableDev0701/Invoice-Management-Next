@@ -1065,16 +1065,27 @@ export const companyDataSlice = createSlice({
             },
           };
 
+          const projectsSummaryPayload =
+            action.payload.projectsSummary.value !== 'null'
+              ? JSON.parse(action.payload.projectsSummary.value)
+              : { allProjects: {} };
+
           state.projectsSummary = {
             ...{
               status: action.payload.projectsSummary.status,
-              ...JSON.parse(action.payload.projectsSummary.value),
+              ...projectsSummaryPayload
             },
           };
+
+          const vendorsSummaryPayload =
+          action.payload.vendorsSummary.value !== 'null'
+            ? JSON.parse(action.payload.vendorsSummary.value)
+            : { allVendors: {} };
+
           state.vendorsSummary = {
             ...{
               status: action.payload.vendorsSummary.status,
-              ...JSON.parse(action.payload.vendorsSummary.value),
+              ...vendorsSummaryPayload,
             },
           };
 

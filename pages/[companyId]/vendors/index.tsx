@@ -78,7 +78,7 @@ function Vendors() {
     null
   );
   const [activeTabKeyName, setActiveTabKeyName] = useState<string>('all');
-  const [activeFilter, setActiveFilter] = useState('No Filter');
+  const [activeFilter, setActiveFilter] = useState<string>('No Filter');
   const [missingInputs, setMissingInputs] = useState<boolean>(false);
   const [selected, setSelected] = useState<VendorSummaryItem[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);

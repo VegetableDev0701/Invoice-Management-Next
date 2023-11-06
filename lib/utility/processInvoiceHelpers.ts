@@ -24,7 +24,7 @@ export function getCurrentInvoiceData(
   } else if (item.id === 'cost-code') {
     return {
       ...item,
-      ...{ value: currentData.cost_code?.[0] },
+      ...{ value: currentData.cost_code },
     };
   } else if (item.id === 'total-tax') {
     return {

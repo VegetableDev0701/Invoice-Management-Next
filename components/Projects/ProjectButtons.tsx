@@ -26,7 +26,6 @@ const ProjectButtons = ({ projectId }: { projectId: string }) => {
   const dispatch = useDispatch();
   const { user } = useUser();
   const buildClientBillHandler = () => {
-    dispatch(uiActions.setLoadingState({ isLoading: true }));
     const clientBillId = nanoid();
     // There are checks in each of these dispatches that will end the dispatch early,
     // so each subsequent dispatch should not run unless the previous one completed
@@ -62,6 +61,7 @@ const ProjectButtons = ({ projectId }: { projectId: string }) => {
         );
       }
     });
+    dispatch(uiActions.setLoadingState({ isLoading: true }));
   };
   return (
     <div className="flex gap-2">

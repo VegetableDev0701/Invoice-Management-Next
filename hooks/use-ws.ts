@@ -15,6 +15,7 @@ import { sseActions } from '@/store/sse-slice';
 import { Invoices } from '@/lib/models/invoiceDataModels';
 import { getAPIUrl } from '@/lib/config';
 import { AppDispatch } from '@/store';
+import { NodeEnvProps } from '@/pages';
 
 export default function useListenWS() {
   const [newDocs, setNewDocs] = useState<Invoices | ContractData | null>(null);
@@ -24,6 +25,7 @@ export default function useListenWS() {
 
   const isSuccess = useSelector((state) => state.sse.isSuccess);
   const wsContent = useSelector((state) => state.sse.sseContent);
+  const nodeEnv: NodeEnvProps = useSelector((state) => state.nodeEnv);
   const processNotificationContent = useSelector(
     (state) => state.ui.processingNotification?.content
   );
@@ -56,12 +58,13 @@ export default function useListenWS() {
     const freshToken = await getToken();
     if (!freshToken) return;
 
-    const wsUrl = generateWSUrl(
-      wsContent.sseContentType,
+    const wsUrl = generateWSUrl({
+      contentType: wsContent.sseContentType,
       freshToken,
-      user as User,
-      freshToken
-    );
+      user: user as User,
+      wsContent,
+      nodeEnv,
+    });
     if (!wsUrl) return;
 
     webSocket = new WebSocket(wsUrl);
@@ -97,7 +100,7 @@ export default function useListenWS() {
   useEffect(() => {
     if (newDocs) {
       if (wsContent.sseContentType === 'invoice') {
-        dispatch(companyDataActions.addInvoicesFromSSE(newDocs as Invoices));
+        dispatch(companyDataActions.addInvoicesFromWS(newDocs as Invoices));
       } else if (wsContent.sseContentType === 'contract') {
         dispatch(
           projectDataActions.addContractFromSSE({
@@ -125,9 +128,9 @@ export default function useListenWS() {
   }, [isSuccess, wsContent.sseContentType]);
 }
 
-const logWebSocketState = (webSocket: WebSocket) => {
-  console.log('WebSocket State: ', webSocket.readyState);
-};
+// const logWebSocketState = (webSocket: WebSocket) => {
+//   console.log('WebSocket State: ', webSocket.readyState);
+// };
 
 const onWebSocketEvents = (
   ws: WebSocket,
@@ -137,10 +140,10 @@ const onWebSocketEvents = (
 ) => {
   ws.onopen = (event) => {
     console.log('WebSocket is open:', event);
-    logWebSocketState(webSocket);
+    // logWebSocketState(webSocket);
   };
   ws.onmessage = (event) => {
-    logWebSocketState(webSocket);
+    // logWebSocketState(webSocket);
     const serverMessage = JSON.parse(event.data);
 
     switch (serverMessage.event) {
@@ -170,9 +173,7 @@ const onWebSocketEvents = (
           console.error(error);
           // HACK This code block is in place to catch any remaining invoices
           // that have not been sent. All other processes that reach here
-          // will not have data attached to their event...if you're reading this
-          // you are probably as confused as i am rn--amazing what time away from
-          // your own code will do to you being able to grok it
+          // will not have data attached to their event
         } finally {
           dispatch(
             uiActions.setProcessingNotificationContent({
@@ -235,7 +236,7 @@ const onWebSocketEvents = (
   };
 
   ws.onerror = (error) => {
-    logWebSocketState(webSocket);
+    // logWebSocketState(webSocket);
     console.error('WebSocket failed', error);
     dispatch(
       uiActions.setProcessingNotificationContent({
@@ -261,14 +262,21 @@ const onWebSocketEvents = (
   };
 };
 
-const generateWSUrl = (
-  contentType: string,
-  freshToken: string,
-  user: User,
-  wsContent: any
-) => {
+const generateWSUrl = ({
+  contentType,
+  freshToken,
+  user,
+  wsContent,
+  nodeEnv,
+}: {
+  contentType: string;
+  freshToken: string;
+  user: User;
+  wsContent: any;
+  nodeEnv: NodeEnvProps;
+}) => {
   let wsUrl = '';
-  const apiUrl = getAPIUrl();
+  const apiUrl = getAPIUrl({ ...nodeEnv });
   if (apiUrl) {
     if (contentType === 'invoice') {
       wsUrl = `${apiUrl.replace('http', 'ws')}/${

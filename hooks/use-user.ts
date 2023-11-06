@@ -1,12 +1,10 @@
 import { useUser as useAuth0User } from '@auth0/nextjs-auth0/client';
 import { useEffect, useState } from 'react';
 
-import { User, UserMetadata } from '@/lib/models/formStateModels';
+import { User } from '@/lib/models/formStateModels';
 
 export function useCurrentUser() {
-  const [currentUserData, setCurrentUserData] = useState<UserMetadata>(
-    {} as UserMetadata
-  );
+  const [currentUserData, setCurrentUserData] = useState<User>({} as User);
   const [isLoadingUserData, setIsLoadingUserData] = useState(true);
 
   const { user: auth0User, isLoading, ...rest } = useAuth0User();
@@ -17,11 +15,7 @@ export function useCurrentUser() {
     async function getCurrentUserData() {
       setIsLoadingUserData(true);
       try {
-        const response = await fetch(
-          `/api/${(user as User).user_metadata.companyId}/${
-            (user as User).user_metadata.userUUID
-          }/get-current-user-metadata`
-        );
+        const response = await fetch(`/api/get-current-user-metadata`);
         if (!response.ok) {
           throw new Error(
             `Error in retrieving Auth0 User Data: ${response.headers}`
@@ -37,7 +31,7 @@ export function useCurrentUser() {
     if (!isLoading) {
       getCurrentUserData();
     }
-  }, [isLoading]);
+  }, [isLoading, user]);
 
   return {
     user: { ...user, ...currentUserData },

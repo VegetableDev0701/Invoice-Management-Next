@@ -5,7 +5,7 @@ import { getFormIcon } from '@/lib/utility/formHelpers';
 import { Actions, AddLaborActions, FormData } from '@/lib/models/types';
 import { FormState } from '@/lib/models/formStateModels';
 import {
-  InputElementWithAddressElements,
+  InputElementWithAddressItems,
   LaborData,
   MainCategories,
   isInputElementWithAddressElements,
@@ -62,11 +62,10 @@ function FormOverlay(props: Props) {
                       classes="flex-1 px-5 py-2"
                       actions={actions}
                       input={
-                        (el as InputElementWithAddressElements).addressElements
+                        (el as InputElementWithAddressItems).addressElements
                       }
                       formState={formState}
                       showError={showError}
-                      form={form}
                     />
                   );
                 }

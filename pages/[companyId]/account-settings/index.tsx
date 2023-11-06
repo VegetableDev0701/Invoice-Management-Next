@@ -16,7 +16,7 @@ import {
   createAuth0UserData,
   createFormDataForSubmit,
 } from '@/lib/utility/submitFormHelpers';
-import { FormState, User, UserMetadata } from '@/lib/models/formStateModels';
+import { FormState, User } from '@/lib/models/formStateModels';
 
 import FormComponent from '@/components/Forms/FormComponent';
 import FullScreenLoader from '@/components/UI/Loaders/FullScreenLoader';
@@ -75,30 +75,28 @@ const AccountSettings = () => {
 
   const submitFormHandler = async (
     e: React.FormEvent,
-    formStateData?: FormState
+    formStateData: FormState
   ) => {
     e.preventDefault();
     // create the form data to push to the DB
     const userData = createAuth0UserData(formStateData as FormState);
     if (!userLoading && user) {
       const requestConfig = {
-        url: `/api/${(user as User).user_metadata.companyId}/${
-          (user as User).user_metadata.userUUID
-        }/update-user-metadata`,
+        url: `/api/update-user-metadata`,
         method: 'PATCH',
         body: userData,
         headers: {
           'Content-Type': 'application/json',
         },
       };
-
+      const name = `${formStateData['first-name-as'].value} ${formStateData['last-name-as'].value}`;
       dispatch(
         userActions.setUserState({
           ...user,
           user_metadata: {
             ...user.user_metadata,
             accountSettings: { ...userData.user_metadata.accountSettings },
-          } as UserMetadata,
+          },
         })
       );
 
@@ -112,9 +110,6 @@ const AccountSettings = () => {
 
   return (
     <>
-      {(userLoading || pageLoading || isLoadingUserData) && (
-        <FullScreenLoader />
-      )}
       {!userLoading && !pageLoading && !isLoadingUserData && user && (
         <>
           <ModalConfirm
@@ -132,7 +127,7 @@ const AccountSettings = () => {
             formState={accountSettingsFormStateData}
             onOpenModal={openModalHandler}
             pageTitle="Account Settings"
-            subTitle={`${(user as User).user_metadata.name}, ${
+            subTitle={`${(user as User).name}, ${
               (user as User).user_metadata.companyName
             }`}
             showError={missingInputs}

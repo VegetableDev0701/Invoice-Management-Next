@@ -13,6 +13,7 @@ import ProjectButtons from '@/components/Projects/ProjectButtons';
 import ButtonWithLoader from '../Buttons/ButtonWithLoader';
 import { Buttons } from '@/lib/models/uiModels';
 import { InvoiceProject } from '@/lib/models/invoiceDataModels';
+import { classNames } from '@/lib/utility/utils';
 
 interface SectionTabs {
   name: string;
@@ -35,10 +36,6 @@ interface Props {
   isClientBillPage?: boolean;
   onActiveTab: (activeTabKeyName: string) => void;
   onFilter?: (activeFilter: string) => void;
-}
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
 }
 
 export default function ProjectsSectionHeading(props: Props) {

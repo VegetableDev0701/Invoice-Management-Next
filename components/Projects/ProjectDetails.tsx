@@ -150,6 +150,7 @@ export default function ProjectDetails(props: Props) {
         anchorScrollElement={anchorScrollElement}
         actions={addProjectFormActions}
         form={'addProject'}
+        extraClasses="flex-1"
       />
     </div>
   );

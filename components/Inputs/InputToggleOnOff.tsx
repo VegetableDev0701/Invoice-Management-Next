@@ -119,7 +119,7 @@ const InputToggleOnOff = (props: Props) => {
           }`}
           htmlFor={input.id}
         >
-          {`${(+input.id).toFixed(3)} - ${input.label}`}
+          {`${(+input.id).toFixed(4)} - ${input.label}`}
         </label>
       </div>
       <div className="relative w-full mt-1">

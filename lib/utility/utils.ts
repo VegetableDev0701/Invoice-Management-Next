@@ -30,3 +30,7 @@ export function isDuplicated(value: string, list: string[]): boolean {
 export function classNames(...classes: Array<string | undefined | false>) {
   return classes.filter((cn) => !!cn).join(' ');
 }
+
+export const isObjectEmpty = (object: Object) => {
+  return JSON.stringify(object) === '{}';
+};

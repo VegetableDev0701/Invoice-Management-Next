@@ -7,16 +7,10 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { useAppDispatch as useDispatch } from '@/store/hooks';
-import { uiActions } from '@/store/ui-slice';
+import { ErrorModal, uiActions } from '@/store/ui-slice';
 
-interface Props {
-  openModal: boolean;
-  message: string;
-  title: string;
-}
-
-function Modal(props: Props) {
-  const { openModal, message, title } = props;
+function Modal(props: ErrorModal) {
+  const { openModal, message, title, logout } = props;
 
   const dispatch = useDispatch();
 
@@ -35,6 +29,9 @@ function Modal(props: Props) {
           dispatch(uiActions.setModalContent({ openModal: false }));
           dispatch(uiActions.setLoadingState({ isLoading: false }));
           setOpen(openModal);
+          if (logout) {
+            window.location.href = '/api/auth/logout';
+          }
         }}
       >
         <Transition.Child
@@ -55,6 +52,9 @@ function Modal(props: Props) {
             dispatch(uiActions.setModalContent({ openModal: false }));
             dispatch(uiActions.setLoadingState({ isLoading: false }));
             setOpen(openModal);
+            if (logout) {
+              window.location.href = '/api/auth/logout';
+            }
           }}
         >
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
@@ -76,6 +76,9 @@ function Modal(props: Props) {
                       dispatch(uiActions.setModalContent({ openModal: false }));
                       dispatch(uiActions.setLoadingState({ isLoading: false }));
                       setOpen(openModal);
+                      if (logout) {
+                        window.location.href = '/api/auth/logout';
+                      }
                     }}
                   >
                     <span className="sr-only">Close</span>
@@ -85,19 +88,19 @@ function Modal(props: Props) {
                 <div className="sm:flex sm:items-start">
                   <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 sm:mx-0 sm:h-10 sm:w-10">
                     <ExclamationTriangleIcon
-                      className="h-6 w-6 text-stak-orange"
+                      className="h-7 w-7 text-stak-orange"
                       aria-hidden="true"
                     />
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <Dialog.Title
                       as="h3"
-                      className="text-lg font-semibold leading-6 text-gray-900"
+                      className="text-xl font-semibold leading-6 text-gray-900"
                     >
                       {title}
                     </Dialog.Title>
                     <div className="mt-2">
-                      <p className="text-base text-gray-500">{message}</p>
+                      <p className="text-lg text-gray-500">{message}</p>
                     </div>
                   </div>
                 </div>
@@ -109,9 +112,12 @@ function Modal(props: Props) {
                       dispatch(uiActions.setModalContent({ openModal: false }));
                       dispatch(uiActions.setLoadingState({ isLoading: false }));
                       setOpen(openModal);
+                      if (logout) {
+                        window.location.href = '/api/auth/logout';
+                      }
                     }}
                   >
-                    Ok
+                    {logout ? 'Logout' : 'OK'}
                   </button>
                 </div>
               </Dialog.Panel>
@@ -123,7 +129,7 @@ function Modal(props: Props) {
   );
 }
 
-export default function ModalError(props: Props) {
+export default function ModalError(props: ErrorModal) {
   const [portal, setPortal] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -143,6 +149,7 @@ export default function ModalError(props: Props) {
             openModal={props.openModal}
             message={props.message}
             title={props.title}
+            logout={props.logout}
           />,
           portal
         )}

@@ -1,6 +1,6 @@
 import {
   AddressItems,
-  InputElementWithAddressElements,
+  InputElementWithAddressItems,
   InputElementWithItems,
   InputElement,
   Items,
@@ -10,26 +10,43 @@ import {
   isInputElementWithItems,
   LaborData,
 } from '@/lib/models/formDataModel';
-import { FormState } from '@/lib/models/formStateModels';
+import { FormState, User } from '@/lib/models/formStateModels';
 import { FormData } from '@/lib/models/types';
 import { formatNameForID } from '@/lib/utility/formatter';
-import { CostCodesData } from '../models/budgetCostCodeModel';
 
-interface AccountSettings {
-  accountSettings: AccountSetting;
-}
-interface AccountSetting {
-  [key: string]: any;
-}
-export function createAuth0UserData(formStateData: FormState) {
-  const userData = { user_metadata: { accountSettings: {} } } as {
-    user_metadata: AccountSettings;
+import { CostCodesData } from '../models/budgetCostCodeModel';
+import { NewUserData } from '@/components/Utilities/OnBoardUser/OnBoardNewUser';
+
+export function createAuth0UserData(
+  formStateData: FormState,
+  newUserData?: NewUserData
+) {
+  const userData: User = {
+    user_metadata: {
+      companyName: '',
+      companyId: '',
+      userUUID: '',
+      accountSettings: {},
+    },
   };
-  for (const key in formStateData) {
-    userData['user_metadata']['accountSettings'][key] = {
-      value: formStateData[key].value,
-    };
+  Object.keys(formStateData)
+    .filter((key) => key.endsWith('as'))
+    .forEach((key) => {
+      userData.user_metadata.accountSettings[key] = {
+        value: (formStateData[key].value as string) ?? '',
+      };
+    });
+
+  const name = `${formStateData['first-name-as'].value} ${formStateData['last-name-as'].value}`;
+  if (newUserData && newUserData.user_data) {
+    userData.name = name;
+    userData.user_metadata.companyName =
+      newUserData.user_data?.company_name ??
+      (formStateData['company-name-as'].value as string);
+    userData.user_metadata.companyId = newUserData.user_data.company_id;
+    userData.user_metadata.userUUID = newUserData.user_data.user_id;
   }
+
   return userData;
 }
 
@@ -52,13 +69,13 @@ export function getAddressFormData(formData: FormData): string {
           (
             formData.mainCategories[i].inputElements[
               j
-            ] as InputElementWithAddressElements
+            ] as InputElementWithAddressItems
           ).addressElements[0].items[0].id === 'project-address'
         ) {
           address = (
             formData.mainCategories[i].inputElements[
               j
-            ] as InputElementWithAddressElements
+            ] as InputElementWithAddressItems
           ).addressElements[0].items[0].value as string;
           return address;
         }
@@ -102,7 +119,7 @@ export function createFormDataForSubmit({
                 (
                   newFormData.mainCategories[i].inputElements[
                     j
-                  ] as InputElementWithAddressElements
+                  ] as InputElementWithAddressItems
                 ).addressElements[jAdd].items[kAdd].value = formStateData[key]
                   .value as string;
               }

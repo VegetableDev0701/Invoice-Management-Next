@@ -1,13 +1,14 @@
 import {
   AddressItems,
   InputElement,
-  InputElementWithAddressElements,
+  InputElementWithAddressItems,
   InputElementWithItems,
   MainCategories,
   isInputElementWithAddressElements,
   isInputElementWithItems,
 } from '@/lib/models/formDataModel';
 import { FormData } from '@/lib/models/types';
+import { snapshotCopy } from '@/lib/utility/utils';
 import { useAppSelector as useSelector } from '@/store/hooks';
 
 /**
@@ -38,7 +39,7 @@ export const useAddCurrentDataToFormData = ({
     );
   }
 
-  const currentFormData = JSON.parse(JSON.stringify(formData));
+  const currentFormData = snapshotCopy(formData);
   formData.mainCategories.forEach((category: MainCategories, i: number) => {
     category.inputElements.forEach((el: InputElement, j: number) => {
       if (isInputElementWithItems(el)) {
@@ -83,7 +84,7 @@ export const useAddCurrentDataToFormData = ({
                 (
                   currentFormData.mainCategories[i].inputElements[
                     j
-                  ] as InputElementWithAddressElements
+                  ] as InputElementWithAddressItems
                 ).addressElements[jAdd].items[kAdd] = {
                   label: 'Project Address',
                   id: 'project-address',
@@ -99,7 +100,7 @@ export const useAddCurrentDataToFormData = ({
                 (
                   currentFormData.mainCategories[i].inputElements[
                     j
-                  ] as InputElementWithAddressElements
+                  ] as InputElementWithAddressItems
                 ).addressElements[jAdd].items[kAdd] = {
                   label: 'City',
                   id: 'city-project',
@@ -114,7 +115,7 @@ export const useAddCurrentDataToFormData = ({
                 (
                   currentFormData.mainCategories[i].inputElements[
                     j
-                  ] as InputElementWithAddressElements
+                  ] as InputElementWithAddressItems
                 ).addressElements[jAdd].items[kAdd] = {
                   label: 'State',
                   id: 'state-project',
@@ -129,7 +130,7 @@ export const useAddCurrentDataToFormData = ({
                 (
                   currentFormData.mainCategories[i].inputElements[
                     j
-                  ] as InputElementWithAddressElements
+                  ] as InputElementWithAddressItems
                 ).addressElements[jAdd].items[kAdd] = {
                   label: 'Zip Code',
                   id: 'zip-code-project',

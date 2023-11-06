@@ -60,6 +60,7 @@ export default function FormComponent(props: Props) {
           anchorScrollElement={anchorScrollElement}
           actions={actions}
           form={form}
+          extraClasses="flex-1"
         />
       </div>
     </div>

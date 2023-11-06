@@ -14,7 +14,7 @@ const useInitLoadData = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (userLoading === true) return;
+    if (userLoading === true || !user.user_metadata) return;
     // only load the company data on the first load, i.e. a page refresh or login
     if (initialLoad) {
       dispatch(userActions.setUserState(user as User));

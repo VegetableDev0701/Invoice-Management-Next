@@ -151,36 +151,6 @@ export const createBudgetActuals = createAsyncThunk(
         state.projects[projectId].b2a?.updatedCurrentActualsChangeOrders;
       const costCodeNameList = state.data.costCodeNameList;
 
-      console.log(
-        "dionY [createBudgetActuals] start ##########################"
-      );
-      console.log(
-        "dionY [createBudgetActuals] projectSummary: ",
-        projectSummary
-      );
-      console.log("dionY [createBudgetActuals] budgetTotals: ", budgetTotals);
-      console.log(
-        "dionY [createBudgetActuals] budgetTotalsV2: ",
-        budgetTotalsV2
-      );
-      console.log("dionY [createBudgetActuals] allInvoices: ", allInvoices);
-      console.log(
-        "dionY [createBudgetActuals] currentLaborSummary: ",
-        currentLaborSummary
-      );
-      console.log(
-        "dionY [createBudgetActuals] changeOrdersSummary: ",
-        changeOrdersSummary
-      );
-      console.log(
-        "dionY [createBudgetActuals] previousCurrentActualsChangeOrders: ",
-        previousCurrentActualsChangeOrders
-      );
-      console.log(
-        "dionY [createBudgetActuals] costCodeNameList: ",
-        costCodeNameList
-      );
-
       // filter all invoices down to this project only
       const projectInvoices = (
         Object.values(allInvoices) as MakeRequired<
@@ -188,10 +158,6 @@ export const createBudgetActuals = createAsyncThunk(
           "processedData"
         >[]
       ).filter((invoice) => invoice.project.uuid === projectId);
-      console.log(
-        "dionY [createBudgetActuals] projectInvoices: ",
-        projectInvoices
-      );
 
       // make sure any labor calculated is `current` (right now 10/11/23, i don't think a labor can be `not current`)
       const projectLaborFees = Object.values(currentLaborSummary).filter(
@@ -282,44 +248,12 @@ export const createBudgetActuals = createAsyncThunk(
         dispatch,
       });
 
-      console.log(
-        "dionY [createBudgetActuals] currentActuals: ",
-        currentActuals
-      );
-      console.log(
-        "dionY [createBudgetActuals] currentActualsChangeOrders: ",
-        currentActualsChangeOrders
-      );
-      console.log("dionY [createBudgetActuals] billTitle: ", billTitle);
-      console.log("dionY [createBudgetActuals] numInvoices: ", numInvoices);
-      console.log(
-        "dionY [createBudgetActuals] numChangeOrders: ",
-        numChangeOrders
-      );
-      console.log(
-        "dionY [createBudgetActuals] invoiceCurrentActuals: ",
-        invoiceCurrentActuals
-      );
-      console.log(
-        "dionY [createBudgetActuals] invoiceCurrentActualsChangeOrders: ",
-        invoiceCurrentActualsChangeOrders
-      );
-
-      // subtotals without tax, profit and liability
-      console.log("before adding profit, tax, liability");
-      console.log(snapshotCopy(currentActuals));
-      console.log(snapshotCopy(currentActualsChangeOrders));
-      console.log(snapshotCopy(invoiceCurrentActualsChangeOrders));
-      console.log(snapshotCopy(invoiceCurrentActuals));
-
       // This should be the grand total of the project. This would be the value we calculate project
       // completion percentage from
       const currentBudgetedTotal: number = state.projects[projectId].b2a
         ?.currentBudgetedTotal
         ? +state.projects[projectId].b2a.currentBudgetedTotal.value
         : 0;
-
-      console.log(`current budgeted total: ${currentBudgetedTotal}`);
 
       let budgetedTotals = calculateTotals({
         budget: currentActuals,
@@ -329,15 +263,6 @@ export const createBudgetActuals = createAsyncThunk(
         budget: currentActualsChangeOrders,
         isChangeOrder: true,
       });
-
-      console.log(
-        "dionY [createBudgetActuals] budgetedTotals: ",
-        budgetedTotals
-      );
-      console.log(
-        "dionY [createBudgetActuals] changeOrderTotals: ",
-        changeOrderTotals
-      );
 
       // use this subtotal before adding profits in the client bill summary
       // make a deep copy just to be certain this value does not get changed
@@ -356,15 +281,6 @@ export const createBudgetActuals = createAsyncThunk(
         prefix: "",
       });
 
-      console.log(
-        "dionY [createBudgetActuals] budgetedProfitTaxes: ",
-        budgetedProfitTaxes
-      );
-      console.log(
-        "dionY [createBudgetActuals] currentBudgetedProfitTaxesObject: ",
-        currentBudgetedProfitTaxesObject
-      );
-
       // update the currentActuals with the tax, profit, liability etc.
       updateActuals({
         billProfitTaxesObject: currentBudgetedProfitTaxesObject,
@@ -372,11 +288,6 @@ export const createBudgetActuals = createAsyncThunk(
         summaryCostCodes: SUMMARY_COST_CODES,
         budgetTotals: budgetTotalsV2,
       });
-
-      console.log(
-        "dionY [createBudgetActuals] currentActuals: ",
-        currentActuals
-      );
 
       // Same for CHANGE ORDERS, need to keep them separate; for ALL change orders combined
       const changeOrderProfitTaxes = getBillProfitTaxes({
@@ -397,11 +308,6 @@ export const createBudgetActuals = createAsyncThunk(
         summaryCostCodes: SUMMARY_COST_CODES,
         budgetTotals: budgetTotalsV2,
       });
-
-      console.log(
-        "dionY [createBudgetActuals] currentActualsChangeOrders: ",
-        currentActualsChangeOrders
-      );
 
       // create the profit subtotals taxes for EACH CHANGE ORDER
       // good to have all this separate for each change order in case we want to
@@ -427,11 +333,6 @@ export const createBudgetActuals = createAsyncThunk(
           budgetTotals: budgetTotalsV2,
         });
       });
-
-      console.log("after adding profit, tax, liability");
-      console.log(snapshotCopy(currentActuals));
-      console.log(snapshotCopy(budgetedTotals.total));
-      console.log(snapshotCopy(currentActualsChangeOrders));
 
       const snapShotCurrentActuals: CurrentActualsV2 =
         snapshotCopy(currentActuals);
@@ -492,15 +393,6 @@ export const createBudgetActuals = createAsyncThunk(
         initActualsToZeros: true,
       });
 
-      console.log(
-        "dionY [createBudgetActuals] actualsChartData: ",
-        actualsChartData
-      );
-      console.log(
-        "dionY [createBudgetActuals] grandActualsBudgetedTotal: ",
-        grandActualsBudgetedTotal
-      );
-
       // add previous actuals to this current invoice actuals
       // NO CHANGE ORDERS
       const updatedB2AData = addActualsToTotalsV2({
@@ -509,10 +401,6 @@ export const createBudgetActuals = createAsyncThunk(
         actuals: actualsChartData,
         isDeleteBill: false,
       });
-      console.log(
-        "dionY [createBudgetActuals] updatedB2AData: ",
-        updatedB2AData
-      );
 
       // CHANGE ORDERS
       // if there is previous data it will add that data to the currentActualsChangeOrders
@@ -523,11 +411,6 @@ export const createBudgetActuals = createAsyncThunk(
           previousCurrentActualsChangeOrders,
         });
 
-      console.log(
-        "dionY [createBudgetActuals] updatedCurrentActualsChangeOrders: ",
-        updatedCurrentActualsChangeOrders
-      );
-
       // create the data to be displayed on the chart for change orders. this will be the cumulative
       // data from current and previous change orders
       const { changeOrderChartData, grandTotal: changeOrderTotal } =
@@ -535,16 +418,6 @@ export const createBudgetActuals = createAsyncThunk(
           updatedCurrentActualsChangeOrders,
           changeOrdersSummary,
         });
-
-      console.log(
-        "dionY [createBudgetActuals] changeOrderChartData: ",
-        changeOrderChartData
-      );
-
-      console.log(
-        "dionY [createBudgetActuals] changeOrderTotal: ",
-        changeOrderTotal
-      );
 
       dispatch(
         projectDataActions.addFullData({
@@ -608,17 +481,6 @@ export const createBudgetActuals = createAsyncThunk(
         invoiceIds: [...invoiceIds],
       });
 
-      console.log(
-        "dionY [createBudgetActuals] clientBillSummary: ",
-        clientBillSummary
-      );
-
-      console.log(clientBillSummary);
-      console.log(snapshotCopy(currentActuals));
-      console.log(snapshotCopy(budgetedTotals.total));
-      console.log(snapshotCopy(changeOrderTotals));
-      console.log(snapshotCopy(currentActualsChangeOrders));
-
       dispatch(
         projectDataActions.addSummaryTableRow({
           newData: clientBillSummary,
@@ -628,16 +490,6 @@ export const createBudgetActuals = createAsyncThunk(
       );
 
       // build the change order plot
-      console.log({
-        b2aChartData: updatedB2AData,
-        b2aChartDataChangeOrder: changeOrderChartData,
-        updatedCurrentActualsChangeOrders,
-        currentGrandTotal: {
-          value: +(grandActualsBudgetedTotal + changeOrderTotal).toFixed(2),
-        },
-        currentBudgetedTotal: { value: grandActualsBudgetedTotal },
-        currentChangeOrderTotal: { value: changeOrderTotal },
-      });
       try {
         const data = await fetchWithRetry(
           `/api/${companyId}/projects/${projectId}/add-b2achartdata`,
@@ -677,7 +529,6 @@ export const createBudgetActuals = createAsyncThunk(
         return false;
       }
       dispatch(uiActions.setLoadingState({ isLoading: false }));
-      console.log("dionY [createBudgetActuals] end !!!!!!!!!!!!!!!!!!!!!!!");
       return {
         clientBillObj: {
           actuals: invoiceCurrentActuals,

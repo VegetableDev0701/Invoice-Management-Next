@@ -10,15 +10,27 @@ import {
 interface Props {
   openModal: boolean;
   message: string;
+  buttonText?: string;
   isLoading?: boolean;
   error?: Record<string, string> | null;
   title?: string;
+  logout?: boolean;
   onConfirm: (e: React.MouseEvent<HTMLButtonElement>) => void;
   onCloseModal: () => void;
 }
 
 function Modal(props: Props) {
-  const { openModal, message, title, onConfirm, onCloseModal } = props;
+  const {
+    openModal,
+    message,
+    title,
+    buttonText,
+    logout,
+    onConfirm,
+    onCloseModal,
+  } = props;
+
+  let trueLogout = logout || false;
 
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -26,10 +38,6 @@ function Modal(props: Props) {
   }, [openModal]);
   // TODO add success/error/loading states to the modal when sending data.
   // TODO add a notification on successful send, and keep the error inside the modal.
-
-  interface error {
-    error: string;
-  }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -55,7 +63,9 @@ function Modal(props: Props) {
 
         <div
           className="fixed z-20 inset-0 overflow-y-auto"
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            setOpen(false);
+          }}
         >
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
@@ -84,19 +94,19 @@ function Modal(props: Props) {
                 <div className="sm:flex sm:items-start">
                   <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-orange-100 sm:mx-0 sm:h-10 sm:w-10">
                     <ExclamationTriangleIcon
-                      className="h-6 w-6 text-stak-orange"
+                      className="h-7 w-7 text-stak-orange"
                       aria-hidden="true"
                     />
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <Dialog.Title
                       as="h3"
-                      className="text-base font-semibold leading-6 text-gray-900"
+                      className="text-lg font-semibold leading-6 text-gray-900"
                     >
                       {`Confirm ${title ? title : 'Save'}`}
                     </Dialog.Title>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">{message}</p>
+                      <p className="text-base text-gray-500">{message}</p>
                     </div>
                   </div>
                 </div>
@@ -109,9 +119,12 @@ function Modal(props: Props) {
                         onConfirm(e);
                         onCloseModal();
                         setOpen(false);
+                        if (trueLogout) {
+                          window.location.href = '/api/auth/logout';
+                        }
                       }}
                     >
-                      {title ? title : 'Save'}
+                      {buttonText ? buttonText : title ? title : 'Save'}
                     </button>
                   )}
                   <button
@@ -158,6 +171,9 @@ export default function ModalConfirm(props: Props) {
             error={props.error}
             message={props.message}
             title={props.title}
+            buttonText={props.buttonText}
+            logout={props.logout}
+
           />,
           portal
         )}

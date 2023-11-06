@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 import {
@@ -18,7 +18,6 @@ import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
 import { FormState, User } from '@/lib/models/formStateModels';
 import { ProjectFormData } from '@/lib/models/formDataModel';
 import { createSingleProjectSummary } from '@/lib/utility/createSummaryDataHelpers';
-import { Rows } from '@/lib/models/summaryDataModel';
 
 import FormComponent from '@/components/Forms/FormComponent';
 import FullScreenLoader from '@/components/UI/Loaders/FullScreenLoader';

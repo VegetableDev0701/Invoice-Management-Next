@@ -1,33 +1,33 @@
-import { useEffect, useState } from "react";
-import { Combobox } from "@headlessui/react";
+import { useEffect, useState } from 'react';
+import { Combobox } from '@headlessui/react';
 
 import {
   useAppDispatch as useDispatch,
   useAppSelector as useSelector,
-} from "@/store/hooks";
+} from '@/store/hooks';
 
-import useConnectDescriptionToCostCode from "@/hooks/use-link-cost-code-description";
-import { usePageData } from "@/hooks/use-page-data";
+import useConnectDescriptionToCostCode from '@/hooks/use-link-cost-code-description';
+import { usePageData } from '@/hooks/use-page-data';
 
-import { getValidFunc } from "@/lib/validation/formValidation";
-import { useGetInputState } from "@/lib/utility/formHelpers";
-import { Items, SelectMenuOptions } from "@/lib/models/formDataModel";
-import { Actions } from "@/lib/models/types";
-import { FormStateItem } from "@/lib/models/formStateModels";
+import { getValidFunc } from '@/lib/validation/formValidation';
+import { useGetInputState } from '@/lib/utility/formHelpers';
+import { Items, SelectMenuOptions } from '@/lib/models/formDataModel';
+import { Actions } from '@/lib/models/types';
+import { FormStateItem } from '@/lib/models/formStateModels';
 import {
   getAllChangeOrderNames,
   getProjectNamesForDropdown,
-} from "@/lib/utility/tableHelpers";
-import { sortArrayByObjKey } from "@/lib/utility/tableHelpers";
-import { ChangeOrderSummary } from "@/lib/models/summaryDataModel";
+} from '@/lib/utility/tableHelpers';
+import { sortArrayByObjKey } from '@/lib/utility/tableHelpers';
+import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
 
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import FullScreenLoader from "../UI/Loaders/FullScreenLoader";
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import FullScreenLoader from '../UI/Loaders/FullScreenLoader';
 
-import classes from "./Input.module.css";
+import classes from './Input.module.css';
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 interface Props {
@@ -42,7 +42,6 @@ interface PropsItems {
   showError?: boolean;
   icon?: JSX.Element;
   changeOrdersSummary?: ChangeOrderSummary | undefined;
-  projectId?: string;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onMouseEnter?: (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => void;
@@ -59,7 +58,6 @@ const DropDownWithSearch = (props: Props) => {
     showError,
     actions,
     form,
-    projectId,
     changeOrdersSummary,
     onBlur,
     onFocus,
@@ -71,27 +69,27 @@ const DropDownWithSearch = (props: Props) => {
   const dispatch = useDispatch();
   const inputState = useGetInputState(input.id, form);
 
-  const { data: projects, isLoading } = usePageData("data", "projectsSummary");
+  const { data: projects, isLoading } = usePageData('data', 'projectsSummary');
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Selected>(
     input?.value
       ? { label: input.value as string }
       : inputState?.value
       ? { label: inputState.value as string }
-      : { label: "" }
+      : { label: '' }
   );
 
   const [dropDownChoices, setDropDownChoices] = useState<SelectMenuOptions[]>(
     input.selectMenuOptions as SelectMenuOptions[]
   );
 
-  const costCodeList: SelectMenuOptions[] =
-    useSelector((state) => state.projects[projectId]?.costCodeList) ||
-    useSelector((state) => state.data.costCodeList);
-  const costCodeNameList: SelectMenuOptions[] =
-    useSelector((state) => state.projects[projectId]?.costCodeNameList) ||
-    useSelector((state) => state.data.costCodeNameList);
+  const costCodeList: SelectMenuOptions[] = useSelector(
+    (state) => state.data.costCodeList
+  );
+  const costCodeNameList: SelectMenuOptions[] = useSelector(
+    (state) => state.data.costCodeNameList
+  );
 
   const updateCostCodeDescription = useConnectDescriptionToCostCode({
     input,
@@ -102,24 +100,24 @@ const DropDownWithSearch = (props: Props) => {
   // This connects the choice for cost code to the corresponding work description
   // and vice versa
   useEffect(() => {
-    if (input.id.includes("cost-code") || input.id.includes("cost_code")) {
-      const workItem = input.id.split("-")[0];
+    if (input.id.includes('cost-code') || input.id.includes('cost_code')) {
+      const workItem = input.id.split('-')[0];
       if (
         input.id === `${workItem}-cost-code` ||
-        input.id === "cost-code" ||
+        input.id === 'cost-code' ||
         input.id === `${workItem}-cost-code`
       ) {
         setSelected(updateCostCodeDescription);
       }
     }
     if (
-      input.id.includes("work-description") ||
-      input.id.includes("work_description")
+      input.id.includes('work-description') ||
+      input.id.includes('work_description')
     ) {
-      const workItem = input.id.split("-")[0];
+      const workItem = input.id.split('-')[0];
       if (
         input.id === `${workItem}-work-description` ||
-        input.id === "work-description" ||
+        input.id === 'work-description' ||
         input.id === `${workItem}-work-description`
       ) {
         setSelected(updateCostCodeDescription);
@@ -129,32 +127,32 @@ const DropDownWithSearch = (props: Props) => {
 
   // dynamically set the dropdown choices based on what the input category is
   useEffect(() => {
-    if (input.id.includes("cost-code") || input.id.includes("cost_code")) {
+    if (input.id.includes('cost-code') || input.id.includes('cost_code')) {
       const costCodeListNew = [...costCodeList];
-      setDropDownChoices(sortArrayByObjKey(costCodeListNew, "label", "None"));
-    } else if (input.id.includes("project-supervisor")) {
+      setDropDownChoices(sortArrayByObjKey(costCodeListNew, 'label', 'None'));
+    } else if (input.id.includes('project-supervisor')) {
       // TODO grab all potential supervisors for a company here
-    } else if (input.id.includes("project-name")) {
+    } else if (input.id.includes('project-name')) {
       setDropDownChoices(getProjectNamesForDropdown(projects.allProjects));
     } else if (
-      input.id.includes("work-description") ||
-      input.id.includes("work_description")
+      input.id.includes('work-description') ||
+      input.id.includes('work_description')
     ) {
       const costCodeNameListNew = [...costCodeNameList];
       setDropDownChoices(
-        sortArrayByObjKey(costCodeNameListNew, "label", "None")
+        sortArrayByObjKey(costCodeNameListNew, 'label', 'None')
       );
-    } else if (input.id.includes("change-order")) {
+    } else if (input.id.includes('change-order')) {
       if (changeOrdersSummary) {
         setDropDownChoices(
           sortArrayByObjKey(
             getAllChangeOrderNames({ changeOrdersSummary }),
-            "label",
-            "None"
+            'label',
+            'None'
           )
         );
       } else {
-        setDropDownChoices([{ id: 1, label: "None" }]);
+        setDropDownChoices([{ id: 1, label: 'None' }]);
       }
     }
   }, [isLoading]);
@@ -162,7 +160,7 @@ const DropDownWithSearch = (props: Props) => {
   // will query the list of available options as the user types and dynamically match them
   // this version will match any letter, so super will match to project supervision
   let filteredOptions =
-    query.trim() === ""
+    query.trim() === ''
       ? (dropDownChoices as SelectMenuOptions[])
       : (dropDownChoices as SelectMenuOptions[]).filter((option) => {
           return option.label
@@ -212,7 +210,7 @@ const DropDownWithSearch = (props: Props) => {
     : !inputState?.isValid;
 
   return (
-    <div className={`${classes["input-container"]} ${addOnClass}`}>
+    <div className={`${classes['input-container']} ${addOnClass}`}>
       {!filteredOptions && <FullScreenLoader notFullScreen={true} />}
       {filteredOptions && (
         <Combobox as="div" value={selected} onChange={setSelected}>
@@ -220,8 +218,8 @@ const DropDownWithSearch = (props: Props) => {
             htmlFor={input.id}
             className={`block font-sans ${
               input.isOnOverlay
-                ? "font-semibold text-md"
-                : "font-semibold text-lg"
+                ? 'font-semibold text-md'
+                : 'font-semibold text-lg'
             } text-stak-dark-gray`}
           >
             {input.label}
@@ -229,19 +227,19 @@ const DropDownWithSearch = (props: Props) => {
           <div className="relative mt-1" onBlur={blurHandler}>
             <Combobox.Input
               className={`font-sans w-full pr-14 rounded-lg border-2 ${
-                input.isOnOverlay ? "rounded-md py-1.5" : "rounded-lg"
+                input.isOnOverlay ? 'rounded-md py-1.5' : 'rounded-lg'
               } ${
                 isError && isInputRequired
-                  ? "border-red-500"
-                  : "border-stak-light-gray"
-              } ${classes["input-container__input"]}`}
+                  ? 'border-red-500'
+                  : 'border-stak-light-gray'
+              } ${classes['input-container__input']}`}
               onChange={(event) => setQuery(event.target.value)}
               onMouseEnter={onMouseEnter}
               onMouseLeave={onMouseLeave}
               onFocus={onFocus}
               displayValue={(option: { label: string }) => {
-                return option?.label && option.label === "None"
-                  ? ""
+                return option?.label && option.label === 'None'
+                  ? ''
                   : option?.label;
               }}
               id={input.id}
@@ -261,10 +259,10 @@ const DropDownWithSearch = (props: Props) => {
                     value={option}
                     className={({ active }) =>
                       classNames(
-                        "font-sans text-base relative cursor-default select-none py-2 pl-3 pr-9",
+                        'font-sans text-base relative cursor-default select-none py-2 pl-3 pr-9',
                         active
-                          ? "bg-stak-dark-green text-white"
-                          : "text-stak-dark-gray"
+                          ? 'bg-stak-dark-green text-white'
+                          : 'text-stak-dark-gray'
                       )
                     }
                   >
@@ -272,8 +270,8 @@ const DropDownWithSearch = (props: Props) => {
                       <>
                         <span
                           className={classNames(
-                            "block truncate",
-                            selected ? "font-semibold" : ""
+                            'block truncate',
+                            selected ? 'font-semibold' : ''
                           )}
                         >
                           {option.label}
@@ -282,8 +280,8 @@ const DropDownWithSearch = (props: Props) => {
                         {selected && (
                           <span
                             className={classNames(
-                              "absolute inset-y-0 right-0 flex items-center pr-4",
-                              active ? "text-white" : "text-indigo-600"
+                              'absolute inset-y-0 right-0 flex items-center pr-4',
+                              active ? 'text-white' : 'text-indigo-600'
                             )}
                           >
                             <CheckIcon className="h-5 w-5" aria-hidden="true" />

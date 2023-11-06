@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { Items } from '@/lib/models/formDataModel';
 import { Actions } from '@/lib/models/types';
-import { ChangeOrderSummary, SummaryRows } from '@/lib/models/summaryDataModel';
+import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
 
 import InputBaseWithValidation from './InputBaseWithValidation';
 import DropDownWithSearch from './InputDropDownWithSearch';
@@ -28,7 +28,6 @@ interface Props {
 
 export const Input = (props: Props) => {
   const { input } = props;
-
   // disable the wheel scrolling effect and remove arrows from number input fields
   useEffect(() => {
     // Get the number input element

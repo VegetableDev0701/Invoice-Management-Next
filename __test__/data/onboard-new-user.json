@@ -12,8 +12,7 @@
               "isPhoneNumber": false,
               "value": "",
               "required": true,
-              "errormessage": "Your company name name is required.",
-              "disabled": true
+              "errormessage": "Company name is required."
             }
           ]
         },
@@ -24,14 +23,16 @@
               "id": "first-name-as",
               "type": "text",
               "value": "",
-              "required": false
+              "required": true,
+              "errormessage": "Your first and last name is required."
             },
             {
               "label": "Last Name",
               "id": "last-name-as",
               "type": "text",
               "value": "",
-              "required": false
+              "required": true,
+              "errormessage": "Your first and last name is required."
             }
           ]
         },
@@ -56,8 +57,8 @@
               "type": "text",
               "validFunc": "email",
               "value": "",
-              "required": false,
-              "disabled": true
+              "required": true,
+              "errormessage": "Your email is required."
             }
           ]
         },
@@ -111,31 +112,6 @@
       ]
     },
     {
-      "name": "Budget",
-      "inputElements": [
-        {
-          "items": [
-            {
-              "label": "Cost Code Format",
-              "id": "cost-code-format-as",
-              "inputType": "dropdown",
-              "value": "Custom",
-              "sideButton": true,
-              "buttonText": "Edit Format",
-              "buttonPath": "account-settings/edit-cost-codes",
-              "required": false,
-              "selectMenuOptions": [
-                {
-                  "id": 1,
-                  "label": "Custom"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
       "name": "Permissions",
       "inputElements": [
         {
@@ -180,38 +156,13 @@
               "inputType": "dropdown",
               "value": "",
               "required": false,
-              "sideButton": true,
+              "sideButton": false,
               "buttonText": "Press to Integrate Software",
               "buttonPath": "agave",
               "selectMenuOptions": [
                 {
                   "id": 1,
                   "label": "QuickBooks Desktop"
-                },
-                {
-                  "id": 2,
-                  "label": "QuickBooks Online"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "items": [
-            {
-              "label": "Project Management Software",
-              "id": "project-management-software-as",
-              "inputType": "dropdown",
-              "value": "",
-              "required": false,
-              "selectMenuOptions": [
-                {
-                  "id": 1,
-                  "label": "BuilderTrend"
-                },
-                {
-                  "id": 2,
-                  "label": "Procore"
                 }
               ]
             }

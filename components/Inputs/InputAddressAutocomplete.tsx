@@ -19,7 +19,6 @@ interface Props {
   showError: boolean;
   formState: FormState;
   actions: Actions;
-  form: string;
 }
 
 const InputAddressAutocomplete = (props: Props) => {
@@ -326,6 +325,7 @@ const InputAddressAutocomplete = (props: Props) => {
                       type={item.type as string}
                       placeholder=""
                       id={item.id}
+                      disabled={item.disabled}
                       inputMode={
                         item.inputmode as
                           | 'none'

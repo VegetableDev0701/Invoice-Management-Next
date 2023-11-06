@@ -1,10 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { InitialUserState, User } from '@/lib/models/formStateModels';
+import { User } from '@/lib/models/formStateModels';
 
-const initialUserState: InitialUserState = {
-  user: undefined,
-};
+const initialUserState = {} as User;
 
 const userSlice = createSlice({
   name: 'user',
@@ -12,7 +10,7 @@ const userSlice = createSlice({
   reducers: {
     setUserState(state, action: PayloadAction<User>) {
       const user = action.payload;
-      state.user = { ...user };
+      return user;
     },
   },
 });

@@ -1,7 +1,10 @@
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useEffect, useState } from 'react';
 
-import { useAppDispatch as useDispatch } from '@/store/hooks';
+import {
+  useAppSelector as useSelector,
+  useAppDispatch as useDispatch,
+} from '@/store/hooks';
 import { sseActions } from '@/store/sse-slice';
 import { uiActions } from '@/store/ui-slice';
 
@@ -21,6 +24,8 @@ export default function useUploadFilesHandler({
   const [numberOfFiles, setNumberOfFiles] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   const [duplicateFiles, setDuplicateFiles] = useState<string[]>([]);
+
+  const nodeEnv = useSelector((state) => state.nodeEnv);
 
   const dispatch = useDispatch();
 
@@ -79,11 +84,11 @@ export default function useUploadFilesHandler({
 
         let url = '';
         if (uploadFileType === 'invoice') {
-          url = `${getAPIUrl()}/${
+          url = `${getAPIUrl({ ...nodeEnv })}/${
             (user as User).user_metadata.companyId
           }/upload-files`;
         } else if (uploadFileType === 'contract') {
-          url = `${getAPIUrl()}/${
+          url = `${getAPIUrl({ ...nodeEnv })}/${
             (user as User).user_metadata.companyId
           }/upload-contracts/?project_id=${projectId ? projectId : 'None'}`;
         }

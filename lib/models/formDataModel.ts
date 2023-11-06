@@ -1,7 +1,7 @@
 // utility data model functions
 export function isInputElementWithAddressElements(
   element: InputElement
-): element is InputElementWithAddressElements {
+): element is InputElementWithAddressItems {
   return 'addressElements' in element && element.addressElements !== null;
 }
 
@@ -86,7 +86,7 @@ export interface MainCategories {
   inputElements: InputElement[];
 }
 
-export interface InputElementWithAddressElements {
+export interface InputElementWithAddressItems {
   name: string;
   addressElements: AddressItems[];
 }
@@ -100,7 +100,7 @@ export interface InputElementWithItems {
 }
 
 export type InputElement<T = any> =
-  | InputElementWithAddressElements
+  | InputElementWithAddressItems
   | InputElementWithItems;
 
 export interface SelectMenuOptions {
@@ -115,6 +115,7 @@ export interface Items {
   value: string | number | boolean | null | {} | undefined;
   id: string;
   required: boolean;
+  disabled?: boolean;
   number?: number;
   'data-testid'?: string | null;
   type?: string | null;

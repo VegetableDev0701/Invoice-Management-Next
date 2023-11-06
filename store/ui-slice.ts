@@ -10,10 +10,11 @@ interface Notification {
   icon?: 'success' | 'error' | 'trash' | 'save';
 }
 
-interface ErrorModal {
+export interface ErrorModal {
   openModal: boolean;
-  message: string;
-  title: string;
+  message?: string;
+  title?: string;
+  logout?: boolean;
 }
 
 interface ProcessingNotification {
@@ -27,7 +28,7 @@ export const initialUIState: InitialUIState &
   Record<'processingNotification', ProcessingNotification> = {
   isLoading: false,
   notification: { openNotification: false, content: '', icon: 'success' },
-  errorModal: { openModal: false, message: '', title: '' },
+  errorModal: { openModal: false, message: '', title: '', logout: false },
   processingNotification: { openNotification: false, content: '' },
 };
 
@@ -68,14 +69,18 @@ const uiSlice = createSlice({
         openModal: boolean;
         message?: string;
         title?: string;
+        logout?: boolean;
       }>
     ) {
-      const { openModal, message, title } = action.payload;
+      const { openModal, message, title, logout } = action.payload;
       state.errorModal.openModal = openModal;
-      if (message && title) {
+      if (message) {
         state.errorModal.message = message;
+      }
+      if (title) {
         state.errorModal.title = title;
       }
+      state.errorModal.logout = logout ?? false;
     },
   },
 });

@@ -46,16 +46,10 @@ export interface User extends UserProfile {
 }
 
 export interface UserMetadata {
-  [key: string]: any;
-  accountSettings: AccountSettings;
-}
-
-export interface AccountSettings {
-  [key: string]: AccountSetting;
-}
-
-interface AccountSetting {
-  value: any;
+  companyName: string;
+  companyId: string;
+  userUUID: string;
+  accountSettings: { [key: string]: { value: string } };
 }
 
 export interface ChangeOrderFormStateV2 {

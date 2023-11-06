@@ -13,7 +13,10 @@ import {
   getProjectNamesForDropdown,
 } from '@/lib/utility/tableHelpers';
 import { Items, SelectMenuOptions } from '@/lib/models/formDataModel';
-import { InvoiceData } from '@/lib/models/invoiceDataModels';
+import {
+  InvoiceData,
+  InvoiceTableHeadings,
+} from '@/lib/models/invoiceDataModels';
 
 import InvoicesTable from '@/components/Tables/Invoices/InvoiceSortHeadingsTable';
 import Card from '@/components/UI/Card';
@@ -26,7 +29,7 @@ const tabs = [
   { name: 'All Unassigned Invoices', keyName: 'all', current: true },
 ];
 
-const tableHeadings = {
+const tableHeadings: InvoiceTableHeadings = {
   vendor_name: 'Vendor',
   project: 'Project',
   predicted_project: 'Predicted Project',
@@ -69,7 +72,7 @@ function Invoices() {
     useUploadFilesHandler({ uploadFileType: 'invoice' });
 
   const [activeTabKeyName, setActiveTabKeyName] = useState<string>('all');
-  const [activeFilter, setActiveFilter] = useState('No Filter');
+  const [activeFilter, setActiveFilter] = useState<string>('No Filter');
 
   let projectsDropdown: SelectMenuOptions[] = [];
   if (!projectsLoading) {
@@ -77,7 +80,6 @@ function Invoices() {
   }
 
   const invoiceRows = useCreateInvoiceRows({ pageLoading, invoices });
-  console.log(invoiceRows);
 
   // legacy code when there were tabs and filters to take into consideration. keep for now in case I bring back that capability
   const filteredData = useMemo(() => {

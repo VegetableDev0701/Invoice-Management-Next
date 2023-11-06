@@ -8,6 +8,7 @@ import Button from '../Buttons/Button';
 import FilterDropdown from '@/components/Inputs/InputFilterDropdown';
 import SimpleUploadForm from '@/components/Forms/FileForm/SimpleUploadForm';
 import { InvoiceProject } from '@/lib/models/invoiceDataModels';
+import { classNames } from '@/lib/utility/utils';
 
 interface SectionTabs {
   name: string;
@@ -35,10 +36,6 @@ interface Props {
   totalInvoices?: number;
   onActiveTab: (activeTabKeyName: string) => void;
   onFilter?: (activeFilter: string) => void;
-}
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
 }
 
 export default function SectionHeading(props: Props) {

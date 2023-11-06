@@ -87,9 +87,9 @@ const ProjectHome = () => {
   );
 
   const [projectData, setProjectData] = useState<ProjectDataItems | null>(null);
-  const [projectDataLoading, setProjectDataLoading] = useState(false);
-  const [updateProject, setUpdateProject] = useState(false);
-  const [updateBudget, setUpdateBudget] = useState(false);
+  const [projectDataLoading, setProjectDataLoading] = useState<boolean>(false);
+  const [updateProject, setUpdateProject] = useState<boolean>(false);
+  const [updateBudget, setUpdateBudget] = useState<boolean>(false);
   const [activeTabKeyName, setActiveTabKeyName] = useState<string>('summary');
   const {
     data,
@@ -133,7 +133,12 @@ const ProjectHome = () => {
   // intialize the budget form state and calculate totals when going to a project page
   useEffect(() => {
     if (projectId && isProjectsFetched) {
-      dispatch(initializeBudgetThunk({ projectId })).then(() => {
+      dispatch(
+        initializeBudgetThunk({
+          projectId,
+          companyId: (user as User).user_metadata.companyId,
+        })
+      ).then(() => {
         dispatch(initializeBudgetTotalsThunk()).then(() => {
           dispatch(
             initializeB2AChartDataThunk({

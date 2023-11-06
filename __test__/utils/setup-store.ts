@@ -6,19 +6,17 @@ import addVendorFormSlice from '@/store/add-vendor-slice';
 import userSlice from '@/store/user-slice';
 import accountSettingsFormSlice from '@/store/account-settings-slice';
 import { companyDataSlice } from '@/store/company-data-slice';
-import uiSlice, { initialUIState, InitialUIState } from '@/store/ui-slice';
+import uiSlice, { initialUIState } from '@/store/ui-slice';
 
-import { FormState, InitialUserState } from '@/lib/models/formStateModels';
+import { FormState, User } from '@/lib/models/formStateModels';
 import { CompanyData } from '@/lib/models/companyDataModel';
+import { UserProfile } from '@auth0/nextjs-auth0/client';
 
 const initialAcccountSettingsState: FormState = {};
 const initialAddProjectFormState: FormState = {
   numRecurringFees: { value: 0 },
 };
 const initialAddVendorFormState: FormState = {};
-const initialUserState: InitialUserState = {
-  user: { user_metadata: { accountSettings: {} } },
-};
 const initialCompanyDataState = {} as CompanyData;
 
 interface RootState {
@@ -26,7 +24,7 @@ interface RootState {
   accountSettingsForm: typeof initialAcccountSettingsState;
   addProjectForm: typeof initialAddProjectFormState;
   addVendorForm: typeof initialAddVendorFormState;
-  user: typeof initialUserState;
+  user: User;
   data: typeof initialCompanyDataState;
   ui: typeof initialUIState;
 }

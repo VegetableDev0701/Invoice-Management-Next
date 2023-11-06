@@ -34,7 +34,10 @@ import {
 import { checkExpirationDate, sortTableData } from '@/lib/utility/tableHelpers';
 import { Items } from '@/lib/models/formDataModel';
 import { User } from '@/lib/models/formStateModels';
-import { InvoiceTableRow } from '@/lib/models/invoiceDataModels';
+import {
+  InvoiceTableHeadings,
+  InvoiceTableRow,
+} from '@/lib/models/invoiceDataModels';
 
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import Button from '../../UI/Buttons/Button';
@@ -66,7 +69,11 @@ interface Props<H> {
   preSortTo?: keyof H;
 }
 
-const InvoicesTable = <H extends Partial<InvoiceTableRow>>(props: Props<H>) => {
+const InvoicesTable = <
+  H extends Partial<InvoiceTableRow> & InvoiceTableHeadings
+>(
+  props: Props<H>
+) => {
   const {
     headings,
     rows,
@@ -374,7 +381,7 @@ const InvoicesTable = <H extends Partial<InvoiceTableRow>>(props: Props<H>) => {
                           <th
                             key={`${i}`}
                             scope="col"
-                            id={formatNameForID(heading)}
+                            id={formatNameForID(heading as string)}
                             className={classNames(
                               i === 0
                                 ? firstHeadingClasses

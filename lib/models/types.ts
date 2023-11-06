@@ -18,6 +18,7 @@ import { addProcessInvoiceFormActions } from '@/store/add-process-invoice';
 import { invoiceActions } from '@/store/invoice-slice';
 import { BudgetTotalItem, BudgetTotalItemV2 } from './budgetCostCodeModel';
 import { InvoiceLineItemItem } from './invoiceDataModels';
+import { onboardUserActions } from '@/store/onboard-user-slice';
 
 export type AddProjectActions = typeof addProjectFormActions;
 type AddVendorActions = typeof addVendorFormActions;
@@ -28,6 +29,7 @@ type AddContractFormActions = typeof addContractFormActions;
 type AddBudgetActions = typeof addBudgetFormActions;
 export type AddProcessInvoiceActions = typeof addProcessInvoiceFormActions;
 export type InvoiceActions = typeof invoiceActions;
+type OnboardUserActions = typeof onboardUserActions;
 
 export type Actions =
   | AddProjectActions
@@ -37,7 +39,8 @@ export type Actions =
   | AddChangeOrderActions
   | AddContractFormActions
   | AddBudgetActions
-  | AddProcessInvoiceActions;
+  | AddProcessInvoiceActions
+  | OnboardUserActions;
 
 export type FormData =
   | ProjectFormData

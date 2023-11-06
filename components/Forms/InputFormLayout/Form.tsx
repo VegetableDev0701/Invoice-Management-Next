@@ -3,21 +3,20 @@ import React, { useEffect } from 'react';
 import scrollToElement from '@/lib/utility/scrollToElement';
 import { formatNameForID } from '@/lib/utility/formatter';
 import { getFormIcon } from '@/lib/utility/formHelpers';
-import { Actions, AddProjectActions, FormData } from '@/lib/models/types';
+import { Actions, FormData } from '@/lib/models/types';
 import { FormState } from '@/lib/models/formStateModels';
 import {
-  InputElementWithAddressElements,
+  InputElementWithAddressItems,
   MainCategories,
-  ProjectFormData,
   isInputElementWithAddressElements,
 } from '@/lib/models/formDataModel';
 
 import Card from '../../UI/Card';
 import { Input } from '../../Inputs/Input';
-import RecurringFees from './RecurringFees';
 import InputAddressAutocomplete from '@/components/Inputs/InputAddressAutocomplete';
 
 import classes from './FormLayout.module.css';
+import { classNames } from '@/lib/utility/utils';
 
 interface EmptyAddProjectFormForTesting {
   mainCategories: MainCategories[];
@@ -25,14 +24,15 @@ interface EmptyAddProjectFormForTesting {
 }
 
 export interface Props {
-  clickedLink: string;
   formData: FormData | EmptyAddProjectFormForTesting;
   formState: FormState;
   showError: boolean;
-  anchorScrollElement: string;
   actions: Actions;
   form: string;
-  dummyForceRender: boolean;
+  extraClasses?: string;
+  anchorScrollElement?: string;
+  clickedLink?: string;
+  dummyForceRender?: boolean;
 }
 
 function Form(props: Props) {
@@ -45,15 +45,21 @@ function Form(props: Props) {
     actions,
     form,
     dummyForceRender,
+    extraClasses,
   } = props;
 
   useEffect(() => {
-    scrollToElement(clickedLink, anchorScrollElement, 'scroll-frame');
+    if (clickedLink && anchorScrollElement) {
+      scrollToElement(clickedLink, anchorScrollElement, 'scroll-frame');
+    }
   }, [clickedLink, anchorScrollElement, dummyForceRender]);
 
   return (
     <Card
-      className={`${classes['parent-frame']} ${classes['parent-frame__form']} bg-stak-white`}
+      className={classNames(
+        `flex items-start h-full p-5 bg-stak-white`,
+        extraClasses
+      )}
     >
       <div className={classes['scroll-frame']} id="scroll-frame">
         <form id="form-id" className={classes['content-frame']}>
@@ -78,12 +84,10 @@ function Form(props: Props) {
                         classes="flex-1 px-10 py-2"
                         actions={actions}
                         input={
-                          (el as InputElementWithAddressElements)
-                            .addressElements
+                          (el as InputElementWithAddressItems).addressElements
                         }
                         formState={formState}
                         showError={showError}
-                        form={form}
                       />
                     );
                   }

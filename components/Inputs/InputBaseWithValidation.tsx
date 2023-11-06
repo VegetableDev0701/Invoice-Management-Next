@@ -27,6 +27,7 @@ export interface PropsItems {
   input: Items;
   actions: Actions;
   form: string;
+  disabled?: boolean;
   autofocus?: boolean;
   classes?: string;
   showError?: boolean;
@@ -148,6 +149,7 @@ const InputBaseWithValidation = (props: Props) => {
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             ref={inputRef}
+            disabled={input.disabled ?? false}
           />
           {(isError || isNameDuped) && isRequired && (
             <div

@@ -45,7 +45,7 @@ export default function ProjectsContracts(props: Props) {
   const { data: addContractFormData, isLoading: isLoading } = usePageData(
     'data',
     'forms',
-    'add-contract'
+    'add-contracts'
   );
 
   // TODO add functionality to edit a contract (use the process-invoice form)
@@ -256,22 +256,24 @@ export default function ProjectsContracts(props: Props) {
     <>
       {isLoading && <FullScreenLoader />}
       {!isLoading && (
-        <ContractSlideOverlayImage
-          rows={tableData && Object.values(tableData).map((row) => row)}
-          projectId={projectId}
-        />
+        <>
+          <ContractSlideOverlayImage
+            rows={tableData && Object.values(tableData).map((row) => row)}
+            projectId={projectId}
+          />
+          <CheckboxSubTable
+            headings={tableHeadings}
+            rows={contractRows}
+            checkboxButtons={checkBoxButtons}
+            projectId={projectId}
+            showExpiration={false}
+            selectedRowId={selectedContractId}
+            preSortKey={'name'}
+            onConfirmModal={confirmModalHandler}
+            onRowClick={rowClickHandler}
+          />
+        </>
       )}
-      <CheckboxSubTable
-        headings={tableHeadings}
-        rows={contractRows}
-        checkboxButtons={checkBoxButtons}
-        projectId={projectId}
-        showExpiration={false}
-        selectedRowId={selectedContractId}
-        preSortKey={'name'}
-        onConfirmModal={confirmModalHandler}
-        onRowClick={rowClickHandler}
-      />
     </>
   );
 }
