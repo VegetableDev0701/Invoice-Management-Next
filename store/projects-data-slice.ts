@@ -399,6 +399,19 @@ const projectDataSlice = createSlice({
   name: "projects",
   initialState: initialDataState,
   reducers: {
+    updateCostCodeData(
+      state,
+      action: PayloadAction<{
+        data: CostCodesData;
+        projectId: string;
+      }>
+    ) {
+      const { data, projectId } = action.payload;
+      state[projectId] = {
+        ...state[projectId],
+        budget: data,
+      };
+    },
     addNewProject(
       state,
       action: PayloadAction<{
@@ -1173,7 +1186,7 @@ const projectDataSlice = createSlice({
             costCodeList,
             costCodeNameList,
           };
-          
+
           console.log(
             "dionY [fetchProjectData fulfilled]",
             projectId,

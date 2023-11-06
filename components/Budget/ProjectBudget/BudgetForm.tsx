@@ -14,6 +14,7 @@ import {
   useAppSelector as useSelector,
 } from "@/store/hooks";
 import { addBudgetFormActions } from "@/store/add-budget-slice";
+import { projectDataActions } from "@/store/projects-data-slice";
 
 import scrollToElement from "@/lib/utility/scrollToElement";
 import { formatNameForID } from "@/lib/utility/formatter";
@@ -46,6 +47,7 @@ interface Props {
   dummyForceRender: boolean;
   anchorScrollElement: string;
   actions: Actions;
+  projectId: string;
 }
 
 const initTreeData = {
@@ -65,6 +67,7 @@ export default function BudgetForm(props: Props) {
     anchorScrollElement,
     actions,
     dummyForceRender,
+    projectId,
   } = props;
 
   const formState = useSelector((state) => state.addBudgetForm);
@@ -206,16 +209,24 @@ export default function BudgetForm(props: Props) {
     const convertTreeData = new ConvertTreeData();
     convertTreeData.calculateCostCode(newTreeData);
     const total = convertTreeData.getTotalBudget(newTreeData);
-    const divisionTotals = convertTreeData.getTotalDivision(newTreeData);
-    const subDivisionTotals = convertTreeData.getTotalSubDivision(newTreeData);
+    // const divisionTotals = convertTreeData.getTotalDivision(newTreeData);
+    // const subDivisionTotals = convertTreeData.getTotalSubDivision(newTreeData);
     dispatch(
       addBudgetFormActions.setFormElement({
         total: total.toFixed(2),
-        divisionTotals,
-        subDivisionTotals,
+        divisionTotals: {},
+        subDivisionTotals: {},
       })
     );
     newTreeData[treeItemIndex].data.value = value;
+    console.log("dionY [handleChangeValue] newTreeData: ", newTreeData);
+    const newFormData = convertTreeData.convertTreeData2CostCode(newTreeData);
+    dispatch(
+      projectDataActions.updateCostCodeData({
+        projectId,
+        data: newFormData,
+      })
+    );
     setCostCodeTreeDataList(newTreeData);
   };
 
