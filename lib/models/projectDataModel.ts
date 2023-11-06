@@ -3,8 +3,18 @@ import {
   CurrentActualsChangeOrders,
   CurrentActualsChangeOrdersV2,
 } from './budgetCostCodeModel';
-import { ChangeOrderChartData, ChangeOrderChartDataV2, ChartData, ChartDataV2 } from './chartDataModels';
-import { ChangeOrderData, Labor, ProjectFormData, SelectMenuOptions } from './formDataModel';
+import {
+  ChangeOrderChartData,
+  ChangeOrderChartDataV2,
+  ChartData,
+  ChartDataV2,
+} from './chartDataModels';
+import {
+  ChangeOrderData,
+  Labor,
+  ProjectFormData,
+  SelectMenuOptions,
+} from './formDataModel';
 import {
   ChangeOrderSummary,
   ClientBillSummary,
@@ -20,7 +30,9 @@ export interface B2A {
   currentBudgetedTotal: { value: number };
   currentChangeOrderTotal: { value: number };
   b2aChartDataChangeOrder: ChangeOrderChartData | ChangeOrderChartDataV2;
-  updatedCurrentActualsChangeOrders: CurrentActualsChangeOrders | CurrentActualsChangeOrdersV2;
+  updatedCurrentActualsChangeOrders:
+    | CurrentActualsChangeOrders
+    | CurrentActualsChangeOrdersV2;
 }
 
 export interface ProjectDataItems {

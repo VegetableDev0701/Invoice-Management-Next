@@ -61,7 +61,6 @@ export const getSignedUrlContract = createAsyncThunk(
         }
       );
       const data = await response.json();
-      console.log(data);
       return {
         contractId: contract.uuid,
         signedUrls: data.signed_urls,

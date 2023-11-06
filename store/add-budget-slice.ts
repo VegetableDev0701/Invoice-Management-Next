@@ -18,9 +18,17 @@ import {
   CostCodesData,
   UpdateBudget,
 } from '@/lib/models/budgetCostCodeModel';
-import { createB2AChartData, createB2AChartDataV2 } from '@/lib/utility/chartHelpers';
+import {
+  createB2AChartData,
+  createB2AChartDataV2,
+} from '@/lib/utility/chartHelpers';
 import { projectDataActions } from './projects-data-slice';
-import { ChangeOrderChartData, ChangeOrderChartDataV2, ChartData, ChartDataV2 } from '@/lib/models/chartDataModels';
+import {
+  ChangeOrderChartData,
+  ChangeOrderChartDataV2,
+  ChartData,
+  ChartDataV2,
+} from '@/lib/models/chartDataModels';
 
 type ProjectBudgetTotals = PayloadAction<{
   total: string;
@@ -37,7 +45,7 @@ type ProjectBudgetTotals = PayloadAction<{
       name: string;
     };
   };
-}>
+}>;
 
 export const initializeBudgetThunk = createAsyncThunk(
   'budget/initializeBudgetThunk',
@@ -134,9 +142,6 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
       previousData,
     });
 
-    console.log('dionY [initializeB2AChartDataThunk] previousData: ', previousData);
-    console.log('dionY [initializeB2AChartDataThunk] b2aChartData: ', b2aChartData);
-
     thunkAPI.dispatch(
       projectDataActions.addFullData({
         newData: {
@@ -219,10 +224,7 @@ const addBudgetFormSlice = createSlice({
     clearFormState(state) {
       return initialBudgetFormState;
     },
-    initializeBudgetTotals(
-      state,
-      action: ProjectBudgetTotals
-    ) {
+    initializeBudgetTotals(state, action: ProjectBudgetTotals) {
       const { total, subDivisionTotals, divisionTotals } = action.payload;
       state.totalBudget = total;
       state.totalSubDivisions = subDivisionTotals;

@@ -97,7 +97,6 @@ export default function ChangeOrderTables(props: Props) {
         removeChangeOrderIds,
       });
 
-    console.log(updateProcessedData);
 
     // front end updates
     dispatch(

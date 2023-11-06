@@ -1,25 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { useAppSelector as useSelector } from "@/store/hooks";
+import { useAppSelector as useSelector } from '@/store/hooks';
 
-import { formatNameForID } from "@/lib/utility/formatter";
-import scrollToElement from "@/lib/utility/scrollToElement";
+import { formatNameForID } from '@/lib/utility/formatter';
+import scrollToElement from '@/lib/utility/scrollToElement';
 
-import classes from "../Forms/InputFormLayout/FormLayout.module.css";
-import BarChart from "./BarChart";
-import Card from "../UI/Card";
+import classes from '../Forms/InputFormLayout/FormLayout.module.css';
+import BarChart from './BarChart';
+import Card from '../UI/Card';
 import {
   ChartData,
   ChartDataV2,
   CostCodeItemB2AData,
   DivisionData,
   DivisionDataV2,
-} from "@/lib/models/chartDataModels";
+} from '@/lib/models/chartDataModels';
 import {
   CostCodeItem,
   CostCodesData,
   Divisions,
-} from "@/lib/models/budgetCostCodeModel";
+} from '@/lib/models/budgetCostCodeModel';
 
 interface Props {
   formData: CostCodesData;
@@ -71,13 +71,13 @@ export const createIndividualChartData = ({
     labels: chartData?.map((item) => `${item.number} - ${item.name}`),
     datasets: [
       {
-        label: "Budget",
-        backgroundColor: "rgba(86, 144, 146, 1)",
+        label: 'Budget',
+        backgroundColor: 'rgba(86, 144, 146, 1)',
         data: chartData?.map((item) => calculateCostCode(item)),
       },
       {
-        label: "Actual",
-        backgroundColor: "rgba(223, 153, 32, 1)",
+        label: 'Actual',
+        backgroundColor: 'rgba(223, 153, 32, 1)',
         data: chartData?.map((item) => calculateActual(item)),
       },
     ],
@@ -144,10 +144,8 @@ export default function BudgetToActualCharts(props: Props) {
     (state) => state.projects[projectId]?.b2a?.b2aChartData
   );
 
-  console.log("dionY [BudgetToActualCharts] b2aChartData: ", b2aChartData);
-
   useEffect(() => {
-    scrollToElement(clickedLink, anchorScrollElement, "scroll-frame");
+    scrollToElement(clickedLink, anchorScrollElement, 'scroll-frame');
   }, [clickedLink, dummyForceRender]);
 
   useEffect(() => {
@@ -457,7 +455,7 @@ export default function BudgetToActualCharts(props: Props) {
   // };
   return (
     <Card
-      className={`${classes["parent-frame"]} ${classes["parent-frame__form"]} bg-stak-white flex flex-col`}
+      className={`${classes['parent-frame']} ${classes['parent-frame__form']} bg-stak-white flex flex-col`}
     >
       <div
         className="flex-grow flex-shrink flex flex-1 flex-col h-full self-stretch overflow-y-scroll gap-8"
@@ -477,7 +475,7 @@ export default function BudgetToActualCharts(props: Props) {
                 <div
                   key={division}
                   className="w-full h-96 px-10"
-                  id={formatNameForID(fullData.name)}
+                  id={formatNameForID(fullData?.name || '')}
                 >
                   {(chartData.datasets[0].data?.some((data) => data > 0) ||
                     chartData.datasets[1].data?.some((data) => data > 0)) && (

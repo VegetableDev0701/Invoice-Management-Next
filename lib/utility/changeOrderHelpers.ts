@@ -75,7 +75,6 @@ export const createRemoveCoFromData = ({
     changeOrdersSummary,
     removeChangeOrderIds,
   });
-  console.log(deleteCOFromDataObj);
   const { invoicesToUpdate, laborToUpdate } = createDataToUpdateObj({
     deleteCOFromDataObj,
     allInvoices,

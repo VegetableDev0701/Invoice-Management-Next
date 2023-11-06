@@ -1,5 +1,5 @@
-import { CurrentActuals, CurrentActualsV2 } from "./budgetCostCodeModel";
-import { FormStateItem } from "./formStateModels";
+import { CurrentActuals, CurrentActualsV2 } from './budgetCostCodeModel';
+import { FormStateItem } from './formStateModels';
 
 export interface CostCodeB2AData {
   subDivision: number | string;
@@ -51,7 +51,7 @@ export interface CostCodeItemB2AData {
 }
 
 export interface ChartDataV2 {
-  divisions: DivisionDataV2[]
+  divisions: DivisionDataV2[];
 }
 
 export interface ChangeOrderChartDataV2 {

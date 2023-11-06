@@ -5,11 +5,11 @@ import {
   CurrentActualsClientBillV2,
   SubTotals,
   SubTotalsV2,
-} from "@/lib/models/clientBillModel";
+} from '@/lib/models/clientBillModel';
 
-import ClientBillWorkDescriptionTable from "@/components/Tables/Invoices/ClientBillWorkDescriptionTable";
-import { useAppSelector as useSelector } from "@/store/hooks";
-import { ClientBillSummary } from "@/lib/models/summaryDataModel";
+import ClientBillWorkDescriptionTable from '@/components/Tables/Invoices/ClientBillWorkDescriptionTable';
+import { useAppSelector as useSelector } from '@/store/hooks';
+import { ClientBillSummary } from '@/lib/models/summaryDataModel';
 
 interface Props {
   projectId: string;
@@ -19,11 +19,11 @@ interface Props {
 }
 
 const tableHeadings = {
-  qtyAmt: "Qty",
-  description: "Description",
-  rateAmt: "Rate",
-  vendor: "Vendor",
-  totalAmt: "Total ($)",
+  qtyAmt: 'Qty',
+  description: 'Description',
+  rateAmt: 'Rate',
+  vendor: 'Vendor',
+  totalAmt: 'Total ($)',
 };
 
 export default function ClientBillWorkDescription(props: Props) {
@@ -31,13 +31,13 @@ export default function ClientBillWorkDescription(props: Props) {
 
   const clientBillSummary = useSelector(
     (state) =>
-      (state.projects[projectId]["client-bills-summary"] as ClientBillSummary)[
+      (state.projects[projectId]['client-bills-summary'] as ClientBillSummary)[
         clientBillId
       ]
   );
 
   const changeOrderSummary = useSelector(
-    (state) => state.projects[projectId]["change-orders-summary"]
+    (state) => state.projects[projectId]['change-orders-summary']
   );
 
   const subTotals: SubTotalsV2 | null = currentActuals
@@ -46,8 +46,9 @@ export default function ClientBillWorkDescription(props: Props) {
           Object.entries(currentActuals.currentActuals).filter(
             ([_, currentActual]) => {
               return (
+                // TODO
                 // currentActual.divisionName === 'Profit, Taxes, and Liability'
-                currentActual.costCodeName === ""
+                currentActual.costCodeName === ''
               );
             }
           )

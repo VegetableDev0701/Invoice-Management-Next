@@ -1,26 +1,26 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from 'react';
 import {
   Chart,
   ChartConfiguration,
   registerables,
   TooltipItem,
-} from "chart.js";
-import ChartDataLabels from "chartjs-plugin-datalabels";
+} from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-import { formatNumber } from "@/lib/utility/formatter";
-import { CostCodeItem, Divisions } from "@/lib/models/budgetCostCodeModel";
-import { ChartEvent } from "chart.js/dist/core/core.plugins";
-import { createIndividualChartData } from "./BudgetToActualCharts";
+import { formatNumber } from '@/lib/utility/formatter';
+import { CostCodeItem, Divisions } from '@/lib/models/budgetCostCodeModel';
+import { ChartEvent } from 'chart.js/dist/core/core.plugins';
+import { createIndividualChartData } from './BudgetToActualCharts';
 import {
   CostCodeItemB2AData,
   DivisionDataV2,
-} from "@/lib/models/chartDataModels";
+} from '@/lib/models/chartDataModels';
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
 
 // Define the props interface
 interface BarChartProps {
-  data: ChartConfiguration["data"];
+  data: ChartConfiguration['data'];
   minBarWidth: number;
   title: string;
   division: string;
@@ -63,7 +63,7 @@ const BarChart = (props: BarChartProps) => {
     for (let i = 0; i < level.length; i++) {
       let index = level[i];
       if (levelData.subItems?.length <= index) {
-        console.error("[getCurrentLevelData]: Error!");
+        console.error('[getCurrentLevelData]: Error!');
         return;
       }
 
@@ -84,7 +84,7 @@ const BarChart = (props: BarChartProps) => {
     const { data: currentLevelData } = getCurrentLevelData();
     const selectedData = currentLevelData.subItems[index];
     if (selectedData.subItems?.length === 0) {
-      console.warn("[getCurrentLevelData]: There is no sub-items");
+      console.warn('[getCurrentLevelData]: There is no sub-items');
       return;
     }
 
@@ -93,7 +93,7 @@ const BarChart = (props: BarChartProps) => {
 
   const zoomOut = () => {
     if (level.length === 0) {
-      console.warn("[getCurrentLevelData]: This is the top level element");
+      console.warn('[getCurrentLevelData]: This is the top level element');
       return;
     }
 
@@ -120,10 +120,10 @@ const BarChart = (props: BarChartProps) => {
 
   useEffect(() => {
     if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext("2d");
+      const ctx = canvasRef.current.getContext('2d');
       if (ctx) {
         const chart = new Chart(ctx, {
-          type: "bar",
+          type: 'bar',
           data: {
             ...chartData,
             datasets: chartData.datasets.map((dataset) => ({
@@ -133,7 +133,7 @@ const BarChart = (props: BarChartProps) => {
             })),
           },
           options: {
-            borderColor: "black",
+            borderColor: 'black',
             responsive: true,
             maintainAspectRatio: false,
             animation: {
@@ -142,14 +142,14 @@ const BarChart = (props: BarChartProps) => {
             elements: {
               bar: {
                 borderRadius: 10,
-                inflateAmount: "auto",
+                inflateAmount: 'auto',
               },
             },
             plugins: {
               legend: {
                 display: true,
-                align: "start",
-                position: "right",
+                align: 'start',
+                position: 'right',
                 title: {
                   display: false,
                   padding: 0,
@@ -157,40 +157,40 @@ const BarChart = (props: BarChartProps) => {
                 labels: {
                   font: {
                     size: 18,
-                    weight: "bold",
+                    weight: 'bold',
                   },
                 },
               },
               datalabels: {
-                anchor: "end",
-                align: "top",
+                anchor: 'end',
+                align: 'top',
                 offset: -3,
                 font: {
                   size: 16,
-                  weight: "normal",
+                  weight: 'normal',
                 },
                 formatter: (value, context) => {
-                  return +value > 0 ? `${formatNumber(Math.round(value))}` : "";
+                  return +value > 0 ? `${formatNumber(Math.round(value))}` : '';
                 },
               },
               tooltip: {
-                position: "nearest",
+                position: 'nearest',
                 titleFont: {
                   size: 18,
-                  family: "Helvetica",
+                  family: 'Helvetica',
                 },
                 bodyFont: {
                   size: 16,
-                  family: "Helvetica",
+                  family: 'Helvetica',
                 },
-                backgroundColor: "rgba(0,0,0,1)",
+                backgroundColor: 'rgba(0,0,0,1)',
                 callbacks: {
-                  label: (context: TooltipItem<"bar">) => {
+                  label: (context: TooltipItem<'bar'>) => {
                     const index = context.dataIndex;
                     // only calculate the percents of total for the actuals.
-                    if (context.dataset.label === "Actual") {
+                    if (context.dataset.label === 'Actual') {
                       const actualValue = formatNumber(
-                        (+context.formattedValue.replaceAll(",", "")).toFixed(2)
+                        (+context.formattedValue.replaceAll(',', '')).toFixed(2)
                       );
                       let percentTotal =
                         (context.dataset.data[index] as number) /
@@ -201,9 +201,9 @@ const BarChart = (props: BarChartProps) => {
                         `Percent Complete: ${(percentTotal * 100).toFixed(2)}%`,
                       ];
                     }
-                    if (context.dataset.label === "Budget") {
+                    if (context.dataset.label === 'Budget') {
                       const budgetValue = formatNumber(
-                        (+context.formattedValue.replaceAll(",", "")).toFixed(2)
+                        (+context.formattedValue.replaceAll(',', '')).toFixed(2)
                       );
                       return [`Budget: $${budgetValue}`];
                     }
@@ -213,53 +213,53 @@ const BarChart = (props: BarChartProps) => {
               title: {
                 display: true,
                 // text: title,
-                text: "",
-                align: "start",
+                text: '',
+                align: 'start',
                 padding: {
                   bottom: 25,
                 },
                 font: {
                   size: 24,
-                  family: "Helvetica",
+                  family: 'Helvetica',
                 },
               },
             },
             scales: {
               x: {
-                border: { width: 2, color: "gray" },
+                border: { width: 2, color: 'gray' },
                 beginAtZero: true,
                 grid: {
                   display: false,
                   lineWidth: 10,
                 },
                 ticks: {
-                  font: { family: "Helvetica", size: 16, weight: "bold" },
+                  font: { family: 'Helvetica', size: 16, weight: 'bold' },
                 },
               },
               y: {
-                border: { width: 2, color: "gray" },
+                border: { width: 2, color: 'gray' },
                 beginAtZero: true,
                 grid: { display: false },
                 title: {
                   display: true,
-                  text: "Dollars",
-                  align: "center",
+                  text: 'Dollars',
+                  align: 'center',
                   font: {
                     size: 20,
                   },
                 },
                 ticks: {
                   font: {
-                    family: "Helvetica",
+                    family: 'Helvetica',
                     size: 16,
                   },
                 },
               },
             },
-            events: ["click", "contextmenu"],
+            events: ['click', 'contextmenu'],
             // If a subdivision should not be shown, and go straight to the cost codes,
             onClick: (e: ChartEvent, elements) => {
-              if (e.type === "contextmenu") {
+              if (e.type === 'contextmenu') {
                 zoomOut();
               }
 
@@ -317,20 +317,20 @@ const BarChart = (props: BarChartProps) => {
               if (event?.native && event.native.target) {
                 if (subDivision) {
                   (event.native.target as HTMLButtonElement).style.cursor =
-                    "pointer";
+                    'pointer';
                 } else {
                   (event.native.target as HTMLButtonElement).style.cursor =
-                    chartElement.length > 0 ? "pointer" : "default";
+                    chartElement.length > 0 ? 'pointer' : 'default';
                 }
               }
             },
           },
           plugins: [
             {
-              id: "chart",
+              id: 'chart',
               afterInit: (obj, args, options) => {
                 obj.canvas.addEventListener(
-                  "contextmenu",
+                  'contextmenu',
                   handleContextMenu,
                   false
                 );

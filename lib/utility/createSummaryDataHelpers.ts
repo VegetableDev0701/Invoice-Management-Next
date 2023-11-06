@@ -68,7 +68,6 @@ export const setTargetValue = ({
     if (isInputElementWithItems(element)) {
       const foundItem = element.items.find((item) => item.id === targetId);
       if (foundItem) {
-        console.log(foundItem);
         foundItem.value = setValue;
       }
     }

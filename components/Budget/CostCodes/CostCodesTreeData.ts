@@ -278,7 +278,6 @@ export class ConvertTreeData {
         cost.sum = parseFloat(
           (treeData[child].data as CostCodeItem)?.value ?? "0.0"
         );
-        console.log(cost.sum, treeData[child]);
         cost.total += cost.sum;
         (treeData[child].data as CostCodeItem).value = Number.isNaN(cost.sum)
           ? "0.00"

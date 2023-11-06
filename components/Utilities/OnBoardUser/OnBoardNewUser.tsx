@@ -174,7 +174,6 @@ export default function OnBoardNewUser({
     kAdd?: number;
     isAddress: boolean;
   }) => {
-    console.log(value ? true : false);
     if (isAddress) {
       (
         updatedFormData.mainCategories[i].inputElements[

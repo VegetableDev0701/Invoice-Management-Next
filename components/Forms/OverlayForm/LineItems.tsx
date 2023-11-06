@@ -75,10 +75,8 @@ function LineItems(props: Props) {
   // but also still rename to make the code easier to read further down
   const lineItemsGPT: InvoiceLineItemItem[] | null = currentData?.line_items_gpt
     ? Object.values(currentData.line_items_gpt)
-    
     : null;
 
-  console.log('dionY [LineItems] lineItemsGPT: ', lineItemsGPT);
   const lineItemsJSX = [];
   for (let i = 0; i < (numLineItems as number); i++) {
     lineItemsJSX.push(

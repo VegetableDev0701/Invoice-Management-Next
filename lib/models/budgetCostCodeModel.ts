@@ -1,4 +1,4 @@
-import { FormStateItem } from "./formStateModels";
+import { FormStateItem } from './formStateModels';
 
 // TODO unique property of CostCodeItem in N-level structure
 export interface CostCodesData {
@@ -75,7 +75,7 @@ export interface AggregatedBudgetTotals {
 }
 
 export interface BudgetTotalItem {
-  type: "BudgetTotal";
+  type: 'BudgetTotal';
   value: string;
   isValid?: boolean;
   isTouched?: boolean;
@@ -143,7 +143,7 @@ export interface CurrentActualsItem {
   changeOrder: string | null;
   invoiceIds?: string[];
   laborFeeIds?: string[];
-  group: "Labor and Fees" | "Invoices" | "Change Orders";
+  group: 'Labor and Fees' | 'Invoices' | 'Change Orders';
 }
 
 export interface CurrentActuals {
@@ -179,9 +179,8 @@ export interface ProfitTaxes {
   total: number;
 }
 
-
 export interface BudgetTotalItemV2 {
-  type: "BudgetTotalV2";
+  type: 'BudgetTotalV2';
   costCodeName: string;
   value: string;
   recursiveLevel?: Array<number>;
@@ -237,7 +236,7 @@ export interface CurrentActualsItemV2 {
   changeOrder: string | null;
   invoiceIds?: string[];
   laborFeeIds?: string[];
-  group: "Labor and Fees" | "Invoices" | "Change Orders";
+  group: 'Labor and Fees' | 'Invoices' | 'Change Orders';
 }
 
 export interface CurrentActualsV2 {

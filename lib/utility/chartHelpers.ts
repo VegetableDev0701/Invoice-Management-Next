@@ -8,7 +8,7 @@ import {
   CurrentActualsChangeOrdersV2,
   CurrentActualsItemV2,
   CurrentActualsV2,
-} from "../models/budgetCostCodeModel";
+} from '../models/budgetCostCodeModel';
 import {
   ChartData,
   ChangeOrderChartData,
@@ -16,11 +16,11 @@ import {
   DivisionDataV2,
   CostCodeItemB2AData,
   ChangeOrderChartDataV2,
-} from "../models/chartDataModels";
-import { ChangeOrderSummary } from "../models/summaryDataModel";
-import { isBudgetTotalItem, isBudgetTotalItemV2 } from "../models/types";
-import { getDataByRecursiveLevel, iterateData } from "./costCodeHelpers";
-import { snapshotCopy } from "./utils";
+} from '../models/chartDataModels';
+import { ChangeOrderSummary } from '../models/summaryDataModel';
+import { isBudgetTotalItem, isBudgetTotalItemV2 } from '../models/types';
+import { getDataByRecursiveLevel, iterateData } from './costCodeHelpers';
+import { snapshotCopy } from './utils';
 
 export const createB2AChartData = ({
   divisionTotals,
@@ -56,9 +56,9 @@ export const createB2AChartData = ({
     }
     chartData[divisionKey].subDivisionLabels.push(subDivValue.name);
 
-    if (typeof subDivValue.value === "string") {
+    if (typeof subDivValue.value === 'string') {
       chartData[divisionKey].subDivisionTotals.push(
-        Number(subDivValue.value.replaceAll(",", ""))
+        Number(subDivValue.value.replaceAll(',', ''))
       );
     } else {
       chartData[divisionKey].subDivisionTotals.push(Number(subDivValue.value));
@@ -88,7 +88,7 @@ export const createB2AChartData = ({
       ? costCodeObj.value
       : costCodeObj.totalAmt;
 
-    currentInvoiceTotals += Number(amount.replaceAll(",", ""));
+    currentInvoiceTotals += Number(amount.replaceAll(',', ''));
     const divisionKey = costCodeObj.division;
     const subDivKey = costCodeObj.subDivision;
 
@@ -110,7 +110,7 @@ export const createB2AChartData = ({
       costCodeNumber
     );
     chartData[divisionKey].subDivisions[subDivKey].costCodeTotals.push(
-      +amount.replaceAll(",", "")
+      +amount.replaceAll(',', '')
     );
 
     // initalize the actuals array to all zeros if this object doesn't already exist
@@ -203,14 +203,14 @@ export const createB2AChartDataV2 = ({
         ? costCodeObj.value
         : costCodeObj.totalAmt;
 
-      currentInvoiceTotals += Number(amount.replaceAll(",", ""));
+      currentInvoiceTotals += Number(amount.replaceAll(',', ''));
 
       const { data } = getDataByRecursiveLevel({
         fullData: chartData.divisions,
         level: recursiveLevel,
       });
 
-      (data as CostCodeItemB2AData).actual = String(amount.replaceAll(",", ""));
+      (data as CostCodeItemB2AData).actual = String(amount.replaceAll(',', ''));
     });
 
   return {
@@ -244,10 +244,10 @@ export const addNewChangeOrderValuesToPreviousData = ({
                 totalAmt: (
                   +previousCurrentActualsChangeOrders[changeOrderId][
                     costCode
-                  ].totalAmt.replaceAll(",", "") +
+                  ].totalAmt.replaceAll(',', '') +
                   +updatedCurrentActualsChangeOrders[changeOrderId][
                     costCode
-                  ].totalAmt.replaceAll(",", "")
+                  ].totalAmt.replaceAll(',', '')
                 ).toString(),
               };
               // if then just take the data from the previous and add it to the new current
@@ -285,7 +285,7 @@ export const createB2AChangeOrderChartData = ({
     // to create the change order plot. This object keys are either
     // the direct values for the x-axis, or the change order ids.
     if (
-      changeOrderId !== "profitTaxesLiability" &&
+      changeOrderId !== 'profitTaxesLiability' &&
       !changeOrderChartData?.[changeOrderId]
     ) {
       changeOrderChartData[changeOrderId] = {
@@ -297,17 +297,17 @@ export const createB2AChangeOrderChartData = ({
     let totalValue: number | null = null;
     let actualValue: number = 0;
     let costCodeObj: CurrentActualsV2 = {};
-    if (changeOrderId === "profitTaxesLiability") {
+    if (changeOrderId === 'profitTaxesLiability') {
       totalValue = null;
     } else {
       totalValue = +changeOrdersSummary[changeOrderId].subtotalAmt.replaceAll(
-        ",",
-        ""
+        ',',
+        ''
       );
     }
     Object.keys(updatedCurrentActualsChangeOrders[changeOrderId]).forEach(
       (costCode) => {
-        if (changeOrderId === "profitTaxesLiability") {
+        if (changeOrderId === 'profitTaxesLiability') {
           // TODO ???
           // const name =
           //   updatedCurrentActualsChangeOrders[changeOrderId][costCode]
@@ -327,7 +327,7 @@ export const createB2AChangeOrderChartData = ({
           actualValue += Number(
             updatedCurrentActualsChangeOrders[changeOrderId][
               costCode
-            ].totalAmt.replaceAll(",", "")
+            ].totalAmt.replaceAll(',', '')
           );
           grandTotal += actualValue;
           costCodeObj[costCode] = {

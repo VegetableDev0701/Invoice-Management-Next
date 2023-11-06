@@ -1,16 +1,16 @@
-import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
 
-import { uiActions } from "@/store/ui-slice";
+import { uiActions } from '@/store/ui-slice';
 
-import { formatNumber } from "./formatter";
+import { formatNumber } from './formatter';
 import {
   ChangeOrderSummary,
   LaborLineItem,
   LaborSummaryItem,
   ProjectSummaryItem,
-} from "../models/summaryDataModel";
-import { getCostCodeDescriptionFromNumber } from "./costCodeHelpers";
-import { SelectMenuOptions } from "../models/formDataModel";
+} from '../models/summaryDataModel';
+import { getCostCodeDescriptionFromNumber } from './costCodeHelpers';
+import { SelectMenuOptions } from '../models/formDataModel';
 import {
   AggregatedBudgetTotals,
   BudgetTotals,
@@ -29,13 +29,13 @@ import {
   CurrentActualsItemV2,
   BudgetTotalItemV2,
   BudgetTotalItem,
-} from "../models/budgetCostCodeModel";
-import { isBudgetTotalItem, isBudgetTotalItemV2 } from "../models/types";
+} from '../models/budgetCostCodeModel';
+import { isBudgetTotalItem, isBudgetTotalItemV2 } from '../models/types';
 import {
   InvoiceItem,
   InvoiceLineItem,
   InvoiceLineItemItem,
-} from "../models/invoiceDataModels";
+} from '../models/invoiceDataModels';
 
 type MakeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
@@ -46,7 +46,7 @@ export const createBudgetActualsObject = ({
   costCodeNameList,
   dispatch,
 }: {
-  projectInvoices: MakeRequired<InvoiceItem, "processedData">[];
+  projectInvoices: MakeRequired<InvoiceItem, 'processedData'>[];
   projectLaborFees: LaborSummaryItem[];
   budgetTotals: BudgetTotalsV2;
   changeOrdersSummary: ChangeOrderSummary;
@@ -63,10 +63,6 @@ export const createBudgetActualsObject = ({
       invoice: {},
       laborFee: {},
     };
-
-    console.log(
-      "dionY [createBudgetActualsObject] start ----------------------"
-    );
 
     // loop through all invoices attached for this current client bill
     projectInvoices.forEach((invoice) => {
@@ -95,7 +91,7 @@ export const createBudgetActualsObject = ({
           Object.values(
             lineItems as InvoiceLineItem | {}
           ) as InvoiceLineItemItem[]
-        ).some((item) => !item.cost_code || item.amount !== "");
+        ).some((item) => !item.cost_code || item.amount !== '');
       if (hasProcessedLineItems && hasValidLineItems) {
         handleLineItem({
           lineItems: lineItems as InvoiceLineItem,
@@ -134,7 +130,8 @@ export const createBudgetActualsObject = ({
       // init the invoice budget actuals object for the laborFee
       invoiceBudgetActuals.laborFee[laborFee.uuid] =
         invoiceBudgetActuals.laborFee[laborFee.uuid] || {};
-      laborFee.payPeriod != "" && dates.push(new Date(laborFee.payPeriod as string));
+      laborFee.payPeriod != '' &&
+        dates.push(new Date(laborFee.payPeriod as string));
       handleLineItem({
         lineItems: laborFee.line_items as LaborLineItem,
         vendorName: laborFee.name,
@@ -154,10 +151,9 @@ export const createBudgetActualsObject = ({
     // super clunky but we shouldn't ever have lists of more than 50 - 100, so this shouldn't be that slow
     // TODO reimagine this part
     const maxDate = new Date(Math.max(...dates.map((date) => date.getTime())));
-    console.log("dionY [createBudgetActualsObject] dates", dates, maxDate);
-    const maxMonth = String(maxDate.getMonth() + 1).padStart(2, "0");
-    const maxMonthName = maxDate.toLocaleString("default", {
-      month: "long",
+    const maxMonth = String(maxDate.getMonth() + 1).padStart(2, '0');
+    const maxMonthName = maxDate.toLocaleString('default', {
+      month: 'long',
     });
     const maxYear = maxDate.getFullYear();
     const billTitle = `${maxYear}-${maxMonth} (${maxMonthName})`;
@@ -258,10 +254,10 @@ export const calculateTotals = ({
 
     Object.entries(budget as CurrentActualsChangeOrdersV2).forEach(
       ([changeOrderId, changeOrder]) => {
-        if (changeOrderId !== "profitTaxesLiability") {
+        if (changeOrderId !== 'profitTaxesLiability') {
           changeOrderTotals[changeOrderId] = Object.values(changeOrder)
             .map((costCodeObj) => {
-              return +costCodeObj.totalAmt.replaceAll(",", "");
+              return +costCodeObj.totalAmt.replaceAll(',', '');
             })
             .reduce((acc, curr) => {
               return acc + curr;
@@ -300,15 +296,13 @@ export const calculateTotals = ({
     total = Object.values(budget as CurrentActualsV2 | BudgetTotalsV2)
       .map((costCodeObj: CurrentActualsItemV2 | BudgetTotalItemV2) => {
         amount = isBudgetTotalItemV2(costCodeObj)
-          ? +costCodeObj.value.replaceAll(",", "")
-          : +costCodeObj.totalAmt.replaceAll(",", "");
-        console.log("dionY [calculateTotals] amount: ", costCodeObj, amount);
+          ? +costCodeObj.value.replaceAll(',', '')
+          : +costCodeObj.totalAmt.replaceAll(',', '');
         return +formatNumber(amount, false, true);
       })
       .reduce((acc, curr) => {
         return acc + curr;
       }, 0);
-    console.log("dionY [calculateTotals] total: ", total);
   }
   // const { totalByDivisionTransformed, totalBySubDivisionTransformed } =
   //   transformTotals({ totalByDivision, totalBySubDivision });
@@ -406,15 +400,13 @@ export const createFullBudgetObject = ({
   vendor: string;
   description: string;
   changeOrder: string | null;
-  group: "Labor and Fees" | "Invoices" | "Change Orders";
+  group: 'Labor and Fees' | 'Invoices' | 'Change Orders';
 }): CurrentActualsItemV2 => {
   // const { division, divisionName, subDivision, subDivisionName, costCodeName } = budgetTotals[(+costCode).toFixed(4)];
-  console.log("dionY [createFullBudgetObject] budgetTotals: ", budgetTotals);
-  console.log("dionY [createFullBudgetObject] costCode: ", costCode);
   const { recursiveLevel, costCodeName } = budgetTotals[String(costCode)] ||
     budgetTotals[(+costCode).toFixed(4)] || {
       recursiveLevel: [],
-      costCodeName: "",
+      costCodeName: '',
     };
 
   return {
@@ -468,8 +460,8 @@ const handleLineItem = ({
     const costCode = item.cost_code as string; // in order to run this function, cost_code was checked
     const changeOrder = item.change_order;
 
-    let amount = +item.amount?.replaceAll(",", "");
-    let amountInvoice = +item.amount?.replaceAll(",", "");
+    let amount = +item.amount?.replaceAll(',', '');
+    let amountInvoice = +item.amount?.replaceAll(',', '');
 
     if (
       Object.keys(budgetTotals).findIndex(
@@ -537,7 +529,7 @@ const handleLineItem = ({
         budgetTotals,
         totalAmt: formatNumber(amount.toFixed(2)),
         costCode,
-        qtyAmt: "1",
+        qtyAmt: '1',
         rateAmt: formatNumber(amount.toFixed(2)),
         description: getCostCodeDescriptionFromNumber(
           (+costCode).toFixed(4),
@@ -545,13 +537,13 @@ const handleLineItem = ({
         ),
         vendor: vendorName,
         changeOrder: changeOrder.name,
-        group: "Change Orders",
+        group: 'Change Orders',
       });
       const budgetObjectInvoice = createFullBudgetObject({
         budgetTotals,
         totalAmt: formatNumber(amount.toFixed(2)),
         costCode,
-        qtyAmt: "1",
+        qtyAmt: '1',
         rateAmt: formatNumber(amount.toFixed(2)),
         description: getCostCodeDescriptionFromNumber(
           (+costCode).toFixed(4),
@@ -559,7 +551,7 @@ const handleLineItem = ({
         ),
         vendor: vendorName,
         changeOrder: changeOrder.name,
-        group: "Change Orders",
+        group: 'Change Orders',
       });
       // the current line item amount
       budgetActualsChangeOrders[changeOrder.uuid][costCode] = budgetObject;
@@ -639,7 +631,7 @@ const handleLineItem = ({
         budgetTotals,
         totalAmt: formatNumber(amount.toFixed(2)),
         costCode,
-        qtyAmt: "1",
+        qtyAmt: '1',
         rateAmt: formatNumber(amount.toFixed(2)),
         description: getCostCodeDescriptionFromNumber(
           (+costCode).toFixed(4),
@@ -647,14 +639,14 @@ const handleLineItem = ({
         ),
         vendor: vendorName,
         changeOrder: null,
-        group: "Invoices",
+        group: 'Invoices',
       });
 
       const budgetObjInvoice = createFullBudgetObject({
         budgetTotals,
         totalAmt: formatNumber(amountInvoice.toFixed(2)),
         costCode,
-        qtyAmt: "1",
+        qtyAmt: '1',
         rateAmt: formatNumber(amountInvoice.toFixed(2)),
         description: getCostCodeDescriptionFromNumber(
           (+costCode).toFixed(4),
@@ -662,7 +654,7 @@ const handleLineItem = ({
         ),
         vendor: vendorName,
         changeOrder: null,
-        group: "Invoices",
+        group: 'Invoices',
       });
 
       budgetActuals[costCode] = budgetObj;
@@ -700,7 +692,7 @@ const handleWholeInvoice = ({
   invoiceBudgetActuals,
   invoiceBudgetActualsChangeOrders,
 }: {
-  invoice: MakeRequired<InvoiceItem, "processedData">;
+  invoice: MakeRequired<InvoiceItem, 'processedData'>;
   budgetTotals: BudgetTotalsV2;
   costCodeNameList: SelectMenuOptions[];
   budgetActuals: CurrentActualsV2;
@@ -722,12 +714,12 @@ const handleWholeInvoice = ({
   const changeOrder: { name: string; uuid: string } | null =
     invoice.processedData?.change_order;
   let amount =
-    +invoice.processedData.total_amount.replaceAll(",", "") -
-    +invoice.processedData.total_tax_amount.replaceAll(",", "");
+    +invoice.processedData.total_amount.replaceAll(',', '') -
+    +invoice.processedData.total_tax_amount.replaceAll(',', '');
 
   let amountInvoice =
-    +invoice.processedData.total_amount.replaceAll(",", "") -
-    +invoice.processedData.total_tax_amount.replaceAll(",", "");
+    +invoice.processedData.total_amount.replaceAll(',', '') -
+    +invoice.processedData.total_tax_amount.replaceAll(',', '');
 
   // CHANGE ORDER
   if (changeOrder) {
@@ -769,7 +761,7 @@ const handleWholeInvoice = ({
       budgetTotals,
       totalAmt: formatNumber(amount.toFixed(2)),
       costCode,
-      qtyAmt: "1",
+      qtyAmt: '1',
       rateAmt: formatNumber(amount.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(
         (+costCode).toFixed(4),
@@ -777,13 +769,13 @@ const handleWholeInvoice = ({
       ),
       vendor: invoice.processedData.vendor_name,
       changeOrder: changeOrder.name,
-      group: "Change Orders",
+      group: 'Change Orders',
     });
     const budgetObjInvoice = createFullBudgetObject({
       budgetTotals,
       totalAmt: formatNumber(amountInvoice.toFixed(2)),
       costCode,
-      qtyAmt: "1",
+      qtyAmt: '1',
       rateAmt: formatNumber(amountInvoice.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(
         (+costCode).toFixed(4),
@@ -791,7 +783,7 @@ const handleWholeInvoice = ({
       ),
       vendor: invoice.processedData.vendor_name,
       changeOrder: changeOrder.name,
-      group: "Change Orders",
+      group: 'Change Orders',
     });
     budgetActualsChangeOrders[changeOrder.uuid][costCode] = budgetObj;
     invoiceBudgetActualsChangeOrders[changeOrder.uuid][invoice.doc_id][
@@ -837,7 +829,7 @@ const handleWholeInvoice = ({
       budgetTotals,
       totalAmt: formatNumber(amount.toFixed(2)),
       costCode,
-      qtyAmt: "1",
+      qtyAmt: '1',
       rateAmt: formatNumber(amount.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(
         (+costCode).toFixed(4),
@@ -845,13 +837,13 @@ const handleWholeInvoice = ({
       ),
       vendor: invoice.processedData.vendor_name,
       changeOrder: null,
-      group: "Invoices",
+      group: 'Invoices',
     });
     const budgetObjInvoice = createFullBudgetObject({
       budgetTotals,
       totalAmt: formatNumber(amountInvoice.toFixed(2)),
       costCode,
-      qtyAmt: "1",
+      qtyAmt: '1',
       rateAmt: formatNumber(amountInvoice.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(
         (+costCode).toFixed(4),
@@ -859,7 +851,7 @@ const handleWholeInvoice = ({
       ),
       vendor: invoice.processedData.vendor_name,
       changeOrder: null,
-      group: "Invoices",
+      group: 'Invoices',
     });
     budgetActuals[costCode] = budgetObj;
     invoiceBudgetActuals.invoice[invoice.doc_id][costCode] = budgetObjInvoice;
@@ -877,7 +869,7 @@ const handleError = ({
   invoice,
   dispatch,
 }: {
-  invoice: MakeRequired<InvoiceItem, "processedData">;
+  invoice: MakeRequired<InvoiceItem, 'processedData'>;
   dispatch: ThunkDispatch<unknown, unknown, AnyAction>;
 }) => {
   console.error(
@@ -892,10 +884,10 @@ const handleError = ({
         Amount: ${invoice.processedData.total_amount} is missing 
         necessary information such as cost code, total, and/or tax. 
         You cannot build a client's bill without all necessary information.`,
-      title: "Warning",
+      title: 'Warning',
     })
   );
-  throw new Error("An invoice is missing necessary information");
+  throw new Error('An invoice is missing necessary information');
 };
 
 type BudgetObject =
@@ -972,7 +964,7 @@ const calculateAmount = (
   existingActuals: CurrentActualsItemV2,
   amount: number
 ): number => {
-  const processedAmount = +existingActuals.totalAmt.replaceAll(",", "");
+  const processedAmount = +existingActuals.totalAmt.replaceAll(',', '');
   return isCredit ? processedAmount - amount : processedAmount + amount;
 };
 
@@ -984,8 +976,8 @@ export const calculateBillTotal = ({
   subTotal: string | number;
 }) => {
   let subTotalNumber: number;
-  if (typeof subTotal === "string") {
-    subTotalNumber = +subTotal.replaceAll(",", "");
+  if (typeof subTotal === 'string') {
+    subTotalNumber = +subTotal.replaceAll(',', '');
   } else {
     subTotalNumber = subTotal;
   }
@@ -1029,20 +1021,20 @@ export const getBillProfitTaxes = ({
 export const createBillProfitTaxesObject = ({
   profitTaxes,
   projectSummary,
-  prefix = "",
+  prefix = '',
 }: {
   profitTaxes: ProfitTaxes;
   projectSummary: ProjectSummaryItem;
   prefix: string;
 }) => {
   const descriptions = {
-    profit: { name: "Overhead and Profit", key: "profitPercent" },
+    profit: { name: 'Overhead and Profit', key: 'profitPercent' },
     liability: {
       name: "Builder's Risk and Liability Insurance (Rate per $1,000)",
-      key: "insuranceRate",
+      key: 'insuranceRate',
     },
-    boTax: { name: "Business and Occupation Tax", key: "boTax" },
-    salesTax: { name: "Sales Tax", key: "salesTax" },
+    boTax: { name: 'Business and Occupation Tax', key: 'boTax' },
+    salesTax: { name: 'Sales Tax', key: 'salesTax' },
   };
 
   return Object.entries(descriptions).reduce(
@@ -1053,7 +1045,7 @@ export const createBillProfitTaxesObject = ({
       acc[actualKey] = {
         totalAmt: profitTaxes[totalsKey],
         rateAmt: projectSummary[projectSummaryKey] as string,
-        qtyAmt: "1",
+        qtyAmt: '1',
         description: description.name,
       };
       return acc;
@@ -1083,9 +1075,9 @@ export const updateActuals = ({
       description: value.description,
       qtyAmt: value.qtyAmt,
       rateAmt: formatNumber(parseFloat(value.rateAmt).toFixed(2)),
-      vendor: "",
+      vendor: '',
       changeOrder: null,
-      group: key.includes("changeOrder") ? "Change Orders" : "Invoices",
+      group: key.includes('changeOrder') ? 'Change Orders' : 'Invoices',
     });
   });
 };

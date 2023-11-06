@@ -35,7 +35,6 @@ export const addUpdatedChangeOrderContent = createAsyncThunk(
     const changeOrderSummary: ChangeOrderSummary = snapshotCopy(
       state.projects[projectId]['change-orders-summary']
     );
-    console.log(updatedContent);
     let dataToSend: {
       [changeOrderId: string]: {
         content: ChangeOrderContent;
@@ -45,7 +44,6 @@ export const addUpdatedChangeOrderContent = createAsyncThunk(
     // to send to the backend
     if (updatedContent) {
       dataToSend = updatedContent;
-      console.log(dataToSend);
     } else {
       Object.entries(changeOrderSummary).forEach(
         ([changeOrderId, changeOrderValue]) => {

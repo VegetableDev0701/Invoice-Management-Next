@@ -6,14 +6,14 @@ import {
   SubDivisions,
   BudgetTotals,
   BudgetTotalsV2,
-} from "@/lib/models/budgetCostCodeModel";
-import { SelectMenuOptions } from "../models/formDataModel";
-import { FormState } from "../models/formStateModels";
+} from '@/lib/models/budgetCostCodeModel';
+import { SelectMenuOptions } from '../models/formDataModel';
+import { FormState } from '../models/formStateModels';
 import {
   ChartDataV2,
   CostCodeItemB2AData,
   DivisionDataV2,
-} from "../models/chartDataModels";
+} from '../models/chartDataModels';
 
 function insertSorted<
   T extends Divisions | SubDivisions | CostCodeItem,
@@ -43,7 +43,8 @@ export const iterateData = ({
   data?.subItems?.forEach((item, index) => {
     if (item?.subItems?.length > 0)
       iterateData({ data: item, level: [...level, index], cb });
-    else if (item?.isCurrency || item?.value || item?.actual) cb(item, [...level, index]);
+    else if (item?.isCurrency || item?.value || item?.actual)
+      cb(item, [...level, index]);
   });
 };
 
@@ -59,7 +60,7 @@ export function addDivision(
       ),
     };
   } else {
-    insertSorted(costCodes.divisions, newDivision, "number", false);
+    insertSorted(costCodes.divisions, newDivision, 'number', false);
   }
 }
 
@@ -86,7 +87,7 @@ export function addSubDivision(
 ) {
   const division = costCodes.divisions.find((d) => d.number === divisionNumber);
   if (!division) {
-    console.error("Division not found.");
+    console.error('Division not found.');
     return;
   }
   if (isAddToProject) {
@@ -100,7 +101,7 @@ export function addSubDivision(
       ),
     };
   } else {
-    insertSorted(division.subdivisions, subdivision, "number", false);
+    insertSorted(division.subdivisions, subdivision, 'number', false);
   }
 }
 
@@ -132,14 +133,14 @@ export function addCostCode(
 ) {
   const division = costCodes.divisions.find((d) => d.number === divisionNumber);
   if (!division) {
-    console.error("Division not found.");
+    console.error('Division not found.');
     return;
   }
   const subdivision = division.subdivisions.find(
     (s) => s.number === subdivisionNumber
   );
   if (!subdivision) {
-    console.error("Subdivision not found.");
+    console.error('Subdivision not found.');
     return;
   }
 
@@ -158,7 +159,7 @@ export function addCostCode(
       ),
     };
   } else {
-    insertSorted(subdivision.items, item, "number", false);
+    insertSorted(subdivision.items, item, 'number', false);
   }
 }
 
@@ -190,8 +191,8 @@ export function deleteCostCode(
 }
 
 export function createCostCodeList(costCodes: CostCodesData) {
-  const costCodeList: SelectMenuOptions[] = [{ id: 0, label: "None" }];
-  const costCodeNameList: SelectMenuOptions[] = [{ id: 0, label: "None" }];
+  const costCodeList: SelectMenuOptions[] = [{ id: 0, label: 'None' }];
+  const costCodeNameList: SelectMenuOptions[] = [{ id: 0, label: 'None' }];
 
   if (!costCodes) {
     return {
@@ -285,12 +286,13 @@ export const createInitBudgetState = ({
   if (!costCodeFormData) return;
 
   const addState = (item: CostCodeItem, level: Array<number>) => {
-    const isAdded = item.value === "" ? false : true;
-    const isShowing = isCollapsed && item.value === "" ? false : true;``
+    const isAdded = item.value === '' ? false : true;
+    const isShowing = isCollapsed && item.value === '' ? false : true;
+    ``;
     initState[item.id || String(item.number)] = {
       value: item.value,
       costCodeName: item.name,
-      type: "BudgetTotalV2",
+      type: 'BudgetTotalV2',
       isTouched: false,
       isValid: false,
       isAdded,
@@ -303,7 +305,6 @@ export const createInitBudgetState = ({
     iterateData({ data: div, level: [index], cb: addState });
   });
 
-  console.log("dionY [createInitBudgetState] initState: ", initState);
   return initState;
 };
 
@@ -318,7 +319,7 @@ export const setCollapsed = ({
     (obj: BudgetTotals, [costCode, costCodeObj]) => {
       const isShow =
         (isCollapsed && !costCodeObj.isAdded) ||
-        (isCollapsed && costCodeObj.value === "")
+        (isCollapsed && costCodeObj.value === '')
           ? false
           : true;
       obj[costCode] = { ...costCodeObj, isShowing: isShow };
@@ -373,7 +374,7 @@ export const costCodeData2NLevel = (oldCostCodeData: any) => {
           isCurrency: item?.isCurrency,
           required: item?.required,
           type: item?.type,
-          value: item?.value || "0",
+          value: item?.value || '0',
         } as CostCodeItem);
       });
 
@@ -400,11 +401,11 @@ export const getDataByRecursiveLevel = ({
     | CostCodeItem
     | DivisionDataV2
     | CostCodeItemB2AData = fullData[level[0]];
-  let prefix = "";
+  let prefix = '';
   for (let i = 1; i < level.length; i++) {
     let index = level[i];
     if (levelData.subItems?.length <= index) {
-      console.warn("[getDataByRecursiveLevel]: No data");
+      console.warn('[getDataByRecursiveLevel]: No data');
       return null;
     }
 

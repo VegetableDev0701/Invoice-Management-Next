@@ -3,21 +3,21 @@ import {
   createAsyncThunk,
   PayloadAction,
   current,
-} from "@reduxjs/toolkit";
+} from '@reduxjs/toolkit';
 
-import { uiActions } from "./ui-slice";
-import { RootState } from ".";
-import { processingActions } from "./processing-slice";
-import { sseActions } from "./sse-slice";
-import { addBudgetFormActions } from "./add-budget-slice";
+import { uiActions } from './ui-slice';
+import { RootState } from '.';
+import { processingActions } from './processing-slice';
+import { sseActions } from './sse-slice';
+import { addBudgetFormActions } from './add-budget-slice';
 
-import { getAllProjectIds } from "@/lib/utility/projectHelpers";
+import { getAllProjectIds } from '@/lib/utility/projectHelpers';
 import {
   ChangeOrderData,
   Labor,
   LaborData,
   ProjectFormData,
-} from "@/lib/models/formDataModel";
+} from '@/lib/models/formDataModel';
 import {
   ChangeOrderSummary,
   ClientBillSummary,
@@ -28,15 +28,15 @@ import {
   ProjectSummary,
   SummaryTableRowType,
   getSummary,
-} from "@/lib/models/summaryDataModel";
-import { FormState, FormStateItem } from "@/lib/models/formStateModels";
-import { getChangeOrderIdFromName } from "@/lib/utility/processInvoiceHelpers";
-import { ProjectData, ProjectDataItems } from "@/lib/models/projectDataModel";
+} from '@/lib/models/summaryDataModel';
+import { FormState, FormStateItem } from '@/lib/models/formStateModels';
+import { getChangeOrderIdFromName } from '@/lib/utility/processInvoiceHelpers';
+import { ProjectData, ProjectDataItems } from '@/lib/models/projectDataModel';
 import {
   ChangeOrderContent,
   ChangeOrderContentItem,
-} from "@/lib/models/changeOrderModel";
-import { Invoices, ProcessedInvoiceData } from "@/lib/models/invoiceDataModels";
+} from '@/lib/models/changeOrderModel';
+import { Invoices, ProcessedInvoiceData } from '@/lib/models/invoiceDataModels';
 import {
   addCostCode,
   addDivision,
@@ -45,19 +45,19 @@ import {
   deleteCostCode,
   deleteDivision,
   deleteSubDivision,
-} from "@/lib/utility/costCodeHelpers";
-import { fetchWithRetry } from "@/lib/utility/ioUtils";
-import { snapshotCopy } from "@/lib/utility/utils";
-import { setTargetValue } from "@/lib/utility/createSummaryDataHelpers";
-import { addUpdatedChangeOrderContent } from "./add-change-order";
+} from '@/lib/utility/costCodeHelpers';
+import { fetchWithRetry } from '@/lib/utility/ioUtils';
+import { snapshotCopy } from '@/lib/utility/utils';
+import { setTargetValue } from '@/lib/utility/createSummaryDataHelpers';
+import { addUpdatedChangeOrderContent } from './add-change-order';
 import {
   CostCodeItem,
   CostCodesData,
   Divisions,
-} from "@/lib/models/budgetCostCodeModel";
+} from '@/lib/models/budgetCostCodeModel';
 
 export const fetchProjectData = createAsyncThunk(
-  "companyProjects/fetch",
+  'companyProjects/fetch',
   async ({ companyId }: { companyId: string }, thunkAPI) => {
     try {
       const state = thunkAPI.getState() as RootState;
@@ -78,16 +78,16 @@ export const fetchProjectData = createAsyncThunk(
         }, {});
 
       const promises = Object.values(urls).map((url) =>
-        fetchWithRetry(url, { method: "GET" })
+        fetchWithRetry(url, { method: 'GET' })
       );
       const results = await Promise.allSettled(promises);
       const data = Object.keys(urls).reduce<{
         [projectId: string]: any;
       }>((acc, projectId, index) => {
-        if (results[index].status == "fulfilled") {
+        if (results[index].status == 'fulfilled') {
           const fulfilledResult = results[index] as PromiseFulfilledResult<any>;
           acc[projectId] = fulfilledResult;
-        } else if (results[index].status === "rejected") {
+        } else if (results[index].status === 'rejected') {
           const rejectedResult = results[index] as PromiseRejectedResult;
           console.error(
             `Error fetching project data for ${projectId} after all retries:`,
@@ -111,7 +111,7 @@ export const fetchProjectData = createAsyncThunk(
 );
 
 export const deleteProjectData = createAsyncThunk(
-  "companyProjects/deleteProjectItem",
+  'companyProjects/deleteProjectItem',
   async (
     {
       companyId,
@@ -135,21 +135,21 @@ export const deleteProjectData = createAsyncThunk(
     thunkAPI
   ) => {
     try {
-      let url = "";
+      let url = '';
       let sendToBackend: any;
-      if (dataType === "labor") {
+      if (dataType === 'labor') {
         url = `/api/${companyId}/projects/${projectId}/delete-labor`;
         sendToBackend = JSON.stringify(sendData);
-      } else if (dataType === "changeOrder") {
+      } else if (dataType === 'changeOrder') {
         url = `/api/${companyId}/projects/${projectId}/delete-change-order`;
         sendToBackend = JSON.stringify(sendData);
-      } else if (dataType === "contracts") {
+      } else if (dataType === 'contracts') {
         url = `/api/${companyId}/projects/${projectId}/delete-contract`;
         sendToBackend = JSON.stringify(sendData);
-      } else if (dataType === "client-bill") {
+      } else if (dataType === 'client-bill') {
         thunkAPI.dispatch(
           sseActions.setWhatToListenFor({
-            sseContentType: "delete-client-bill",
+            sseContentType: 'delete-client-bill',
           })
         );
         url = `/api/${companyId}/projects/${projectId}/delete-client-bill`;
@@ -157,7 +157,7 @@ export const deleteProjectData = createAsyncThunk(
       }
 
       const response = await fetch(url, {
-        method: "DELETE",
+        method: 'DELETE',
         body: sendToBackend,
       });
       if (!response.ok) {
@@ -168,7 +168,7 @@ export const deleteProjectData = createAsyncThunk(
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
           content: data.message,
-          icon: "trash",
+          icon: 'trash',
           openNotification: true,
         })
       );
@@ -179,7 +179,7 @@ export const deleteProjectData = createAsyncThunk(
 );
 
 export const deleteProjects = createAsyncThunk(
-  "companyProjects/deleteProjects",
+  'companyProjects/deleteProjects',
   async (
     {
       companyId,
@@ -191,7 +191,7 @@ export const deleteProjects = createAsyncThunk(
       const response = await fetch(
         `/api/${companyId}/projects/delete-projects`,
         {
-          method: "DELETE",
+          method: 'DELETE',
           body: JSON.stringify(projectsToDelete),
         }
       );
@@ -202,7 +202,7 @@ export const deleteProjects = createAsyncThunk(
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
           content: data.message,
-          icon: "trash",
+          icon: 'trash',
           openNotification: true,
         })
       );
@@ -213,7 +213,7 @@ export const deleteProjects = createAsyncThunk(
 );
 
 export const changeProjectStatus = createAsyncThunk(
-  "companyProjects/changeProjectStatus",
+  'companyProjects/changeProjectStatus',
   async (
     {
       companyId,
@@ -226,7 +226,7 @@ export const changeProjectStatus = createAsyncThunk(
       const response = await fetch(
         `/api/${companyId}/projects/change-project-status`,
         {
-          method: "PATCH",
+          method: 'PATCH',
           headers: {
             changeStatusTo: changeStatusTo.toString(),
           },
@@ -240,15 +240,15 @@ export const changeProjectStatus = createAsyncThunk(
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
           content: data.message,
-          icon: "success",
+          icon: 'success',
           openNotification: true,
         })
       );
     } catch (error: any) {
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
-          content: "Something went wrong with updating the project status.",
-          icon: "error",
+          content: 'Something went wrong with updating the project status.',
+          icon: 'error',
           openNotification: true,
         })
       );
@@ -260,24 +260,24 @@ export const changeProjectStatus = createAsyncThunk(
 // This function runs when the master cost code list is updated and those
 // updates need to cascade across all project budgets and push to the backend.
 export const updateAllProjectBudgets = createAsyncThunk(
-  "companyProjects/updateAllProjectBudgets",
+  'companyProjects/updateAllProjectBudgets',
   async ({ companyId }: { companyId: string }, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     const updateBudgets = state.addBudgetForm.updateBudget;
 
     fetch(`/api/${companyId}/projects/update-all-budgets`, {
-      method: "PATCH",
+      method: 'PATCH',
       body: JSON.stringify(updateBudgets),
     })
       .then((res) => {
-        if (!res.ok) throw new Error("something went wrong");
+        if (!res.ok) throw new Error('something went wrong');
         return res.json();
       })
       .then((data) => {
         thunkAPI.dispatch(
           uiActions.setNotificationContent({
             content: data.message,
-            icon: "success",
+            icon: 'success',
             openNotification: true,
           })
         );
@@ -315,8 +315,8 @@ export const updateAllProjectBudgets = createAsyncThunk(
         thunkAPI.dispatch(
           uiActions.setNotificationContent({
             content:
-              "Something went wrong with saving budget updates to all projects.",
-            icon: "error",
+              'Something went wrong with saving budget updates to all projects.',
+            icon: 'error',
             openNotification: true,
           })
         );
@@ -326,7 +326,7 @@ export const updateAllProjectBudgets = createAsyncThunk(
 );
 
 export const removeLaborFromChangeOrderThunk = createAsyncThunk(
-  "laborUpdates/removeLaborFromChangeOrder",
+  'laborUpdates/removeLaborFromChangeOrder',
   async (
     {
       projectId,
@@ -341,7 +341,7 @@ export const removeLaborFromChangeOrderThunk = createAsyncThunk(
   ) => {
     const state = thunkAPI.getState() as RootState;
     const updatedChangeOrderSummary: ChangeOrderSummary = snapshotCopy(
-      state.projects[projectId]["change-orders-summary"]
+      state.projects[projectId]['change-orders-summary']
     );
     let updatedChangeOrderContent: {
       [changeOrderId: string]: { content: ChangeOrderContent };
@@ -351,7 +351,7 @@ export const removeLaborFromChangeOrderThunk = createAsyncThunk(
       Object.entries(updatedChangeOrderSummary).forEach(
         ([changeOrderId, changeOrderObj]) => {
           Object.keys(changeOrderObj.content).forEach((contentKey) => {
-            const uuid = contentKey.split("::").pop() as string;
+            const uuid = contentKey.split('::').pop() as string;
             if (laborIds.includes(uuid)) {
               delete (changeOrderObj.content as ChangeOrderContent)[contentKey];
             }
@@ -396,7 +396,7 @@ export const removeLaborFromChangeOrderThunk = createAsyncThunk(
 const initialDataState: ProjectData = {};
 
 const projectDataSlice = createSlice({
-  name: "projects",
+  name: 'projects',
   initialState: initialDataState,
   reducers: {
     updateCostCodeData(
@@ -422,7 +422,7 @@ const projectDataSlice = createSlice({
       const { data, projectId } = action.payload;
       state[projectId] = {
         ...state[projectId],
-        ...{ "project-details": data },
+        ...{ 'project-details': data },
       };
     },
     addSummaryTableRow(
@@ -466,12 +466,12 @@ const projectDataSlice = createSlice({
       } = action.payload;
 
       const changeOrdersSummary = {
-        ...state[projectId]["change-orders-summary"],
+        ...state[projectId]['change-orders-summary'],
       };
 
       Object.entries(content).forEach(([newChangeOrderId, value]) => {
         if (
-          typeof newChangeOrderId !== "undefined" &&
+          typeof newChangeOrderId !== 'undefined' &&
           !Object.keys(changeOrdersSummary).every((changeOrderId) => {
             return changeOrderId !== newChangeOrderId;
           })
@@ -490,29 +490,29 @@ const projectDataSlice = createSlice({
       // pull out all the change order line items
       let ids = Object.entries(lineItems)
         .map(([key, _]) => {
-          if (key.includes("change-order")) {
+          if (key.includes('change-order')) {
             return key;
           }
         })
         .filter((item) => item !== undefined) as string[];
-      ids.push("change-order");
+      ids.push('change-order');
 
       const itemsChangedToNoneToRemoveFromChangeOrder = Object.entries(
         formState
       )
         .filter(([key, _]) => ids.includes(key))
         .map(([key, value]) => {
-          if (value.value === "None" || value.value === "") {
+          if (value.value === 'None' || value.value === '') {
             return key;
           }
         })
         .filter((item) => item !== undefined)
         .map((item) => {
-          if (item === "change-order") {
+          if (item === 'change-order') {
             return itemId;
           } else {
             if (item) {
-              const [number, ...rest] = item.split("-");
+              const [number, ...rest] = item.split('-');
               return `line_item_${number}::${itemId}`;
             }
           }
@@ -529,14 +529,14 @@ const projectDataSlice = createSlice({
             snapShotFormState?.[id] &&
             formState?.[id] &&
             snapShotFormState[id].value !== formState[id].value &&
-            formState[id].value !== "None" &&
-            formState[id].value !== "" &&
-            snapShotFormState[id].value !== "None" &&
-            snapShotFormState[id].value !== ""
+            formState[id].value !== 'None' &&
+            formState[id].value !== '' &&
+            snapShotFormState[id].value !== 'None' &&
+            snapShotFormState[id].value !== ''
           ) {
-            const [number, ...rest] = id.split("-");
+            const [number, ...rest] = id.split('-');
             const newItemId =
-              id === "change-order" ? itemId : `line_item_${number}::${itemId}`;
+              id === 'change-order' ? itemId : `line_item_${number}::${itemId}`;
             itemsSwitchedToRemoveFromChangeOrder[newItemId] =
               getChangeOrderIdFromName({
                 changeOrdersSummary,
@@ -582,7 +582,7 @@ const projectDataSlice = createSlice({
           }
         );
       }
-      state[projectId]["change-orders-summary"] = changeOrdersSummary;
+      state[projectId]['change-orders-summary'] = changeOrdersSummary;
     },
 
     removeSelectedRow(
@@ -590,12 +590,12 @@ const projectDataSlice = createSlice({
       action: PayloadAction<{
         projectId: string;
         ids: string[];
-        stateKeyFull?: "contracts" | "labor" | "change-orders";
+        stateKeyFull?: 'contracts' | 'labor' | 'change-orders';
         stateKeySummary:
-          | "change-orders-summary"
-          | "labor-summary"
-          | "contracts-summary"
-          | "client-bills-summary";
+          | 'change-orders-summary'
+          | 'labor-summary'
+          | 'contracts-summary'
+          | 'client-bills-summary';
       }>
     ) {
       const { projectId, ids, stateKeyFull, stateKeySummary } = action.payload;
@@ -657,12 +657,12 @@ const projectDataSlice = createSlice({
         newData: any;
         projectId: string;
         stateKey:
-          | "budget"
-          | "change-orders"
-          | "contracts"
-          | "labor"
-          | "b2a"
-          | "client-bills";
+          | 'budget'
+          | 'change-orders'
+          | 'contracts'
+          | 'labor'
+          | 'b2a'
+          | 'client-bills';
       }>
     ) {
       const { newData, projectId, stateKey } = action.payload;
@@ -707,13 +707,13 @@ const projectDataSlice = createSlice({
             subDivNumber as number,
             {
               number: +costCodeNumber,
-              value: "",
+              value: '',
               label: costCodeName,
               isCurrency: true,
               required: false,
-              type: "text",
+              type: 'text',
               id: (+costCodeNumber).toFixed(4),
-              inputType: "toggleInput",
+              inputType: 'toggleInput',
             },
             true
           );
@@ -903,7 +903,7 @@ const projectDataSlice = createSlice({
       const { changeOrderId, invoiceId, projectId } = action.payload;
 
       const changeOrderSummary = {
-        ...state[projectId]["change-orders-summary"],
+        ...state[projectId]['change-orders-summary'],
       };
       if (Object.keys(changeOrderSummary).length > 0) {
         const updatedChangeOrderSummary = (
@@ -916,7 +916,7 @@ const projectDataSlice = createSlice({
         // Early I only wrote this for a single invoice, this expands it to
         // allow for remove multiple invoices at a time
         const invoiceIdsList =
-          typeof invoiceId === "string" ? [invoiceId] : invoiceId;
+          typeof invoiceId === 'string' ? [invoiceId] : invoiceId;
 
         // invoices = invoices.filter(
         //   (invoice) => !invoiceIdsList.includes(invoice)
@@ -933,7 +933,7 @@ const projectDataSlice = createSlice({
           )
         );
 
-        (state[projectId]["change-orders-summary"] as ChangeOrderSummary)[
+        (state[projectId]['change-orders-summary'] as ChangeOrderSummary)[
           changeOrderId
         ] = {
           ...updatedChangeOrderSummary,
@@ -953,7 +953,7 @@ const projectDataSlice = createSlice({
     ) {
       const { projectId, updatedChangeOrderContent } = action.payload;
       const updatedChangeOrdersSummary = {
-        ...state[projectId]["change-orders-summary"],
+        ...state[projectId]['change-orders-summary'],
       };
 
       Object.entries(updatedChangeOrderContent).forEach(
@@ -964,7 +964,7 @@ const projectDataSlice = createSlice({
           };
         }
       );
-      state[projectId]["change-orders-summary"] = updatedChangeOrdersSummary;
+      state[projectId]['change-orders-summary'] = updatedChangeOrdersSummary;
     },
     removeChangeOrderIdsFromAllLaborData(
       state,
@@ -973,15 +973,15 @@ const projectDataSlice = createSlice({
       const { laborToUpdate, projectId } = action.payload;
 
       const laborFormDataToUpdate: Labor = snapshotCopy(
-        state[projectId]["labor"]
+        state[projectId]['labor']
       ); // deep copy
       Object.entries(laborToUpdate).forEach(([laborId, laborSummaryObj]) => {
         const inputElements =
           laborFormDataToUpdate[laborId].mainCategories[1].inputElements;
         Object.entries(laborSummaryObj).forEach(([key, value]) => {
-          if (key === "line_items") {
+          if (key === 'line_items') {
             Object.keys(value).forEach((itemId) => {
-              const itemNumber = itemId.split("_").pop(); // itemId is the form 'line_item_1'
+              const itemNumber = itemId.split('_').pop(); // itemId is the form 'line_item_1'
               const targetId = `${itemNumber}-change-order`;
               setTargetValue({
                 targetId,
@@ -992,11 +992,11 @@ const projectDataSlice = createSlice({
           }
         });
       });
-      state[projectId]["labor"] = {
+      state[projectId]['labor'] = {
         ...laborFormDataToUpdate,
       };
-      state[projectId]["labor-summary"] = {
-        ...state[projectId]["labor-summary"],
+      state[projectId]['labor-summary'] = {
+        ...state[projectId]['labor-summary'],
         ...laborToUpdate,
       };
     },
@@ -1031,12 +1031,12 @@ const projectDataSlice = createSlice({
           .filter((projectId) => projectIds.includes(projectId))
           .reduce((obj: ProjectData, projectId: string) => {
             const projectChangeStatus = {
-              ...allProjects[projectId]["project-details"],
+              ...allProjects[projectId]['project-details'],
             };
             projectChangeStatus.isActive = changeStatusTo;
             obj[projectId] = {
               ...allProjects[projectId],
-              ...({ "project-details": projectChangeStatus } as Record<
+              ...({ 'project-details': projectChangeStatus } as Record<
                 string,
                 ProjectFormData
               >),
@@ -1062,7 +1062,7 @@ const projectDataSlice = createSlice({
       const { projectId, updatedLaborSummary, updatedInvoices, clientBillId } =
         action.payload;
       const allLabor = state[projectId].labor;
-      const allLaborSummary = state[projectId]["labor-summary"];
+      const allLaborSummary = state[projectId]['labor-summary'];
 
       const removedLabor = Object.fromEntries(
         Object.entries(allLabor).filter(
@@ -1085,22 +1085,22 @@ const projectDataSlice = createSlice({
       );
 
       state[projectId].labor = { ...removedLabor };
-      state[projectId]["labor-summary"] = { ...removedLaborSummary };
+      state[projectId]['labor-summary'] = { ...removedLaborSummary };
 
       // Check if client-bills exists and if not create the first bill and
       // create that state object
-      if (state[projectId]?.["client-bills"]) {
-        state[projectId]["client-bills"][clientBillId] = {
-          ...state[projectId]["client-bills"][clientBillId],
+      if (state[projectId]?.['client-bills']) {
+        state[projectId]['client-bills'][clientBillId] = {
+          ...state[projectId]['client-bills'][clientBillId],
           ...{ labor: updatedLabor },
-          ...{ "labor-summary": updatedLaborSummary },
+          ...{ 'labor-summary': updatedLaborSummary },
           ...{ invoices: updatedInvoices },
         };
       } else {
-        state[projectId]["client-bills"] = {
+        state[projectId]['client-bills'] = {
           [clientBillId]: {
             ...{ labor: updatedLabor },
-            ...{ "labor-summary": updatedLaborSummary },
+            ...{ 'labor-summary': updatedLaborSummary },
             ...{ invoices: updatedInvoices },
           },
         };
@@ -1163,7 +1163,7 @@ const projectDataSlice = createSlice({
                     isCurrency: item?.isCurrency,
                     required: item?.required,
                     type: item?.type,
-                    value: item?.value || "0",
+                    value: item?.value || '0',
                   } as CostCodeItem);
                 });
 
@@ -1186,12 +1186,6 @@ const projectDataSlice = createSlice({
             costCodeList,
             costCodeNameList,
           };
-
-          console.log(
-            "dionY [fetchProjectData fulfilled]",
-            projectId,
-            state[projectId]
-          );
         });
       }
     );

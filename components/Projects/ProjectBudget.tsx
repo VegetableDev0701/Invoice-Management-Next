@@ -1,27 +1,27 @@
-import { useEffect, useState } from "react";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { useEffect, useState } from 'react';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
-import { addBudgetFormActions } from "@/store/add-budget-slice";
+import { addBudgetFormActions } from '@/store/add-budget-slice';
 import {
   useAppSelector as useSelector,
   useAppDispatch as useDispatch,
-} from "@/store/hooks";
-import { projectDataActions } from "@/store/projects-data-slice";
+} from '@/store/hooks';
+import { projectDataActions } from '@/store/projects-data-slice';
 
-import { usePageData } from "@/hooks/use-page-data";
-import useHttp from "@/hooks/use-http";
-import useSetNotification from "@/hooks/use-set-nofitication";
+import { usePageData } from '@/hooks/use-page-data';
+import useHttp from '@/hooks/use-http';
+import useSetNotification from '@/hooks/use-set-nofitication';
 
-import { createBudgetFormDataForSubmit } from "@/lib/utility/submitFormHelpers";
-import { CostCodesData } from "@/lib/models/budgetCostCodeModel";
-import { formatNameForID } from "@/lib/utility/formatter";
-import { FormState, User } from "@/lib/models/formStateModels";
+import { createBudgetFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
+import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
+import { formatNameForID } from '@/lib/utility/formatter';
+import { FormState, User } from '@/lib/models/formStateModels';
 
-import BudgetForm from "../Budget/ProjectBudget/BudgetForm";
-import CostCodeSideLinks from "../Budget/CostCodes/CostCodeSideLinks";
-import FullScreenLoader from "../UI/Loaders/FullScreenLoader";
-import { addProjectFormActions } from "@/store/add-project-slice";
-import useLocationChange from "@/hooks/use-location-change";
+import BudgetForm from '../Budget/ProjectBudget/BudgetForm';
+import CostCodeSideLinks from '../Budget/CostCodes/CostCodeSideLinks';
+import FullScreenLoader from '../UI/Loaders/FullScreenLoader';
+import { addProjectFormActions } from '@/store/add-project-slice';
+import useLocationChange from '@/hooks/use-location-change';
 
 interface Props {
   updateBudget: boolean;
@@ -55,9 +55,9 @@ export default function ProjectBudget(props: Props) {
   const {
     data: currentProjectFormData,
   }: { data: CostCodesData; isLoading: boolean } = usePageData(
-    "projects",
+    'projects',
     projectId,
-    "budget"
+    'budget'
   );
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function ProjectBudget(props: Props) {
         const response = await fetch(
           `/api/${(user as User).user_metadata.companyId}/get-cost-codes`,
           {
-            method: "GET",
+            method: 'GET',
           }
         );
         if (!response.ok) {
@@ -93,7 +93,7 @@ export default function ProjectBudget(props: Props) {
     formData = null;
   }
 
-  let anchorScrollElement: string = "";
+  let anchorScrollElement: string = '';
   if (currentProjectFormData) {
     anchorScrollElement = formatNameForID(
       (currentProjectFormData as CostCodesData).divisions[0].name
@@ -110,7 +110,7 @@ export default function ProjectBudget(props: Props) {
   // at EVERY side link click. This fixed a bug where if the same
   // link was clicked twice it would not scroll in the FormCard component.
   const [state, setState] = useState(false);
-  const [clickedLinkId, setClickedLinkId] = useState("");
+  const [clickedLinkId, setClickedLinkId] = useState('');
 
   // every time the update budget button is clicked, run this side effect
   useEffect(() => {
@@ -122,19 +122,15 @@ export default function ProjectBudget(props: Props) {
   }, [updateBudget]);
 
   const updateSubmitHandler = async () => {
-    console.log(
-      "dionY [ProjectBudget] currentProjectFormData: ",
-      currentProjectFormData
-    );
     if (!userLoading && user) {
       const requestConfig = {
         url: `/api/${
           (user as User).user_metadata.companyId
         }/projects/${projectId}/update-budget`,
-        method: "PATCH",
+        method: 'PATCH',
         body: JSON.stringify(currentProjectFormData),
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       };
 
