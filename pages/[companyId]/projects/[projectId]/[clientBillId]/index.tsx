@@ -119,6 +119,7 @@ export default function ClientBill() {
           }
         );
         data = JSON.parse(data);
+        console.log('dionY [getClientBillData] data: ', data);
         setClientBillData(data[clientBillId]);
       } catch (error) {
         console.error(error);
@@ -130,6 +131,11 @@ export default function ClientBill() {
 
     getClientBillData();
   }, [projectId, clientBillId, userLoading]);
+
+  console.log('dionY [ClientBill] isLoading: ', isLoading);
+  console.log('dionY [ClientBill] error: ', error);
+  console.log('dionY [ClientBill] billSummary: ', billSummary);
+  console.log('dionY [ClientBill] clientBillData: ', clientBillData);
 
   return (
     <>

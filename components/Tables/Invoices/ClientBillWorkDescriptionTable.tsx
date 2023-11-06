@@ -7,19 +7,19 @@ import {
   ChangeOrderSummary,
   ClientBillSummaryItem,
 } from '@/lib/models/summaryDataModel';
-import { BillWorkDescription, SubTotals } from '@/lib/models/clientBillModel';
+import { BillWorkDescription, BillWorkDescriptionV2, SubTotals, SubTotalsV2 } from '@/lib/models/clientBillModel';
 import { classNames } from '@/lib/utility/utils';
-import { CurrentActualsChangeOrders } from '@/lib/models/budgetCostCodeModel';
+import { CurrentActualsChangeOrders, CurrentActualsChangeOrdersV2 } from '@/lib/models/budgetCostCodeModel';
 
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 
 interface Props {
   headings: Headings;
   clientBillSummary: ClientBillSummaryItem;
-  subTotals: SubTotals | null;
-  tableData: BillWorkDescription | null;
+  subTotals: SubTotalsV2 | null;
+  tableData: BillWorkDescriptionV2 | null;
   changeOrderSummary: ChangeOrderSummary;
-  currentActualsChangeOrders: CurrentActualsChangeOrders;
+  currentActualsChangeOrders: CurrentActualsChangeOrdersV2;
   showExpiration?: boolean;
 }
 
@@ -87,9 +87,9 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
   const lastColClasses = 'py-2 pr-4 pl-3 sm:pr-6 lg:pr-6';
   console.log(groupedRows);
   const subTotalColor = (element: any) => {
-    if (element.description.toLowerCase() === 'subtotal') {
+    if (element.description?.toLowerCase() === 'subtotal') {
       return 'bg-violet-200';
-    } else if (element.description.toLowerCase().includes('subtotal')) {
+    } else if (element.description?.toLowerCase().includes('subtotal')) {
       return 'bg-orange-100';
     }
     return '';

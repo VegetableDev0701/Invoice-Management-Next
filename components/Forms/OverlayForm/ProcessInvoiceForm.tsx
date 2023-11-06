@@ -1,30 +1,30 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 
-import { addProcessInvoiceFormActions } from '@/store/add-process-invoice';
+import { addProcessInvoiceFormActions } from "@/store/add-process-invoice";
 import {
   useAppDispatch as useDispatch,
   useAppSelector as useSelector,
-} from '@/store/hooks';
-import { overlayActions } from '@/store/overlay-control-slice';
+} from "@/store/hooks";
+import { overlayActions } from "@/store/overlay-control-slice";
 
-import { formatNameForID } from '@/lib/utility/formatter';
-import { getFormIcon } from '@/lib/utility/formHelpers';
-import { Actions, FormData } from '@/lib/models/types';
-import { FormState } from '@/lib/models/formStateModels';
+import { formatNameForID } from "@/lib/utility/formatter";
+import { getFormIcon } from "@/lib/utility/formHelpers";
+import { Actions, FormData } from "@/lib/models/types";
+import { FormState } from "@/lib/models/formStateModels";
 import {
   InputElementWithAddressElements,
   MainCategories,
   isInputElementWithAddressElements,
-} from '@/lib/models/formDataModel';
-import { getCurrentInvoiceData } from '@/lib/utility/processInvoiceHelpers';
-import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
-import { BoundingBox, InvoiceTableRow } from '@/lib/models/invoiceDataModels';
+} from "@/lib/models/formDataModel";
+import { getCurrentInvoiceData } from "@/lib/utility/processInvoiceHelpers";
+import { ChangeOrderSummary } from "@/lib/models/summaryDataModel";
+import { BoundingBox, InvoiceTableRow } from "@/lib/models/invoiceDataModels";
 
-import classes from '../InputFormLayout/FormLayout.module.css';
-import InputAddressAutocomplete from '@/components/Inputs/InputAddressAutocomplete';
-import LineItems from './LineItems';
-import { Input } from '../../Inputs/Input';
-import MultipleCostCodes from './MultipleCostCodes';
+import classes from "../InputFormLayout/FormLayout.module.css";
+import InputAddressAutocomplete from "@/components/Inputs/InputAddressAutocomplete";
+import LineItems from "./LineItems";
+import { Input } from "../../Inputs/Input";
+import MultipleCostCodes from "./MultipleCostCodes";
 
 interface EmptyAddLaborFormForTesting {
   mainCategories: MainCategories[];
@@ -55,7 +55,7 @@ function ProcessInvoiceForm(props: Props) {
   } = props;
   const dispatch = useDispatch();
   const changeOrdersSummary: ChangeOrderSummary = useSelector(
-    (state) => state.projects[projectId]?.['change-orders-summary']
+    (state) => state.projects[projectId]?.["change-orders-summary"]
   );
 
   useEffect(() => {
@@ -79,13 +79,13 @@ function ProcessInvoiceForm(props: Props) {
           currentData.line_items_gpt[lineItemKey].bounding_box as BoundingBox,
         ];
       }
-    } else if (id === 'vendor-name') {
+    } else if (id === "vendor-name") {
       boundingBox = currentData?.vendor_name_bb;
-    } else if (id === 'invoice-number') {
+    } else if (id === "invoice-number") {
       boundingBox = currentData?.invoice_id_bb;
-    } else if (id === 'invoice-total') {
+    } else if (id === "invoice-total") {
       boundingBox = currentData?.total_amount_bb;
-    } else if (id === 'total-tax') {
+    } else if (id === "total-tax") {
       boundingBox = currentData?.total_tax_amount_bb;
     } else {
       return;
@@ -101,13 +101,14 @@ function ProcessInvoiceForm(props: Props) {
 
   return (
     <>
-      <div className={classes['scroll-frame']} id="scroll-frame">
+      <div className={classes["scroll-frame"]} id="scroll-frame">
         <form id="form-id" className="flex flex-col flex-grow">
           {formData.mainCategories.map((category, i) => {
-            if (category.name === 'Line Items') {
-              if (formState['line-item-toggle']?.value) {
+            if (category.name === "Line Items") {
+              if (formState["line-item-toggle"]?.value) {
                 return (
                   <LineItems
+                    projectId={projectId}
                     key={`${category.name}_${i}`}
                     form="addProcessInvoice"
                     actions={addProcessInvoiceFormActions}
@@ -150,8 +151,8 @@ function ProcessInvoiceForm(props: Props) {
                             : item;
 
                           if (
-                            item.id === 'work-description' &&
-                            formState['line-item-toggle']?.value
+                            item.id === "work-description" &&
+                            formState["line-item-toggle"]?.value
                           ) {
                             return (
                               <div
@@ -165,9 +166,9 @@ function ProcessInvoiceForm(props: Props) {
                               </div>
                             );
                           } else if (
-                            (item.id === 'cost-code' ||
-                              item.id === 'change-order') &&
-                            formState['line-item-toggle']?.value
+                            (item.id === "cost-code" ||
+                              item.id === "change-order") &&
+                            formState["line-item-toggle"]?.value
                           ) {
                             return (
                               <div
@@ -191,6 +192,7 @@ function ProcessInvoiceForm(props: Props) {
                                   showError={showError}
                                   actions={actions}
                                   form={form}
+                                  projectId={projectId}
                                   changeOrdersSummary={changeOrdersSummary}
                                   onMouseEnter={() =>
                                     onMouseEnterHandler(currentData, item.id)

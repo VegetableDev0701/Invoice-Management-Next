@@ -1,13 +1,18 @@
 import { useMemo } from 'react';
 import {
   BillWorkDescription,
+  BillWorkDescriptionV2,
   SubTotals,
+  SubTotalsV2,
   WorkDescriptionContentItem,
 } from '../models/clientBillModel';
 import {
   CurrentActuals,
   CurrentActualsChangeOrders,
+  CurrentActualsChangeOrdersV2,
+  CurrentActualsV2,
   InvoiceCurrentActualsChangeOrders,
+  InvoiceCurrentActualsChangeOrdersV2,
 } from '../models/budgetCostCodeModel';
 import {
   ChangeOrderSummary,
@@ -22,11 +27,11 @@ export const useCreateClientBillWorkDescription = ({
   changeOrderSummary,
   currentActualsChangeOrders,
 }: {
-  tableData: BillWorkDescription | null;
-  subTotals: SubTotals | null;
+  tableData: BillWorkDescriptionV2 | null;
+  subTotals: SubTotalsV2 | null;
   clientBillSummary: ClientBillSummaryItem;
   changeOrderSummary: ChangeOrderSummary;
-  currentActualsChangeOrders: CurrentActualsChangeOrders;
+  currentActualsChangeOrders: CurrentActualsChangeOrdersV2;
 }) => {
   const profitTaxesOrders = ['profit', 'boTax', 'liability'];
   // const profitTaxesCostCodes = Object.values(SUMMARY_COST_CODES)
@@ -43,8 +48,8 @@ export const useCreateClientBillWorkDescription = ({
     } = {};
     if (tableData) {
       groupedRowCategories.forEach((group) => {
-        let iterateData: { [invoiceId: string]: CurrentActuals } = {};
-        let changeOrdersIterateData: InvoiceCurrentActualsChangeOrders = {};
+        let iterateData: { [invoiceId: string]: CurrentActualsV2 } = {};
+        let changeOrdersIterateData: InvoiceCurrentActualsChangeOrdersV2 = {};
         if (group === 'Labor and Fees') {
           iterateData = { ...tableData.actuals.laborFee };
         } else if (group === 'Invoices') {

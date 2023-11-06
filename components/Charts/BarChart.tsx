@@ -11,6 +11,10 @@ import { formatNumber } from "@/lib/utility/formatter";
 import { CostCodeItem, Divisions } from "@/lib/models/budgetCostCodeModel";
 import { ChartEvent } from "chart.js/dist/core/core.plugins";
 import { createIndividualChartData } from "./BudgetToActualCharts";
+import {
+  CostCodeItemB2AData,
+  DivisionDataV2,
+} from "@/lib/models/chartDataModels";
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
 
@@ -21,7 +25,7 @@ interface BarChartProps {
   title: string;
   division: string;
   subDivision?: string | null;
-  fullData: Divisions;
+  fullData: DivisionDataV2;
   filterZeroElements?: boolean;
   dropZeroSubDivIndex?: number[] | null;
 }
@@ -39,31 +43,47 @@ const BarChart = (props: BarChartProps) => {
   } = props;
 
   const [chartData, setChartData] = useState(data);
-  const [title, setTitle] = useState(_title);
+  const [title, setTitle] = useState<
+    Array<{
+      title: string;
+      level: Array<number>;
+    }>
+  >([{ title: _title, level: [] }]);
   const [level, setLevel] = useState<Array<number>>([]);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const totalBarWidth = minBarWidth * (chartData.labels?.length || 0);
 
   const getCurrentLevelData = () => {
-    let levelData: Divisions | CostCodeItem = fullData;
+    let levelData: DivisionDataV2 | CostCodeItemB2AData = fullData;
+    let prefix: Array<{
+      title: string;
+      level: Array<number>;
+    }> = [{ title: _title, level: [] }];
     for (let i = 0; i < level.length; i++) {
       let index = level[i];
-      if (levelData.subItems.length <= index) {
+      if (levelData.subItems?.length <= index) {
         console.error("[getCurrentLevelData]: Error!");
         return;
       }
 
+      prefix.push({
+        title: `${levelData.subItems[index].number} - ${levelData.subItems[index].name}`,
+        level: level.slice(0, i + 1),
+      });
       levelData = levelData.subItems[index];
     }
 
-    return levelData;
+    return {
+      data: levelData,
+      prefix,
+    };
   };
 
   const zoomIn = (index: number) => {
-    const currentLevelData = getCurrentLevelData();
+    const { data: currentLevelData } = getCurrentLevelData();
     const selectedData = currentLevelData.subItems[index];
-    if (selectedData.subItems.length === 0) {
+    if (selectedData.subItems?.length === 0) {
       console.warn("[getCurrentLevelData]: There is no sub-items");
       return;
     }
@@ -83,7 +103,7 @@ const BarChart = (props: BarChartProps) => {
   };
 
   useEffect(() => {
-    const currentLevelData = getCurrentLevelData();
+    const { data: currentLevelData, prefix } = getCurrentLevelData();
 
     const { chartDataResult, title, dropZeroSubDivIndex } =
       createIndividualChartData({
@@ -93,9 +113,9 @@ const BarChart = (props: BarChartProps) => {
         chartData: currentLevelData.subItems,
         filterZeroElements: filterZeroElements,
       });
-    
+
     setChartData(chartDataResult);
-    setTitle(title);
+    setTitle(prefix);
   }, [fullData, level]);
 
   useEffect(() => {
@@ -192,7 +212,8 @@ const BarChart = (props: BarChartProps) => {
               },
               title: {
                 display: true,
-                text: title,
+                // text: title,
+                text: "",
                 align: "start",
                 padding: {
                   bottom: 25,
@@ -330,7 +351,30 @@ const BarChart = (props: BarChartProps) => {
     }
   }, [canvasRef, chartData]);
 
-  return <canvas ref={canvasRef} style={{ width: `1000px` }} />;
+  const handleClickTitle = (level: Array<number>) => {
+    setLevel(level);
+  };
+
+  return (
+    <div className="relative">
+      <div className="absolute top-0 w-full flex text-[25px] font-bold pl-[50px]">
+        {title.map((item, index) => (
+          <div key={index}>
+            <span
+              className="cursor-pointer hover:text-[#569092] transition-all mr-4"
+              onClick={() => handleClickTitle(item.level)}
+            >
+              {item.title}
+            </span>
+            {index < title.length - 1 && <span className="mr-4">/</span>}
+          </div>
+        ))}
+      </div>
+      <div className="w-full h-96 px-10 pt-2">
+        <canvas ref={canvasRef} style={{ width: `1000px` }} />
+      </div>
+    </div>
+  );
   //   return <canvas ref={canvasRef} />;
 };
 

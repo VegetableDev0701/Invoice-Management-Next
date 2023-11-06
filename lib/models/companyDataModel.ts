@@ -4,6 +4,7 @@ import { MainCategories, SelectMenuOptions, VendorData } from './formDataModel';
 import { Invoices } from './invoiceDataModels';
 import { ProjectSummary, VendorSummary } from './summaryDataModel';
 
+// TODO seems costCodeList and costCodeNameList should be stored in project data slice?
 export interface CompanyData {
   forms: Forms;
   invoices: { status: string; allInvoices: Invoices };

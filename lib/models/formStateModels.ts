@@ -57,3 +57,29 @@ export interface AccountSettings {
 interface AccountSetting {
   value: any;
 }
+
+export interface ChangeOrderFormStateV2 {
+  [changeOrderId: string]: FormStateV2;
+}
+
+export interface FormStateV2 {
+  [key: string]: FormStateItemV2;
+}
+
+export interface FormStateItemV2 {
+  value: string | number | boolean;
+  isValid?: boolean | null;
+  isTouched?: boolean | null;
+  isAdded?: boolean;
+  isShowing?: boolean;
+  // division?: number;
+  // divisionName?: string;
+  // subDivision?: number;
+  // subDivisionName?: string;
+  recursiveLevel?: Array<number>;
+  costCodeName?: string;
+  invoiceIds?: string[];
+  laborFeeIds?: string[];
+  changeOrder?: string | null;
+  amount?: string | number | null;
+}

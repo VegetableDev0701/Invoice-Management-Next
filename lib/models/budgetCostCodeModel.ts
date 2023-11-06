@@ -1,5 +1,6 @@
 import { FormStateItem } from "./formStateModels";
 
+// TODO unique property of CostCodeItem in N-level structure
 export interface CostCodesData {
   format: string;
   currency: string;
@@ -30,7 +31,7 @@ export interface CostCodeItem {
   id?: string;
   type?: string;
   required?: boolean;
-  isCurrency: boolean;
+  isCurrency?: boolean;
   inputType?: string;
   subdivisions?: SubDivisions[];
   subItems?: CostCodeItem[];
@@ -176,4 +177,81 @@ export interface ProfitTaxes {
   boTax: number;
   salesTax: number;
   total: number;
+}
+
+
+export interface BudgetTotalItemV2 {
+  type: "BudgetTotalV2";
+  costCodeName: string;
+  value: string;
+  recursiveLevel?: Array<number>;
+  isValid?: boolean;
+  isTouched?: boolean;
+  isAdded?: boolean;
+  isShowing?: boolean;
+  // division: number;
+  // divisionName: string;
+  // subDivision: number;
+  // subDivisionName: string;
+  // costCodeName: string;
+  invoiceIds?: string[];
+  laborFeeIds?: string[];
+  // changeOrder?: string | null;
+  // amount?: string;
+}
+
+export interface BudgetTotalsV2 {
+  [costCode: string]: BudgetTotalItemV2;
+}
+
+export interface AggregatedBudgetTotalsV2 {
+  total: string;
+  changeOrderTotals?: { [changeOrderID: string]: number };
+  divisionTotals: {
+    [key: string]: {
+      value: string;
+      name: string;
+    };
+  };
+  subDivisionTotals: {
+    [key: string]: {
+      value: string;
+      division: number;
+      name: string;
+    };
+  };
+}
+
+export interface CurrentActualsItemV2 {
+  totalAmt: string;
+  costCodeName: string;
+  recursiveLevel?: Array<number>;
+  description: string;
+  // division: number;
+  // divisionName: string;
+  qtyAmt?: string;
+  rateAmt?: string;
+  // subDivision: number;
+  // subDivisionName: string;
+  vendor: string;
+  changeOrder: string | null;
+  invoiceIds?: string[];
+  laborFeeIds?: string[];
+  group: "Labor and Fees" | "Invoices" | "Change Orders";
+}
+
+export interface CurrentActualsV2 {
+  [costCode: string]: CurrentActualsItemV2;
+}
+
+export interface CurrentActualsChangeOrdersV2 {
+  [changeOrderId: string]: CurrentActualsV2;
+}
+
+export interface InvoiceCurrentActualsV2 {
+  [groupId: string]: { [invoiceId: string]: CurrentActualsV2 };
+}
+
+export interface InvoiceCurrentActualsChangeOrdersV2 {
+  [changeOrderId: string]: { [invoiceId: string]: CurrentActualsV2 };
 }

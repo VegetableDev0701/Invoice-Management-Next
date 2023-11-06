@@ -61,8 +61,8 @@ export default function useConnectDescriptionToCostCode({
         setSelected({
           label: costCodeList.filter(
             (costCode: { id: number; label: string }) =>
-              costCode.id === costCodeId.id
-          )[0].label,
+              costCode.id === costCodeId?.id
+          )[0]?.label,
         });
       }
     }
@@ -85,8 +85,8 @@ export default function useConnectDescriptionToCostCode({
         setSelected({
           label: costCodeList.filter(
             (costCode: { id: number; label: string }) =>
-              costCode.id === costCodeId.id
-          )[0].label,
+              costCode.id === costCodeId?.id
+          )[0]?.label,
         });
       }
     }
@@ -113,8 +113,8 @@ export default function useConnectDescriptionToCostCode({
         setSelected({
           label: costCodeNameList.filter(
             (costCodeName: { id: number; label: string }) =>
-              costCodeName.id === costCodeId.id
-          )[0].label,
+              costCodeName.id === costCodeId?.id
+          )[0]?.label,
         });
       }
     }
@@ -141,8 +141,8 @@ export default function useConnectDescriptionToCostCode({
         setSelected({
           label: costCodeNameList.filter(
             (costCodeName: { id: number; label: string }) =>
-              costCodeName.id === costCodeId.id
-          )[0].label,
+              costCodeName.id === costCodeId?.id
+          )[0]?.label,
         });
       }
     }
@@ -166,8 +166,8 @@ export default function useConnectDescriptionToCostCode({
         setSelected({
           label: costCodeNameList.filter(
             (costCodeName: { id: number; label: string }) =>
-              costCodeName.id === costCodeId.id
-          )[0].label,
+              costCodeName.id === costCodeId?.id
+          )[0]?.label,
         });
       }
     }

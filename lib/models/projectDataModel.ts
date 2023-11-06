@@ -1,9 +1,10 @@
 import {
   CostCodesData,
   CurrentActualsChangeOrders,
+  CurrentActualsChangeOrdersV2,
 } from './budgetCostCodeModel';
-import { ChangeOrderChartData, ChartData } from './chartDataModels';
-import { ChangeOrderData, Labor, ProjectFormData } from './formDataModel';
+import { ChangeOrderChartData, ChangeOrderChartDataV2, ChartData, ChartDataV2 } from './chartDataModels';
+import { ChangeOrderData, Labor, ProjectFormData, SelectMenuOptions } from './formDataModel';
 import {
   ChangeOrderSummary,
   ClientBillSummary,
@@ -14,12 +15,12 @@ import {
 } from './summaryDataModel';
 
 export interface B2A {
-  b2aChartData: ChartData;
+  b2aChartData: ChartData | ChartDataV2;
   currentGrandTotal: { value: number };
   currentBudgetedTotal: { value: number };
   currentChangeOrderTotal: { value: number };
-  b2aChartDataChangeOrder: ChangeOrderChartData;
-  updatedCurrentActualsChangeOrders: CurrentActualsChangeOrders;
+  b2aChartDataChangeOrder: ChangeOrderChartData | ChangeOrderChartDataV2;
+  updatedCurrentActualsChangeOrders: CurrentActualsChangeOrders | CurrentActualsChangeOrdersV2;
 }
 
 export interface ProjectDataItems {
@@ -35,6 +36,8 @@ export interface ProjectDataItems {
   b2a: B2A;
   'client-bills-summary': ClientBillSummary | {};
   'client-bills': ClientBills;
+  costCodeList: SelectMenuOptions[];
+  costCodeNameList: SelectMenuOptions[];
 }
 
 export interface ProjectData {

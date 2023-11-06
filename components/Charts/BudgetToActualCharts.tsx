@@ -8,7 +8,13 @@ import scrollToElement from "@/lib/utility/scrollToElement";
 import classes from "../Forms/InputFormLayout/FormLayout.module.css";
 import BarChart from "./BarChart";
 import Card from "../UI/Card";
-import { ChartData, DivisionData } from "@/lib/models/chartDataModels";
+import {
+  ChartData,
+  ChartDataV2,
+  CostCodeItemB2AData,
+  DivisionData,
+  DivisionDataV2,
+} from "@/lib/models/chartDataModels";
 import {
   CostCodeItem,
   CostCodesData,
@@ -24,12 +30,22 @@ interface Props {
   filterZeroElements: boolean;
 }
 
-export const calculateCostCode = (data: CostCodeItem) => {
+export const calculateCostCode = (data: CostCodeItemB2AData) => {
   let total = 0;
-  if (data.subItems.length > 0) {
+  if (data.subItems?.length > 0) {
     data.subItems.forEach((item) => (total += calculateCostCode(item)));
   } else if (data.isCurrency) {
     total = Number(data.value);
+  }
+  return total;
+};
+
+export const calculateActual = (data: CostCodeItemB2AData) => {
+  let total = 0;
+  if (data.subItems?.length > 0) {
+    data.subItems.forEach((item) => (total += calculateActual(item)));
+  } else if (data.isCurrency) {
+    total = Number(data.actual) || 0;
   }
   return total;
 };
@@ -46,7 +62,7 @@ export const createIndividualChartData = ({
   division: number;
   subDivision?: number | null;
   subDivisionName?: string;
-  chartData: CostCodeItem[];
+  chartData: CostCodeItemB2AData[];
   filterZeroElements?: boolean;
 }) => {
   const title = `${division} - ${_title}`;
@@ -62,7 +78,7 @@ export const createIndividualChartData = ({
       {
         label: "Actual",
         backgroundColor: "rgba(223, 153, 32, 1)",
-        data: chartData?.map((_) => 5000),
+        data: chartData?.map((item) => calculateActual(item)),
       },
     ],
   };
@@ -107,7 +123,7 @@ export default function BudgetToActualCharts(props: Props) {
         title: string;
         division: string;
         subDivision: string | null;
-        fullData: Divisions;
+        fullData: DivisionDataV2;
         dropZeroSubDivIndex: number[];
         chartData: {
           labels: string[];
@@ -124,9 +140,11 @@ export default function BudgetToActualCharts(props: Props) {
   // const budgetFormState = useSelector((state) => state.addBudgetForm);
 
   // grab chart state here
-  // const b2aChartData = useSelector(
-  //   (state) => state.projects[projectId]?.b2a?.b2aChartData
-  // );
+  const b2aChartData = useSelector(
+    (state) => state.projects[projectId]?.b2a?.b2aChartData
+  );
+
+  console.log("dionY [BudgetToActualCharts] b2aChartData: ", b2aChartData);
 
   useEffect(() => {
     scrollToElement(clickedLink, anchorScrollElement, "scroll-frame");
@@ -137,7 +155,7 @@ export default function BudgetToActualCharts(props: Props) {
       title: string;
       division: string;
       subDivision: string | null;
-      fullData: Divisions;
+      fullData: DivisionDataV2;
       dropZeroSubDivIndex: number[];
       chartData: {
         labels: string[];
@@ -149,7 +167,10 @@ export default function BudgetToActualCharts(props: Props) {
       };
     }[] = [];
 
-    formData.divisions.forEach((division) => {
+    (
+      (b2aChartData as ChartDataV2)?.divisions ||
+      (formData.divisions as DivisionDataV2[])
+    )?.forEach((division) => {
       const { chartDataResult, fullData, title, dropZeroSubDivIndex } =
         createIndividualChartData({
           title: division.name,
@@ -169,9 +190,8 @@ export default function BudgetToActualCharts(props: Props) {
       });
     });
 
-    console.log("formdata: ", formData, chartIndicies);
     setChartData(chartIndicies);
-  }, [formData]);
+  }, [b2aChartData, formData]);
 
   // useEffect(() => {
   //   let chartIndicies: {
