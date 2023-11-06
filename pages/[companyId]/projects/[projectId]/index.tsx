@@ -133,7 +133,6 @@ const ProjectHome = () => {
   // intialize the budget form state and calculate totals when going to a project page
   useEffect(() => {
     if (projectId && isProjectsFetched) {
-      console.log('dionY [index.tsx] HERE!!!!!!!!!');
       dispatch(initializeBudgetThunk({ projectId })).then(() => {
         dispatch(initializeBudgetTotalsThunk()).then(() => {
           dispatch(

@@ -302,13 +302,11 @@ export const calculateTotals = ({
         amount = isBudgetTotalItemV2(costCodeObj)
           ? +costCodeObj.value.replaceAll(",", "")
           : +costCodeObj.totalAmt.replaceAll(",", "");
-        console.log("dionY [calculateTotals] amount: ", costCodeObj, amount);
         return +formatNumber(amount, false, true);
       })
       .reduce((acc, curr) => {
         return acc + curr;
       }, 0);
-    console.log("dionY [calculateTotals] total: ", total);
   }
   // const { totalByDivisionTransformed, totalBySubDivisionTransformed } =
   //   transformTotals({ totalByDivision, totalBySubDivision });

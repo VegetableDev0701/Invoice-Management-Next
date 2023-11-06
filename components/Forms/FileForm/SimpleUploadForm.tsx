@@ -21,8 +21,7 @@ export default function SimpleUploadForm(props: Props) {
       projectId: projectId ? projectId : undefined,
     });
 
-  const isLoading = false;
-  // const isLoading = useSelector((state) => state.ui.isLoading);
+  const isLoading = useSelector((state) => state.ui.isLoading);
 
   return (
     <>
