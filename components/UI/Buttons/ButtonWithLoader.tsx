@@ -10,8 +10,7 @@ interface Props {
 
 export default function ButtonWithLoader(props: Props) {
   const { button } = props;
-  const isLoading = false;
-  // const isLoading = useSelector((state) => state.ui.isLoading);
+  const isLoading = useSelector((state) => state.ui.isLoading);
   const classes =
     'h-12 py-3 px-10 font-normal text-white bg-stak-dark-green rounded-3xl hover:cursor-no-drop';
   return (

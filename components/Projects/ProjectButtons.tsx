@@ -62,7 +62,6 @@ const ProjectButtons = ({ projectId }: { projectId: string }) => {
         );
       }
     });
-    dispatch(uiActions.setLoadingState({ isLoading: true }));
   };
   return (
     <div className="flex gap-2">

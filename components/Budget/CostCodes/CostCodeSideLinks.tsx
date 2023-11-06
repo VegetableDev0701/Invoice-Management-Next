@@ -47,9 +47,6 @@ function CostCodeSideLinks(props: Props) {
   const percentComplete =
     (currentBudgetedTotal / Number(totalBudget.replaceAll(',', ''))) * 100;
 
-  console.log('dionY [CostCodeSideLink] totalBudget: ', totalBudget);
-  console.log('dionY [CostCodeSideLink] currentBudgetedTotal: ', currentBudgetedTotal);
-
   const dispatch = useDispatch();
 
   const clickLinkHandler = (e: React.MouseEvent<HTMLLIElement>) => {
