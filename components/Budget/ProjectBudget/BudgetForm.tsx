@@ -74,7 +74,12 @@ export default function BudgetForm(props: Props) {
   const [expandedItems, setExpandedItems] = useState<TreeItemIndex[]>([]);
   const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
   const [selectedItems, setSelectedItems] = useState<TreeItemIndex[]>([]);
-  const [valueAddedItems, setValueAddedItems] = useState<TreeItemIndex[]>([]);
+  const [valueAddedItems, setValueAddedItems] = useState<
+    Array<{
+      index: TreeItemIndex;
+      value: string;
+    }>
+  >([]);
   const [costCodeTreeDataList, setCostCodeTreeDataList] =
     useState<TreeData>(initTreeData);
   const dispatch = useDispatch();
@@ -193,17 +198,28 @@ export default function BudgetForm(props: Props) {
     }
   };
 
-  const handleAddValue = (treeItemIndex: TreeItemIndex) => {
-    if (valueAddedItems.includes(treeItemIndex)) {
+  const handleAddValue = (treeItemIndex: TreeItemIndex, value: string) => {
+    if (valueAddedItems.map((item) => item.index).includes(treeItemIndex)) {
       setValueAddedItems((prev) =>
-        prev.filter((item) => item !== treeItemIndex)
+        prev.filter((item) => item.index !== treeItemIndex)
       );
     } else {
-      setValueAddedItems((prev) => [...prev, treeItemIndex]);
+      setValueAddedItems((prev) => [
+        ...prev,
+        { index: treeItemIndex, value: '' },
+      ]);
     }
   };
 
-  const handleChangeValue = (value: string, treeItemIndex: string) => {
+  const handleChangeValue = (value: string, treeItemIndex: TreeItemIndex) => {
+    const updatedValueAddedItems = valueAddedItems.find(
+      (v) => v.index === treeItemIndex
+    );
+    if (updatedValueAddedItems) {
+      updatedValueAddedItems.value = value;
+      setValueAddedItems([...valueAddedItems]);
+    }
+
     const newTreeData = { ...costCodeTreeDataList };
     newTreeData[treeItemIndex].data.value = value;
     const convertTreeData = new ConvertTreeData();
@@ -418,8 +434,14 @@ export default function BudgetForm(props: Props) {
                             >
                               {depth !== 0 &&
                               item.children?.length === 0 &&
-                              valueAddedItems.includes(item.index) ? (
-                                <div onClick={() => handleAddValue(item.index)}>
+                              valueAddedItems
+                                .map((v) => v.index)
+                                .includes(item.index) ? (
+                                <div
+                                  onClick={() =>
+                                    handleAddValue(item.index, item.data.value)
+                                  }
+                                >
                                   <ToggleOffInputIcon width={30} height={30} />
                                 </div>
                               ) : (
@@ -429,7 +451,12 @@ export default function BudgetForm(props: Props) {
                                     className={
                                       TreeComponentClasses['list-item__control']
                                     }
-                                    onClick={() => handleAddValue(item.index)}
+                                    onClick={() =>
+                                      handleAddValue(
+                                        item.index,
+                                        item.data.value
+                                      )
+                                    }
                                   >
                                     <ToggleOnInputIcon width={30} height={30} />
                                   </div>
@@ -437,7 +464,9 @@ export default function BudgetForm(props: Props) {
                               )}
                               <p
                                 className={
-                                  item.data.value === '0.00' && 'line-through'
+                                  (item.data.value === '0.00' &&
+                                    'line-through') ||
+                                  ''
                                 }
                               >
                                 {title}
@@ -447,7 +476,7 @@ export default function BudgetForm(props: Props) {
                         </div>
                       </InteractiveComponent>
                     </div>
-                    {valueAddedItems.includes(item.index) &&
+                    {valueAddedItems.map((v) => v.index).includes(item.index) &&
                       depth !== 0 &&
                       item.children?.length === 0 && (
                         <div
@@ -460,7 +489,10 @@ export default function BudgetForm(props: Props) {
                           <input
                             key={item.index}
                             className={`px-10 font-sans w-full block placeholder:text-base border-2 text-gray-700 rounded-md py-1.5' ${classes['input-container__input']}`}
-                            value={item.data.value}
+                            value={
+                              valueAddedItems.find((v) => v.index == item.index)
+                                ?.value || item.data.value
+                            }
                             onChange={(e) => {
                               handleChangeValue(e.target.value, item.index);
                             }}
