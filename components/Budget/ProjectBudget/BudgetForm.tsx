@@ -161,8 +161,8 @@ export default function BudgetForm(props: Props) {
               ' - ' +
               itemData.data.name +
               ' $' +
-              itemData.data.value
-          : itemData.data.name + ' $' + itemData.data.value;
+              formatNumber(itemData.data.value)
+          : itemData.data.name + ' $' + formatNumber(itemData.data.value);
       } else {
         return itemData.data.number.toString().padStart(2, '0') != '00'
           ? itemData.data.number.toString().padStart(2, '0') +
@@ -178,7 +178,7 @@ export default function BudgetForm(props: Props) {
             ' - ' +
             itemData.data.name +
             ' $' +
-            itemData.data.value
+            formatNumber(itemData.data.value)
           );
         } else {
           return itemData.data.number.toString() + ' - ' + itemData.data.name;
@@ -191,7 +191,7 @@ export default function BudgetForm(props: Props) {
         ' - ' +
         itemData.data.name +
         ' $' +
-        itemData.data.value
+        formatNumber(itemData.data.value)
       );
     } else {
       return itemData.data.number.toFixed(4) + ' - ' + itemData.data.name;
