@@ -62,7 +62,7 @@ const BarChart = (props: BarChartProps) => {
     }> = [{ title: _title, level: [] }];
     for (let i = 0; i < level.length; i++) {
       let index = level[i];
-      if (levelData.subItems?.length <= index) {
+      if (!levelData.subItems || levelData.subItems?.length <= index) {
         console.error('[getCurrentLevelData]: Error!');
         return;
       }
@@ -81,9 +81,13 @@ const BarChart = (props: BarChartProps) => {
   };
 
   const zoomIn = (index: number) => {
-    const { data: currentLevelData } = getCurrentLevelData();
-    const selectedData = currentLevelData.subItems[index];
-    if (selectedData.subItems?.length === 0) {
+    const levelData = getCurrentLevelData();
+    if (!levelData) return;
+    const { data: currentLevelData } = levelData;
+    const selectedData = currentLevelData.subItems
+      ? currentLevelData.subItems[index]
+      : undefined;
+    if (!selectedData || selectedData.subItems?.length === 0) {
       console.warn('[getCurrentLevelData]: There is no sub-items');
       return;
     }
@@ -103,18 +107,19 @@ const BarChart = (props: BarChartProps) => {
   };
 
   useEffect(() => {
-    const { data: currentLevelData, prefix } = getCurrentLevelData();
+    const levelData = getCurrentLevelData();
+    if (!levelData) return;
+    const { data: currentLevelData, prefix } = levelData;
 
-    const { chartDataResult, title, dropZeroSubDivIndex } =
-      createIndividualChartData({
-        title: currentLevelData.name,
-        division: currentLevelData.number,
-        subDivision: null,
-        chartData: currentLevelData.subItems,
-        filterZeroElements: filterZeroElements,
-      });
+    const { chartDataResult } = createIndividualChartData({
+      title: currentLevelData.name || '',
+      division: currentLevelData.number,
+      subDivision: null,
+      chartData: currentLevelData.subItems,
+      filterZeroElements: filterZeroElements,
+    });
 
-    setChartData(chartDataResult);
+    setChartData(chartDataResult as ChartConfiguration['data']);
     setTitle(prefix);
   }, [fullData, level]);
 
@@ -329,16 +334,17 @@ const BarChart = (props: BarChartProps) => {
             {
               id: 'chart',
               afterInit: (obj, args, options) => {
+                function handleContextMenu(
+                  e: React.MouseEvent<HTMLCanvasElement, MouseEvent>
+                ) {
+                  e.preventDefault();
+                }
+
                 obj.canvas.addEventListener(
                   'contextmenu',
-                  handleContextMenu,
+                  handleContextMenu as unknown as EventListener,
                   false
                 );
-
-                function handleContextMenu(e) {
-                  e.preventDefault();
-                  return false;
-                }
               },
             },
           ],

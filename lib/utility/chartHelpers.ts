@@ -205,12 +205,17 @@ export const createB2AChartDataV2 = ({
 
       currentInvoiceTotals += Number(amount.replaceAll(',', ''));
 
-      const { data } = getDataByRecursiveLevel({
+      const levelData = getDataByRecursiveLevel({
         fullData: chartData.divisions,
         level: recursiveLevel,
       });
+      if (levelData) {
+        const { data } = levelData;
 
-      (data as CostCodeItemB2AData).actual = String(amount.replaceAll(',', ''));
+        (data as CostCodeItemB2AData).actual = String(
+          amount.replaceAll(',', '')
+        );
+      }
     });
 
   return {

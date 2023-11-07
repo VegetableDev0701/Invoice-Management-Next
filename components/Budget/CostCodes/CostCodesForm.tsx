@@ -493,7 +493,7 @@ function CostCodeForm(props: Props) {
         <ModalConfirm
           message={`Are you sure to delete "${`${removeItemIndex?.data.number.toFixed(
             4
-          )} - ${removeItemIndex?.data.label || removeItemIndex?.data.name}`}"`}
+          )} - ${removeItemIndex?.data.name}`}"`}
           title="Delete"
           openModal={openConfirmModal}
           onCloseModal={() => setOpenConfirmModal(false)}

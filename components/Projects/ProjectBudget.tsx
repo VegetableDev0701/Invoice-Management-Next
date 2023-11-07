@@ -96,11 +96,11 @@ export default function ProjectBudget(props: Props) {
   let anchorScrollElement: string = '';
   if (currentProjectFormData) {
     anchorScrollElement = formatNameForID(
-      (currentProjectFormData as CostCodesData).divisions[0].name
+      (currentProjectFormData as CostCodesData).divisions[0].name || ""
     );
   } else if (blankFormData) {
     anchorScrollElement = formatNameForID(
-      (blankFormData as CostCodesData).divisions[0].name
+      (blankFormData as CostCodesData).divisions[0].name || ""
     );
   }
 
@@ -136,7 +136,6 @@ export default function ProjectBudget(props: Props) {
 
       await sendRequest({
         requestConfig,
-        actions: addBudgetFormActions,
         pushPath: `/${
           (user as User).user_metadata.companyId
         }/projects/${projectId}`,

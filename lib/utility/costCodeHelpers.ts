@@ -41,9 +41,13 @@ export const iterateData = ({
 }) => {
   if (data?.subItems?.length === 0) return;
   data?.subItems?.forEach((item, index) => {
-    if (item?.subItems?.length > 0)
+    if (item.subItems && item.subItems?.length > 0)
       iterateData({ data: item, level: [...level, index], cb });
-    else if (item?.isCurrency || item?.value || item?.actual)
+    else if (
+      item?.isCurrency ||
+      item?.value ||
+      (item as CostCodeItemB2AData)?.actual
+    )
       cb(item, [...level, index]);
   });
 };
@@ -216,11 +220,14 @@ export function createCostCodeList(costCodes: CostCodesData) {
   //   });
   // });
 
-  const addState = (item: CostCodeItem, _: Array<number>) => {
+  const addState = (
+    item: CostCodeItem | CostCodeItemB2AData,
+    _: Array<number>
+  ) => {
     costCodeList.push({ id: count, label: String(item.number) });
     costCodeNameList.push({
       id: count,
-      label: item.label || item.name,
+      label: (item as CostCodeItem).label || item.name || '',
       costCode: String(item.number),
     });
     count++;
@@ -285,13 +292,17 @@ export const createInitBudgetState = ({
   const initState: BudgetTotalsV2 = {};
   if (!costCodeFormData) return;
 
-  const addState = (item: CostCodeItem, level: Array<number>) => {
+  const addState = (
+    _item: CostCodeItem | CostCodeItemB2AData,
+    level: Array<number>
+  ) => {
+    const item = _item as CostCodeItem;
     const isAdded = item.value === '' ? false : true;
     const isShowing = isCollapsed && item.value === '' ? false : true;
     ``;
     initState[item.id || String(item.number)] = {
-      value: item.value,
-      costCodeName: item.name,
+      value: item.value || '',
+      costCodeName: item.name || '',
       type: 'BudgetTotalV2',
       isTouched: false,
       isValid: false,
@@ -345,27 +356,27 @@ export const costCodeData2NLevel = (oldCostCodeData: any) => {
     updated: true,
   };
 
-  oldCostCodeData.divisions.forEach((div, index: number) => {
+  oldCostCodeData.divisions.forEach((div: any, index: number) => {
     const newDivision: Divisions = {
       number: div?.number || index + 1,
       name: div?.name,
       subItems: [],
     };
 
-    div.subdivisions.forEach((subdiv, subIndex: number) => {
+    div.subdivisions.forEach((subdiv: any, subIndex: number) => {
       const newItem: CostCodeItem = {
         number: subdiv?.number || index + (subIndex + 1) / 10,
         name: subdiv?.name,
         subItems: [],
       };
 
-      subdiv.items.forEach((item, ssubIndex: number) => {
+      subdiv.items.forEach((item: any, ssubIndex: number) => {
         let _number = item?.number;
         if (!isValidNumber(_number, newItem.number)) {
           _number = +(String(newItem.number) + (ssubIndex + 1));
         }
 
-        newItem.subItems.push({
+        newItem.subItems!.push({
           number: _number,
           name: item?.name || item?.label,
           label: item?.label,
@@ -378,7 +389,7 @@ export const costCodeData2NLevel = (oldCostCodeData: any) => {
         } as CostCodeItem);
       });
 
-      newDivision.subItems.push(newItem);
+      newDivision.subItems!.push(newItem);
     });
 
     newCostCodeData.divisions.push(newDivision);
@@ -404,7 +415,7 @@ export const getDataByRecursiveLevel = ({
   let prefix = '';
   for (let i = 1; i < level.length; i++) {
     let index = level[i];
-    if (levelData.subItems?.length <= index) {
+    if (!levelData.subItems || levelData.subItems?.length <= index) {
       console.warn('[getDataByRecursiveLevel]: No data');
       return null;
     }

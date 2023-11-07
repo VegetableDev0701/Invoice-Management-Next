@@ -29,7 +29,7 @@ export interface Props {
 export default function MainComponent(props: Props) {
   const { costCodes, pageTitle, subTitle } = props;
   const treeData = useSelector((state) => state.data.treeData);
-  const anchorScrollElement = formatNameForID(costCodes.divisions[0].name);
+  const anchorScrollElement = formatNameForID(costCodes.divisions[0].name || "");
   const [state, setState] = useState<boolean>(false);
 
   const [costCodeDataList, setCostCodeDataList] = useState<CostCodesData>({

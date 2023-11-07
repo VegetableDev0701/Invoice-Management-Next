@@ -32,7 +32,7 @@ export default function ProjectBudgetToActuals(props: Props) {
   );
 
   const anchorScrollElement = !currentBudgetLoading
-    ? formatNameForID(currentProjectFormData.divisions[0].name)
+    ? formatNameForID(currentProjectFormData.divisions[0].name || "")
     : "";
 
   const clickLinkHandler = (linkId: string) => {

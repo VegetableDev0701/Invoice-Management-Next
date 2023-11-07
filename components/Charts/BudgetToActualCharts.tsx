@@ -32,7 +32,7 @@ interface Props {
 
 export const calculateCostCode = (data: CostCodeItemB2AData) => {
   let total = 0;
-  if (data.subItems?.length > 0) {
+  if (data.subItems && data.subItems?.length > 0) {
     data.subItems.forEach((item) => (total += calculateCostCode(item)));
   } else if (data.isCurrency) {
     total = Number(data.value);
@@ -42,7 +42,7 @@ export const calculateCostCode = (data: CostCodeItemB2AData) => {
 
 export const calculateActual = (data: CostCodeItemB2AData) => {
   let total = 0;
-  if (data.subItems?.length > 0) {
+  if (data.subItems && data.subItems?.length > 0) {
     data.subItems.forEach((item) => (total += calculateActual(item)));
   } else if (data.isCurrency) {
     total = Number(data.actual) || 0;
@@ -62,23 +62,23 @@ export const createIndividualChartData = ({
   division: number;
   subDivision?: number | null;
   subDivisionName?: string;
-  chartData: CostCodeItemB2AData[];
+  chartData?: CostCodeItemB2AData[];
   filterZeroElements?: boolean;
 }) => {
   const title = `${division} - ${_title}`;
   const fullData = chartData || [];
   const chartDataResult = {
-    labels: chartData?.map((item) => `${item.number} - ${item.name}`),
+    labels: chartData?.map((item) => `${item.number} - ${item.name}`) || [],
     datasets: [
       {
         label: 'Budget',
         backgroundColor: 'rgba(86, 144, 146, 1)',
-        data: chartData?.map((item) => calculateCostCode(item)),
+        data: chartData?.map((item) => calculateCostCode(item)) || [],
       },
       {
         label: 'Actual',
         backgroundColor: 'rgba(223, 153, 32, 1)',
-        data: chartData?.map((item) => calculateActual(item)),
+        data: chartData?.map((item) => calculateActual(item)) || [],
       },
     ],
   };
@@ -171,7 +171,7 @@ export default function BudgetToActualCharts(props: Props) {
     )?.forEach((division) => {
       const { chartDataResult, fullData, title, dropZeroSubDivIndex } =
         createIndividualChartData({
-          title: division.name,
+          title: division.name || "",
           division: division.number,
           subDivision: null,
           chartData: division.subItems,
