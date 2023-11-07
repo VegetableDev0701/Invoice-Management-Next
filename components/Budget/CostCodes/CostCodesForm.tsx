@@ -21,7 +21,6 @@ import {
   type CostCodesData,
   type TreeData,
   type CostCodeItem,
-  ConvertTreeData,
 } from "./CostCodesTreeData";
 
 import scrollToElement from "@/lib/utility/scrollToElement";
@@ -35,6 +34,7 @@ import {
 import { companyDataActions } from "@/store/company-data-slice";
 
 import TreeComponentClasses from "./CostCodesForm.module.css";
+import { ConvertTreeData } from "@/lib/utility/treeDataHelpers";
 
 export interface Props {
   formData: CostCodesData;
@@ -476,7 +476,6 @@ function CostCodeForm(props: Props) {
                             Cancel
                           </div>
                         </div>
-                        {/* </InteractiveComponent> */}
                       </div>
                     </div>
                   )}
@@ -493,13 +492,10 @@ function CostCodeForm(props: Props) {
           />
         </ControlledTreeEnvironment>
         <ModalConfirm
-          message={`Are you sure to delete < ${
-            removeItemIndex?.data.label
-              ? `${removeItemIndex?.data.number.toFixed(4)} - ${
-                  removeItemIndex?.data.label
-                }`
-              : removeItemIndex?.data.name
-          } >`}
+          message={`Are you sure to delete "${
+            `${removeItemIndex?.data.number.toFixed(4)} - ${
+              removeItemIndex?.data.label || removeItemIndex?.data.name
+            }`}"`}
           title="Delete"
           openModal={openConfirmModal}
           onCloseModal={() => setOpenConfirmModal(false)}

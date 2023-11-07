@@ -15,7 +15,7 @@ import { companyDataActions } from "@/store/company-data-slice";
 import CostCodesForm from "./CostCodes/CostCodesForm";
 import CostCodesDivision from "./CostCodes/CostCodesDivision";
 import classes from "../../components/Forms/form-layout.module.css";
-import { ConvertTreeData } from "../Budget/CostCodes/CostCodesTreeData";
+import { ConvertTreeData } from "@/lib/utility/treeDataHelpers";
 
 export interface Props {
   costCodes: CostCodesData;

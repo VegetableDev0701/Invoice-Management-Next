@@ -202,7 +202,6 @@ export default function ProjectBudget(props: Props) {
           clickedLink={clickedLinkId}
           dummyForceRender={state}
           anchorScrollElement={anchorScrollElement}
-          actions={addBudgetFormActions}
         />
       )}
     </div>

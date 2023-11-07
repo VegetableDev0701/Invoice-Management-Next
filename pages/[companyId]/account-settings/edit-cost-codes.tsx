@@ -20,10 +20,8 @@ import FullScreenLoader from '@/components/UI/Loaders/FullScreenLoader';
 import MainComponent from '@/components/Budget/MainComponent';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
 
-import { ConvertTreeData } from '@/components/Budget/CostCodes/CostCodesTreeData';
-
-
-import json from '__test__/data/cost-codes_new.json'
+import json from '__test__/data/cost-codes_new.json';
+import { ConvertTreeData } from '@/lib/utility/treeDataHelpers';
 
 const EditCostCodeFormat = () => {
   useSetStatePath();
@@ -56,10 +54,16 @@ const EditCostCodeFormat = () => {
         }
         const data = await response.json();
         const costCodeData = JSON.parse(data);
-        const treeData = new ConvertTreeData().convertCostCode2TreeData(costCodeData)
+        const treeData = new ConvertTreeData().convertCostCode2TreeData(
+          costCodeData
+        );
         dispatch(companyDataActions.setCostCodeData(costCodeData));
-        dispatch(companyDataActions.changeUpdateTreeStatus({ updated: false, data: {...treeData} }))
-
+        dispatch(
+          companyDataActions.changeUpdateTreeStatus({
+            updated: false,
+            data: { ...treeData },
+          })
+        );
       } catch (error) {
         console.error(error);
       }
@@ -72,9 +76,9 @@ const EditCostCodeFormat = () => {
     'Please confirm your changes to the cost codes. Be aware, any modifications you save or delete here will propagate to all project budgets. Exercise extreme caution when deleting items.'
   );
 
-  const costCodeFormat = (user as User).user_metadata.accountSettings[
-    'cost-code-format-as'
-  ].value;
+  const costCodeFormat =
+    (user as User).user_metadata.accountSettings['cost-code-format-as']
+      ?.value ?? 'Custom';
 
   const { isLoading, error, response, successJSON, sendRequest } = useHttp({
     isClearData: false,
@@ -91,8 +95,8 @@ const EditCostCodeFormat = () => {
     treeData && treeData.updated === false
       ? setModalMessage('The cost codes have not been updated.')
       : setModalMessage(
-        'Please confirm your changes to the cost codes. Be aware, any modifications you save or delete here will propagate to all project budgets. Exercise extreme caution when deleting items.'
-      );
+          'Please confirm your changes to the cost codes. Be aware, any modifications you save or delete here will propagate to all project budgets. Exercise extreme caution when deleting items.'
+        );
     setOpenModal(true);
   };
 
@@ -106,24 +110,22 @@ const EditCostCodeFormat = () => {
     isOverlay: false,
   });
 
-  const submitFormHandler = async (
-    e: React.MouseEvent
-  ) => {
+  const submitFormHandler = async (e: React.MouseEvent) => {
     e.preventDefault();
     const updatedTreeData = JSON.parse(JSON.stringify({ ...treeData }));
-    Object.keys(updatedTreeData.data).forEach(key => {
+    Object.keys(updatedTreeData.data).forEach((key) => {
       if (Object.keys(updatedTreeData.data[key].data).includes('isOpened')) {
-        delete updatedTreeData.data[key].data.isOpened
+        delete updatedTreeData.data[key].data.isOpened;
       }
       if (updatedTreeData.data[key].data?.subItems?.length < 0) {
-        delete updatedTreeData.data[key].data.subItems
+        delete updatedTreeData.data[key].data.subItems;
       }
-    })
-    const updatedCostCodes = new ConvertTreeData().convertTreeData2CostCode(updatedTreeData.data)
+    });
+    const updatedCostCodes = new ConvertTreeData().convertTreeData2CostCode(
+      updatedTreeData.data
+    );
 
-    dispatch(
-      companyDataActions.setCostCodeData(updatedCostCodes)
-    )
+    dispatch(companyDataActions.setCostCodeData(updatedCostCodes));
 
     if (!userLoading && user) {
       const requestConfig = {
@@ -145,8 +147,11 @@ const EditCostCodeFormat = () => {
         })
       );
       dispatch(
-        companyDataActions.changeUpdateTreeStatus({ updated: false, data: updatedTreeData.data })
-      )
+        companyDataActions.changeUpdateTreeStatus({
+          updated: false,
+          data: updatedTreeData.data,
+        })
+      );
     }
   };
 
@@ -164,7 +169,7 @@ const EditCostCodeFormat = () => {
             message={modalMessage}
           />
           <MainComponent
-            costCodes={{...costCodes}}
+            costCodes={{ ...costCodes }}
             onOpenModal={openModalHandler}
             pageTitle="Edit Cost Code Format"
             subTitle={`Cost Code Format: ${costCodeFormat}`}

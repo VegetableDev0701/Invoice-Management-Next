@@ -189,7 +189,7 @@ const useListenSSE = () => {
   useEffect(() => {
     if (newDocs) {
       if (sseContent.sseContentType === 'invoice') {
-        dispatch(companyDataActions.addInvoicesFromSSE(newDocs as Invoices));
+        dispatch(companyDataActions.addInvoicesFromWS(newDocs as Invoices));
       } else if (sseContent.sseContentType === 'contract') {
         dispatch(
           projectDataActions.addContractFromSSE({

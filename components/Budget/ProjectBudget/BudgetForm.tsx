@@ -4,8 +4,6 @@ import {
   Tree,
   TreeItem,
   TreeItemIndex,
-  DraggingPositionItem,
-  type DraggingPosition,
 } from 'react-complex-tree';
 import 'react-complex-tree/lib/style-modern.css';
 
@@ -19,10 +17,8 @@ import { projectDataActions } from '@/store/projects-data-slice';
 import scrollToElement from '@/lib/utility/scrollToElement';
 import { formatNameForID } from '@/lib/utility/formatter';
 import { Actions } from '@/lib/models/types';
-import { getFormIcon } from '@/lib/utility/formHelpers';
 import { formatNumber } from '@/lib/utility/formatter';
 
-import { Input } from '@/components/Inputs/Input';
 import Card from '@/components/UI/Card';
 
 import { classNames } from '@/lib/utility/utils';
@@ -31,22 +27,20 @@ import {
   type CostCodesData,
   type TreeData,
   type CostCodeItem,
-  ConvertTreeData,
 } from '../CostCodes/CostCodesTreeData';
 
 import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
 import ToggleOffInputIcon from '@/public/icons/ToggleOffInput';
 import ToggleOnInputIcon from '@/public/icons/ToggleOnInput';
-import { ExclamationCircleIcon } from '@heroicons/react/20/solid';
 
 import TreeComponentClasses from './BudgetForm.module.css';
+import { ConvertTreeData } from '@/lib/utility/treeDataHelpers';
 
 interface Props {
   formData: CostCodesData;
   clickedLink: string;
   dummyForceRender: boolean;
   anchorScrollElement: string;
-  actions: Actions;
   projectId: string;
 }
 
@@ -65,7 +59,6 @@ export default function BudgetForm(props: Props) {
     formData,
     clickedLink,
     anchorScrollElement,
-    actions,
     dummyForceRender,
     projectId,
   } = props;
@@ -464,9 +457,9 @@ export default function BudgetForm(props: Props) {
                               )}
                               <p
                                 className={
-                                  (item.data.value === '0.00' &&
-                                    'line-through') ||
-                                  ''
+                                  item.data.value === '0.00'
+                                    ? 'line-through'
+                                    : ''
                                 }
                               >
                                 {title}
@@ -488,7 +481,7 @@ export default function BudgetForm(props: Props) {
                         >
                           <input
                             key={item.index}
-                            className={`px-10 font-sans w-full block placeholder:text-base border-2 text-gray-700 rounded-md py-1.5' ${classes['input-container__input']}`}
+                            className={`px-10 font-sans w-full block placeholder:text-base border-2 rounded-md py-1.5' text-[1.2rem] text-stak-dark-gray border-stak-light-gray bg-stak-white`}
                             value={
                               valueAddedItems.find((v) => v.index == item.index)
                                 ?.value || item.data.value

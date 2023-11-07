@@ -61,7 +61,7 @@ function CostCodesDivision(props: Props) {
                 (division: { name: string; number: number }, i: number) => (
                   <div
                     key={i}
-                    className={`${classes["link-container"]} flex flex-1 justify-between items-center`}
+                    className={`flex flex-1 justify-between items-center`}
                   >
                     <li
                       id={`${formatNameForID(division.name)}_link`}

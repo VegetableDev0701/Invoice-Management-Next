@@ -859,7 +859,7 @@ export const companyDataSlice = createSlice({
     },
 
     // Invoices
-    addInvoicesFromSSE(state, action: PayloadAction<Invoices>) {
+    addInvoicesFromWS(state, action: PayloadAction<Invoices>) {
       const newInvoices: Invoices = action.payload;
       // we want to preserve the order of line_items_1, line_item_2, etc.
       // because they are in order from top to bottom for each page of the invoice

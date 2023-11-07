@@ -26,7 +26,6 @@ type AccountSettingsActions = typeof accountSettingsFormActions;
 export type AddLaborActions = typeof addLaborFormActions;
 type AddChangeOrderActions = typeof addChangeOrderFormActions;
 type AddContractFormActions = typeof addContractFormActions;
-type AddBudgetActions = typeof addBudgetFormActions;
 export type AddProcessInvoiceActions = typeof addProcessInvoiceFormActions;
 export type InvoiceActions = typeof invoiceActions;
 type OnboardUserActions = typeof onboardUserActions;
@@ -38,7 +37,6 @@ export type Actions =
   | AddLaborActions
   | AddChangeOrderActions
   | AddContractFormActions
-  | AddBudgetActions
   | AddProcessInvoiceActions
   | OnboardUserActions;
 
