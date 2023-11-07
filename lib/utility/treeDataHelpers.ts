@@ -1,5 +1,4 @@
-import { TreeData } from "@/components/Budget/CostCodes/CostCodesTreeData";
-import { CostCodeItem, CostCodesData, Divisions } from "../models/budgetCostCodeModel";
+import { CostCodeItem, CostCodesData, Divisions, TreeData } from "../models/budgetCostCodeModel";
 import { TreeItemIndex } from "react-complex-tree";
 
 export class ConvertTreeData {

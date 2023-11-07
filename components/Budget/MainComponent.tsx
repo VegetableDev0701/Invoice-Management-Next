@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Actions } from "@/lib/models/types";
 import { formatNameForID } from "@/lib/utility/formatter";
 
-import { CostCodesData } from "@/components/Budget/CostCodes/CostCodesTreeData";
 import TitleCard from "@/components/UI/FormLayout/TitleCard";
 
 import {
@@ -16,6 +15,7 @@ import CostCodesForm from "./CostCodes/CostCodesForm";
 import CostCodesDivision from "./CostCodes/CostCodesDivision";
 import classes from "../../components/Forms/form-layout.module.css";
 import { ConvertTreeData } from "@/lib/utility/treeDataHelpers";
+import { CostCodesData } from "@/lib/models/budgetCostCodeModel";
 
 export interface Props {
   costCodes: CostCodesData;

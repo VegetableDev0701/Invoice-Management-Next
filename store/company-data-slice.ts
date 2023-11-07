@@ -24,8 +24,7 @@ import {
 import { RootState } from '.';
 import { VendorData } from '@/lib/models/formDataModel';
 import { getChangeOrderIdFromName } from '@/lib/utility/processInvoiceHelpers';
-import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
-import { CostCodesData as UpdatedCostCodesData } from '@/components/Budget/CostCodes/CostCodesTreeData';
+import { CostCodeTreeData, TreeData, CostCodesData as UpdatedCostCodesData } from '@/lib/models/budgetCostCodeModel';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
 import { processingActions } from './processing-slice';
 import { CostCodeObjType } from '@/lib/models/projectDataModel';
@@ -50,10 +49,6 @@ import {
 } from '@/lib/models/changeOrderModel';
 import { CompanyData } from '@/lib/models/companyDataModel';
 import { snapshotCopy } from '@/lib/utility/utils';
-import {
-  type CostCodeTreeData,
-  type TreeData,
-} from '@/components/Budget/CostCodes/CostCodesTreeData';
 
 export const fetchCompanyData = createAsyncThunk(
   'companyDataAsync/fetch',

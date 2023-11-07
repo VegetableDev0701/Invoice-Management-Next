@@ -1,5 +1,4 @@
-import { CostCodesData, Divisions } from './budgetCostCodeModel';
-import { CostCodesData as UpdatedCostCodesData } from '@/components/Budget/CostCodes/CostCodesTreeData';
+import { CostCodesData as UpdatedCostCodesData } from './budgetCostCodeModel';
 import { MainCategories, SelectMenuOptions, VendorData } from './formDataModel';
 import { Invoices } from './invoiceDataModels';
 import { ProjectSummary, VendorSummary } from './summaryDataModel';

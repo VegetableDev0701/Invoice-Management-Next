@@ -23,18 +23,17 @@ import Card from '@/components/UI/Card';
 
 import { classNames } from '@/lib/utility/utils';
 
-import {
-  type CostCodesData,
-  type TreeData,
-  type CostCodeItem,
-} from '../CostCodes/CostCodesTreeData';
-
 import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
 import ToggleOffInputIcon from '@/public/icons/ToggleOffInput';
 import ToggleOnInputIcon from '@/public/icons/ToggleOnInput';
 
 import TreeComponentClasses from './BudgetForm.module.css';
 import { ConvertTreeData } from '@/lib/utility/treeDataHelpers';
+import {
+  CostCodeItem,
+  CostCodesData,
+  TreeData,
+} from '@/lib/models/budgetCostCodeModel';
 
 interface Props {
   formData: CostCodesData;

@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import { formatNameForID } from "@/lib/utility/formatter";
+import { formatNameForID } from '@/lib/utility/formatter';
 
-import Card from "@/components/UI/Card";
-import Button from "@/components/UI/Buttons/Button";
-import AddDivisionForm from "./AddDivisionForm";
+import Card from '@/components/UI/Card';
+import Button from '@/components/UI/Buttons/Button';
+import AddDivisionForm from './AddDivisionForm';
 
-import classes from "../../Forms/InputFormLayout/FormLayout.module.css";
-import { CostCodesData, Divisions } from "./CostCodesTreeData";
+import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
+import { CostCodesData, Divisions } from '@/lib/models/budgetCostCodeModel';
 
 interface Props {
   costCodeDataList: CostCodesData;
@@ -22,13 +22,13 @@ function CostCodesDivision(props: Props) {
     useState<{ name: string; number: number }[]>();
 
   const clickLinkHandler = (e: React.MouseEvent<HTMLLIElement>) => {
-    onclicklink((e.target as HTMLElement).id.split("_")[0]);
+    onclicklink((e.target as HTMLElement).id.split('_')[0]);
   };
 
   useEffect(() => {
     setDivisions(
       costCodeDataList.divisions.map((item) => {
-        const { name, number } = item as Divisions;
+        const { name = '', number } = item as Divisions;
         return { name, number };
       })
     );
@@ -55,7 +55,7 @@ function CostCodesDivision(props: Props) {
         >
           <div className="flex-grow flex-shrink flex flex-1 flex-col h-full self-stretch overflow-y-scroll">
             <ul
-              className={`flex flex-col gap-4 ${classes["content-frame__links"]}`}
+              className={`flex flex-col gap-4 ${classes['content-frame__links']}`}
             >
               {divisions?.map(
                 (division: { name: string; number: number }, i: number) => (
@@ -67,8 +67,8 @@ function CostCodesDivision(props: Props) {
                       id={`${formatNameForID(division.name)}_link`}
                       onClick={clickLinkHandler}
                     >
-                      {division.number.toString().padStart(2, "0") != "00"
-                        ? `${division.number.toString().padStart(2, "0")} - ${
+                      {division.number.toString().padStart(2, '0') != '00'
+                        ? `${division.number.toString().padStart(2, '0')} - ${
                             division.name
                           }`
                         : `${division.name}`}

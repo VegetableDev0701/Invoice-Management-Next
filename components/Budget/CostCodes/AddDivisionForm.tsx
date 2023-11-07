@@ -2,8 +2,7 @@ import { useState } from "react";
 
 import InputBaseAddDivision from "@/components/Inputs/InputBaseAddDivision";
 import Button from "@/components/UI/Buttons/Button";
-import { CostCodesData } from "./CostCodesTreeData";
-
+import { CostCodesData } from "@/lib/models/budgetCostCodeModel";
 
 interface Props {
   showForm: () => void;

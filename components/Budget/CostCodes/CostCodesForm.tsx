@@ -1,40 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   ControlledTreeEnvironment,
   Tree,
   TreeItem,
   TreeItemIndex,
-} from "react-complex-tree";
-import "react-complex-tree/lib/style-modern.css";
+} from 'react-complex-tree';
+import 'react-complex-tree/lib/style-modern.css';
 import {
   TrashIcon,
   DocumentPlusIcon,
   PencilIcon,
-} from "@heroicons/react/20/solid";
+} from '@heroicons/react/20/solid';
 
-import InputBaseAddItem from "@/components/Inputs/InputBaseAddDivision";
-import Card from "@/components/UI/Card";
-import ModalConfirm from "@/components/UI/Modal/ModalConfirm";
-import classes from "@/components/Forms/InputFormLayout/FormLayout.module.css";
+import InputBaseAddItem from '@/components/Inputs/InputBaseAddDivision';
+import Card from '@/components/UI/Card';
+import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
+import classes from '@/components/Forms/InputFormLayout/FormLayout.module.css';
 
-import {
-  type CostCodesData,
-  type TreeData,
-  type CostCodeItem,
-} from "./CostCodesTreeData";
-
-import scrollToElement from "@/lib/utility/scrollToElement";
-import { formatNameForID } from "@/lib/utility/formatter";
-import { classNames } from "@/lib/utility/utils";
+import scrollToElement from '@/lib/utility/scrollToElement';
+import { formatNameForID } from '@/lib/utility/formatter';
+import { classNames } from '@/lib/utility/utils';
 
 import {
   useAppDispatch as useDispatch,
   useAppSelector as useSelector,
-} from "@/store/hooks";
-import { companyDataActions } from "@/store/company-data-slice";
+} from '@/store/hooks';
+import { companyDataActions } from '@/store/company-data-slice';
 
-import TreeComponentClasses from "./CostCodesForm.module.css";
-import { ConvertTreeData } from "@/lib/utility/treeDataHelpers";
+import TreeComponentClasses from './CostCodesForm.module.css';
+import { ConvertTreeData } from '@/lib/utility/treeDataHelpers';
+import {
+  CostCodeItem,
+  CostCodesData,
+  TreeData,
+} from '@/lib/models/budgetCostCodeModel';
 
 export interface Props {
   formData: CostCodesData;
@@ -46,9 +45,9 @@ export interface Props {
 const convertTreeData = new ConvertTreeData();
 const initTreeData = {
   root: {
-    index: "root",
+    index: 'root',
     data: {
-      name: "",
+      name: '',
       number: 0,
     },
   },
@@ -60,10 +59,10 @@ function CostCodeForm(props: Props) {
 
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    name: "",
-    number: "",
+    name: '',
+    number: '',
   });
-  const [addItemIndex, setAddItemIndex] = useState<string>("");
+  const [addItemIndex, setAddItemIndex] = useState<string>('');
   const [removeItemIndex, setRemoveItemIndex] = useState<TreeItem>();
   const [openConfirmModal, setOpenConfirmModal] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
@@ -75,7 +74,7 @@ function CostCodeForm(props: Props) {
   const treeDataList = useSelector((state) => state.data.treeData);
 
   useEffect(() => {
-    scrollToElement(clickedLink, anchorScrollElement, "scroll-frame");
+    scrollToElement(clickedLink, anchorScrollElement, 'scroll-frame');
   }, [clickedLink, anchorScrollElement, dummyForceRender]);
 
   useEffect(() => {
@@ -87,8 +86,8 @@ function CostCodeForm(props: Props) {
   useEffect(() => {
     const openedItems = Object.keys(costCodeDataList).filter(
       (treeItemIndex) =>
-        treeItemIndex !== "root" &&
-        (costCodeDataList[treeItemIndex].data as Omit<CostCodeItem, "subItems">)
+        treeItemIndex !== 'root' &&
+        (costCodeDataList[treeItemIndex].data as Omit<CostCodeItem, 'subItems'>)
           ?.isOpened
     );
     setExpandedItems(openedItems);
@@ -144,10 +143,10 @@ function CostCodeForm(props: Props) {
           value: formData.name,
           number: Number(formData.number),
           id: formData.number,
-          type: "text",
+          type: 'text',
           required: false,
           isCurrency: true,
-          inputType: "toggleInput",
+          inputType: 'toggleInput',
         },
         children: [],
       };
@@ -158,15 +157,15 @@ function CostCodeForm(props: Props) {
     newCodeDataList[addItemIndex].children?.push(newItem);
     newCodeDataList[addItemIndex].children?.sort((a, b) => {
       if (
-        (newCodeDataList[a].data as Omit<CostCodeItem, "subItems">)?.number >
-        (newCodeDataList[b].data as Omit<CostCodeItem, "subItems">)?.number
+        (newCodeDataList[a].data as Omit<CostCodeItem, 'subItems'>)?.number >
+        (newCodeDataList[b].data as Omit<CostCodeItem, 'subItems'>)?.number
       ) {
         return 1;
       }
       return -1;
     });
     newCodeDataList[addItemIndex].isFolder = true;
-    setAddItemIndex("");
+    setAddItemIndex('');
     setIsError(false);
     saveData(newCodeDataList);
   };
@@ -204,20 +203,20 @@ function CostCodeForm(props: Props) {
     const itemData = item;
     if (isDivision) {
       return (
-        itemData.data.number.toString().padStart(2, "0") +
-        " - " +
+        itemData.data.number.toString().padStart(2, '0') +
+        ' - ' +
         itemData.data.name
       );
     } else if (isSubDivision) {
       if (itemData.data.name) {
-        return itemData.data.number.toString() + " - " + itemData.data.name;
+        return itemData.data.number.toString() + ' - ' + itemData.data.name;
       }
     }
-    return itemData.data.number.toFixed(4) + " - " + itemData.data.name;
+    return itemData.data.number.toFixed(4) + ' - ' + itemData.data.name;
   };
 
   const handleRenameItem = (item: TreeItem, name: string) => {
-    const changeData = name.split("-");
+    const changeData = name.split('-');
     let newCodeDataList = { ...costCodeDataList };
     newCodeDataList = {
       ...costCodeDataList,
@@ -247,7 +246,7 @@ function CostCodeForm(props: Props) {
 
   return (
     <Card
-      className={`${classes["parent-frame"]} ${classes["parent-frame__form"]} bg-stak-white`}
+      className={`${classes['parent-frame']} ${classes['parent-frame__form']} bg-stak-white`}
     >
       <div
         className="flex-grow flex-shrink flex flex-1 flex-col h-full self-stretch overflow-y-scroll"
@@ -257,7 +256,7 @@ function CostCodeForm(props: Props) {
           items={costCodeDataList}
           getItemTitle={getItemTitle}
           viewState={{
-            ["tree-costcode"]: {
+            ['tree-costcode']: {
               expandedItems,
               selectedItems,
               focusedItem,
@@ -274,7 +273,7 @@ function CostCodeForm(props: Props) {
           onExpandItem={(item: TreeItem<any>) => {
             const newTreeData = { ...costCodeDataList };
             (
-              newTreeData[item.index].data as Omit<CostCodeItem, "subItems">
+              newTreeData[item.index].data as Omit<CostCodeItem, 'subItems'>
             ).isOpened = true;
             setCostCodeDataList(newTreeData);
             dispatch(
@@ -287,7 +286,7 @@ function CostCodeForm(props: Props) {
           onCollapseItem={(item) => {
             const newTreeData = { ...costCodeDataList };
             (
-              newTreeData[item.index].data as Omit<CostCodeItem, "subItems">
+              newTreeData[item.index].data as Omit<CostCodeItem, 'subItems'>
             ).isOpened = false;
             setCostCodeDataList(newTreeData);
             dispatch(
@@ -298,40 +297,40 @@ function CostCodeForm(props: Props) {
             );
           }}
           renderItem={({ item, depth, children, title, context, arrow }) => {
-            const InteractiveComponent = context.isRenaming ? "div" : "button";
-            const type = context.isRenaming ? undefined : "button";
+            const InteractiveComponent = context.isRenaming ? 'div' : 'button';
+            const type = context.isRenaming ? undefined : 'button';
             // TODO have only root li component create all the classes
             return (
               <li
-              id={formatNameForID(item.data.name)}
+                id={formatNameForID(item.data.name)}
                 {...(context.itemContainerWithChildrenProps as any)}
                 className={classNames(
-                  "rct-tree-item-li",
-                  item.isFolder && "rct-tree-item-li-isFolder",
-                  context.isSelected && "rct-tree-item-li-selected",
-                  context.isExpanded && "rct-tree-item-li-expanded",
-                  context.isFocused && "rct-tree-item-li-focused",
-                  context.isDraggingOver && "rct-tree-item-li-dragging-over",
-                  context.isSearchMatching && "rct-tree-item-li-search-match",
-                  "!py-1"
+                  'rct-tree-item-li',
+                  item.isFolder && 'rct-tree-item-li-isFolder',
+                  context.isSelected && 'rct-tree-item-li-selected',
+                  context.isExpanded && 'rct-tree-item-li-expanded',
+                  context.isFocused && 'rct-tree-item-li-focused',
+                  context.isDraggingOver && 'rct-tree-item-li-dragging-over',
+                  context.isSearchMatching && 'rct-tree-item-li-search-match',
+                  '!py-1'
                 )}
               >
                 <div
                   {...(context.itemContainerWithoutChildrenProps as any)}
                   style={{ paddingLeft: `${(depth + 1) * 12}px` }}
                   className={classNames(
-                    "rct-tree-item-title-container",
-                    item.isFolder && "rct-tree-item-title-container-isFolder",
+                    'rct-tree-item-title-container',
+                    item.isFolder && 'rct-tree-item-title-container-isFolder',
                     context.isSelected &&
-                      "rct-tree-item-title-container-selected",
+                      'rct-tree-item-title-container-selected',
                     context.isExpanded &&
-                      "rct-tree-item-title-container-expanded",
+                      'rct-tree-item-title-container-expanded',
                     context.isFocused &&
-                      "rct-tree-item-title-container-focused",
+                      'rct-tree-item-title-container-focused',
                     context.isDraggingOver &&
-                      "rct-tree-item-title-container-dragging-over",
+                      'rct-tree-item-title-container-dragging-over',
                     context.isSearchMatching &&
-                      "rct-tree-item-title-container-search-match"
+                      'rct-tree-item-title-container-search-match'
                   )}
                 >
                   {arrow}
@@ -339,36 +338,36 @@ function CostCodeForm(props: Props) {
                     type={type}
                     {...(context.interactiveElementProps as any)}
                     className={classNames(
-                      "rct-tree-item-button",
-                      item.isFolder && "rct-tree-item-button-isFolder",
-                      context.isSelected && "rct-tree-item-button-selected",
-                      context.isExpanded && "rct-tree-item-button-expanded",
-                      context.isFocused && "rct-tree-item-button-focused",
+                      'rct-tree-item-button',
+                      item.isFolder && 'rct-tree-item-button-isFolder',
+                      context.isSelected && 'rct-tree-item-button-selected',
+                      context.isExpanded && 'rct-tree-item-button-expanded',
+                      context.isFocused && 'rct-tree-item-button-focused',
                       context.isDraggingOver &&
-                        "rct-tree-item-button-dragging-over",
+                        'rct-tree-item-button-dragging-over',
                       context.isSearchMatching &&
-                        "rct-tree-item-button-search-match"
+                        'rct-tree-item-button-search-match'
                     )}
                   >
-                    <div className={TreeComponentClasses["list-item"]}>
+                    <div className={TreeComponentClasses['list-item']}>
                       <div
                         className={classNames(
-                          "font-sans",
-                          "flex",
+                          'font-sans',
+                          'flex',
                           depth === 0
-                            ? "text-2xl font-semibold"
+                            ? 'text-2xl font-semibold'
                             : depth === 1
-                            ? "text-xl font-normal"
-                            : "text-lg"
+                            ? 'text-xl font-normal'
+                            : 'text-lg'
                         )}
                       >
                         {title}
                       </div>
                       <div
                         className={classNames(
-                          TreeComponentClasses["list-item__control"],
+                          TreeComponentClasses['list-item__control'],
                           context.isSelected &&
-                            TreeComponentClasses["list-item__show"]
+                            TreeComponentClasses['list-item__show']
                         )}
                       >
                         <div
@@ -383,7 +382,7 @@ function CostCodeForm(props: Props) {
                         >
                           <i
                             title={
-                              depth === 0 ? "Add SubDivision" : "Add Cost Code"
+                              depth === 0 ? 'Add SubDivision' : 'Add Cost Code'
                             }
                           >
                             <DocumentPlusIcon
@@ -427,11 +426,11 @@ function CostCodeForm(props: Props) {
                         showError={isError}
                         onChange={changeHandler}
                         input={{
-                          label: "Number",
+                          label: 'Number',
                           id: `number`,
-                          type: "text",
-                          inputmode: "numeric",
-                          value: "",
+                          type: 'text',
+                          inputmode: 'numeric',
+                          value: '',
                           required: false,
                         }}
                       />
@@ -440,10 +439,10 @@ function CostCodeForm(props: Props) {
                         showError={isError}
                         onChange={changeHandler}
                         input={{
-                          label: "Name",
-                          id: "name",
-                          type: "text",
-                          value: "",
+                          label: 'Name',
+                          id: 'name',
+                          type: 'text',
+                          value: '',
                           required: false,
                         }}
                       />
@@ -453,8 +452,8 @@ function CostCodeForm(props: Props) {
                             onClick={(e) => {
                               handleSaveAddItem(depth);
                               setFormData({
-                                name: "",
-                                number: "",
+                                name: '',
+                                number: '',
                               });
                             }}
                             className="rounded-full bg-[rgb(86,144,146)] font-sans font-md focus:ring-0 focus-visible:outline-0 min-w-fit text-2xl font-normal px-3 py-2 flex items-center text-white"
@@ -464,10 +463,10 @@ function CostCodeForm(props: Props) {
                           <div
                             onClick={(e) => {
                               e.stopPropagation();
-                              setAddItemIndex("");
+                              setAddItemIndex('');
                               setFormData({
-                                name: "",
-                                number: "",
+                                name: '',
+                                number: '',
                               });
                               setIsError(false);
                             }}
@@ -492,10 +491,9 @@ function CostCodeForm(props: Props) {
           />
         </ControlledTreeEnvironment>
         <ModalConfirm
-          message={`Are you sure to delete "${
-            `${removeItemIndex?.data.number.toFixed(4)} - ${
-              removeItemIndex?.data.label || removeItemIndex?.data.name
-            }`}"`}
+          message={`Are you sure to delete "${`${removeItemIndex?.data.number.toFixed(
+            4
+          )} - ${removeItemIndex?.data.label || removeItemIndex?.data.name}`}"`}
           title="Delete"
           openModal={openConfirmModal}
           onCloseModal={() => setOpenConfirmModal(false)}

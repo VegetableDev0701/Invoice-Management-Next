@@ -1,3 +1,4 @@
+import { TreeItem, TreeItemIndex } from 'react-complex-tree';
 import { FormStateItem } from './formStateModels';
 
 // TODO unique property of CostCodeItem in N-level structure
@@ -7,6 +8,7 @@ export interface CostCodesData {
   updated: boolean;
   divisions: Divisions[];
   status?: string;
+  isOpened?: boolean;
   // uuid?: string;
 }
 
@@ -15,6 +17,8 @@ export interface Divisions {
   number: number;
   subdivisions?: SubDivisions[];
   subItems?: CostCodeItem[];
+  isOpened?: boolean;
+  value?: string;
 }
 
 export interface SubDivisions {
@@ -32,6 +36,7 @@ export interface CostCodeItem {
   type?: string;
   required?: boolean;
   isCurrency?: boolean;
+  isOpened?: boolean;
   inputType?: string;
   subdivisions?: SubDivisions[];
   subItems?: CostCodeItem[];
@@ -254,3 +259,13 @@ export interface InvoiceCurrentActualsV2 {
 export interface InvoiceCurrentActualsChangeOrdersV2 {
   [changeOrderId: string]: { [invoiceId: string]: CurrentActualsV2 };
 }
+
+export type TreeData = Record<
+  TreeItemIndex,
+  TreeItem<Omit<CostCodeItem, "subItems"> | Omit<CostCodesData, "divisions">>
+>;
+
+export type CostCodeTreeData = {
+  updated: boolean;
+  data: TreeData;
+};

@@ -7,9 +7,9 @@ import { companyDataActions } from "@/store/company-data-slice";
 
 import Card from "../Card";
 import Button from "../Buttons/Button";
-import { CostCodesData } from "../../Budget/CostCodes/CostCodesTreeData";
 
 import classes from "../../Forms/InputFormLayout/FormLayout.module.css";
+import { CostCodesData } from "@/lib/models/budgetCostCodeModel";
 
 interface Props {
   pageTitle: string;
@@ -71,7 +71,7 @@ const TitleCard = (props: Props) => {
             type="submit"
             className="py-1 px-4 text-2xl"
             onClick={() => {
-              const newTreeData = JSON.parse(JSON.stringify(costCodeDataList));
+              const newTreeData: CostCodesData = JSON.parse(JSON.stringify(costCodeDataList));
               newTreeData.divisions.forEach((div, index) => {
                 newTreeData.divisions[index] = { ...div, isOpened: false };
                 newTreeData.divisions[index].isOpened = !isExpanded;

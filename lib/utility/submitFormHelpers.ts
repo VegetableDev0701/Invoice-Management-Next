@@ -10,7 +10,7 @@ import {
   isInputElementWithItems,
   LaborData,
 } from '@/lib/models/formDataModel';
-import { FormState, User } from '@/lib/models/formStateModels';
+import { FormStateV2, User } from '@/lib/models/formStateModels';
 import { FormData } from '@/lib/models/types';
 import { formatNameForID } from '@/lib/utility/formatter';
 
@@ -18,7 +18,7 @@ import { CostCodesData } from '../models/budgetCostCodeModel';
 import { NewUserData } from '@/components/Utilities/OnBoardUser/OnBoardNewUser';
 
 export function createAuth0UserData(
-  formStateData: FormState,
+  formStateData: FormStateV2,
   newUserData?: NewUserData
 ) {
   const userData: User = {
@@ -90,7 +90,7 @@ export function getAddressFormData(formData: FormData): string {
  * Takes the add project form state and transforms it into the form
  * to push to the database
  * @param {FormData} formData - Base form object
- * @param {FormState} formStateData - Object with updated values for a new project
+ * @param {FormStateV2} formStateData - Object with updated values for a new project
  * @param {boolean} isAddProject - If the form is for adding a project
  * @param {boolean} isAddVendor - If the form is for adding a vendor
  * @returns
@@ -103,7 +103,7 @@ export function createFormDataForSubmit({
   isAddLabor = false,
 }: {
   formData: FormData;
-  formStateData: FormState;
+  formStateData: FormStateV2;
   isAddProject: boolean;
   isAddVendor: boolean;
   isAddLabor: boolean;
@@ -310,7 +310,7 @@ export function createBudgetFormDataForSubmit({
   formStateData,
 }: {
   formData: CostCodesData;
-  formStateData: FormState;
+  formStateData: FormStateV2;
 }) {
   const newFormData: CostCodesData = JSON.parse(JSON.stringify(formData));
   newFormData.divisions.forEach((div, i) => {
