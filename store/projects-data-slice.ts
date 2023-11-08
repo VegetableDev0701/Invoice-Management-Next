@@ -36,7 +36,7 @@ import {
   ChangeOrderContentItem,
 } from '@/lib/models/changeOrderModel';
 import { Invoices, ProcessedInvoiceData } from '@/lib/models/invoiceDataModels';
-import { createCostCodeList } from '@/lib/utility/costCodeHelpers';
+import { costCodeData2NLevel, createCostCodeList } from '@/lib/utility/costCodeHelpers';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
 import { snapshotCopy } from '@/lib/utility/utils';
 import { setTargetValue } from '@/lib/utility/createSummaryDataHelpers';
@@ -844,57 +844,8 @@ const projectDataSlice = createSlice({
           const newData = JSON.parse(value.value);
           if (!newData) return;
 
-          // transform data to n-level structure
-          if (newData.budget && !newData.budget.updated) {
-            const { budget: oldCostCodeData } = newData;
-            const newCostCodeData: CostCodesData = {
-              currency: oldCostCodeData.currency,
-              divisions: [],
-              format: oldCostCodeData.format,
-              updated: true,
-            };
+          newData.budget = costCodeData2NLevel(newData.budget);
 
-            oldCostCodeData.divisions.forEach((div: any, index: number) => {
-              const newDivision: Divisions = {
-                number: div?.number || index + 1,
-                name: div?.name,
-                subItems: [],
-              };
-
-              div.subdivisions.forEach((subdiv: any, subIndex: number) => {
-                const newItem: CostCodeItem = {
-                  number: subdiv?.number || index + (subIndex + 1) / 10,
-                  name: subdiv?.name,
-                  subItems: [],
-                };
-
-                subdiv.items.forEach((item: any, ssubIndex: number) => {
-                  let _number = item?.number;
-                  if (!isValidNumber(_number, newItem.number)) {
-                    _number = +(String(newItem.number) + (ssubIndex + 1));
-                  }
-
-                  newItem.subItems?.push({
-                    number: _number,
-                    name: item?.name || item?.label,
-                    label: item?.label,
-                    id: String(_number.toFixed(4)),
-                    inputType: item?.inputType,
-                    isCurrency: item?.isCurrency,
-                    required: item?.required,
-                    type: item?.type,
-                    value: item?.value || '0',
-                  } as CostCodeItem);
-                });
-
-                newDivision.subItems?.push(newItem);
-              });
-
-              newCostCodeData.divisions.push(newDivision);
-            });
-
-            newData.budget = newCostCodeData;
-          }
 
           const { costCodeList, costCodeNameList } = createCostCodeList(
             newData.budget

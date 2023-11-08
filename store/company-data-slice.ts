@@ -21,7 +21,7 @@ import { getChangeOrderIdFromName } from '@/lib/utility/processInvoiceHelpers';
 import {
   CostCodeTreeData,
   TreeData,
-  CostCodesData as UpdatedCostCodesData,
+  CostCodesData
 } from '@/lib/models/budgetCostCodeModel';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
 import { processingActions } from './processing-slice';
@@ -733,7 +733,7 @@ export const companyDataSlice = createSlice({
   initialState: initialDataState,
   reducers: {
     // Cost Codes
-    setCostCodeData(state, action: PayloadAction<UpdatedCostCodesData>) {
+    setCostCodeData(state, action: PayloadAction<CostCodesData>) {
       const costCodes = action.payload;
       state.costCodes = { ...costCodes, updated: true };
     },

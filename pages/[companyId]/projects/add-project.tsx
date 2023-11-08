@@ -15,7 +15,7 @@ import useLocationChange from '@/hooks/use-location-change';
 
 import { checkAllFormFields } from '@/lib/validation/formValidation';
 import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
-import { FormState, User } from '@/lib/models/formStateModels';
+import { FormStateV2, User } from '@/lib/models/formStateModels';
 import { ProjectFormData } from '@/lib/models/formDataModel';
 import { createSingleProjectSummary } from '@/lib/utility/createSummaryDataHelpers';
 
@@ -78,7 +78,7 @@ const AddNewProject = () => {
 
   const submitFormHandler = async (
     e: React.FormEvent,
-    formStateData?: FormState
+    formStateData?: FormStateV2
   ) => {
     e.preventDefault();
 
@@ -87,7 +87,7 @@ const AddNewProject = () => {
     // create the form data to push to the DB
     const dataToSubmit = createFormDataForSubmit({
       formData: addProjectFormData,
-      formStateData: formStateData as FormState,
+      formStateData: formStateData as FormStateV2,
       isAddProject: true,
       isAddVendor: false,
       isAddLabor: false,
@@ -156,7 +156,7 @@ const AddNewProject = () => {
             formState={addProjectFormStateData}
             onOpenModal={openModalHandler}
             pageTitle="Add a New Project"
-            subTitle={undefined}
+            subTitle={''}
             showError={missingInputs}
             actions={addProjectFormActions}
             form="addProject"

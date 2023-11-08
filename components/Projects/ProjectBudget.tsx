@@ -41,8 +41,6 @@ export default function ProjectBudget(props: Props) {
     null
   );
 
-  const dispatch = useDispatch();
-
   useLocationChange(addProjectFormActions.clearFormState);
 
   useSetNotification({

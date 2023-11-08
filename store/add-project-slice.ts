@@ -2,13 +2,13 @@ import { createSlice, current } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import {
-  FormState,
+  FormStateV2,
   IsTouchedPayload,
   SetFormElementPayload,
 } from '@/lib/models/formStateModels';
 import { resetAllFormValidation } from '@/lib/utility/formHelpers';
 
-const initialAddProjectFormState: FormState = {
+const initialAddProjectFormState: FormStateV2 = {
   numRecurringFees: { value: 0 },
 };
 

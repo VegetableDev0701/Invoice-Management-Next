@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { formatNameForID } from '@/lib/utility/formatter';
 import { MainCategories, ProjectFormData } from '@/lib/models/formDataModel';
 import { Actions, FormData } from '@/lib/models/types';
-import { FormState } from '@/lib/models/formStateModels';
+import { FormStateV2 } from '@/lib/models/formStateModels';
 
 import SideLinksCard from '../UI/FormLayout/SideLinksCard';
 import TitleCard from '../UI/FormLayout/TitleCard';
@@ -11,7 +11,7 @@ import Form from './InputFormLayout/Form';
 
 export interface Props {
   formData: FormData;
-  formState: FormState;
+  formState: FormStateV2;
   pageTitle: string;
   subTitle?: string;
   showError: boolean;

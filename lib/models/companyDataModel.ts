@@ -1,4 +1,4 @@
-import { CostCodesData as UpdatedCostCodesData } from './budgetCostCodeModel';
+import { CostCodesData } from './budgetCostCodeModel';
 import { MainCategories, SelectMenuOptions, VendorData } from './formDataModel';
 import { Invoices } from './invoiceDataModels';
 import { ProjectSummary, VendorSummary } from './summaryDataModel';
@@ -10,7 +10,7 @@ export interface CompanyData {
   vendors: { [vendorId: string]: VendorData };
   projectsSummary: { status: string; allProjects: ProjectSummary };
   vendorsSummary: { status: string; allVendors: VendorSummary };
-  costCodes: UpdatedCostCodesData;
+  costCodes: CostCodesData;
   costCodeList: SelectMenuOptions[];
   costCodeNameList: SelectMenuOptions[];
 }

@@ -16,8 +16,8 @@ interface Props {
   subTitle: string;
   isUpdated?: boolean;
   onConfirmSave: (e: React.MouseEvent) => void;
-  costCodeDataList: CostCodesData;
-  setCostCodeDataList: Function;
+  costCodeDataList?: CostCodesData;
+  setCostCodeDataList?: Function;
 }
 
 const TitleCard = (props: Props) => {
