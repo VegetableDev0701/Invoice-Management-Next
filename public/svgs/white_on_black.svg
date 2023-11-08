@@ -1,0 +1,47 @@
+<svg
+  width="46"
+  height="44"
+  viewBox="0 0 46 44"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <g id="Logo">
+    <g id="Frame 58">
+      <path
+        id="center"
+        d="M23 26V18"
+        stroke="#FFF"
+        stroke-width="4"
+        stroke-linecap="round"
+      />
+      <path
+        id="rightMid"
+        d="M31.3635 32V12"
+        stroke="#FFF"
+        stroke-width="4"
+        stroke-linecap="round"
+      />
+      <path
+        id="right"
+        d="M39.7273 38V6"
+        stroke="#FFF"
+        stroke-width="4"
+        stroke-linecap="round"
+      />
+      <path
+        id="leftMid"
+        d="M14.6365 12V32"
+        stroke="#FFF"
+        stroke-width="4"
+        stroke-linecap="round"
+      />
+      <path
+        id="left"
+        d="M6.27271 6L6.27271 38"
+        stroke="#FFF"
+        stroke-width="4"
+        stroke-linecap="round"
+      />
+    </g>
+  </g>
+</svg>
