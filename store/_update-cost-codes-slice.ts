@@ -29,7 +29,7 @@ const initialCostCodeState: StateData = {
   costCodes: {
     status: '',
     format: '',
-    updated: false,
+    updated: true,
     divisions: [],
     currency: '',
   },

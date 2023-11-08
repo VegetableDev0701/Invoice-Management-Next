@@ -5,7 +5,6 @@ import {
   useAppDispatch as useDispatch,
   useAppSelector as useSelector,
 } from '@/store/hooks';
-import { updateAllProjectBudgets } from '@/store/projects-data-slice';
 import { addBudgetFormActions } from '@/store/add-budget-slice';
 
 import { useCurrentUser as useUser } from '@/hooks/use-user';
@@ -60,7 +59,7 @@ const EditCostCodeFormat = () => {
         dispatch(companyDataActions.setCostCodeData(costCodeData));
         dispatch(
           companyDataActions.changeUpdateTreeStatus({
-            updated: false,
+            updated: true,
             data: { ...treeData },
           })
         );
@@ -141,14 +140,14 @@ const EditCostCodeFormat = () => {
         requestConfig,
       });
 
-      await dispatch(
-        updateAllProjectBudgets({
-          companyId: (user as User).user_metadata.companyId,
-        })
-      );
+      // await dispatch(
+      //   updateAllProjectBudgets({
+      //     companyId: (user as User).user_metadata.companyId,
+      //   })
+      // );
       dispatch(
         companyDataActions.changeUpdateTreeStatus({
-          updated: false,
+          updated: true,
           data: updatedTreeData.data,
         })
       );

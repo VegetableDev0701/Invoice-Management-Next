@@ -24,7 +24,11 @@ import {
 import { RootState } from '.';
 import { VendorData } from '@/lib/models/formDataModel';
 import { getChangeOrderIdFromName } from '@/lib/utility/processInvoiceHelpers';
-import { CostCodeTreeData, TreeData, CostCodesData as UpdatedCostCodesData } from '@/lib/models/budgetCostCodeModel';
+import {
+  CostCodeTreeData,
+  TreeData,
+  CostCodesData as UpdatedCostCodesData,
+} from '@/lib/models/budgetCostCodeModel';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
 import { processingActions } from './processing-slice';
 import { CostCodeObjType } from '@/lib/models/projectDataModel';
@@ -742,7 +746,7 @@ export const companyDataSlice = createSlice({
     // Cost Codes
     setCostCodeData(state, action: PayloadAction<UpdatedCostCodesData>) {
       const costCodes = action.payload;
-      state.costCodes = { ...costCodes, updated: false };
+      state.costCodes = { ...costCodes, updated: true };
     },
     changeUpdateStatus(state, action: PayloadAction<boolean>) {
       state.costCodes.updated = action.payload;

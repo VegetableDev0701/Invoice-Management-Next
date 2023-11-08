@@ -259,71 +259,71 @@ export const changeProjectStatus = createAsyncThunk(
 
 // This function runs when the master cost code list is updated and those
 // updates need to cascade across all project budgets and push to the backend.
-export const updateAllProjectBudgets = createAsyncThunk(
-  'companyProjects/updateAllProjectBudgets',
-  async ({ companyId }: { companyId: string }, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const updateBudgets = state.addBudgetForm.updateBudget;
+// export const updateAllProjectBudgets = createAsyncThunk(
+//   'companyProjects/updateAllProjectBudgets',
+//   async ({ companyId }: { companyId: string }, thunkAPI) => {
+//     const state = thunkAPI.getState() as RootState;
+//     const updateBudgets = state.addBudgetForm.updateBudget;
 
-    fetch(`/api/${companyId}/projects/update-all-budgets`, {
-      method: 'PATCH',
-      body: JSON.stringify(updateBudgets),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('something went wrong');
-        return res.json();
-      })
-      .then((data) => {
-        thunkAPI.dispatch(
-          uiActions.setNotificationContent({
-            content: data.message,
-            icon: 'success',
-            openNotification: true,
-          })
-        );
-        updateBudgets.deleteCostCodes?.forEach((delCostCode) => {
-          thunkAPI.dispatch(
-            projectDataActions.deleteBudgetCostCode(delCostCode)
-          );
-        });
-        updateBudgets.deleteSubDivisions?.forEach((delSubDiv) => {
-          thunkAPI.dispatch(
-            projectDataActions.deleteBudgetSubDivision(delSubDiv)
-          );
-        });
-        updateBudgets.deleteDivisions?.forEach((delDiv) => {
-          thunkAPI.dispatch(projectDataActions.deleteBudgetDivision(delDiv));
-        });
-        updateBudgets.addDivisions?.forEach((updateDiv) => {
-          thunkAPI.dispatch(
-            projectDataActions.insertNewEmptyDivision(updateDiv)
-          );
-        });
-        updateBudgets.addSubDivisions?.forEach((updateSubDiv) => {
-          thunkAPI.dispatch(
-            projectDataActions.insertNewEmptySubDivision(updateSubDiv)
-          );
-        });
-        updateBudgets.addCostCodes?.forEach((updateItem) => {
-          thunkAPI.dispatch(
-            projectDataActions.insertNewEmptyCostCode(updateItem)
-          );
-        });
-        thunkAPI.dispatch(addBudgetFormActions.resetUpdateBudget());
-      })
-      .catch((error) => {
-        thunkAPI.dispatch(
-          uiActions.setNotificationContent({
-            content:
-              'Something went wrong with saving budget updates to all projects.',
-            icon: 'error',
-            openNotification: true,
-          })
-        );
-        console.error(error);
-      });
-  }
-);
+//     fetch(`/api/${companyId}/projects/update-all-budgets`, {
+//       method: 'PATCH',
+//       body: JSON.stringify(updateBudgets),
+//     })
+//       .then((res) => {
+//         if (!res.ok) throw new Error('something went wrong');
+//         return res.json();
+//       })
+//       .then((data) => {
+//         thunkAPI.dispatch(
+//           uiActions.setNotificationContent({
+//             content: data.message,
+//             icon: 'success',
+//             openNotification: true,
+//           })
+//         );
+//         updateBudgets.deleteCostCodes?.forEach((delCostCode) => {
+//           thunkAPI.dispatch(
+//             projectDataActions.deleteBudgetCostCode(delCostCode)
+//           );
+//         });
+//         updateBudgets.deleteSubDivisions?.forEach((delSubDiv) => {
+//           thunkAPI.dispatch(
+//             projectDataActions.deleteBudgetSubDivision(delSubDiv)
+//           );
+//         });
+//         updateBudgets.deleteDivisions?.forEach((delDiv) => {
+//           thunkAPI.dispatch(projectDataActions.deleteBudgetDivision(delDiv));
+//         });
+//         updateBudgets.addDivisions?.forEach((updateDiv) => {
+//           thunkAPI.dispatch(
+//             projectDataActions.insertNewEmptyDivision(updateDiv)
+//           );
+//         });
+//         updateBudgets.addSubDivisions?.forEach((updateSubDiv) => {
+//           thunkAPI.dispatch(
+//             projectDataActions.insertNewEmptySubDivision(updateSubDiv)
+//           );
+//         });
+//         updateBudgets.addCostCodes?.forEach((updateItem) => {
+//           thunkAPI.dispatch(
+//             projectDataActions.insertNewEmptyCostCode(updateItem)
+//           );
+//         });
+//         thunkAPI.dispatch(addBudgetFormActions.resetUpdateBudget());
+//       })
+//       .catch((error) => {
+//         thunkAPI.dispatch(
+//           uiActions.setNotificationContent({
+//             content:
+//               'Something went wrong with saving budget updates to all projects.',
+//             icon: 'error',
+//             openNotification: true,
+//           })
+//         );
+//         console.error(error);
+//       });
+//   }
+// );
 
 export const removeLaborFromChangeOrderThunk = createAsyncThunk(
   'laborUpdates/removeLaborFromChangeOrder',

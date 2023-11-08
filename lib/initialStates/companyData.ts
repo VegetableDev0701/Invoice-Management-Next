@@ -49,7 +49,7 @@ const initialBaseFormData: BaseFormData = {
 export const initialCostCodesState = {
   status: '',
   format: '',
-  updated: false,
+  updated: true,
   divisions: [],
   currency: '',
 };

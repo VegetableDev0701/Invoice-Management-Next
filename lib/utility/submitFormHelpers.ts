@@ -108,8 +108,8 @@ export function createFormDataForSubmit({
   isAddVendor: boolean;
   isAddLabor: boolean;
 }): FormData {
-  const newFormData: FormData = JSON.parse(JSON.stringify(formData));
-  newFormData.mainCategories.forEach((category: MainCategories, i: number) => {
+  const newFormData: FormData = JSON.parse(JSON.stringify(formData || {}));
+  newFormData.mainCategories?.forEach((category: MainCategories, i: number) => {
     category.inputElements.forEach((el: InputElement, j: number) => {
       if (isInputElementWithAddressElements(el)) {
         el.addressElements.forEach((addEl: AddressItems, jAdd: number) => {

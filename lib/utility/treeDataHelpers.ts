@@ -13,7 +13,7 @@ export class ConvertTreeData {
         data: {
           format: '',
           currency: '',
-          updated: false,
+          updated: true,
         },
       },
     };

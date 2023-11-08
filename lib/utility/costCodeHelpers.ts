@@ -342,7 +342,10 @@ export const setCollapsed = ({
 };
 
 export const costCodeData2NLevel = (oldCostCodeData: any) => {
-  if (oldCostCodeData && oldCostCodeData.updated)
+  if (
+    (oldCostCodeData && oldCostCodeData.updated) ||
+    !oldCostCodeData?.divisions?.filter((div: any) => div.subdivisions)?.length
+  )
     return oldCostCodeData as CostCodesData;
 
   const isValidNumber = (currentNumber: number, parentNumber: number) => {
