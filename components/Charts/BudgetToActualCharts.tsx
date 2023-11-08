@@ -9,16 +9,12 @@ import classes from '../Forms/InputFormLayout/FormLayout.module.css';
 import BarChart from './BarChart';
 import Card from '../UI/Card';
 import {
-  ChartData,
   ChartDataV2,
   CostCodeItemB2AData,
-  DivisionData,
   DivisionDataV2,
 } from '@/lib/models/chartDataModels';
 import {
-  CostCodeItem,
   CostCodesData,
-  Divisions,
 } from '@/lib/models/budgetCostCodeModel';
 
 interface Props {
@@ -55,10 +51,7 @@ export const calculateActual = (data: CostCodeItemB2AData) => {
 export const createIndividualChartData = ({
   title: _title,
   division,
-  subDivision,
-  subDivisionName,
   chartData,
-  filterZeroElements,
 }: {
   title: string;
   division: number;
@@ -134,7 +127,7 @@ export default function BudgetToActualCharts(props: Props) {
   }, [clickedLink, dummyForceRender]);
 
   useEffect(() => {
-    let chartIndicies: {
+    const chartIndicies: {
       title: string;
       division: string;
       subDivision: string | null;
@@ -154,7 +147,7 @@ export default function BudgetToActualCharts(props: Props) {
       (b2aChartData as ChartDataV2)?.divisions ||
       (formData.divisions as DivisionDataV2[])
     )?.forEach((division) => {
-      const { chartDataResult, fullData, title, dropZeroSubDivIndex } =
+      const { chartDataResult, title, dropZeroSubDivIndex } =
         createIndividualChartData({
           title: division.name || '',
           division: division.number,

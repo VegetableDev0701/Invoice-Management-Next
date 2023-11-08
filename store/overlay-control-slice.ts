@@ -170,8 +170,8 @@ const overlaySlice = createSlice({
       const { boundingBox } = action.payload;
       const boundingBoxSection = createSectionBox({ boundingBox });
       if (boundingBoxSection) {
-        let { x, y, width, height, page } = boundingBoxSection;
-        page = page as number;
+        const { x, y, width, height } = boundingBoxSection;
+        const page = boundingBoxSection.page as number;
         state['process-invoices'].currentBoundingBox = {
           x,
           y,

@@ -101,7 +101,7 @@ export const autoAssignSelectedInvoices = createAsyncThunk(
       });
       // Dispatch an action to update the state
       thunkAPI.dispatch(invoiceSlice.actions.updateInvoices(updatedInvoices));
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
     }
   }
@@ -143,7 +143,7 @@ export const deleteInvoices = createAsyncThunk(
           openNotification: true,
         })
       );
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
     }
   }
@@ -218,28 +218,7 @@ export const sendGeneratedLineItemsToFirestore = createAsyncThunk(
         if (!response.ok) {
           throw new Error(`Something went wrong: ${response.status}`);
         }
-        const data = await response.json();
-        // Want this step to happen completely in the background and no notification
-        // to the user since this is not triggered by them.
-        // thunkAPI.dispatch(
-        //   uiActions.setNotificationContent({
-        //     content: data.message,
-        //     icon: 'success',
-        //   })
-        // );
-        // thunkAPI.dispatch(
-        //   uiActions.setOpenNotification({ openNotification: true })
-        // );
-      } catch (error: any) {
-        // thunkAPI.dispatch(
-        //   uiActions.setNotificationContent({
-        //     content: 'Something went wrong with saving GPT LineItems.',
-        //     icon: 'error',
-        //   })
-        // );
-        // thunkAPI.dispatch(
-        //   uiActions.setOpenNotification({ openNotification: true })
-        // );
+      } catch (error) {
         console.error(error);
       }
     }
@@ -274,7 +253,7 @@ const invoiceSlice = createSlice({
       action: PayloadAction<{ [invoiceId: string]: InvoiceProject | null }[]>
     ) => {
       const updatedInvoiceProjects = action.payload;
-      let newInvoiceProjects: { [invoiceId: string]: InvoiceProject }[] = [];
+      const newInvoiceProjects: { [invoiceId: string]: InvoiceProject }[] = [];
       updatedInvoiceProjects.forEach((invoice) => {
         const [key, value] = Object.entries(invoice)[0];
         if (value) {

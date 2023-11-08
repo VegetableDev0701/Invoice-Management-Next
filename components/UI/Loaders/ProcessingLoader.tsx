@@ -1,13 +1,7 @@
 import {
-  useAppDispatch as useDispatch,
   useAppSelector as useSelector,
 } from '@/store/hooks';
 import { FadeLoader } from 'react-spinners';
-import Button from '../Buttons/Button';
-import { useUser } from '@auth0/nextjs-auth0/client';
-import { User } from '@/lib/models/formStateModels';
-import { processingActions } from '@/store/processing-slice';
-import { useEffect } from 'react';
 
 interface Props {
   color?: string;
@@ -18,8 +12,6 @@ interface Props {
 }
 
 const ProcessingLoader = (props: Props) => {
-  const { user } = useUser();
-
   const processNotification = useSelector(
     (state) => state.ui.processingNotification
   );

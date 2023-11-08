@@ -12,14 +12,12 @@ import useHttp from '@/hooks/use-http';
 import { useSetStatePath } from '@/hooks/use-setpath';
 import useSetNotification from '@/hooks/use-set-nofitication';
 
-import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
 import { User } from '@/lib/models/formStateModels';
 
 import FullScreenLoader from '@/components/UI/Loaders/FullScreenLoader';
 import MainComponent from '@/components/Budget/MainComponent';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
 
-import json from '__test__/data/cost-codes_new.json';
 import { ConvertTreeData } from '@/lib/utility/treeDataHelpers';
 
 const EditCostCodeFormat = () => {

@@ -1,7 +1,7 @@
 // does the equivalent of pythons zip function
 export function zip(...lists: string[][]) {
-  let length = Math.min(...lists.map((arr) => arr.length));
-  let result = Array(length);
+  const length = Math.min(...lists.map((arr) => arr.length));
+  const result = Array(length);
   for (let i = 0; i < length; i++) {
     result[i] = lists.map((arr) => arr[i]);
   }
@@ -31,6 +31,6 @@ export function classNames(...classes: Array<string | undefined | false>) {
   return classes.filter((cn) => !!cn).join(' ');
 }
 
-export const isObjectEmpty = (object: Object) => {
+export const isObjectEmpty = (object: object) => {
   return JSON.stringify(object) === '{}';
 };

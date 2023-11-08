@@ -5,7 +5,6 @@ import {
   useAppSelector as useSelector,
 } from '@/store/hooks';
 
-import { Items } from '@/lib/models/formDataModel';
 import { ClientBillSummaryItem } from '@/lib/models/summaryDataModel';
 
 import CheckboxSubTable from '../Tables/SubTables/CheckboxSortHeadingsTableSub';
@@ -16,11 +15,6 @@ import {
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { User } from '@/lib/models/formStateModels';
 import { deleteClientBillDataFromB2A } from '@/store/add-client-bill';
-
-interface ExtendedItems extends Partial<Items> {
-  sortBy: 'label' | 'id';
-  forceToTopKey?: string;
-}
 
 interface Props {
   projectId: string;

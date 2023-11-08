@@ -1,18 +1,10 @@
-import { useState } from 'react';
-
 import {
   useAppSelector as useSelector,
-  useAppDispatch as useDispatch,
 } from '@/store/hooks';
-import { companyDataActions } from '@/store/company-data-slice';
-import { addBudgetFormActions } from '@/store/add-budget-slice';
-
 import { formatNameForID } from '@/lib/utility/formatter';
 import { Divisions } from '@/lib/models/budgetCostCodeModel';
 
 import Card from '@/components/UI/Card';
-import Button from '@/components/UI/Buttons/Button';
-import { TrashIcon } from '@heroicons/react/20/solid';
 
 import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
 
@@ -32,7 +24,6 @@ function CostCodeSideLinks(props: Props) {
     projectId,
     onclicklink,
   } = props;
-  const [showAddDivision, setShowAddDivision] = useState(false);
 
   const totalBudget = useSelector((state) => state.addBudgetForm.totalBudget);
   const projects = useSelector((state) => state.projects);
@@ -43,8 +34,6 @@ function CostCodeSideLinks(props: Props) {
 
   const percentComplete =
     (currentBudgetedTotal / Number(totalBudget.replaceAll(',', ''))) * 100;
-
-  const dispatch = useDispatch();
 
   const clickLinkHandler = (e: React.MouseEvent<HTMLLIElement>) => {
     onclicklink((e.target as HTMLElement).id.split('_')[0]);

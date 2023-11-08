@@ -22,11 +22,8 @@ import { User } from '@/lib/models/formStateModels';
 import {
   ChangeOrderSummary,
   ChangeOrderSummaryItem,
+  LaborSummary,
 } from '@/lib/models/summaryDataModel';
-import {
-  ChangeOrderContentItem,
-  ChangeOrderTableRows,
-} from '@/lib/models/changeOrderModel';
 import { createRemoveCoFromData } from '@/lib/utility/changeOrderHelpers';
 
 import Card from '../UI/Card';
@@ -76,7 +73,7 @@ export default function ChangeOrderTables(props: Props) {
   const allInvoices = useSelector((state) => state.data.invoices.allInvoices);
 
   // why am i setting this state?
-  const [selectedChangeOrder, setSelectedChangeOrder] =
+  const [_selectedChangeOrder, setSelectedChangeOrder] =
     useState<ChangeOrderSummaryItem | null>(null);
 
   const changeOrderConfirmModalHandler = (
@@ -92,11 +89,10 @@ export default function ChangeOrderTables(props: Props) {
     const { invoicesToUpdate, updateProcessedData, laborToUpdate } =
       createRemoveCoFromData({
         allInvoices,
-        changeOrdersSummary,
-        laborSummary,
+        changeOrdersSummary: changeOrdersSummary as ChangeOrderSummary,
+        laborSummary: laborSummary as LaborSummary,
         removeChangeOrderIds,
       });
-
 
     // front end updates
     dispatch(
@@ -191,21 +187,6 @@ export default function ChangeOrderTables(props: Props) {
     } else {
       return null;
     }
-  }, [tableData]);
-
-  // right table for change order content
-  const changeOrderContentRows = useMemo(() => {
-    const rows: ChangeOrderTableRows = {};
-    let groupedRows: Record<string, ChangeOrderContentItem[]> | null = {};
-    if (tableData) {
-      Object.entries(tableData).forEach(([changeOrderId, value]) => {
-        rows[changeOrderId] = Object.values(
-          value.content as { [itemId: string]: ChangeOrderContentItem }
-        );
-      });
-      return rows;
-    }
-    return null;
   }, [tableData]);
 
   return (

@@ -7,16 +7,12 @@ import {
 } from 'react-complex-tree';
 import 'react-complex-tree/lib/style-modern.css';
 
-import {
-  useAppDispatch as useDispatch,
-  useAppSelector as useSelector,
-} from '@/store/hooks';
+import { useAppDispatch as useDispatch } from '@/store/hooks';
 import { addBudgetFormActions } from '@/store/add-budget-slice';
 import { projectDataActions } from '@/store/projects-data-slice';
 
 import scrollToElement from '@/lib/utility/scrollToElement';
 import { formatNameForID } from '@/lib/utility/formatter';
-import { Actions } from '@/lib/models/types';
 import { formatNumber } from '@/lib/utility/formatter';
 
 import Card from '@/components/UI/Card';
@@ -62,7 +58,6 @@ export default function BudgetForm(props: Props) {
     projectId,
   } = props;
 
-  const formState = useSelector((state) => state.addBudgetForm);
   const [expandedItems, setExpandedItems] = useState<TreeItemIndex[]>([]);
   const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
   const [selectedItems, setSelectedItems] = useState<TreeItemIndex[]>([]);
@@ -190,7 +185,7 @@ export default function BudgetForm(props: Props) {
     }
   };
 
-  const handleAddValue = (treeItemIndex: TreeItemIndex, value: string) => {
+  const handleAddValue = (treeItemIndex: TreeItemIndex) => {
     if (valueAddedItems.map((item) => item.index).includes(treeItemIndex)) {
       setValueAddedItems((prev) =>
         prev.filter((item) => item.index !== treeItemIndex)
@@ -261,7 +256,7 @@ export default function BudgetForm(props: Props) {
             canDropOnFolder={false}
             canReorderItems={false}
             onFocusItem={(item) => setFocusedItem(item.index)}
-            onSelectItems={(items) => setSelectedItems((prev) => [...items])}
+            onSelectItems={(items) => setSelectedItems(() => [...items])}
             canRename={false}
             onExpandItem={(item: TreeItem<any>) => {
               const newTreeData = { ...costCodeTreeDataList };
@@ -356,11 +351,7 @@ export default function BudgetForm(props: Props) {
                               valueAddedItems
                                 .map((v) => v.index)
                                 .includes(item.index) ? (
-                                <div
-                                  onClick={() =>
-                                    handleAddValue(item.index, item.data.value)
-                                  }
-                                >
+                                <div onClick={() => handleAddValue(item.index)}>
                                   <ToggleOffInputIcon width={30} height={30} />
                                 </div>
                               ) : (
@@ -370,12 +361,7 @@ export default function BudgetForm(props: Props) {
                                     className={
                                       TreeComponentClasses['list-item__control']
                                     }
-                                    onClick={() =>
-                                      handleAddValue(
-                                        item.index,
-                                        item.data.value
-                                      )
-                                    }
+                                    onClick={() => handleAddValue(item.index)}
                                   >
                                     <ToggleOnInputIcon width={30} height={30} />
                                   </div>
@@ -415,7 +401,6 @@ export default function BudgetForm(props: Props) {
                             onChange={(e) => {
                               handleChangeValue(e.target.value, item.index);
                             }}
-                            onBlur={() => {}}
                           />
                         </div>
                       )}

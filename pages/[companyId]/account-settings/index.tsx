@@ -19,7 +19,6 @@ import {
 import { FormState, User } from '@/lib/models/formStateModels';
 
 import FormComponent from '@/components/Forms/FormComponent';
-import FullScreenLoader from '@/components/UI/Loaders/FullScreenLoader';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
 
 const AccountSettings = () => {
@@ -44,15 +43,14 @@ const AccountSettings = () => {
 
   const [openModal, setOpenModal] = useState(false);
   const [missingInputs, setMissingInputs] = useState(false);
-  const [modalMessage, setModalMessage] = useState<string>(
-    'Please confirm that you want to update your account settings.'
-  );
+  const modalMessage =
+    'Please confirm that you want to update your account settings.';
 
   const accountSettingsFormStateData = useSelector(
     (state) => state.accountSettingsForm
   );
 
-  const { isLoading, error, response, successJSON, sendRequest } = useHttp({
+  const { isLoading, error, sendRequest } = useHttp({
     isClearData: true,
   });
 
@@ -89,7 +87,6 @@ const AccountSettings = () => {
           'Content-Type': 'application/json',
         },
       };
-      const name = `${formStateData['first-name-as'].value} ${formStateData['last-name-as'].value}`;
       dispatch(
         userActions.setUserState({
           ...user,

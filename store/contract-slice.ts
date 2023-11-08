@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { ContractEntry, Rows } from '@/lib/models/summaryDataModel';
+import { ContractEntry } from '@/lib/models/summaryDataModel';
 
 import { uiActions } from './ui-slice';
 import { sseActions } from './sse-slice';
@@ -108,7 +108,7 @@ export const deleteContracts = createAsyncThunk(
           openNotification: true,
         })
       );
-    } catch (error: any) {
+    } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }

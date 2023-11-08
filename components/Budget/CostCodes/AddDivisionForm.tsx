@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from 'react';
 
-import InputBaseAddDivision from "@/components/Inputs/InputBaseAddDivision";
-import Button from "@/components/UI/Buttons/Button";
-import { CostCodesData } from "@/lib/models/budgetCostCodeModel";
+import InputBaseAddDivision from '@/components/Inputs/InputBaseAddDivision';
+import Button from '@/components/UI/Buttons/Button';
+import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
 
 interface Props {
   showForm: () => void;
-  setCostCodeDataList: Function;
+  setCostCodeDataList: Dispatch<SetStateAction<CostCodesData>>;
 }
 
 export default function AddDivisionForm({
@@ -15,32 +15,35 @@ export default function AddDivisionForm({
 }: Props) {
   const [isError, setIsError] = useState(false);
   const [formData, setFormData] = useState({
-    number: "",
-    name: "",
+    number: '',
+    name: '',
   });
 
   const submitFormHandler = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData["name"] === "" || formData["number"] === "") {
+    if (formData['name'] === '' || formData['number'] === '') {
       setIsError(true);
       return;
     }
-    setCostCodeDataList((prev: CostCodesData) => ({
-      ...prev,
-      updated: true,
-      divisions: [
-        ...prev.divisions,
-        {
-          name: formData["name"],
-          number: formData["number"],
-          subItems: [],
+    setCostCodeDataList(
+      (prev: CostCodesData) =>
+        ({
+          ...prev,
           updated: true,
-        },
-      ].sort((a, b) => {
-        if (a.number > b.number) return 1;
-        return -1;
-      }),
-    }));
+          divisions: [
+            ...prev.divisions,
+            {
+              name: formData['name'],
+              number: formData['number'],
+              subItems: [],
+              updated: true,
+            },
+          ].sort((a, b) => {
+            if (a.number > b.number) return 1;
+            return -1;
+          }),
+        } as CostCodesData)
+    );
 
     showForm();
   };
@@ -60,11 +63,11 @@ export default function AddDivisionForm({
           showError={isError}
           onChange={changeHandler}
           input={{
-            label: "#",
-            id: "number",
-            type: "text",
-            inputmode: "numeric",
-            value: "",
+            label: '#',
+            id: 'number',
+            type: 'text',
+            inputmode: 'numeric',
+            value: '',
             required: false,
           }}
         />
@@ -73,10 +76,10 @@ export default function AddDivisionForm({
           showError={isError}
           onChange={changeHandler}
           input={{
-            label: "Name",
-            id: "name",
-            type: "text",
-            value: "",
+            label: 'Name',
+            id: 'name',
+            type: 'text',
+            value: '',
             required: false,
           }}
         />

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useCurrentUser as useUser } from '@/hooks/use-user';
 
 import { useSetStatePath } from '@/hooks/use-setpath';
 

@@ -1,8 +1,8 @@
 export async function fetchWithRetry(
   url: string,
   options: Record<string, string | Record<string, string>>,
-  retries: number = 3,
-  backoff: number = 300
+  retries = 3,
+  backoff = 300
 ): Promise<any> {
   for (let i = 0; i < retries; i++) {
     try {
@@ -15,14 +15,14 @@ export async function fetchWithRetry(
 
       const data = await response.json();
       return data; // if response is successful, return the data
-    } catch (error: any) {
+    } catch (error) {
       // check status codes, only retry on these specific errors
       if (
         i < retries - 1 &&
-        (error.message.includes('500') ||
-          error.message.includes('502') ||
-          error.message.includes('503') ||
-          error.message.includes('504'))
+        ((error as Error).message.includes('500') ||
+          (error as Error).message.includes('502') ||
+          (error as Error).message.includes('503') ||
+          (error as Error).message.includes('504'))
       ) {
         await new Promise((resolve) => setTimeout(resolve, backoff));
         // increase the backoff time for the next iteration (exponential backoff)

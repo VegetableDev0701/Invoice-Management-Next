@@ -66,9 +66,8 @@ function Projects() {
   const [activeFilter, setActiveFilter] = useState('No Filter');
   const [selected, setSelected] = useState<ProjectSummaryItem[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [modalMessage, setModalMessage] = useState<string>(
-    'Warning, all project data will be deleted and cannot be recovered. Are you sure you want to delete?'
-  );
+  const modalMessage =
+    'Warning, all project data will be deleted and cannot be recovered. Are you sure you want to delete?';
 
   useEffect(() => {
     if (!pageLoading) {

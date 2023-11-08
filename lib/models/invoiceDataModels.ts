@@ -1,5 +1,3 @@
-import { LaborLineItemItem } from './summaryDataModel';
-
 export interface Invoices {
   [invoiceId: string]: InvoiceItem;
 }
@@ -52,7 +50,7 @@ export interface InvoiceTableRow {
   approved: string;
   approver: string | undefined;
   change_order: { uuid: string; name: string } | null | undefined;
-  cost_code: [{}] | undefined; // TODO remove from data???
+  cost_code: [object] | undefined; // TODO remove from data???
   date_received: string;
   doc_id: string;
   gcs_img_uri: string[];
@@ -89,7 +87,7 @@ export interface ProcessedInvoiceData {
   is_credit: boolean;
   approver: string;
   total_tax_amount: string;
-  line_items: InvoiceLineItem | {} | null;
+  line_items: InvoiceLineItem | object | null;
   vendor_name: string;
   change_order: { uuid: string; name: string } | null;
   cost_code: string | null;
@@ -146,7 +144,7 @@ interface PredictedProject {
   project_key: string;
 }
 
-interface ContractSummary {
+export interface ContractSummary {
   [contractId: string]: ContractSummaryItem;
 }
 interface ContractSummaryItem {

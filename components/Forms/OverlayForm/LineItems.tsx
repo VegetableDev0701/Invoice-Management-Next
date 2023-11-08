@@ -6,7 +6,6 @@ import {
 } from '@/store/hooks';
 
 import { AddProcessInvoiceActions } from '@/lib/models/types';
-import { MainCategories } from '@/lib/models/formDataModel';
 import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
 import {
   InvoiceTableRow,
@@ -17,11 +16,6 @@ import Button from '@/components/UI/Buttons/Button';
 import { Input } from '@/components/Inputs/Input';
 import DollarSign from '@/public/icons/DollarSign';
 import classes from '../InputFormLayout/FormLayout.module.css';
-
-interface EmptyAddLaborFormForTesting {
-  numCostCodes: number;
-  mainCategories: MainCategories[];
-}
 
 export interface Props {
   form: string;

@@ -1,4 +1,4 @@
-import { createSlice, current } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import {
@@ -24,7 +24,7 @@ const addProjectFormSlice = createSlice({
         isValid: isValid,
       };
     },
-    clearFormState(state) {
+    clearFormState() {
       return initialAddProjectFormState;
     },
     setIsTouchedState(state, action: PayloadAction<IsTouchedPayload>) {

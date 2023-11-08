@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   useAppDispatch as useDispatch,
   useAppSelector as useSelector,
-} from "@/store/hooks";
-import { companyDataActions } from "@/store/company-data-slice";
+} from '@/store/hooks';
+import { companyDataActions } from '@/store/company-data-slice';
 
-import Card from "../Card";
-import Button from "../Buttons/Button";
+import Card from '../Card';
+import Button from '../Buttons/Button';
 
-import classes from "../../Forms/InputFormLayout/FormLayout.module.css";
-import { CostCodesData } from "@/lib/models/budgetCostCodeModel";
+import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
+import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
 
 interface Props {
   pageTitle: string;
@@ -17,7 +17,7 @@ interface Props {
   isUpdated?: boolean;
   onConfirmSave: (e: React.MouseEvent) => void;
   costCodeDataList?: CostCodesData;
-  setCostCodeDataList?: Function;
+  setCostCodeDataList?: (data: CostCodesData) => void;
 }
 
 const TitleCard = (props: Props) => {
@@ -37,19 +37,19 @@ const TitleCard = (props: Props) => {
   useEffect(() => {
     let flag = false;
     if (treeData)
-    Object.keys(treeData.data).forEach((treeItemKey) => {
-      if (treeData.data[treeItemKey].data?.isOpened === true) {
-        flag = true;
-      }
-    });
+      Object.keys(treeData.data).forEach((treeItemKey) => {
+        if (treeData.data[treeItemKey].data?.isOpened === true) {
+          flag = true;
+        }
+      });
     setIsExpanded(flag);
   }, [costCodeDataList, treeData]);
 
   return (
-    <Card className={`${classes["title-card"]}`}>
+    <Card className={`${classes['title-card']}`}>
       <div
         className={
-          "flex flex-col justify-start items-start text-left text-gray-700 gap-2"
+          'flex flex-col justify-start items-start text-left text-gray-700 gap-2'
         }
       >
         <h2 className="font-normal text-5xl">{pageTitle}</h2>
@@ -66,12 +66,14 @@ const TitleCard = (props: Props) => {
         {setCostCodeDataList && (
           <Button
             buttonText={
-              isExpanded ? "Collapse Cost Codes" : "Expand Cost Codes"
+              isExpanded ? 'Collapse Cost Codes' : 'Expand Cost Codes'
             }
             type="submit"
             className="py-1 px-4 text-2xl"
             onClick={() => {
-              const newTreeData: CostCodesData = JSON.parse(JSON.stringify(costCodeDataList));
+              const newTreeData: CostCodesData = JSON.parse(
+                JSON.stringify(costCodeDataList)
+              );
               newTreeData.divisions.forEach((div, index) => {
                 newTreeData.divisions[index] = { ...div, isOpened: false };
                 newTreeData.divisions[index].isOpened = !isExpanded;

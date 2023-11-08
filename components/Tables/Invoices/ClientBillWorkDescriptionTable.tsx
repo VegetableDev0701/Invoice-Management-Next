@@ -8,14 +8,11 @@ import {
   ClientBillSummaryItem,
 } from '@/lib/models/summaryDataModel';
 import {
-  BillWorkDescription,
   BillWorkDescriptionV2,
-  SubTotals,
   SubTotalsV2,
 } from '@/lib/models/clientBillModel';
 import { classNames } from '@/lib/utility/utils';
 import {
-  CurrentActualsChangeOrders,
   CurrentActualsChangeOrdersV2,
 } from '@/lib/models/budgetCostCodeModel';
 
@@ -63,7 +60,7 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
     },
     [sortOrder, sortKey]
   );
-  let groupedRows: Record<string, any> | null =
+  const groupedRows: Record<string, any> | null =
     useCreateClientBillWorkDescription({
       tableData,
       subTotals,

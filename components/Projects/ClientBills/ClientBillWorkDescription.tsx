@@ -1,15 +1,15 @@
 import {
-  BillWorkDescription,
   BillWorkDescriptionV2,
-  CurrentActualsClientBill,
   CurrentActualsClientBillV2,
-  SubTotals,
   SubTotalsV2,
 } from '@/lib/models/clientBillModel';
 
 import ClientBillWorkDescriptionTable from '@/components/Tables/Invoices/ClientBillWorkDescriptionTable';
 import { useAppSelector as useSelector } from '@/store/hooks';
-import { ClientBillSummary } from '@/lib/models/summaryDataModel';
+import {
+  ChangeOrderSummary,
+  ClientBillSummary,
+} from '@/lib/models/summaryDataModel';
 
 interface Props {
   projectId: string;
@@ -38,7 +38,7 @@ export default function ClientBillWorkDescription(props: Props) {
 
   const changeOrderSummary = useSelector(
     (state) => state.projects[projectId]['change-orders-summary']
-  );
+  ) as ChangeOrderSummary;
 
   const subTotals: SubTotalsV2 | null = currentActuals
     ? {

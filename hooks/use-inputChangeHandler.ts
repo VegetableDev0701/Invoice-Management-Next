@@ -32,7 +32,7 @@ function useInputChangeHandler(
   }, []);
 
   function changeHandler(e: React.ChangeEvent<HTMLInputElement>) {
-    let value = e.target.value;
+    const value = e.target.value;
     checkInputField(
       value,
       input,

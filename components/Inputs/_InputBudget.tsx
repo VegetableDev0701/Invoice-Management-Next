@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import styles from './Input.module.css';
-import { Items } from '@/lib/models/formDataModel';
 
 interface Props {
   error: Error;

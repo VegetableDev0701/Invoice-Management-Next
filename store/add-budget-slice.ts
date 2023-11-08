@@ -1,7 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import {
-  ChangeOrderFormState,
   ChangeOrderFormStateV2,
   IsTouchedPayload,
 } from '@/lib/models/formStateModels';
@@ -19,14 +18,11 @@ import {
   UpdateBudget,
 } from '@/lib/models/budgetCostCodeModel';
 import {
-  createB2AChartData,
   createB2AChartDataV2,
 } from '@/lib/utility/chartHelpers';
 import { projectDataActions } from './projects-data-slice';
 import {
-  ChangeOrderChartData,
   ChangeOrderChartDataV2,
-  ChartData,
   ChartDataV2,
 } from '@/lib/models/chartDataModels';
 
@@ -83,13 +79,13 @@ export const initializeBudgetTotalsThunk = createAsyncThunk(
 export const initializeB2AChartDataThunk = createAsyncThunk(
   'budget/initializeB2AChartDataThunk',
   async (
-    { projectId, companyId }: { projectId: string; companyId: string },
+    { projectId }: { projectId: string; companyId: string },
     thunkAPI
   ) => {
     const state = thunkAPI.getState() as RootState;
     let b2aChartDataChangeOrder: ChangeOrderChartDataV2 | null = {};
     let updatedCurrentActualsChangeOrders: ChangeOrderFormStateV2 | null = {};
-    let initActualsToZeros: boolean = false;
+    let initActualsToZeros = false;
     let previousData: ChartDataV2 | undefined = undefined;
     if (
       state.projects[projectId].b2a?.b2aChartData &&
@@ -221,7 +217,7 @@ const addBudgetFormSlice = createSlice({
       state.totalSubDivisions = subDivisionTotals;
       state.totalDivisions = divisionTotals;
     },
-    clearFormState(state) {
+    clearFormState() {
       return initialBudgetFormState;
     },
     initializeBudgetTotals(state, action: ProjectBudgetTotals) {

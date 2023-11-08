@@ -3,12 +3,10 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 import { useAppSelector as useSelector } from '@/store/hooks';
 
 import NavDropDown from './NavDropDown';
-import BreadCrumbs from '@/components/BreadCrumbs/BreadCrumbs';
 
 import classes from '../NavBar.module.css';
 import { User } from '@/lib/models/formStateModels';
 import ProcessingLoader from '@/components/UI/Loaders/ProcessingLoader';
-import Button from '@/components/UI/Buttons/Button';
 
 function NavBar() {
   const currentPath = useSelector((state) => {

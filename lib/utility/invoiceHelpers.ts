@@ -3,7 +3,7 @@ import {
   InvoiceLineItem,
   InvoiceLineItemItem,
 } from '../models/invoiceDataModels';
-import { ChangeOrderSummary, LaborSummary } from '../models/summaryDataModel';
+import { ChangeOrderSummary } from '../models/summaryDataModel';
 import { isKeyOfLineItemItem } from '../models/types';
 import { formatNumber } from './formatter';
 import { getChangeOrderIdFromName } from './processInvoiceHelpers';
@@ -17,7 +17,7 @@ export const extractLineItems = ({
 }) => {
   const lineItems = Object.fromEntries(
     Object.entries(formState).filter(([key]) => {
-      const [number, ...rest] = key.split('-');
+      const [number] = key.split('-');
       return (
         !isNaN(parseInt(number)) &&
         (!isNaN(parseInt(number)) ? parseInt(number) <= numLineItems : false)
@@ -46,12 +46,6 @@ export const sortLineItems = <T extends { [key: string]: any }>(
   return sortedObj as T;
 };
 
-export const createInvoiceChangeOrdersObj = ({
-  invoiceIdsToDelete,
-}: {
-  invoiceIdsToDelete: string[];
-}) => {};
-
 export const groupLineItems = ({
   lineItems,
   changeOrdersSummary,
@@ -63,7 +57,7 @@ export const groupLineItems = ({
   lineItemBoundingBoxes?: InvoiceLineItem;
   laborRate?: string;
 }) => {
-  let groupedLineItems: InvoiceLineItem = {};
+  const groupedLineItems: InvoiceLineItem = {};
   Object.entries(lineItems).forEach(([key, value]) => {
     const [prefix, ...suffixParts] = key.split('-');
     const lineItemKey = `line_item_${prefix}`;

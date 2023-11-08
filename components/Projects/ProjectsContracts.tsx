@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 import {
@@ -42,7 +42,7 @@ const checkBoxButtons = [{ label: 'Delete', buttonPath: '#', disabled: false }];
 export default function ProjectsContracts(props: Props) {
   const { projectId, tableData } = props;
 
-  const { data: addContractFormData, isLoading: isLoading } = usePageData(
+  const { isLoading: isLoading } = usePageData(
     'data',
     'forms',
     'add-contracts'
@@ -54,17 +54,12 @@ export default function ProjectsContracts(props: Props) {
   //   formData: addContractFormData,
   // });
 
-  const { response, successJSON, sendRequest } = useHttp({ isClearData: true });
-  const [missingInputs, setMissingInputs] = useState<boolean>(false);
+  const { response, successJSON } = useHttp({ isClearData: true });
 
-  const { user, isLoading: userLoading } = useUser();
+  const { user } = useUser();
 
   const dispatch = useDispatch();
 
-  const addContractFormStateData = useSelector(
-    (state) => state.addContractForm
-  );
-  const overlayContent = useSelector((state) => state.overlay.contracts);
   const projectName = useSelector(
     (state) => state.data.projectsSummary.allProjects[projectId].projectName
   );

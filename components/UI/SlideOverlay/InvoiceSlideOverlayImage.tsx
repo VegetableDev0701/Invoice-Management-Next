@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { useUser } from '@auth0/nextjs-auth0/client';
 
 import {
   useAppDispatch as useDispatch,

@@ -13,12 +13,7 @@ import { getCostCodeDescriptionFromNumber } from './costCodeHelpers';
 import { SelectMenuOptions } from '../models/formDataModel';
 import {
   AggregatedBudgetTotals,
-  BudgetTotals,
   CurrentActuals,
-  CurrentActualsChangeOrders,
-  CurrentActualsItem,
-  InvoiceCurrentActualsChangeOrders,
-  InvoiceCurrentActuals,
   BudgetProfitTaxesObject,
   ProfitTaxes,
   BudgetTotalsV2,
@@ -28,9 +23,8 @@ import {
   InvoiceCurrentActualsV2,
   CurrentActualsItemV2,
   BudgetTotalItemV2,
-  BudgetTotalItem,
 } from '../models/budgetCostCodeModel';
-import { isBudgetTotalItem, isBudgetTotalItemV2 } from '../models/types';
+import { isBudgetTotalItemV2 } from '../models/types';
 import {
   InvoiceItem,
   InvoiceLineItem,
@@ -53,13 +47,13 @@ export const createBudgetActualsObject = ({
   costCodeNameList: SelectMenuOptions[];
   dispatch: ThunkDispatch<unknown, unknown, AnyAction>;
 }) => {
-  let dates: Date[] = [];
+  const dates: Date[] = [];
   try {
-    let budgetActuals: CurrentActualsV2 = {};
-    let budgetActualsChangeOrders: CurrentActualsChangeOrdersV2 = {};
-    let invoiceBudgetActualsChangeOrders: InvoiceCurrentActualsChangeOrdersV2 =
+    const budgetActuals: CurrentActualsV2 = {};
+    const budgetActualsChangeOrders: CurrentActualsChangeOrdersV2 = {};
+    const invoiceBudgetActualsChangeOrders: InvoiceCurrentActualsChangeOrdersV2 =
       {};
-    let invoiceBudgetActuals: InvoiceCurrentActualsV2 = {
+    const invoiceBudgetActuals: InvoiceCurrentActualsV2 = {
       invoice: {},
       laborFee: {},
     };
@@ -84,12 +78,12 @@ export const createBudgetActualsObject = ({
         invoice.processedData &&
         invoice.processedData.line_items_toggle &&
         invoice.processedData.line_items &&
-        Object.values(lineItems as InvoiceLineItem | {}).length > 0;
+        Object.values(lineItems as InvoiceLineItem | object).length > 0;
       const hasValidLineItems =
         invoice.processedData.line_items &&
         (
           Object.values(
-            lineItems as InvoiceLineItem | {}
+            lineItems as InvoiceLineItem | object
           ) as InvoiceLineItemItem[]
         ).some((item) => !item.cost_code || item.amount !== '');
       if (hasProcessedLineItems && hasValidLineItems) {
@@ -218,7 +212,7 @@ export const calculateTotals = ({
   // this calculation done
 
   let amount: number;
-  let total: Number = 0;
+  let total = 0;
   const changeOrderTotals: { [changeOrderId: string]: number } = {};
 
   // TODO rearrange total value calculation
@@ -259,45 +253,6 @@ export const calculateTotals = ({
     divisionTotals: {},
     subDivisionTotals: {},
   };
-};
-
-const transformTotals = ({
-  totalByDivision,
-  totalBySubDivision,
-}: {
-  totalByDivision: { [key: string]: { value: number; name: string } };
-  totalBySubDivision: {
-    [key: string]: { value: number; division: number; name: string };
-  };
-}) => {
-  let totalByDivisionTransformed: {
-    [key: string]: { value: string; name: string };
-  } = {};
-  let totalBySubDivisionTransformed: {
-    [key: string]: { value: string; division: number; name: string };
-  } = {};
-
-  Object.entries(totalByDivision).forEach(
-    ([key, value]: [string, { value: number; name: string }]) => {
-      totalByDivisionTransformed[key] = {
-        value: formatNumber(value.value.toFixed(2)),
-        name: value.name,
-      };
-    }
-  );
-  Object.entries(totalBySubDivision).forEach(
-    ([key, value]: [
-      string,
-      { value: number; division: number; name: string }
-    ]) => {
-      totalBySubDivisionTransformed[key] = {
-        value: formatNumber(value.value.toFixed(2)),
-        division: value.division,
-        name: value.name,
-      };
-    }
-  );
-  return { totalByDivisionTransformed, totalBySubDivisionTransformed };
 };
 
 export const createClientBillLineItemObject = ({
@@ -691,7 +646,7 @@ const handleWholeInvoice = ({
       changeOrder,
     });
 
-    let invoiceIds = budgetActualsChangeOrders[changeOrder.uuid]?.[costCode]
+    const invoiceIds = budgetActualsChangeOrders[changeOrder.uuid]?.[costCode]
       ?.invoiceIds
       ? budgetActualsChangeOrders[changeOrder.uuid][costCode].invoiceIds
       : [];
@@ -738,7 +693,7 @@ const handleWholeInvoice = ({
   // NOT A CHANGE ORDER
   else {
     // collect change orders and normal data separatly
-    let invoiceIds = budgetActuals[costCode]?.invoiceIds
+    const invoiceIds = budgetActuals[costCode]?.invoiceIds
       ? budgetActuals[costCode].invoiceIds
       : [];
     amount = iterateAmountOnCostCode({
@@ -979,7 +934,7 @@ export const createBillProfitTaxesObject = ({
     (acc: BudgetProfitTaxesObject, [key, description]) => {
       const totalsKey = key as keyof ProfitTaxes;
       const projectSummaryKey = description.key as keyof ProjectSummaryItem;
-      let actualKey = `${prefix}${totalsKey}`;
+      const actualKey = `${prefix}${totalsKey}`;
       acc[actualKey] = {
         totalAmt: profitTaxes[totalsKey],
         rateAmt: projectSummary[projectSummaryKey] as string,

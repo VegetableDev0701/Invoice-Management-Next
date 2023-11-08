@@ -37,24 +37,13 @@ export default function useCreateInvoiceRows({
   // for some reason I'm using slightly different forms for my invoices in
   // the project invoice tables and the client bill invoice tables. Just another
   // thing to fucking deal with...
-  let allInvoices = invoices?.allInvoices ? invoices.allInvoices : invoices;
+  const allInvoices = invoices?.allInvoices ? invoices.allInvoices : invoices;
 
-  let projectSupervisor: string | undefined = useSelector(
+  const projectSupervisor: string | undefined = useSelector(
     (state) =>
       projectId &&
       state.data.projectsSummary.allProjects[projectId].projectSuper
   );
-
-  const determineLineItemsToggle = (row: InvoiceItem) => {
-    if (row?.processedData?.line_items_toggle) {
-      return row.processedData.line_items_toggle;
-    } else if (
-      row?.processedData?.line_items &&
-      Object.keys(row.processedData.line_items).length > 0
-    ) {
-      return true;
-    } else return false;
-  };
 
   // Normalize invoice data for table
   const invoiceRows: InvoiceTableRow[] | null = useMemo(() => {
@@ -200,7 +189,7 @@ export default function useCreateInvoiceRows({
               width: row.pages[0].width,
               height: row.pages[0].height,
             },
-          };
+          } as InvoiceTableRow;
         });
     } else {
       return null;

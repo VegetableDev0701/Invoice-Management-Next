@@ -5,7 +5,7 @@ import {
   InputElementWithItems,
   Items,
 } from '@/lib/models/formDataModel';
-import { FormState, FormStateItem } from '@/lib/models/formStateModels';
+import { FormState } from '@/lib/models/formStateModels';
 
 import DollarSign from '@/public/icons/DollarSign';
 import Calendar from '@/public/icons/Calendar';
@@ -70,7 +70,7 @@ export function createRecurringFormObject(formData: FormData) {
 export function useGetInputState(id: string, form: string) {
   const formData = useSelector((state) =>
     form === 'addBudget'
-      ? (state as any)[`${form}Form`].budget[id]
+      ? (state)[`${form}Form`].budget[id]
       : (state as any)[`${form}Form`][id]
   );
   return formData;

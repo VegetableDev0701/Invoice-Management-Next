@@ -56,7 +56,7 @@ function ProcessInvoiceForm(props: Props) {
   const dispatch = useDispatch();
   const changeOrdersSummary: ChangeOrderSummary = useSelector(
     (state) => state.projects[projectId]?.['change-orders-summary']
-  );
+  ) as ChangeOrderSummary;
 
   useEffect(() => {
     onRenderComplete();

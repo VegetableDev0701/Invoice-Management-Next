@@ -11,7 +11,7 @@ interface Props {
 }
 
 const AgaveLinkComponent = ({ softwareName, className }: Props) => {
-  const [message, setMessage] = useState<string>('');
+  const [_message, setMessage] = useState<string>('');
   const [linkToken, setLinkToken] = useState<string | null>(null);
   const { user, isLoading } = useUser();
 

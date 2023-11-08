@@ -1,11 +1,9 @@
-import { ExtendT } from '@/components/Tables/MainTables/CheckboxSortHeadingsTableWithFilter';
 import { SelectMenuOptions } from '../models/formDataModel';
 import { InvoiceTableRow } from '../models/invoiceDataModels';
 import {
   ChangeOrderSummary,
   ProjectSummary,
   ProjectSummaryItem,
-  Rows,
   VendorSummary,
   VendorSummaryItem,
 } from '../models/summaryDataModel';
@@ -59,14 +57,6 @@ export function sortArrayById<T extends HasKey>(array: T[]) {
   });
 }
 
-interface SummaryData {
-  [key: string]: SummaryRows | string;
-}
-
-type SummaryRows = {
-  [key: string]: Rows;
-};
-
 export function hasAnyExpiredDates(object: VendorSummary, keyName: string) {
   const currentDate = new Date();
   const expiredObjects: Record<string, VendorSummaryItem> = {};
@@ -119,7 +109,7 @@ export function getActiveProjects(
 export function convertUtcToLocalTime(
   utcTime: string,
   targetTimezone: string,
-  dateOnly: boolean = true
+  dateOnly = true
 ) {
   const date = new Date(utcTime);
   let options: Intl.DateTimeFormatOptions = {
@@ -162,7 +152,7 @@ export function formatDate(date: string | undefined) {
  * @param words String
  * @returns
  */
-function titleCase(words: String) {
+export function titleCase(words: string) {
   // Words to skip
   const skipWords = ['and', 'or'];
 
@@ -199,7 +189,7 @@ export function getProjectNamesForDropdown(
   let count = 0;
   const projectSelectMenu = Object.values(projects)
     .filter((project) => project.isActive)
-    .map((project, i) => {
+    .map((project) => {
       count++;
       return {
         id: count,

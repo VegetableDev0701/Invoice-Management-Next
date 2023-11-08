@@ -1,5 +1,3 @@
-import { useAppSelector as useSelector } from '@/store/hooks';
-
 import NavBar from './NavBar/NavBar';
 import BorderBars from './TopSideBorder/BorderBars';
 

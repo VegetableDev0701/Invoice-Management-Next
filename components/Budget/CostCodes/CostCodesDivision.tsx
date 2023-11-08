@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 
 import { formatNameForID } from '@/lib/utility/formatter';
 
@@ -11,7 +11,7 @@ import { CostCodesData, Divisions } from '@/lib/models/budgetCostCodeModel';
 
 interface Props {
   costCodeDataList: CostCodesData;
-  setCostCodeDataList: Function;
+  setCostCodeDataList: Dispatch<SetStateAction<CostCodesData>>;
   onclicklink: (link: string) => void;
 }
 

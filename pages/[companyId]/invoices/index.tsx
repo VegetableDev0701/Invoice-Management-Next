@@ -53,7 +53,7 @@ interface ExtendedItems extends Partial<Items> {
 
 function Invoices() {
   useSetStatePath();
-  const { user, isLoading: userLoading } = useUser();
+  const { isLoading: userLoading } = useUser();
 
   const { data: invoices, isLoading: pageLoading }: InvoiceData = usePageData(
     'data',

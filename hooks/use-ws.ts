@@ -32,7 +32,7 @@ export default function useListenWS() {
 
   let webSocket: WebSocket;
   let retryCount = 0;
-  let maxRetires = 3;
+  const maxRetires = 3;
 
   const getToken = async () => {
     while (retryCount < maxRetires) {

@@ -11,16 +11,11 @@ import { User } from '@/lib/models/formStateModels';
 import { nanoid } from '@/lib/config';
 
 import {
-  InvoiceCurrentActuals,
-  InvoiceCurrentActualsChangeOrders,
   InvoiceCurrentActualsChangeOrdersV2,
   InvoiceCurrentActualsV2,
 } from '@/lib/models/budgetCostCodeModel';
 import ButtonWithLoader from '../UI/Buttons/ButtonWithLoader';
 import { uiActions } from '@/store/ui-slice';
-
-const buttonClasses =
-  'px-10 py-2 md:text-2xl font-normal bg-stak-dark-green 2xl:text-3xl';
 
 const ProjectButtons = ({ projectId }: { projectId: string }) => {
   const dispatch = useDispatch();

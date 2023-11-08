@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice, current } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import {
   FormState,
@@ -23,7 +23,7 @@ const addLaborFormSlice = createSlice({
         isValid: isValid,
       };
     },
-    clearFormState(state) {
+    clearFormState() {
       return initialAddLaborFormState;
     },
     setIsTouchedState(state, action: PayloadAction<IsTouchedPayload>) {

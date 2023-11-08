@@ -18,7 +18,7 @@ interface Props {
 
 export default function ProjectBudgetToActuals(props: Props) {
   const { projectId } = props;
-  const { user, isLoading: userLoading } = useUser();
+  const { user } = useUser();
 
   // HACK - This is just dummy state to force this componenet to rerender
   // at EVERY side link click. This fixed a bug where if the same

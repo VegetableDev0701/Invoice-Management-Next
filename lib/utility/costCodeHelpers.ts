@@ -2,15 +2,12 @@ import {
   CostCodeItem,
   CostCodesData,
   Divisions,
-  BudgetFormState,
   SubDivisions,
   BudgetTotals,
   BudgetTotalsV2,
 } from '@/lib/models/budgetCostCodeModel';
 import { SelectMenuOptions } from '../models/formDataModel';
-import { FormState } from '../models/formStateModels';
 import {
-  ChartDataV2,
   CostCodeItemB2AData,
   DivisionDataV2,
 } from '../models/chartDataModels';
@@ -267,7 +264,7 @@ export const getDataByRecursiveLevel = ({
     | CostCodeItemB2AData = fullData[level[0]];
   let prefix = '';
   for (let i = 1; i < level.length; i++) {
-    let index = level[i];
+    const index = level[i];
     if (!levelData.subItems || levelData.subItems?.length <= index) {
       console.warn('[getDataByRecursiveLevel]: No data');
       return null;

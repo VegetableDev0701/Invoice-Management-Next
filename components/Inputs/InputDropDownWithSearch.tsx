@@ -61,7 +61,6 @@ const DropDownWithSearch = (props: Props) => {
     form,
     changeOrdersSummary,
     projectId,
-    onBlur,
     onFocus,
     onMouseEnter,
     onMouseLeave,
@@ -171,7 +170,7 @@ const DropDownWithSearch = (props: Props) => {
 
   // will query the list of available options as the user types and dynamically match them
   // this version will match any letter, so super will match to project supervision
-  let filteredOptions =
+  const filteredOptions =
     query.trim() === ''
       ? (dropDownChoices as SelectMenuOptions[])
       : (dropDownChoices as SelectMenuOptions[]).filter((option) => {

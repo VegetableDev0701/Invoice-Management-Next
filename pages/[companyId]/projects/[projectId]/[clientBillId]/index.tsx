@@ -9,7 +9,7 @@ import Card from '@/components/UI/Card';
 import FullScreenLoader from '@/components/UI/Loaders/FullScreenLoader';
 import ClientBillInvoices from '@/components/Projects/ClientBills/ClientBillInvoices';
 import ClientBillLabor from '@/components/Projects/ClientBills/ClientBillLabor';
-import { ClientBillData, SubTotals } from '@/lib/models/clientBillModel';
+import { ClientBillData } from '@/lib/models/clientBillModel';
 import ClientBillWorkDescription from '@/components/Projects/ClientBills/ClientBillWorkDescription';
 import ProjectsSectionHeading from '@/components/UI/SectionHeadings/ProjectPageSectionHeading';
 import {
@@ -20,7 +20,6 @@ import { ClientBillSummary } from '@/lib/models/summaryDataModel';
 import useHttp from '@/hooks/use-http';
 import useSetNotification from '@/hooks/use-set-nofitication';
 import { uiActions } from '@/store/ui-slice';
-import ModalError from '@/components/UI/Modal/ModalError';
 import ModalErrorWrapper from '@/components/UI/Modal/ErrorModalWrapper';
 
 interface Tab {

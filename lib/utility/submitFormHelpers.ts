@@ -14,7 +14,6 @@ import { FormStateV2, User } from '@/lib/models/formStateModels';
 import { FormData } from '@/lib/models/types';
 import { formatNameForID } from '@/lib/utility/formatter';
 
-import { CostCodesData } from '../models/budgetCostCodeModel';
 import { NewUserData } from '@/components/Utilities/OnBoardUser/OnBoardNewUser';
 
 export function createAuth0UserData(
@@ -61,7 +60,7 @@ export function createAuth0UserData(
  * @returns {string | undefined} The value of the first address item found, or undefined if not found.
  */
 export function getAddressFormData(formData: FormData): string {
-  let address: string = '';
+  let address = '';
   formData.mainCategories.forEach((category: MainCategories, i: number) => {
     category.inputElements.forEach((el: InputElement, j: number) => {
       if (isInputElementWithAddressElements(el)) {

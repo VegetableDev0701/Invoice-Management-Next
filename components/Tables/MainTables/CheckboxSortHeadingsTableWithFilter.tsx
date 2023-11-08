@@ -51,10 +51,6 @@ interface Props<
   onRowClick?: (uuid: string) => void;
 }
 
-type Headings = {
-  [key: string]: string;
-};
-
 export default function CheckboxSortHeadingsTable<
   T extends ExtendT | InvoiceTableRow | ProjectSummaryItem | VendorSummaryItem,
   H extends Partial<T>
@@ -100,7 +96,7 @@ export default function CheckboxSortHeadingsTable<
   const handleHeadingClick = useCallback(
     (heading: keyof H) => {
       const entry = Object.entries(headings).find(
-        ([key, value]) => value === heading
+        ([_, value]) => value === heading
       );
       const key = entry ? (entry[0] as keyof H) : null;
       if (sortKey === key) {

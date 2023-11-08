@@ -21,7 +21,7 @@ const addContractFormSlice = createSlice({
         isValid: isValid,
       };
     },
-    clearFormState(state) {
+    clearFormState() {
       return initialAddContractFormState;
     },
     setIsTouchedState(state, action: PayloadAction<IsTouchedPayload>) {

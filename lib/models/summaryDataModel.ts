@@ -80,7 +80,7 @@ export interface LaborSummaryItem extends BaseSummary {
   rowId?: null;
 }
 
-interface ClientBillData {
+export interface ClientBillData {
   actuals: InvoiceCurrentActuals;
   actualsChangeOrders: InvoiceCurrentActualsChangeOrders;
 }
@@ -114,7 +114,7 @@ export interface ChangeOrderSummaryItem extends BaseSummary {
   projectName: string;
   date: string;
   clientName: string;
-  content: ChangeOrderContent | {};
+  content: ChangeOrderContent | object;
   address: string;
   subtotalAmt: string;
   workDescription: string;

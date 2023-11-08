@@ -18,7 +18,6 @@ import { formatNameForID } from '@/lib/utility/formatter';
 import { FormState, User } from '@/lib/models/formStateModels';
 import { checkAllFormFields } from '@/lib/validation/formValidation';
 import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
-import { Rows } from '@/lib/models/summaryDataModel';
 import { createSingleProjectSummary } from '@/lib/utility/createSummaryDataHelpers';
 
 import Form from '../Forms/InputFormLayout/Form';
@@ -45,7 +44,7 @@ export default function ProjectDetails(props: Props) {
     (state) => state.projects[projectId]['project-details']
   );
   let sideLinks: string[] = [];
-  let anchorScrollElement: string = '';
+  let anchorScrollElement = '';
   if (formData) {
     sideLinks = formData.mainCategories.map(
       (category: MainCategories) => category.name

@@ -39,9 +39,8 @@ export default function OnBoardForm({
 }: Props) {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [missingInputs, setMissingInputs] = useState<boolean>(false);
-  const [modalMessage, setModalMessage] = useState<string>(
-    'Confirm the information you entered is correct, and welcome to Stak! You must log out and then back out for these changes to take effect.'
-  );
+  const modalMessage =
+    'Confirm the information you entered is correct, and welcome to Stak! You must log out and then back out for these changes to take effect.';
 
   const dispatch = useAppDispatch();
 
@@ -49,7 +48,7 @@ export default function OnBoardForm({
     (state) => state.addNewUserForm
   );
 
-  const { isLoading, error, response, successJSON, sendRequest } = useHttp({
+  const { isLoading, error, response, sendRequest } = useHttp({
     isClearData: true,
   });
   useEffect(() => {

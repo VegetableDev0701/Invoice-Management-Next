@@ -8,7 +8,7 @@ import { formatNumber } from '@/lib/utility/formatter';
 import { useGetInputState } from '@/lib/utility/formHelpers';
 import { Items } from '@/lib/models/formDataModel';
 import { Actions } from '@/lib/models/types';
-import { FormState, FormStateItem } from '@/lib/models/formStateModels';
+import { FormStateItem } from '@/lib/models/formStateModels';
 
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid';
 import ToggleOffInputIcon from '@/public/icons/ToggleOffInput';

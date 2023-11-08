@@ -23,14 +23,15 @@ export const useCheckChangeOrderNameDuped = ({
 }) => {
   const dispatch = useDispatch();
 
-  const changeOrderSummary: ChangeOrderSummary | null = useSelector((state) =>
-    projectId ? state.projects[projectId]['change-orders-summary'] : null
+  const changeOrderSummary: ChangeOrderSummary | object | null = useSelector(
+    (state) =>
+      projectId ? state.projects[projectId]['change-orders-summary'] : null
   );
   const changeOrderNames = changeOrderSummary
     ? Object.values(changeOrderSummary).map((changeOrder) => changeOrder.name)
     : null;
 
-  let isNameDuped: boolean = false;
+  let isNameDuped = false;
   // check for duplicate change order names
   if (input && inputState?.value && inputState.value !== input.value) {
     isNameDuped =

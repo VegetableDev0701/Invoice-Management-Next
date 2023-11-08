@@ -39,14 +39,14 @@ export interface ProjectDataItems {
   status?: 'rejected' | 'fulfilled';
   budget: CostCodesData;
   'change-orders': { [changeOrderId: string]: ChangeOrderData };
-  'change-orders-summary': ChangeOrderSummary | {};
+  'change-orders-summary': ChangeOrderSummary | object;
   contracts: ContractData;
-  'contracts-summary'?: ContractSummary | {};
+  'contracts-summary'?: ContractSummary | object;
   labor: Labor;
-  'labor-summary': LaborSummary | {};
+  'labor-summary': LaborSummary | object;
   'project-details'?: ProjectFormData;
   b2a: B2A;
-  'client-bills-summary': ClientBillSummary | {};
+  'client-bills-summary': ClientBillSummary | object;
   'client-bills': ClientBills;
   costCodeList: SelectMenuOptions[];
   costCodeNameList: SelectMenuOptions[];

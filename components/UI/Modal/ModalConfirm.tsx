@@ -30,7 +30,7 @@ function Modal(props: Props) {
     onCloseModal,
   } = props;
 
-  let trueLogout = logout || false;
+  const trueLogout = logout || false;
 
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -173,7 +173,6 @@ export default function ModalConfirm(props: Props) {
             title={props.title}
             buttonText={props.buttonText}
             logout={props.logout}
-
           />,
           portal
         )}

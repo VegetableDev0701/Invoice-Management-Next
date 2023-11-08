@@ -2,7 +2,6 @@ import {
   PayloadAction,
   createAsyncThunk,
   createSlice,
-  current,
 } from '@reduxjs/toolkit';
 
 import {
@@ -58,7 +57,7 @@ const addVendorFormSlice = createSlice({
         isValid: isValid,
       };
     },
-    clearFormState(state) {
+    clearFormState() {
       return initialAddVendorFormState;
     },
     setIsTouchedState(state, action: PayloadAction<IsTouchedPayload>) {

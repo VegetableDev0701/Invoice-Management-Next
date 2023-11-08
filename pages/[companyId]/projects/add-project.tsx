@@ -11,7 +11,6 @@ import { companyDataActions } from '@/store/company-data-slice';
 import { useSetStatePath } from '@/hooks/use-setpath';
 import useHttp from '@/hooks/use-http';
 import { usePageData } from '@/hooks/use-page-data';
-import useLocationChange from '@/hooks/use-location-change';
 
 import { checkAllFormFields } from '@/lib/validation/formValidation';
 import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
@@ -42,9 +41,8 @@ const AddNewProject = () => {
 
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [missingInputs, setMissingInputs] = useState<boolean>(false);
-  const [modalMessage, setModalMessage] = useState<string>(
-    'Please confirm that you want to save this project to the database.'
-  );
+  const modalMessage =
+    'Please confirm that you want to save this project to the database.';
 
   const dispatch = useDispatch();
 

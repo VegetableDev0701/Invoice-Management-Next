@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 import {
@@ -25,6 +25,7 @@ import { nanoid } from '@/lib/config';
 import FullScreenLoader from '../UI/Loaders/FullScreenLoader';
 import SlideOverlayForm from '../UI/SlideOverlay/SlideOverlayForm';
 import ChangeOrderTables from '../Tables/ChangeOrderDoubleTable';
+import { ChangeOrderContent } from '@/lib/models/changeOrderModel';
 
 interface Props {
   projectId: string;
@@ -121,7 +122,7 @@ export default function ProjectsChangeOrders(props: Props) {
       changeOrder: dataToSubmit as LaborData,
       changeOrderId: changeOrderUUID,
       content: (changeOrderSummaryState as ChangeOrderSummary)[changeOrderUUID]
-        ?.content,
+        ?.content as ChangeOrderContent,
     });
 
     dispatch(

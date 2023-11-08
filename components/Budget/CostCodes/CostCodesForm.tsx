@@ -37,7 +37,7 @@ import {
 
 export interface Props {
   formData: CostCodesData;
-  setDataList: Function;
+  setDataList: (data: CostCodesData) => void;
   clickedLink: string;
   anchorScrollElement: string;
   dummyForceRender: boolean;
@@ -267,7 +267,7 @@ function CostCodeForm(props: Props) {
           canDropOnFolder={false}
           canReorderItems={true}
           onFocusItem={(item) => setFocusedItem(item.index)}
-          onSelectItems={(items) => setSelectedItems((prev) => [...items])}
+          onSelectItems={(items) => setSelectedItems(() => [...items])}
           canRename={true}
           onRenameItem={handleRenameItem}
           onExpandItem={(item: TreeItem<any>) => {
@@ -449,7 +449,7 @@ function CostCodeForm(props: Props) {
                       <div>
                         <div className="flex gap-2">
                           <div
-                            onClick={(e) => {
+                            onClick={() => {
                               handleSaveAddItem(depth);
                               setFormData({
                                 name: '',

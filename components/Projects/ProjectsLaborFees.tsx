@@ -27,7 +27,7 @@ import { createSingleLaborSummary } from '@/lib/utility/createSummaryDataHelpers
 import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
 import { checkAllFormFieldsLabor } from '@/lib/validation/formValidation';
 import { LaborData } from '@/lib/models/formDataModel';
-import { LaborSummary, Rows } from '@/lib/models/summaryDataModel';
+import { ChangeOrderSummary, LaborSummary, Rows } from '@/lib/models/summaryDataModel';
 import { formatNumber } from '@/lib/utility/formatter';
 import { nanoid } from '@/lib/config';
 import { createChangeOrderContentFromLaborFees } from '@/lib/utility/changeOrderHelpers';
@@ -38,7 +38,6 @@ import { ChangeOrderContent } from '@/lib/models/changeOrderModel';
 import FullScreenLoader from '../UI/Loaders/FullScreenLoader';
 import SlideOverlayForm from '../UI/SlideOverlay/SlideOverlayForm';
 import CheckboxSubTable from '../Tables/SubTables/CheckboxSortHeadingsTableSub';
-import { uiActions } from '@/store/ui-slice';
 
 interface Props {
   projectId: string;
@@ -237,7 +236,7 @@ export default function ProjectsLaborFees(props: Props) {
       laborId: laborUUID,
       formState: addLaborFormStateData,
       numLineItems: addLaborFormStateData.numCostCodes.value as number,
-      changeOrdersSummary,
+      changeOrdersSummary: changeOrdersSummary as ChangeOrderSummary,
     });
 
     // check if any piece of the labor is a change order
@@ -250,7 +249,7 @@ export default function ProjectsLaborFees(props: Props) {
     if (laborFeesChangeOrders) {
       changeOrderContent = createChangeOrderContentFromLaborFees({
         laborFeeSummary,
-        changeOrdersSummary,
+        changeOrdersSummary: changeOrdersSummary as ChangeOrderSummary,
       });
     }
 

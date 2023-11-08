@@ -8,7 +8,6 @@ import {
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { formatNumber } from '@/lib/utility/formatter';
-import { CostCodeItem, Divisions } from '@/lib/models/budgetCostCodeModel';
 import { ChartEvent } from 'chart.js/dist/core/core.plugins';
 import { createIndividualChartData } from './BudgetToActualCharts';
 import {
@@ -33,13 +32,10 @@ interface BarChartProps {
 const BarChart = (props: BarChartProps) => {
   const {
     data,
-    minBarWidth,
     title: _title,
     fullData,
-    division,
     subDivision,
     filterZeroElements,
-    dropZeroSubDivIndex,
   } = props;
 
   const [chartData, setChartData] = useState(data);
@@ -52,16 +48,15 @@ const BarChart = (props: BarChartProps) => {
   const [level, setLevel] = useState<Array<number>>([]);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const totalBarWidth = minBarWidth * (chartData.labels?.length || 0);
 
   const getCurrentLevelData = () => {
     let levelData: DivisionDataV2 | CostCodeItemB2AData = fullData;
-    let prefix: Array<{
+    const prefix: Array<{
       title: string;
       level: Array<number>;
     }> = [{ title: _title, level: [] }];
     for (let i = 0; i < level.length; i++) {
-      let index = level[i];
+      const index = level[i];
       if (!levelData.subItems || levelData.subItems?.length <= index) {
         console.error('[getCurrentLevelData]: Error!');
         return;
@@ -174,7 +169,7 @@ const BarChart = (props: BarChartProps) => {
                   size: 16,
                   weight: 'normal',
                 },
-                formatter: (value, context) => {
+                formatter: (value) => {
                   return +value > 0 ? `${formatNumber(Math.round(value))}` : '';
                 },
               },
@@ -287,7 +282,7 @@ const BarChart = (props: BarChartProps) => {
           plugins: [
             {
               id: 'chart',
-              afterInit: (obj, args, options) => {
+              afterInit: (obj) => {
                 function handleContextMenu(
                   e: React.MouseEvent<HTMLCanvasElement, MouseEvent>
                 ) {

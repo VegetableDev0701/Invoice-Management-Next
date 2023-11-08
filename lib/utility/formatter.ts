@@ -7,8 +7,8 @@
 // (?<!\.) <- will not work in safari
 export const formatNumber = (
   num: string | number,
-  toCurrency: boolean = true,
-  total: boolean = false
+  toCurrency = true,
+  total = false
 ): string => {
   if (toCurrency && !total) {
     // keep for reference later on

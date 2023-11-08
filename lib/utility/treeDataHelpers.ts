@@ -165,7 +165,7 @@ export class ConvertTreeData {
         costCodeData[itemIndex].subItems = [];
 
         this.iterateTreeItems(
-          costCodeData[itemIndex]?.subItems!,
+          costCodeData[itemIndex]?.subItems as CostCodeItem[],
           treeData,
           treeData[item].children ?? []
         );
@@ -256,7 +256,7 @@ export class ConvertTreeData {
     return Number.isNaN(cost.total) ? 0.0 : cost.total;
   };
 
-  calculateCostCode = (treeData: TreeData, divIndex: string = '') => {
+  calculateCostCode = (treeData: TreeData, divIndex = '') => {
     if (!divIndex) {
       for (const child of treeData.root.children as string[]) {
         (treeData[child].data as Divisions).value = this.calculateAllSubCost(

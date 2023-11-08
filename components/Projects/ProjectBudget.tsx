@@ -1,20 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 
-import { addBudgetFormActions } from '@/store/add-budget-slice';
-import {
-  useAppSelector as useSelector,
-  useAppDispatch as useDispatch,
-} from '@/store/hooks';
-import { projectDataActions } from '@/store/projects-data-slice';
-
 import { usePageData } from '@/hooks/use-page-data';
 import useHttp from '@/hooks/use-http';
 import useSetNotification from '@/hooks/use-set-nofitication';
 
 import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
 import { formatNameForID } from '@/lib/utility/formatter';
-import { FormState, User } from '@/lib/models/formStateModels';
+import { User } from '@/lib/models/formStateModels';
 
 import BudgetForm from '../Budget/ProjectBudget/BudgetForm';
 import CostCodeSideLinks from '../Budget/CostCodes/CostCodeSideLinks';
@@ -89,18 +82,16 @@ export default function ProjectBudget(props: Props) {
     formData = null;
   }
 
-  let anchorScrollElement: string = '';
+  let anchorScrollElement = '';
   if (currentProjectFormData) {
     anchorScrollElement = formatNameForID(
-      (currentProjectFormData as CostCodesData).divisions[0].name || ""
+      (currentProjectFormData as CostCodesData).divisions[0].name || ''
     );
   } else if (blankFormData) {
     anchorScrollElement = formatNameForID(
-      (blankFormData as CostCodesData).divisions[0].name || ""
+      (blankFormData as CostCodesData).divisions[0].name || ''
     );
   }
-
-  const formState = useSelector((state) => state.addBudgetForm.budget);
 
   // HACK - This is just dummy state to force this componenet to rerender
   // at EVERY side link click. This fixed a bug where if the same

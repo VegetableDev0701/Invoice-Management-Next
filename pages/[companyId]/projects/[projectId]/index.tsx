@@ -9,7 +9,6 @@ import {
 import { overlayActions } from '@/store/overlay-control-slice';
 import { addLaborFormActions } from '@/store/add-labor-slice';
 import { addChangeOrderFormActions } from '@/store/add-change-order';
-import { addContractFormActions } from '@/store/add-contract';
 import {
   addBudgetFormActions,
   initializeB2AChartDataThunk,
@@ -24,7 +23,7 @@ import { usePageData } from '@/hooks/use-page-data';
 import useLocationChange from '@/hooks/use-location-change';
 
 import { User } from '@/lib/models/formStateModels';
-import { ProjectSummary } from '@/lib/models/summaryDataModel';
+import { ChangeOrderSummary, LaborSummary, ProjectSummary } from '@/lib/models/summaryDataModel';
 import { getProjectName } from '@/lib/utility/projectHelpers';
 import { ProjectDataItems } from '@/lib/models/projectDataModel';
 
@@ -153,28 +152,28 @@ const ProjectHome = () => {
   // click handlers
   // TODO add a invoiceformoverlay for the contract to edit any issues the model has
   // therefore keept his code even though currently it is not being used
-  const contractClickHandler = () => {
-    dispatch(addContractFormActions.clearFormState());
-    dispatch(
-      overlayActions.setOverlayContent({
-        data: {
-          overlayTitle: 'Add Contract',
-          open: true,
-          isSave: true,
-        },
-        stateKey: 'contracts',
-      })
-    );
-    dispatch(
-      overlayActions.setCurrentOverlayData({
-        data: {
-          currentData: null,
-          currentId: null,
-        },
-        stateKey: 'contracts',
-      })
-    );
-  };
+  // const contractClickHandler = () => {
+  //   dispatch(addContractFormActions.clearFormState());
+  //   dispatch(
+  //     overlayActions.setOverlayContent({
+  //       data: {
+  //         overlayTitle: 'Add Contract',
+  //         open: true,
+  //         isSave: true,
+  //       },
+  //       stateKey: 'contracts',
+  //     })
+  //   );
+  //   dispatch(
+  //     overlayActions.setCurrentOverlayData({
+  //       data: {
+  //         currentData: null,
+  //         currentId: null,
+  //       },
+  //       stateKey: 'contracts',
+  //     })
+  //   );
+  // };
 
   const addLaborClickHandler = () => {
     dispatch(addLaborFormActions.clearFormState());
@@ -318,7 +317,7 @@ const ProjectHome = () => {
                       <ProjectsLaborFees
                         projectId={projectId}
                         tableData={
-                          projectData ? projectData['labor-summary'] : null
+                          projectData ? projectData['labor-summary'] as LaborSummary : null
                         }
                       />
                     )}
@@ -348,7 +347,7 @@ const ProjectHome = () => {
                 <ProjectsChangeOrders
                   projectId={projectId}
                   tableData={
-                    projectData ? projectData['change-orders-summary'] : null
+                    projectData ? projectData['change-orders-summary'] as ChangeOrderSummary : null
                   }
                 />
               </div>

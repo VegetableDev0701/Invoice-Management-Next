@@ -5,7 +5,7 @@ export function isInputElementWithAddressElements(
   return 'addressElements' in element && element.addressElements !== null;
 }
 
-export function isInputElementWithItems<T>(
+export function isInputElementWithItems(
   element: InputElement
 ): element is InputElementWithItems {
   return 'items' in element && element.items !== null;
@@ -99,7 +99,7 @@ export interface InputElementWithItems {
   items: Items[];
 }
 
-export type InputElement<T = any> =
+export type InputElement =
   | InputElementWithAddressItems
   | InputElementWithItems;
 
@@ -112,7 +112,7 @@ export interface SelectMenuOptions {
 
 export interface Items {
   label: string;
-  value: string | number | boolean | null | {} | undefined;
+  value: string | number | boolean | null | object | undefined;
   id: string;
   required: boolean;
   disabled?: boolean;

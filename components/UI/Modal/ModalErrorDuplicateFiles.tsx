@@ -105,7 +105,7 @@ function Modal(props: Props) {
                   <button
                     type="button"
                     className="inline-flex w-full justify-center rounded-3xl border border-transparent bg-stak-dark-green px-8 py-2 text-semi font-semibold text-white shadow-sm hover:bg-stak-dark-green-hover hover:shadow-xl focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
-                    onClick={(e) => {
+                    onClick={() => {
                       onCloseModal();
                       setOpen(false);
                     }}

@@ -36,7 +36,7 @@ function LaborCostCodes(props: Props) {
 
   const changeOrdersSummary: ChangeOrderSummary = useSelector(
     (state) => state.projects[projectId]?.['change-orders-summary']
-  );
+  ) as ChangeOrderSummary;
 
   useEffect(() => {
     dispatch(actions.setCostCodes(formState.numCostCodes.value as number));

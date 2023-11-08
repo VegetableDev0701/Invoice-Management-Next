@@ -1,17 +1,12 @@
 import { useMemo } from 'react';
 import {
-  BillWorkDescription,
   BillWorkDescriptionV2,
-  SubTotals,
   SubTotalsV2,
   WorkDescriptionContentItem,
 } from '../models/clientBillModel';
 import {
-  CurrentActuals,
-  CurrentActualsChangeOrders,
   CurrentActualsChangeOrdersV2,
   CurrentActualsV2,
-  InvoiceCurrentActualsChangeOrders,
   InvoiceCurrentActualsChangeOrdersV2,
 } from '../models/budgetCostCodeModel';
 import {
@@ -38,7 +33,7 @@ export const useCreateClientBillWorkDescription = ({
   const clientBillWorkDescription: {
     [group: string]: Record<string, WorkDescriptionContentItem[]>;
   } | null = useMemo(() => {
-    let workDescriptionRows: {
+    const workDescriptionRows: {
       [group: string]: WorkDescriptionContentItem[];
     } = {};
     let changeOrderDescriptions: {
@@ -59,14 +54,12 @@ export const useCreateClientBillWorkDescription = ({
           const currentGroupRows: WorkDescriptionContentItem[] = [];
           Object.values(iterateData).forEach((currentActual) => {
             Object.entries(currentActual).forEach(([costCode, actualsItem]) => {
-              let { qtyAmt, description, rateAmt, vendor, totalAmt } =
+              const { qtyAmt, description, rateAmt, vendor, totalAmt } =
                 actualsItem;
-              qtyAmt = qtyAmt as string;
-              rateAmt = rateAmt as string;
               currentGroupRows.push({
-                qtyAmt,
+                qtyAmt: String(qtyAmt),
                 description,
-                rateAmt,
+                rateAmt: String(rateAmt),
                 vendor,
                 totalAmt,
                 costCode,
@@ -101,14 +94,12 @@ export const useCreateClientBillWorkDescription = ({
               Object.values(invoiceObj).forEach((currentActual) => {
                 Object.entries(currentActual).forEach(
                   ([costCode, actualsItem]) => {
-                    let { qtyAmt, description, rateAmt, vendor, totalAmt } =
+                    const { qtyAmt, description, rateAmt, vendor, totalAmt } =
                       actualsItem;
-                    qtyAmt = qtyAmt as string;
-                    rateAmt = rateAmt as string;
                     currentGroupRows.push({
-                      qtyAmt,
+                      qtyAmt: String(qtyAmt),
                       description,
-                      rateAmt,
+                      rateAmt: String(rateAmt),
                       vendor,
                       totalAmt,
                       costCode,
@@ -159,17 +150,17 @@ export const useCreateClientBillWorkDescription = ({
           );
 
           // Now we sort the changeOrderDescriptions by change order name:
-          let sortedChangeOrderDescriptions: {
+          const sortedChangeOrderDescriptions: {
             [changeOrderId: string]: WorkDescriptionContentItem[];
           } = {};
-          let sortedChangeOrderIds = Object.keys(changeOrderDescriptions).sort(
-            (a, b) => {
-              // Get the description of each change order and then compare
-              return changeOrderDescriptions[a][0].description.localeCompare(
-                changeOrderDescriptions[b][0].description
-              );
-            }
-          );
+          const sortedChangeOrderIds = Object.keys(
+            changeOrderDescriptions
+          ).sort((a, b) => {
+            // Get the description of each change order and then compare
+            return changeOrderDescriptions[a][0].description.localeCompare(
+              changeOrderDescriptions[b][0].description
+            );
+          });
           sortedChangeOrderIds.forEach((key) => {
             sortedChangeOrderDescriptions[key] = changeOrderDescriptions[key];
           });
@@ -191,12 +182,12 @@ export const useCreateClientBillWorkDescription = ({
       if (subTotals) {
         Object.entries(subTotals.budgeted).forEach(
           ([costCode, actualsItem]) => {
-            let { description, rateAmt, totalAmt, vendor } = actualsItem;
-            rateAmt =
+            const { description, totalAmt, vendor } = actualsItem;
+            const rateAmt =
               description === 'Overhead and Profit' ||
               description === 'Business and Occupation Tax'
-                ? `${rateAmt} %`
-                : (rateAmt as string);
+                ? `${actualsItem.rateAmt} %`
+                : (actualsItem.rateAmt as string);
             if (description !== 'Sales Tax') {
               currentGroupRows.push({
                 qtyAmt: '',

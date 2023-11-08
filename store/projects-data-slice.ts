@@ -2,7 +2,6 @@ import {
   createSlice,
   createAsyncThunk,
   PayloadAction,
-  current,
 } from '@reduxjs/toolkit';
 
 import { uiActions } from './ui-slice';
@@ -33,7 +32,6 @@ import { getChangeOrderIdFromName } from '@/lib/utility/processInvoiceHelpers';
 import { ProjectData, ProjectDataItems } from '@/lib/models/projectDataModel';
 import {
   ChangeOrderContent,
-  ChangeOrderContentItem,
 } from '@/lib/models/changeOrderModel';
 import { Invoices, ProcessedInvoiceData } from '@/lib/models/invoiceDataModels';
 import { costCodeData2NLevel, createCostCodeList } from '@/lib/utility/costCodeHelpers';
@@ -42,9 +40,7 @@ import { snapshotCopy } from '@/lib/utility/utils';
 import { setTargetValue } from '@/lib/utility/createSummaryDataHelpers';
 import { addUpdatedChangeOrderContent } from './add-change-order';
 import {
-  CostCodeItem,
   CostCodesData,
-  Divisions,
 } from '@/lib/models/budgetCostCodeModel';
 
 export const fetchProjectData = createAsyncThunk(
@@ -63,7 +59,7 @@ export const fetchProjectData = createAsyncThunk(
           };
         })
         .reduce((obj, item) => {
-          let key = Object.keys(item)[0];
+          const key = Object.keys(item)[0];
           obj[key] = item[key];
           return obj;
         }, {});
@@ -266,7 +262,7 @@ export const removeLaborFromChangeOrderThunk = createAsyncThunk(
     const updatedChangeOrderSummary: ChangeOrderSummary = snapshotCopy(
       state.projects[projectId]['change-orders-summary']
     );
-    let updatedChangeOrderContent: {
+    const updatedChangeOrderContent: {
       [changeOrderId: string]: { content: ChangeOrderContent };
     } = {};
 
@@ -411,8 +407,8 @@ const projectDataSlice = createSlice({
       // run a check to see if the current value is different than the previous value
       // if different, remove item from previous value and dispatch an update
       // pull out all the change order line items
-      let ids = Object.entries(lineItems)
-        .map(([key, _]) => {
+      const ids = Object.entries(lineItems)
+        .map(([key]) => {
           if (key.includes('change-order')) {
             return key;
           }
@@ -423,7 +419,7 @@ const projectDataSlice = createSlice({
       const itemsChangedToNoneToRemoveFromChangeOrder = Object.entries(
         formState
       )
-        .filter(([key, _]) => ids.includes(key))
+        .filter(([key]) => ids.includes(key))
         .map(([key, value]) => {
           if (value.value === 'None' || value.value === '') {
             return key;
@@ -435,13 +431,13 @@ const projectDataSlice = createSlice({
             return itemId;
           } else {
             if (item) {
-              const [number, ...rest] = item.split('-');
+              const [number] = item.split('-');
               return `line_item_${number}::${itemId}`;
             }
           }
         });
 
-      let itemsSwitchedToRemoveFromChangeOrder: Record<string, string> = {};
+      const itemsSwitchedToRemoveFromChangeOrder: Record<string, string> = {};
       // todo make sure the missing co on delete bug goes away after removal from invoice
       if (snapShotFormState) {
         ids.forEach((id) => {
@@ -457,7 +453,7 @@ const projectDataSlice = createSlice({
             snapShotFormState[id].value !== 'None' &&
             snapShotFormState[id].value !== ''
           ) {
-            const [number, ...rest] = id.split('-');
+            const [number] = id.split('-');
             const newItemId =
               id === 'change-order' ? itemId : `line_item_${number}::${itemId}`;
             itemsSwitchedToRemoveFromChangeOrder[newItemId] =
@@ -649,7 +645,7 @@ const projectDataSlice = createSlice({
         });
         const filteredContent = Object.fromEntries(
           Object.entries(content).filter(
-            ([contentKey, _]) => !removeItemIds.includes(contentKey)
+            ([contentKey]) => !removeItemIds.includes(contentKey)
           )
         );
 
@@ -786,20 +782,20 @@ const projectDataSlice = createSlice({
 
       const removedLabor = Object.fromEntries(
         Object.entries(allLabor).filter(
-          ([laborId, labor]) =>
+          ([_, labor]) =>
             !Object.keys(updatedLaborSummary).includes(labor.uuid as string)
         )
       );
 
       const removedLaborSummary = Object.fromEntries(
         Object.entries(allLaborSummary).filter(
-          ([laborId, labor]) =>
+          ([_, labor]) =>
             !Object.keys(updatedLaborSummary).includes(labor.uuid as string)
         )
       );
 
       const updatedLabor = Object.fromEntries(
-        Object.entries(allLabor).filter(([laborId, labor]) =>
+        Object.entries(allLabor).filter(([_, labor]) =>
           Object.keys(updatedLaborSummary).includes(labor.uuid as string)
         )
       );
@@ -836,10 +832,6 @@ const projectDataSlice = createSlice({
           [projectId: string]: PromiseFulfilledResult<any>;
         }>
       ) => {
-        const isValidNumber = (currentNumber: number, parentNumber: number) => {
-          return String(currentNumber).startsWith(String(parentNumber));
-        };
-
         Object.entries(action.payload).forEach(([projectId, value]) => {
           const newData = JSON.parse(value.value);
           if (!newData) return;

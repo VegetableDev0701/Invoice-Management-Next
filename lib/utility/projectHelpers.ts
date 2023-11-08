@@ -1,4 +1,4 @@
-import { ProjectSummary, ProjectSummaryItem } from '../models/summaryDataModel';
+import { ProjectSummary } from '../models/summaryDataModel';
 
 export const getProjectName = (
   projects: Record<string, ProjectSummary | string>,

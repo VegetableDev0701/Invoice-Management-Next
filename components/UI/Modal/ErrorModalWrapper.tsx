@@ -5,7 +5,7 @@ interface Props {
   logout?: boolean;
 }
 
-export default function ModalErrorWrapper({ logout }: Props) {
+export default function ModalErrorWrapper(_: Props) {
   const modalData = useSelector((state) => state.ui.errorModal);
   return (
     <ModalError

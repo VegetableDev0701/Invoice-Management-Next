@@ -4,14 +4,12 @@ import {
   BudgetTotalsV2,
   CostCodesData,
   CurrentActuals,
-  CurrentActualsChangeOrders,
   CurrentActualsChangeOrdersV2,
   CurrentActualsItemV2,
   CurrentActualsV2,
 } from '../models/budgetCostCodeModel';
 import {
   ChartData,
-  ChangeOrderChartData,
   ChartDataV2,
   DivisionDataV2,
   CostCodeItemB2AData,
@@ -39,7 +37,7 @@ export const createB2AChartData = ({
   initActualsToZeros: boolean;
   previousData?: ChartData;
 }) => {
-  let chartData: ChartData = {};
+  const chartData: ChartData = {};
 
   Object.values(subDivTotals).forEach((subDivValue) => {
     const divisionKey = subDivValue.division;
@@ -149,7 +147,7 @@ export const createB2AChartDataV2 = ({
   previousData?: ChartDataV2;
 }) => {
   if (!budget) return;
-  let chartData: ChartDataV2 = {
+  const chartData: ChartDataV2 = {
     divisions: [],
   };
 
@@ -194,7 +192,7 @@ export const createB2AChartDataV2 = ({
     });
 
   costCodeTotals &&
-    Object.entries(costCodeTotals).forEach(([costCodeNumber, obj]) => {
+    Object.entries(costCodeTotals).forEach(([_, obj]) => {
       const costCodeObj: CurrentActualsItemV2 | BudgetTotalItemV2 = obj;
       const recursiveLevel = costCodeObj.recursiveLevel;
       if (!recursiveLevel || recursiveLevel.length === 0) return;
@@ -284,7 +282,7 @@ export const createB2AChangeOrderChartData = ({
   changeOrdersSummary: ChangeOrderSummary;
 }) => {
   let changeOrderChartData: ChangeOrderChartDataV2 = {};
-  let grandTotal: number = 0;
+  let grandTotal = 0;
   Object.keys(updatedCurrentActualsChangeOrders).forEach((changeOrderId) => {
     // The change order Chart Data is the data that will be used
     // to create the change order plot. This object keys are either
@@ -300,8 +298,8 @@ export const createB2AChangeOrderChartData = ({
       };
     }
     let totalValue: number | null = null;
-    let actualValue: number = 0;
-    let costCodeObj: CurrentActualsV2 = {};
+    let actualValue = 0;
+    const costCodeObj: CurrentActualsV2 = {};
     if (changeOrderId === 'profitTaxesLiability') {
       totalValue = null;
     } else {

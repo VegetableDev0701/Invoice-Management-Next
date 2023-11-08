@@ -17,7 +17,7 @@ import { getAPIUrl } from '@/lib/config';
 
 const useListenSSE = () => {
   const [newDocs, setNewDocs] = useState<Invoices | ContractData | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [_token, setToken] = useState<string | null>(null);
 
   const { user } = useUser();
   const dispatch = useDispatch();
@@ -85,7 +85,7 @@ const useListenSSE = () => {
       setNewDocs(data);
     });
 
-    eventSource.addEventListener('scanning_docs', (event) => {
+    eventSource.addEventListener('scanning_docs', () => {
       dispatch(
         uiActions.setProcessingNotificationContent({
           openNotification: true,
@@ -94,7 +94,7 @@ const useListenSSE = () => {
       );
     });
 
-    eventSource.addEventListener('deleting_invoices', (event) => {
+    eventSource.addEventListener('deleting_invoices', () => {
       dispatch(
         uiActions.setProcessingNotificationContent({
           openNotification: true,
@@ -103,7 +103,7 @@ const useListenSSE = () => {
       );
     });
 
-    eventSource.addEventListener('deleting_client_bill', (event) => {
+    eventSource.addEventListener('deleting_client_bill', () => {
       dispatch(
         uiActions.setProcessingNotificationContent({
           openNotification: true,
@@ -111,7 +111,7 @@ const useListenSSE = () => {
         })
       );
     });
-    eventSource.addEventListener('deleting_contract', (event) => {
+    eventSource.addEventListener('deleting_contract', () => {
       dispatch(
         uiActions.setProcessingNotificationContent({
           openNotification: true,

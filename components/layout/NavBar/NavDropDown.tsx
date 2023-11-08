@@ -31,7 +31,7 @@ function NavDropDown(props: Props) {
           className={`${classes['dropdown-menu']} ${classes['dropdown-menu__left-arrow']}`}
         >
           <ul>
-            {props.items.map((item, i) => {
+            {props.items.map((item) => {
               return (
                 <Link key={Math.random()} href={item.menuPath}>
                   <li>{item.name}</li>

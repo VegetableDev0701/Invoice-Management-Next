@@ -1,7 +1,6 @@
 import { SUMMARY_COST_CODES } from '../globals';
 import {
   AggregatedBudgetTotals,
-  CurrentActuals,
   CurrentActualsV2,
 } from '../models/budgetCostCodeModel';
 import { ChangeOrderContent } from '../models/changeOrderModel';
@@ -33,7 +32,7 @@ import { extractLineItems, groupLineItems } from './invoiceHelpers';
 const getTargetValue = (
   targetId: string,
   inputElements: InputElement[]
-): string | number | boolean | null | {} | undefined => {
+): string | number | boolean | null | object | undefined => {
   for (const element of inputElements) {
     if (isInputElementWithItems(element)) {
       const foundItem = element.items.find((item) => item.id === targetId);
@@ -95,12 +94,12 @@ function addMonths(dateString: string, months: number) {
   return `${year}-${month}-${day}`;
 }
 
-function createBillDateTitle(dateString: string) {
+export const createBillDateTitle = (dateString: string) => {
   const date = new Date(dateString);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   return `${year}, ${month}`;
-}
+};
 
 export const createSingleProjectSummary = (
   project: ProjectFormData,

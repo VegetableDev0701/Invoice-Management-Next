@@ -156,7 +156,7 @@ const createDataToUpdateObj = ({
         Object.keys(currentInvoiceProcessedData.line_items as InvoiceLineItem) // empty object check
           .length > 0
       ) {
-        let lineItems =
+        const lineItems =
           currentInvoiceProcessedData.line_items as InvoiceLineItem;
         const updatedLineItems: InvoiceLineItem = Object.fromEntries(
           Object.entries(lineItems).map(
@@ -183,7 +183,7 @@ const createDataToUpdateObj = ({
       }
     }
     if (laborSummary[uuid]) {
-      let lineItems = laborSummary[uuid].line_items as LaborLineItem;
+      const lineItems = laborSummary[uuid].line_items as LaborLineItem;
       const updatedLineItems: LaborLineItem = Object.fromEntries(
         Object.entries(lineItems).map(
           ([itemId, item]: [string, LaborLineItemItem]) => {

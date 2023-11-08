@@ -64,11 +64,11 @@ function Vendors() {
   const {
     data: allVendorSummary,
     isLoading: pageLoading,
-  }: { data: VendorSummary; isLoading: Boolean } = usePageData(
+  }: { data: VendorSummary; isLoading: boolean } = usePageData(
     'data',
     'vendorsSummary'
   );
-  const { data: addVendorFormData, isLoading } = usePageData(
+  const { data: addVendorFormData } = usePageData(
     'data',
     'forms',
     'add-vendor'
@@ -82,9 +82,8 @@ function Vendors() {
   const [missingInputs, setMissingInputs] = useState<boolean>(false);
   const [selected, setSelected] = useState<VendorSummaryItem[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [modalMessage, setModalMessage] = useState<string>(
-    'Please confirm that you want to delete vendor(s). This is permanent and cannot be recovered.'
-  );
+  const modalMessage =
+    'Please confirm that you want to delete vendor(s). This is permanent and cannot be recovered.';
   const overlayContent = useSelector((state) => state.overlay.vendors);
   const addVendorFormStateData = useSelector((state) => state.addVendorForm);
 

@@ -19,7 +19,6 @@ import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
 import { FormState, User } from '@/lib/models/formStateModels';
 import { VendorData } from '@/lib/models/formDataModel';
 import { createSingleVendorSummary } from '@/lib/utility/createSummaryDataHelpers';
-import { Rows } from '@/lib/models/summaryDataModel';
 import { nanoid } from '@/lib/config';
 
 import FormComponent from '@/components/Forms/FormComponent';
@@ -44,9 +43,8 @@ const AddNewVendor = () => {
 
   const [openModal, setOpenModal] = useState(false);
   const [missingInputs, setMissingInputs] = useState(false);
-  const [modalMessage, setModalMessage] = useState<string>(
-    'Please confirm that you want to save this vendor to the database.'
-  );
+  const modalMessage =
+    'Please confirm that you want to save this vendor to the database.';
 
   const dispatch = useDispatch();
 

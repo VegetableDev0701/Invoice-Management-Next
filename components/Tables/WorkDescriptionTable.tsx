@@ -144,7 +144,7 @@ export default function WorkDescriptionTable(props: Props) {
                   {groupedRows && (
                     <tbody>
                       {Object.entries(groupedRows).map(
-                        ([group, value]: [string, any], i) => {
+                        ([group, value]: [string, any]) => {
                           return (
                             <Fragment key={group}>
                               <tr className="border-t border-gray-200">

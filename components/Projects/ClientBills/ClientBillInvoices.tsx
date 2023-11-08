@@ -1,4 +1,3 @@
-import { Items } from '@/lib/models/formDataModel';
 import { InvoiceTableHeadings, Invoices } from '@/lib/models/invoiceDataModels';
 
 import InvoicesTable from '@/components/Tables/Invoices/InvoiceSortHeadingsTable';

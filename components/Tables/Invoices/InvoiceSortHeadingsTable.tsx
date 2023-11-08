@@ -96,9 +96,8 @@ const InvoicesTable = <
   const [selected, setSelected] = useState<InvoiceTableRow[]>([]);
 
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [modalMessage, setModalMessage] = useState<string>(
-    'Please confirm that you want to delete these invoices from the database.'
-  );
+  const modalMessage =
+    'Please confirm that you want to delete these invoices from the database.';
 
   const dispatch = useDispatch();
 

@@ -55,7 +55,7 @@ export const addUpdatedChangeOrderContent = createAsyncThunk(
     }
 
     try {
-      const data = await fetchWithRetry(
+      await fetchWithRetry(
         `/api/${companyId}/projects/${projectId}/update-change-order-content`,
         { method: 'PATCH', body: JSON.stringify(dataToSend) }
       );
@@ -88,7 +88,7 @@ const addChangeOrderFormSlice = createSlice({
         isValid: isValid,
       };
     },
-    clearFormState(state) {
+    clearFormState() {
       return initialAddChangeOrderFormState;
     },
     setIsTouchedState(state, action: PayloadAction<IsTouchedPayload>) {

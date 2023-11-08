@@ -6,6 +6,7 @@ import { uiActions } from './ui-slice';
 import { projectDataActions } from './projects-data-slice';
 
 import {
+  ChangeOrderSummary,
   ProjectSummary,
   ProjectSummaryItem,
   SummaryProjects,
@@ -45,7 +46,7 @@ import {
   ChangeOrderContent,
   ChangeOrderContentItem,
 } from '@/lib/models/changeOrderModel';
-import { CompanyData, ExtendedCompanyData } from '@/lib/models/companyDataModel';
+import { ExtendedCompanyData } from '@/lib/models/companyDataModel';
 import { snapshotCopy } from '@/lib/utility/utils';
 
 export const fetchCompanyData = createAsyncThunk(
@@ -82,12 +83,12 @@ export const fetchCompanyData = createAsyncThunk(
       }, {});
 
       return data;
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       return {
-        status: error.status,
-        code: error.code,
-        error: error.message,
+        status: (error as Error).message,
+        code: (error as Error).message,
+        error: (error as Error).message,
       };
     }
   }
@@ -126,7 +127,7 @@ export const updateInvoices = createAsyncThunk(
         );
         return updatedAllInvoices;
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       return false;
     }
@@ -168,7 +169,7 @@ export const patchInvoiceUpdates = createAsyncThunk(
           openNotification: true,
         })
       );
-    } catch (error: any) {
+    } catch (error) {
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
           content:
@@ -204,7 +205,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
       const processInvoiceFormState = state.addProcessInvoiceForm;
       const costCodeList: CostCodeObjType[] = state.data.costCodeList;
       const costCodeNameList: CostCodeObjType[] = state.data.costCodeNameList;
-      const snapShotLineItems: InvoiceLineItem | undefined | {} = state.data
+      const snapShotLineItems: InvoiceLineItem | undefined = state.data
         .invoices.allInvoices[invoiceId]?.processedData?.line_items
         ? snapshotCopy(
             (
@@ -219,9 +220,9 @@ export const addProcessedInvoiceData = createAsyncThunk(
       ).filter((project) => project.projectName === projectName)[0];
 
       const changeOrdersSummary =
-        state.projects[projectData.uuid as string]['change-orders-summary'];
+        state.projects[projectData.uuid as string]['change-orders-summary'] as ChangeOrderSummary;
 
-      let processedInvoiceData = {
+      const processedInvoiceData = {
         invoice_id: processInvoiceFormState?.['invoice-number']?.value
           ? (processInvoiceFormState['invoice-number'].value as string)
           : '',
@@ -307,7 +308,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
         return;
       }
 
-      let changeOrderContentList: {
+      const changeOrderContentList: {
         [changeOrderId: string]: ChangeOrderContent;
       }[] = [];
 
@@ -377,7 +378,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
       }
       // LINE ITEMS
       else {
-        let dataObj: {
+        const dataObj: {
           [changeOrderId: string]: ChangeOrderContent;
         } = {};
         Object.entries(groupedLineItems).forEach(
@@ -468,9 +469,9 @@ export const addProcessedInvoiceData = createAsyncThunk(
       else if (
         groupedLineItems &&
         Object.keys(groupedLineItems).length > 0 &&
-        Object.keys(snapShotLineItems as InvoiceLineItem | {}).length !== 0
+        Object.keys(snapShotLineItems as InvoiceLineItem).length !== 0
       ) {
-        Object.entries(groupedLineItems).forEach(([item, newValue]) => {
+        Object.entries(groupedLineItems).forEach(([item]) => {
           updatedLineItems[item] = {
             ...groupedLineItems[item],
             page: groupedLineItems[item].page || null,
@@ -618,7 +619,7 @@ export const removeInvoiceFromChangeOrderThunk = createAsyncThunk(
       }
     );
     try {
-      const data: any = fetchWithRetry(
+      const data = await fetchWithRetry(
         `/api/${companyId}/projects/${projectId}/remove-invoices-from-change-order`,
         {
           method: 'PATCH',
@@ -716,12 +717,6 @@ export interface NewItem {
   name: string;
   divisionNumber?: number;
   subDivNumber?: number;
-}
-
-interface DeleteItem {
-  divisionNumber: number;
-  subDivNumber?: number;
-  costCodeNumber?: number;
 }
 
 export const companyDataSlice = createSlice({
@@ -853,8 +848,8 @@ export const companyDataSlice = createSlice({
             const orderedLineItemKeys = Object.keys(
               invoiceObj.line_items_gpt
             ).sort((a: string, b: string) => {
-              let numA = Number(a.split('_').pop());
-              let numB = Number(b.split('_').pop());
+              const numA = Number(a.split('_').pop());
+              const numB = Number(b.split('_').pop());
               return numA - numB;
             });
 
@@ -973,7 +968,7 @@ export const companyDataSlice = createSlice({
       const { invoiceIds } = action.payload;
       const allInvoices = state.invoices.allInvoices as Invoices;
       const removedInvoices = Object.fromEntries(
-        Object.entries(allInvoices).filter(([invoiceId, invoice]) => {
+        Object.entries(allInvoices).filter(([_, invoice]) => {
           return !invoiceIds.includes(invoice.doc_id);
         })
       );
@@ -988,7 +983,7 @@ export const companyDataSlice = createSlice({
           ...action.payload,
         };
       })
-      .addCase(updateInvoices.rejected, (state, action) => {
+      .addCase(updateInvoices.rejected, () => {
         // state.invoices.allInvoices = {
         //   ...state.invoices.allInvoices,
         //   ...action.payload,
@@ -1001,7 +996,7 @@ export const companyDataSlice = createSlice({
           const forms = { status: action.payload.forms.status, ...baseForms };
           state.forms = { ...forms };
 
-          let allInvoices: Invoices = JSON.parse(action.payload.invoices.value);
+          const allInvoices: Invoices = JSON.parse(action.payload.invoices.value);
 
           // we want to preserve the order of line_items_1, line_item_2, etc.
           // because they are in order from top to bottom for each page of the invoice
@@ -1011,7 +1006,7 @@ export const companyDataSlice = createSlice({
               const sorted_line_items_gpt = invoice.line_items_gpt
                 ? sortLineItems(invoice.line_items_gpt)
                 : {};
-              const sorted_line_items: InvoiceLineItem | null = invoice
+              const sorted_line_items: InvoiceLineItem | object | null = invoice
                 .processedData?.line_items
                 ? sortLineItems(invoice.processedData.line_items)
                 : null;

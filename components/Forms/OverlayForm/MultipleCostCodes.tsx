@@ -3,7 +3,7 @@ import { extractLineItems } from '@/lib/utility/invoiceHelpers';
 import { useAppSelector as useSelector } from '@/store/hooks';
 import React from 'react';
 
-export default function MultipleCostCodes(props: {
+export default function MultipleCostCodes(_: {
   currentData: InvoiceTableRow | null;
 }) {
   const processInvoiceFormState = useSelector(
@@ -15,8 +15,8 @@ export default function MultipleCostCodes(props: {
     numLineItems: processInvoiceFormState.numLineItems.value as number,
   });
 
-  let workDescriptions: string[] = [];
-  let costCodes: string[] = [];
+  const workDescriptions: string[] = [];
+  const costCodes: string[] = [];
 
   Object.entries(lineItems).forEach(([id, idState]) => {
     if (id.includes('work-description')) {

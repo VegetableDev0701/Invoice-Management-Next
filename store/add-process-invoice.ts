@@ -1,4 +1,4 @@
-import { createSlice, current } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import {
@@ -25,7 +25,7 @@ const addProcessInvoiceFormSlice = createSlice({
         isValid: isValid,
       };
     },
-    clearFormState(state) {
+    clearFormState() {
       return initialProcessInvoiceFormState;
     },
     setIsTouchedState(state, action: PayloadAction<IsTouchedPayload>) {

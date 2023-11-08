@@ -4,7 +4,7 @@ import {
   SetFormElementPayload,
 } from '@/lib/models/formStateModels';
 import { resetAllFormValidation } from '@/lib/utility/formHelpers';
-import { PayloadAction, createSlice, current } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 const initialAcccountSettingsState: FormStateV2 = {};
 
@@ -20,7 +20,7 @@ const accountSettingsFormSlice = createSlice({
         isValid: isValid,
       };
     },
-    clearFormState(state) {
+    clearFormState() {
       return initialAcccountSettingsState;
     },
     setIsTouchedState(state, action: PayloadAction<IsTouchedPayload>) {

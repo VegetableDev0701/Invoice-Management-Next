@@ -11,7 +11,7 @@ import { invoiceActions } from '@/store/invoice-slice';
 import { Items, SelectMenuOptions } from '@/lib/models/formDataModel';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { sortArrayById, sortArrayByObjKey } from '@/lib/utility/tableHelpers';
-import { ProjectSummary, Rows } from '@/lib/models/summaryDataModel';
+import { ProjectSummary } from '@/lib/models/summaryDataModel';
 import { InvoiceProject } from '@/lib/models/invoiceDataModels';
 
 function classNames(...classes: string[]) {

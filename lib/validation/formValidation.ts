@@ -12,7 +12,6 @@ import {
 import { formatNumber, formatPhoneNumber } from '@/lib/utility/formatter';
 import { Actions, FormData } from '@/lib/models/types';
 import { FormState } from '@/lib/models/formStateModels';
-import { useCheckChangeOrderNameDuped } from '@/hooks/use-utils';
 
 /**
  * Checks if any of the input states has an error by looking for a boolean property in the state objects that includes the string "isValid".
@@ -132,7 +131,10 @@ export const checkAllFormFields = (
   formState: FormState
 ) => {
   return getRequiredInputIds(formData).every((key) => {
-    return formState.hasOwnProperty(key) && formState[key].isValid;
+    return (
+      Object.prototype.hasOwnProperty.call(formState, key) &&
+      formState[key].isValid
+    );
   });
 };
 
@@ -141,7 +143,7 @@ export const checkAllFormFieldsLabor = (
   formState: FormState,
   numItems: string[]
 ) => {
-  let reqInputs = getRequiredInputIds(formData);
+  const reqInputs = getRequiredInputIds(formData);
   numItems.forEach((itemNumber) => {
     reqInputs.push(
       ...[
@@ -152,7 +154,10 @@ export const checkAllFormFieldsLabor = (
     );
   });
   return reqInputs.every((key) => {
-    return formState.hasOwnProperty(key) && formState[key].isValid;
+    return (
+      Object.prototype.hasOwnProperty.call(formState, key) &&
+      formState[key].isValid
+    );
   });
 };
 

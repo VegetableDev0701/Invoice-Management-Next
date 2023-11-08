@@ -15,7 +15,6 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import Button from '../../UI/Buttons/Button';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -65,11 +64,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
   const [indeterminate, setIndeterminate] = useState(false);
   const [selected, setSelected] = useState<T[]>([]);
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [modalMessage, setModalMessage] = useState<string>(
-    'Please confirm that you want to delete.'
-  );
-
-  const router = useRouter();
+  const modalMessage = 'Please confirm that you want to delete.';
 
   useLayoutEffect(() => {
     if (!rows) return;
@@ -122,7 +117,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
 
   const filteredSortedData: T[] | null = useMemo(() => {
     if (!rows) return null;
-    let filteredData = rows;
+    const filteredData = rows;
     if (sortKey === undefined) {
       return filteredData;
     }

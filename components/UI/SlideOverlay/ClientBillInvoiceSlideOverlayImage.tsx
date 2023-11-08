@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { useUser } from '@auth0/nextjs-auth0/client';
 
 import {
   useAppDispatch as useDispatch,
@@ -11,18 +10,12 @@ import { invoiceActions } from '@/store/invoice-slice';
 import { useKeyPressActionOverlay } from '@/hooks/use-save-on-key-press';
 import { useInvoiceSignedUrl } from '@/hooks/use-get-signed-url';
 
-import { Items } from '@/lib/models/formDataModel';
 import { InvoiceTableRow } from '@/lib/models/invoiceDataModels';
 
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import FullScreenLoader from '../Loaders/FullScreenLoader';
 import CenteredPagination from '../Pagination/CenteredNumbersPagination';
 import MagnifyImageOnHover from '@/components/Forms/OverlayForm/MagnifyImageOnHover';
-
-interface ExtendedItems extends Partial<Items> {
-  sortBy: 'label' | 'id';
-  forceToTopKey?: string;
-}
 
 interface Props {
   rows: InvoiceTableRow[];

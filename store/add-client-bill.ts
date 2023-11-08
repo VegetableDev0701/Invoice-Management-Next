@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '.';
 import { uiActions } from './ui-slice';
 import {
+  ChangeOrderSummary,
   ClientBillSummary,
   LaborSummary,
   LaborSummaryItem,
@@ -20,18 +21,13 @@ import { fetchWithRetry } from '@/lib/utility/ioUtils';
 import { SUMMARY_COST_CODES } from '@/lib/globals';
 import { snapshotCopy } from '@/lib/utility/utils';
 import {
-  createB2AChartData,
-  addActualsToTotals,
   addNewChangeOrderValuesToPreviousData,
   createB2AChangeOrderChartData,
   createB2AChartDataV2,
   addActualsToTotalsV2,
 } from '@/lib/utility/chartHelpers';
 import {
-  CurrentActuals,
   CurrentActualsV2,
-  InvoiceCurrentActuals,
-  InvoiceCurrentActualsChangeOrders,
   InvoiceCurrentActualsChangeOrdersV2,
   InvoiceCurrentActualsV2,
 } from '@/lib/models/budgetCostCodeModel';
@@ -141,7 +137,6 @@ export const createBudgetActuals = createAsyncThunk(
       const state = getState() as RootState;
       const projectSummary = state.data.projectsSummary.allProjects[projectId];
       const budget = state.projects[projectId].budget;
-      const budgetTotals = state.addBudgetForm.budget;
       const budgetTotalsV2 = state.addBudgetForm.budgetV2;
       const allInvoices: Invoices = state.data.invoices.allInvoices;
       const currentLaborSummary = state.projects[projectId]['labor-summary'];
@@ -160,9 +155,9 @@ export const createBudgetActuals = createAsyncThunk(
       ).filter((invoice) => invoice.project.uuid === projectId);
 
       // make sure any labor calculated is `current` (right now 10/11/23, i don't think a labor can be `not current`)
-      const projectLaborFees = Object.values(currentLaborSummary).filter(
-        (laborFee) => laborFee.currentLabor
-      );
+      const projectLaborFees: LaborSummaryItem[] = Object.values(
+        currentLaborSummary
+      ).filter((laborFee) => laborFee.currentLabor);
 
       if (
         projectLaborFees.some(
@@ -243,7 +238,7 @@ export const createBudgetActuals = createAsyncThunk(
         projectInvoices,
         projectLaborFees,
         budgetTotals: budgetTotalsV2,
-        changeOrdersSummary,
+        changeOrdersSummary: changeOrdersSummary as ChangeOrderSummary,
         costCodeNameList,
         dispatch,
       });
@@ -395,7 +390,7 @@ export const createBudgetActuals = createAsyncThunk(
         initActualsToZeros: true,
       });
 
-      if (!result) {        
+      if (!result) {
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
           uiActions.setNotificationContent({
@@ -406,7 +401,7 @@ export const createBudgetActuals = createAsyncThunk(
         );
         return false;
       }
-      
+
       const {
         chartData: actualsChartData,
         grandActualsTotal: grandActualsBudgetedTotal,
@@ -435,7 +430,7 @@ export const createBudgetActuals = createAsyncThunk(
       const { changeOrderChartData, grandTotal: changeOrderTotal } =
         createB2AChangeOrderChartData({
           updatedCurrentActualsChangeOrders,
-          changeOrdersSummary,
+          changeOrdersSummary: changeOrdersSummary as ChangeOrderSummary,
         });
 
       dispatch(
@@ -510,7 +505,7 @@ export const createBudgetActuals = createAsyncThunk(
 
       // build the change order plot
       try {
-        const data = await fetchWithRetry(
+        await fetchWithRetry(
           `/api/${companyId}/projects/${projectId}/add-b2achartdata`,
           {
             method: 'POST',
@@ -554,7 +549,7 @@ export const createBudgetActuals = createAsyncThunk(
           actualsChangeOrders: invoiceCurrentActualsChangeOrders,
         },
       };
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       dispatch(uiActions.setLoadingState({ isLoading: false }));
     }
@@ -670,7 +665,9 @@ export const moveBillDataInFirestore = createAsyncThunk(
           },
         }
       );
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   }
 );
 
