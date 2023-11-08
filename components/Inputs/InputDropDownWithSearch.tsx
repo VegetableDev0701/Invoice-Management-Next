@@ -41,6 +41,7 @@ interface PropsItems {
   form: string;
   showError?: boolean;
   icon?: JSX.Element;
+  projectId?: string;
   changeOrdersSummary?: ChangeOrderSummary | undefined;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -59,6 +60,7 @@ const DropDownWithSearch = (props: Props) => {
     actions,
     form,
     changeOrdersSummary,
+    projectId,
     onBlur,
     onFocus,
     onMouseEnter,
@@ -84,12 +86,14 @@ const DropDownWithSearch = (props: Props) => {
     input.selectMenuOptions as SelectMenuOptions[]
   );
 
-  const costCodeList: SelectMenuOptions[] = useSelector(
-    (state) => state.data.costCodeList
-  );
-  const costCodeNameList: SelectMenuOptions[] = useSelector(
-    (state) => state.data.costCodeNameList
-  );
+  const costCodeList: SelectMenuOptions[] =
+    (projectId &&
+      useSelector((state) => state.projects[projectId]?.costCodeList)) ||
+    useSelector((state) => state.data.costCodeList);
+  const costCodeNameList: SelectMenuOptions[] =
+    (projectId &&
+      useSelector((state) => state.projects[projectId]?.costCodeNameList)) ||
+    useSelector((state) => state.data.costCodeNameList);
 
   const updateCostCodeDescription = useConnectDescriptionToCostCode({
     input,

@@ -12,7 +12,7 @@ import { getFormIcon } from '@/lib/utility/formHelpers';
 import { Actions, FormData } from '@/lib/models/types';
 import { FormState } from '@/lib/models/formStateModels';
 import {
-  InputElementWithAddressElements,
+  InputElementWithAddressItems,
   MainCategories,
   isInputElementWithAddressElements,
 } from '@/lib/models/formDataModel';
@@ -134,7 +134,7 @@ function ProcessInvoiceForm(props: Props) {
                         classes="flex-1 px-5 py-2"
                         actions={actions}
                         input={
-                          (el as InputElementWithAddressElements)
+                          (el as InputElementWithAddressItems)
                             .addressElements
                         }
                         formState={formState}

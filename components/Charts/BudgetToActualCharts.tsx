@@ -34,7 +34,8 @@ export const calculateCostCode = (data: CostCodeItemB2AData) => {
   let total = 0;
   if (data.subItems && data.subItems?.length > 0) {
     data.subItems.forEach((item) => (total += calculateCostCode(item)));
-  } else if (data.isCurrency) {
+  } else if (data.value) {
+    // TODO should check with isCurrency property
     total = Number(data.value);
   }
   return total;
@@ -44,7 +45,8 @@ export const calculateActual = (data: CostCodeItemB2AData) => {
   let total = 0;
   if (data.subItems && data.subItems?.length > 0) {
     data.subItems.forEach((item) => (total += calculateActual(item)));
-  } else if (data.isCurrency) {
+  } else if (data.actual) {
+    // TODO should check with isCurrency property
     total = Number(data.actual) || 0;
   }
   return total;
@@ -123,6 +125,9 @@ export default function BudgetToActualCharts(props: Props) {
   const b2aChartData = useSelector(
     (state) => state.projects[projectId]?.b2a?.b2aChartData
   );
+
+  console.log('dionY [BudgetToActualCharts] formData: ', formData);
+  console.log('dionY [BudgetToActualCharts] b2aChartData: ', b2aChartData);
 
   useEffect(() => {
     scrollToElement(clickedLink, anchorScrollElement, 'scroll-frame');
