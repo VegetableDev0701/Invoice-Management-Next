@@ -6,16 +6,15 @@ export const usePageData = (
   subCategory?: string,
   subSubCategory?: string
 ) => {
+  const categoryData = useSelector(
+    (state) => (state as any)[slice]?.[category]
+  );
   const data =
     subSubCategory && subCategory
-      ? useSelector(
-          (state) =>
-            (state as any)[slice]?.[category]?.[subCategory]?.[subSubCategory]
-        )
+      ? categoryData?.[subCategory]?.[subSubCategory]
       : subCategory && !subSubCategory
-      ? // TODO fix this `any` bullshit
-        useSelector((state) => (state as any)[slice]?.[category]?.[subCategory])
-      : useSelector((state) => (state as any)[slice]?.[category]);
+      ? categoryData?.[category]?.[subCategory]
+      : categoryData;
 
   const isLoading = data === undefined;
   return { data, isLoading };

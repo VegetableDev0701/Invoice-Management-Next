@@ -18,6 +18,7 @@ jest.mock('@auth0/nextjs-auth0/client', () => ({
 const mockUser: User = {
   user_metadata: {
     companyId: 'demo',
+    userUUID: '',
     companyName: 'Demonstration',
     accountSettings: {},
   },

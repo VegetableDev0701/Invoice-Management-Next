@@ -69,13 +69,13 @@ const InputToggleOnOff = (props: Props) => {
           isAdded: false,
         })
       );
-      dispatch(
-        addBudgetFormActions.setFormElement({
-          inputValue: '',
-          inputKey: id,
-          isValid: true,
-        })
-      );
+      // dispatch(
+      //   addBudgetFormActions.setFormElement({
+      //     inputValue: '',
+      //     inputKey: id,
+      //     isValid: true,
+      //   })
+      // );
     }
   };
 

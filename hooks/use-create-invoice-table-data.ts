@@ -39,12 +39,11 @@ export default function useCreateInvoiceRows({
   // thing to fucking deal with...
   let allInvoices = invoices?.allInvoices ? invoices.allInvoices : invoices;
 
-  let projectSupervisor: string | undefined = undefined;
-  if (projectId) {
-    projectSupervisor = useSelector(
-      (state) => state.data.projectsSummary.allProjects[projectId].projectSuper
-    );
-  }
+  let projectSupervisor: string | undefined = useSelector(
+    (state) =>
+      projectId &&
+      state.data.projectsSummary.allProjects[projectId].projectSuper
+  );
 
   const determineLineItemsToggle = (row: InvoiceItem) => {
     if (row?.processedData?.line_items_toggle) {

@@ -21,13 +21,11 @@ export const useCheckChangeOrderNameDuped = ({
   input?: Items;
   inputState: FormStateItem;
 }) => {
-  if (!projectId) return;
-
   const dispatch = useDispatch();
 
-  const changeOrderSummary: ChangeOrderSummary | null = projectId
-    ? useSelector((state) => state.projects[projectId]['change-orders-summary'])
-    : null;
+  const changeOrderSummary: ChangeOrderSummary | null = useSelector((state) =>
+    projectId ? state.projects[projectId]['change-orders-summary'] : null
+  );
   const changeOrderNames = changeOrderSummary
     ? Object.values(changeOrderSummary).map((changeOrder) => changeOrder.name)
     : null;
@@ -52,5 +50,6 @@ export const useCheckChangeOrderNameDuped = ({
     );
   }, [isNameDuped]);
 
+  if (!projectId) return;
   return isNameDuped;
 };

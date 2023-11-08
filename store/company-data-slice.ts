@@ -45,7 +45,7 @@ import {
   ChangeOrderContent,
   ChangeOrderContentItem,
 } from '@/lib/models/changeOrderModel';
-import { CompanyData } from '@/lib/models/companyDataModel';
+import { CompanyData, ExtendedCompanyData } from '@/lib/models/companyDataModel';
 import { snapshotCopy } from '@/lib/utility/utils';
 
 export const fetchCompanyData = createAsyncThunk(
@@ -708,10 +708,6 @@ export const removeChangeOrderFromInvoiceThunk = createAsyncThunk(
     });
   }
 );
-
-type ExtendedCompanyData = {
-  treeData: CostCodeTreeData;
-} & CompanyData;
 
 const initialDataState = {} as ExtendedCompanyData;
 

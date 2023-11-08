@@ -136,7 +136,6 @@ const ProjectHome = () => {
       dispatch(
         initializeBudgetThunk({
           projectId,
-          companyId: (user as User).user_metadata.companyId,
         })
       ).then(() => {
         dispatch(initializeBudgetTotalsThunk()).then(() => {

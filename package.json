@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest"
+    "test": "jest",
+    "checktypes": "tsc",
+    "lint:error": "eslint --quiet pages components hooks lib store types --ext .ts --ext .tsx"
   },
   "dependencies": {
     "@agave-api/react-agave-link": "^1.0.0",

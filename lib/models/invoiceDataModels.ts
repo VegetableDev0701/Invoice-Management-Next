@@ -159,10 +159,11 @@ interface ContractSummaryItem {
 export interface InvoiceTableHeadings {
   vendor_name: string;
   project: string;
-  predicted_project: string;
   total_amount: string;
   invoice_id: string;
   date_received: string;
-  processed: string;
-  approved: string;  
+  total_tax_amount?: string;
+  predicted_project?: string;
+  processed?: string;
+  approved?: string;  
 }

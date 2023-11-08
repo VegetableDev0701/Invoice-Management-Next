@@ -86,14 +86,22 @@ const DropDownWithSearch = (props: Props) => {
     input.selectMenuOptions as SelectMenuOptions[]
   );
 
+  const companyCostCodeList = useSelector((state) => state.data.costCodeList);
+  const projectCostCodeList = useSelector(
+    (state) => projectId && state.projects[projectId]?.costCodeList
+  );
+
+  const companyCostCodeNameList = useSelector(
+    (state) => state.data.costCodeNameList
+  );
+  const projectCostCodeNameList = useSelector(
+    (state) => projectId && state.projects[projectId]?.costCodeNameList
+  );
+
   const costCodeList: SelectMenuOptions[] =
-    (projectId &&
-      useSelector((state) => state.projects[projectId]?.costCodeList)) ||
-    useSelector((state) => state.data.costCodeList);
+    projectCostCodeList || companyCostCodeList;
   const costCodeNameList: SelectMenuOptions[] =
-    (projectId &&
-      useSelector((state) => state.projects[projectId]?.costCodeNameList)) ||
-    useSelector((state) => state.data.costCodeNameList);
+    projectCostCodeNameList || companyCostCodeNameList;
 
   const updateCostCodeDescription = useConnectDescriptionToCostCode({
     input,

@@ -28,15 +28,17 @@ export const useAddCurrentDataToFormData = ({
   includeAddress?: boolean;
 }) => {
   let formValues: any;
+  const projectData = useSelector(
+    (state) => projectId && state.data.projectsSummary.allProjects[projectId]
+  );
+  const vendorData = useSelector(
+    (state) => vendorId && state.data.vendorsSummary.allVendors[vendorId]
+  );
   if (projectId) {
-    formValues = useSelector(
-      (state) => state.data.projectsSummary.allProjects[projectId]
-    );
+    formValues = projectData;
   }
   if (vendorId) {
-    formValues = useSelector(
-      (state) => state.data.vendorsSummary.allVendors[vendorId]
-    );
+    formValues = vendorData;
   }
 
   const currentFormData = snapshotCopy(formData);

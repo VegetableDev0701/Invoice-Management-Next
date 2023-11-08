@@ -48,6 +48,8 @@ export interface EmptyAddProjectForm {
 const mockUser: User = {
   user_metadata: {
     companyId: 'demo',
+    companyName: 'Demonstration',
+    userUUID: '',
     accountSettings: {},
   },
 };

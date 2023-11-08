@@ -139,7 +139,6 @@ function ProcessInvoiceForm(props: Props) {
                         }
                         formState={formState}
                         showError={showError}
-                        form={form}
                       />
                     );
                   } else {

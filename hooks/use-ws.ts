@@ -15,7 +15,7 @@ import { sseActions } from '@/store/sse-slice';
 import { Invoices } from '@/lib/models/invoiceDataModels';
 import { getAPIUrl } from '@/lib/config';
 import { AppDispatch } from '@/store';
-import { NodeEnvProps } from '@/pages';
+import { NodeEnv } from '@/lib/models/envModel';
 
 export default function useListenWS() {
   const [newDocs, setNewDocs] = useState<Invoices | ContractData | null>(null);
@@ -25,7 +25,7 @@ export default function useListenWS() {
 
   const isSuccess = useSelector((state) => state.sse.isSuccess);
   const wsContent = useSelector((state) => state.sse.sseContent);
-  const nodeEnv: NodeEnvProps = useSelector((state) => state.nodeEnv);
+  const nodeEnv: NodeEnv = useSelector((state) => state.nodeEnv);
   const processNotificationContent = useSelector(
     (state) => state.ui.processingNotification?.content
   );
@@ -266,7 +266,7 @@ const generateWSUrl = ({
   freshToken: string;
   user: User;
   wsContent: any;
-  nodeEnv: NodeEnvProps;
+  nodeEnv: NodeEnv;
 }) => {
   let wsUrl = '';
   const apiUrl = getAPIUrl({ ...nodeEnv });

@@ -1,5 +1,5 @@
 import { Items } from '@/lib/models/formDataModel';
-import { Invoices } from '@/lib/models/invoiceDataModels';
+import { InvoiceTableHeadings, Invoices } from '@/lib/models/invoiceDataModels';
 
 import InvoicesTable from '@/components/Tables/Invoices/InvoiceSortHeadingsTable';
 import ClientBillInvoiceSlideOverlayImage from '@/components/UI/SlideOverlay/ClientBillInvoiceSlideOverlayImage';
@@ -11,7 +11,7 @@ interface Props {
   isLoading: boolean;
 }
 
-const tableHeadings = {
+const tableHeadings: InvoiceTableHeadings = {
   vendor_name: 'Vendor',
   project: 'Project',
   invoice_id: 'Invoice Number',

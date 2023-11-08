@@ -1,4 +1,4 @@
-import { CostCodesData } from './budgetCostCodeModel';
+import { CostCodeTreeData, CostCodesData } from './budgetCostCodeModel';
 import { MainCategories, SelectMenuOptions, VendorData } from './formDataModel';
 import { Invoices } from './invoiceDataModels';
 import { ProjectSummary, VendorSummary } from './summaryDataModel';
@@ -14,6 +14,10 @@ export interface CompanyData {
   costCodeList: SelectMenuOptions[];
   costCodeNameList: SelectMenuOptions[];
 }
+
+export type ExtendedCompanyData = {
+  treeData: CostCodeTreeData;
+} & CompanyData;
 
 export interface Forms {
   status: string;

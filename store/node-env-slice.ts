@@ -7,7 +7,7 @@ interface NodeEnv {
   production_api_url: string;
 }
 
-const nodeEnvInitialState = {
+const nodeEnvInitialState: NodeEnv = {
   node_env: '',
   dev_api_url: '',
   staging_api_url: '',

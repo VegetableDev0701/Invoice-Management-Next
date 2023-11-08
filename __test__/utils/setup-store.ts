@@ -9,15 +9,14 @@ import { companyDataSlice } from '@/store/company-data-slice';
 import uiSlice, { initialUIState } from '@/store/ui-slice';
 
 import { FormState, User } from '@/lib/models/formStateModels';
-import { CompanyData } from '@/lib/models/companyDataModel';
-import { UserProfile } from '@auth0/nextjs-auth0/client';
+import { ExtendedCompanyData } from '@/lib/models/companyDataModel';
 
 const initialAcccountSettingsState: FormState = {};
 const initialAddProjectFormState: FormState = {
   numRecurringFees: { value: 0 },
 };
 const initialAddVendorFormState: FormState = {};
-const initialCompanyDataState = {} as CompanyData;
+const initialCompanyDataState = {} as ExtendedCompanyData;
 
 interface RootState {
   path: { currentPath: string };
