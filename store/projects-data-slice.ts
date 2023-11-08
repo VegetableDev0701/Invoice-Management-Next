@@ -9,7 +9,6 @@ import { uiActions } from './ui-slice';
 import { RootState } from '.';
 import { processingActions } from './processing-slice';
 import { sseActions } from './sse-slice';
-import { addBudgetFormActions } from './add-budget-slice';
 
 import { getAllProjectIds } from '@/lib/utility/projectHelpers';
 import {
@@ -38,13 +37,7 @@ import {
 } from '@/lib/models/changeOrderModel';
 import { Invoices, ProcessedInvoiceData } from '@/lib/models/invoiceDataModels';
 import {
-  addCostCode,
-  addDivision,
-  addSubDivision,
   createCostCodeList,
-  deleteCostCode,
-  deleteDivision,
-  deleteSubDivision,
 } from '@/lib/utility/costCodeHelpers';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
 import { snapshotCopy } from '@/lib/utility/utils';
@@ -678,209 +671,209 @@ const projectDataSlice = createSlice({
         };
       }
     },
-    insertNewEmptyCostCode(
-      state,
-      action: PayloadAction<{
-        number: string;
-        name: string;
-        divisionNumber: number;
-        subDivNumber: number;
-      }>
-    ) {
-      const {
-        number: costCodeNumber,
-        name: costCodeName,
-        divisionNumber,
-        subDivNumber,
-      } = action.payload;
+    // insertNewEmptyCostCode(
+    //   state,
+    //   action: PayloadAction<{
+    //     number: string;
+    //     name: string;
+    //     divisionNumber: number;
+    //     subDivNumber: number;
+    //   }>
+    // ) {
+    //   const {
+    //     number: costCodeNumber,
+    //     name: costCodeName,
+    //     divisionNumber,
+    //     subDivNumber,
+    //   } = action.payload;
 
-      const projectIds = Object.keys(state);
+    //   const projectIds = Object.keys(state);
 
-      projectIds.forEach((projectId) => {
-        if (state[projectId].budget) {
-          const projectBudget = JSON.parse(
-            JSON.stringify(state[projectId].budget)
-          );
-          const result = addCostCode(
-            projectBudget,
-            divisionNumber as number,
-            subDivNumber as number,
-            {
-              number: +costCodeNumber,
-              value: '',
-              label: costCodeName,
-              isCurrency: true,
-              required: false,
-              type: 'text',
-              id: (+costCodeNumber).toFixed(4),
-              inputType: 'toggleInput',
-            },
-            true
-          );
-          if (result) {
-            const { divInd, subDivInd, newItems } = result;
+    //   projectIds.forEach((projectId) => {
+    //     if (state[projectId].budget) {
+    //       const projectBudget = JSON.parse(
+    //         JSON.stringify(state[projectId].budget)
+    //       );
+    //       const result = addCostCode(
+    //         projectBudget,
+    //         divisionNumber as number,
+    //         subDivNumber as number,
+    //         {
+    //           number: +costCodeNumber,
+    //           value: '',
+    //           label: costCodeName,
+    //           isCurrency: true,
+    //           required: false,
+    //           type: 'text',
+    //           id: (+costCodeNumber).toFixed(4),
+    //           inputType: 'toggleInput',
+    //         },
+    //         true
+    //       );
+    //       if (result) {
+    //         const { divInd, subDivInd, newItems } = result;
 
-            state[projectId].budget.divisions[divInd].subdivisions[
-              subDivInd
-            ].items = newItems;
-          }
-        }
-      });
-    },
-    insertNewEmptySubDivision(
-      state,
-      action: PayloadAction<{
-        number: string;
-        name: string;
-        divisionNumber: number;
-      }>
-    ) {
-      const {
-        number: subDivNumber,
-        name: subDivName,
-        divisionNumber,
-      } = action.payload;
-      const projectIds = Object.keys(state);
-      projectIds.forEach((projectId) => {
-        if (state[projectId].budget) {
-          const projectBudget = JSON.parse(
-            JSON.stringify(state[projectId].budget)
-          );
-          const result = addSubDivision(
-            projectBudget,
-            divisionNumber as number,
-            {
-              number: +subDivNumber,
-              items: [],
-              name: subDivName,
-            },
-            true
-          );
-          if (result) {
-            const { divInd, newSubdivisions } = result;
-            state[projectId].budget.divisions[divInd].subdivisions =
-              newSubdivisions;
-          }
-        }
-      });
-    },
-    insertNewEmptyDivision(
-      state,
-      action: PayloadAction<{
-        number: string;
-        name: string;
-      }>
-    ) {
-      const { number: divisionNum, name: divisionName } = action.payload;
+    //         state[projectId].budget.divisions[divInd].subdivisions[
+    //           subDivInd
+    //         ].items = newItems;
+    //       }
+    //     }
+    //   });
+    // },
+    // insertNewEmptySubDivision(
+    //   state,
+    //   action: PayloadAction<{
+    //     number: string;
+    //     name: string;
+    //     divisionNumber: number;
+    //   }>
+    // ) {
+    //   const {
+    //     number: subDivNumber,
+    //     name: subDivName,
+    //     divisionNumber,
+    //   } = action.payload;
+    //   const projectIds = Object.keys(state);
+    //   projectIds.forEach((projectId) => {
+    //     if (state[projectId].budget) {
+    //       const projectBudget = JSON.parse(
+    //         JSON.stringify(state[projectId].budget)
+    //       );
+    //       const result = addSubDivision(
+    //         projectBudget,
+    //         divisionNumber as number,
+    //         {
+    //           number: +subDivNumber,
+    //           items: [],
+    //           name: subDivName,
+    //         },
+    //         true
+    //       );
+    //       if (result) {
+    //         const { divInd, newSubdivisions } = result;
+    //         state[projectId].budget.divisions[divInd].subdivisions =
+    //           newSubdivisions;
+    //       }
+    //     }
+    //   });
+    // },
+    // insertNewEmptyDivision(
+    //   state,
+    //   action: PayloadAction<{
+    //     number: string;
+    //     name: string;
+    //   }>
+    // ) {
+    //   const { number: divisionNum, name: divisionName } = action.payload;
 
-      const projectIds = Object.keys(state);
+    //   const projectIds = Object.keys(state);
 
-      projectIds.forEach((projectId) => {
-        if (state[projectId].budget) {
-          const projectBudget = JSON.parse(
-            JSON.stringify(state[projectId].budget)
-          );
-          const result = addDivision(
-            projectBudget,
-            {
-              subdivisions: [],
-              number: +divisionNum,
-              name: divisionName,
-            },
-            true
-          );
-          if (result) {
-            const { newDivisions } = result;
-            state[projectId].budget.divisions = newDivisions;
-          }
-        }
-      });
-    },
-    deleteBudgetDivision(
-      state,
-      action: PayloadAction<{ divisionNumber: number }>
-    ) {
-      const { divisionNumber } = action.payload;
-      const projectIds = Object.keys(state);
+    //   projectIds.forEach((projectId) => {
+    //     if (state[projectId].budget) {
+    //       const projectBudget = JSON.parse(
+    //         JSON.stringify(state[projectId].budget)
+    //       );
+    //       const result = addDivision(
+    //         projectBudget,
+    //         {
+    //           subdivisions: [],
+    //           number: +divisionNum,
+    //           name: divisionName,
+    //         },
+    //         true
+    //       );
+    //       if (result) {
+    //         const { newDivisions } = result;
+    //         state[projectId].budget.divisions = newDivisions;
+    //       }
+    //     }
+    //   });
+    // },
+    // deleteBudgetDivision(
+    //   state,
+    //   action: PayloadAction<{ divisionNumber: number }>
+    // ) {
+    //   const { divisionNumber } = action.payload;
+    //   const projectIds = Object.keys(state);
 
-      projectIds.forEach((projectId) => {
-        if (state[projectId].budget) {
-          const projectBudget = JSON.parse(
-            JSON.stringify(state[projectId].budget)
-          );
-          const result = deleteDivision(projectBudget, divisionNumber, true);
-          if (result) {
-            const { divIndex } = result;
-            projectBudget.divisions.splice(divIndex, 1);
-            state[projectId].budget.divisions = projectBudget.divisions;
-          }
-        }
-      });
-    },
-    deleteBudgetSubDivision(
-      state,
-      action: PayloadAction<{ divisionNumber: number; subDivNumber: number }>
-    ) {
-      const { divisionNumber, subDivNumber } = action.payload;
-      const projectIds = Object.keys(state);
-      projectIds.forEach((projectId) => {
-        if (state[projectId].budget) {
-          const projectBudget = JSON.parse(
-            JSON.stringify(state[projectId].budget)
-          );
-          const result = deleteSubDivision(
-            projectBudget,
-            divisionNumber,
-            subDivNumber,
-            true
-          );
-          if (result) {
-            const { divIndex, subDivIndex } = result;
-            projectBudget.divisions[divIndex].subdivisions.splice(
-              subDivIndex,
-              1
-            );
-            state[projectId].budget.divisions[divIndex].subdivisions =
-              projectBudget.divisions[divIndex].subdivisions;
-          }
-        }
-      });
-    },
-    deleteBudgetCostCode(
-      state,
-      action: PayloadAction<{
-        divisionNumber: number;
-        subDivNumber: number;
-        costCodeNumber: number;
-      }>
-    ) {
-      const { divisionNumber, subDivNumber, costCodeNumber } = action.payload;
-      const projectIds = Object.keys(state);
-      projectIds.forEach((projectId) => {
-        if (state[projectId].budget) {
-          const projectBudget = JSON.parse(
-            JSON.stringify(state[projectId].budget)
-          );
-          const result = deleteCostCode(
-            projectBudget,
-            divisionNumber,
-            subDivNumber,
-            costCodeNumber,
-            true
-          );
-          if (result) {
-            const { divIndex, subDivIndex, costCodeIndex } = result;
-            projectBudget.divisions[divIndex].subdivisions[
-              subDivIndex
-            ].items.splice(costCodeIndex, 1);
-            state[projectId].budget.divisions[divIndex].subdivisions[
-              subDivIndex
-            ].items =
-              projectBudget.divisions[divIndex].subdivisions[subDivIndex].items;
-          }
-        }
-      });
-    },
+    //   projectIds.forEach((projectId) => {
+    //     if (state[projectId].budget) {
+    //       const projectBudget = JSON.parse(
+    //         JSON.stringify(state[projectId].budget)
+    //       );
+    //       const result = deleteDivision(projectBudget, divisionNumber, true);
+    //       if (result) {
+    //         const { divIndex } = result;
+    //         projectBudget.divisions.splice(divIndex, 1);
+    //         state[projectId].budget.divisions = projectBudget.divisions;
+    //       }
+    //     }
+    //   });
+    // },
+    // deleteBudgetSubDivision(
+    //   state,
+    //   action: PayloadAction<{ divisionNumber: number; subDivNumber: number }>
+    // ) {
+    //   const { divisionNumber, subDivNumber } = action.payload;
+    //   const projectIds = Object.keys(state);
+    //   projectIds.forEach((projectId) => {
+    //     if (state[projectId].budget) {
+    //       const projectBudget = JSON.parse(
+    //         JSON.stringify(state[projectId].budget)
+    //       );
+    //       const result = deleteSubDivision(
+    //         projectBudget,
+    //         divisionNumber,
+    //         subDivNumber,
+    //         true
+    //       );
+    //       if (result) {
+    //         const { divIndex, subDivIndex } = result;
+    //         projectBudget.divisions[divIndex].subdivisions.splice(
+    //           subDivIndex,
+    //           1
+    //         );
+    //         state[projectId].budget.divisions[divIndex].subdivisions =
+    //           projectBudget.divisions[divIndex].subdivisions;
+    //       }
+    //     }
+    //   });
+    // },
+    // deleteBudgetCostCode(
+    //   state,
+    //   action: PayloadAction<{
+    //     divisionNumber: number;
+    //     subDivNumber: number;
+    //     costCodeNumber: number;
+    //   }>
+    // ) {
+    //   const { divisionNumber, subDivNumber, costCodeNumber } = action.payload;
+    //   const projectIds = Object.keys(state);
+    //   projectIds.forEach((projectId) => {
+    //     if (state[projectId].budget) {
+    //       const projectBudget = JSON.parse(
+    //         JSON.stringify(state[projectId].budget)
+    //       );
+    //       const result = deleteCostCode(
+    //         projectBudget,
+    //         divisionNumber,
+    //         subDivNumber,
+    //         costCodeNumber,
+    //         true
+    //       );
+    //       if (result) {
+    //         const { divIndex, subDivIndex, costCodeIndex } = result;
+    //         projectBudget.divisions[divIndex].subdivisions[
+    //           subDivIndex
+    //         ].items.splice(costCodeIndex, 1);
+    //         state[projectId].budget.divisions[divIndex].subdivisions[
+    //           subDivIndex
+    //         ].items =
+    //           projectBudget.divisions[divIndex].subdivisions[subDivIndex].items;
+    //       }
+    //     }
+    //   });
+    // },
     addContractFromSSE(
       state,
       action: PayloadAction<{ newContracts: ContractData; projectId: string }>
@@ -1134,27 +1127,27 @@ const projectDataSlice = createSlice({
               updated: true,
             };
 
-            oldCostCodeData.divisions.forEach((div, index: number) => {
+            oldCostCodeData.divisions.forEach((div: any, index: number) => {
               const newDivision: Divisions = {
                 number: div?.number || index + 1,
                 name: div?.name,
                 subItems: [],
               };
 
-              div.subdivisions.forEach((subdiv, subIndex: number) => {
+              div.subdivisions.forEach((subdiv: any, subIndex: number) => {
                 const newItem: CostCodeItem = {
                   number: subdiv?.number || index + (subIndex + 1) / 10,
                   name: subdiv?.name,
                   subItems: [],
                 };
 
-                subdiv.items.forEach((item, ssubIndex: number) => {
+                subdiv.items.forEach((item: any, ssubIndex: number) => {
                   let _number = item?.number;
                   if (!isValidNumber(_number, newItem.number)) {
                     _number = +(String(newItem.number) + (ssubIndex + 1));
                   }
 
-                  newItem.subItems.push({
+                  newItem.subItems?.push({
                     number: _number,
                     name: item?.name || item?.label,
                     label: item?.label,
@@ -1167,7 +1160,7 @@ const projectDataSlice = createSlice({
                   } as CostCodeItem);
                 });
 
-                newDivision.subItems.push(newItem);
+                newDivision.subItems?.push(newItem);
               });
 
               newCostCodeData.divisions.push(newDivision);

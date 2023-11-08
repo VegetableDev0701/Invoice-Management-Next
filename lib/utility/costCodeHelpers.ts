@@ -83,116 +83,116 @@ export function deleteDivision(
   }
 }
 
-export function addSubDivision(
-  costCodes: CostCodesData,
-  divisionNumber: number,
-  subdivision: SubDivisions,
-  isAddToProject?: boolean
-) {
-  const division = costCodes.divisions.find((d) => d.number === divisionNumber);
-  if (!division) {
-    console.error('Division not found.');
-    return;
-  }
-  if (isAddToProject) {
-    const divInd = costCodes.divisions.findIndex(
-      (d) => d.number === divisionNumber
-    );
-    return {
-      divInd,
-      newSubdivisions: [...division.subdivisions, ...[subdivision]].sort(
-        (a, b) => a.number - b.number
-      ),
-    };
-  } else {
-    insertSorted(division.subdivisions, subdivision, 'number', false);
-  }
-}
+// export function addSubDivision(
+//   costCodes: CostCodesData,
+//   divisionNumber: number,
+//   subdivision: SubDivisions,
+//   isAddToProject?: boolean
+// ) {
+//   const division = costCodes.divisions.find((d) => d.number === divisionNumber);
+//   if (!division) {
+//     console.error('Division not found.');
+//     return;
+//   }
+//   if (isAddToProject) {
+//     const divInd = costCodes.divisions.findIndex(
+//       (d) => d.number === divisionNumber
+//     );
+//     return {
+//       divInd,
+//       newSubdivisions: [...division.subdivisions, ...[subdivision]].sort(
+//         (a, b) => a.number - b.number
+//       ),
+//     };
+//   } else {
+//     insertSorted(division.subdivisions, subdivision, 'number', false);
+//   }
+// }
 
-export function deleteSubDivision(
-  costCodes: CostCodesData,
-  divisionNumber: number,
-  subDivisionNumber: number,
-  isDelFromProject?: boolean
-) {
-  const divIndex = costCodes.divisions.findIndex(
-    (d) => d.number === divisionNumber
-  );
-  const subDivIndex = costCodes.divisions[divIndex].subdivisions.findIndex(
-    (subDivision) => subDivision.number === subDivisionNumber
-  );
-  if (isDelFromProject) {
-    return { divIndex, subDivIndex };
-  } else {
-    costCodes.divisions[divIndex].subdivisions.splice(subDivIndex, 1);
-  }
-}
+// export function deleteSubDivision(
+//   costCodes: CostCodesData,
+//   divisionNumber: number,
+//   subDivisionNumber: number,
+//   isDelFromProject?: boolean
+// ) {
+//   const divIndex = costCodes.divisions.findIndex(
+//     (d) => d.number === divisionNumber
+//   );
+//   const subDivIndex = costCodes.divisions[divIndex].subdivisions.findIndex(
+//     (subDivision) => subDivision.number === subDivisionNumber
+//   );
+//   if (isDelFromProject) {
+//     return { divIndex, subDivIndex };
+//   } else {
+//     costCodes.divisions[divIndex].subdivisions.splice(subDivIndex, 1);
+//   }
+// }
 
-export function addCostCode(
-  costCodes: CostCodesData,
-  divisionNumber: number,
-  subdivisionNumber: number,
-  item: CostCodeItem,
-  isAddToProject?: boolean
-) {
-  const division = costCodes.divisions.find((d) => d.number === divisionNumber);
-  if (!division) {
-    console.error('Division not found.');
-    return;
-  }
-  const subdivision = division.subdivisions.find(
-    (s) => s.number === subdivisionNumber
-  );
-  if (!subdivision) {
-    console.error('Subdivision not found.');
-    return;
-  }
+// export function addCostCode(
+//   costCodes: CostCodesData,
+//   divisionNumber: number,
+//   subdivisionNumber: number,
+//   item: CostCodeItem,
+//   isAddToProject?: boolean
+// ) {
+//   const division = costCodes.divisions.find((d) => d.number === divisionNumber);
+//   if (!division) {
+//     console.error('Division not found.');
+//     return;
+//   }
+//   const subdivision = division.subdivisions.find(
+//     (s) => s.number === subdivisionNumber
+//   );
+//   if (!subdivision) {
+//     console.error('Subdivision not found.');
+//     return;
+//   }
 
-  if (isAddToProject) {
-    const divInd = costCodes.divisions.findIndex(
-      (d) => d.number === divisionNumber
-    );
-    const subDivInd = division.subdivisions.findIndex(
-      (s) => s.number === subdivisionNumber
-    );
-    return {
-      divInd,
-      subDivInd,
-      newItems: [...subdivision.items, ...[item]].sort(
-        (a, b) => a.number - b.number
-      ),
-    };
-  } else {
-    insertSorted(subdivision.items, item, 'number', false);
-  }
-}
+//   if (isAddToProject) {
+//     const divInd = costCodes.divisions.findIndex(
+//       (d) => d.number === divisionNumber
+//     );
+//     const subDivInd = division.subdivisions.findIndex(
+//       (s) => s.number === subdivisionNumber
+//     );
+//     return {
+//       divInd,
+//       subDivInd,
+//       newItems: [...subdivision.items, ...[item]].sort(
+//         (a, b) => a.number - b.number
+//       ),
+//     };
+//   } else {
+//     insertSorted(subdivision.items, item, 'number', false);
+//   }
+// }
 
-export function deleteCostCode(
-  costCodes: CostCodesData,
-  divisionNumber: number,
-  subDivNumber: number,
-  costCodeNumber: number,
-  isDelFromProject?: boolean
-) {
-  const divIndex = costCodes.divisions.findIndex(
-    (d) => d.number === divisionNumber
-  );
-  const subDivIndex = costCodes.divisions[divIndex].subdivisions.findIndex(
-    (subDiv) => subDiv.number === subDivNumber
-  );
-  const costCodeIndex = costCodes.divisions[divIndex].subdivisions[
-    subDivIndex
-  ].items.findIndex((item) => item.number === costCodeNumber);
+// export function deleteCostCode(
+//   costCodes: CostCodesData,
+//   divisionNumber: number,
+//   subDivNumber: number,
+//   costCodeNumber: number,
+//   isDelFromProject?: boolean
+// ) {
+//   const divIndex = costCodes.divisions.findIndex(
+//     (d) => d.number === divisionNumber
+//   );
+//   const subDivIndex = costCodes.divisions[divIndex].subdivisions.findIndex(
+//     (subDiv) => subDiv.number === subDivNumber
+//   );
+//   const costCodeIndex = costCodes.divisions[divIndex].subdivisions[
+//     subDivIndex
+//   ].items.findIndex((item) => item.number === costCodeNumber);
 
-  if (isDelFromProject) {
-    return { divIndex, subDivIndex, costCodeIndex };
-  } else {
-    costCodes.divisions[divIndex].subdivisions[subDivIndex].items.splice(
-      costCodeIndex,
-      1
-    );
-  }
-}
+//   if (isDelFromProject) {
+//     return { divIndex, subDivIndex, costCodeIndex };
+//   } else {
+//     costCodes.divisions[divIndex].subdivisions[subDivIndex].items.splice(
+//       costCodeIndex,
+//       1
+//     );
+//   }
+// }
 
 export function createCostCodeList(costCodes: CostCodesData) {
   const costCodeList: SelectMenuOptions[] = [{ id: 0, label: 'None' }];

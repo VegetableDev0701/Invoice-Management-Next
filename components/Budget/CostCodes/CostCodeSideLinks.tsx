@@ -12,7 +12,6 @@ import { Divisions } from '@/lib/models/budgetCostCodeModel';
 
 import Card from '@/components/UI/Card';
 import Button from '@/components/UI/Buttons/Button';
-import AddDivisionForm from './AddDivisionForm';
 import { TrashIcon } from '@heroicons/react/20/solid';
 
 import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
@@ -20,7 +19,7 @@ import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
 interface Props {
   divisions: Divisions[];
   projectId?: string;
-  isEditForm?: boolean;
+  // isEditForm?: boolean;
   isBudgetForm?: boolean;
   isB2APlots?: boolean;
   onclicklink: (link: string) => void;
@@ -29,7 +28,7 @@ interface Props {
 function CostCodeSideLinks(props: Props) {
   const {
     divisions,
-    isEditForm,
+    // isEditForm,
     isBudgetForm,
     isB2APlots,
     projectId,
@@ -53,23 +52,23 @@ function CostCodeSideLinks(props: Props) {
     onclicklink((e.target as HTMLElement).id.split('_')[0]);
   };
 
-  const deleteDivisionHandler = (
-    e: React.MouseEvent,
-    divisionNumber: number
-  ) => {
-    e.preventDefault();
-    dispatch(companyDataActions.deleteDivision({ divisionNumber }));
-    dispatch(
-      addBudgetFormActions.addToUpdateBudgetList({
-        divisionNumber,
-        isDelete: true,
-      })
-    );
-  };
+  // const deleteDivisionHandler = (
+  //   e: React.MouseEvent,
+  //   divisionNumber: number
+  // ) => {
+  //   e.preventDefault();
+  //   dispatch(companyDataActions.deleteDivision({ divisionNumber }));
+  //   dispatch(
+  //     addBudgetFormActions.addToUpdateBudgetList({
+  //       divisionNumber,
+  //       isDelete: true,
+  //     })
+  //   );
+  // };
 
   return (
     <div className={`flex flex-col h-full w-80 gap-4`}>
-      {isEditForm && (
+      {/* {isEditForm && (
         <Button
           className="w-full py-2 text-2xl"
           buttonText="Add Division"
@@ -77,7 +76,7 @@ function CostCodeSideLinks(props: Props) {
             setShowAddDivision((prevState) => !prevState);
           }}
         />
-      )}
+      )} */}
       {isBudgetForm && (
         <div className="flex justify-center rounded-[50px] bg-stak-dark-green text-white font-sans font-normal text-3xl w-full py-2">
           {`$ ${totalBudget}`}
@@ -88,11 +87,11 @@ function CostCodeSideLinks(props: Props) {
           {`Complete: ${percentComplete.toFixed(2)} %`}
         </div>
       )}
-      {showAddDivision && isEditForm && (
+      {/* {showAddDivision && isEditForm && (
         <AddDivisionForm
           showForm={() => setShowAddDivision((prevState) => !prevState)}
         />
-      )}
+      )} */}
       <div className="flex-grow flex-shrink flex flex-col h-0">
         <Card
           className={`flex-grow flex-shrink items-start py-5 bg-stak-white min-h-0`}
@@ -107,7 +106,7 @@ function CostCodeSideLinks(props: Props) {
                   className={`${classes['link-container']} flex flex-1 justify-between items-center`}
                 >
                   <li
-                    id={`${formatNameForID(division.name)}_link`}
+                    id={`${formatNameForID(division.name || String(division.number))}_link`}
                     onClick={clickLinkHandler}
                   >
                     {division.number.toString().padStart(2, '0') != '00'
@@ -116,7 +115,7 @@ function CostCodeSideLinks(props: Props) {
                         }`
                       : `${division.name}`}
                   </li>
-                  {isEditForm && (
+                  {/* {isEditForm && (
                     <button
                       type="button"
                       className={classes['trash-icon']}
@@ -124,7 +123,7 @@ function CostCodeSideLinks(props: Props) {
                     >
                       <TrashIcon className="h-8 w-8 text-gray-500" />
                     </button>
-                  )}
+                  )} */}
                 </div>
               ))}
             </ul>

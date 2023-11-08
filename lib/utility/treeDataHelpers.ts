@@ -1,5 +1,10 @@
-import { CostCodeItem, CostCodesData, Divisions, TreeData } from "../models/budgetCostCodeModel";
-import { TreeItemIndex } from "react-complex-tree";
+import {
+  CostCodeItem,
+  CostCodesData,
+  Divisions,
+  TreeData,
+} from '../models/budgetCostCodeModel';
+import { TreeItemIndex } from 'react-complex-tree';
 
 export class ConvertTreeData {
   private itemIndex;
@@ -108,8 +113,10 @@ export class ConvertTreeData {
       //   .toString()
       //   .padStart(2, "0")} - ${division.name}`;
       this.result[divisionItem].children = [];
-      this.result[divisionItem].isFolder = division.subItems?.length > 0;
-      this.iterateAllItems(divisionItem, division?.subItems);
+      this.result[divisionItem].isFolder =
+        division.subItems && division.subItems?.length > 0;
+      division?.subItems &&
+        this.iterateAllItems(divisionItem, division?.subItems);
     });
 
     return this.result;
@@ -164,7 +171,7 @@ export class ConvertTreeData {
         costCodeData[itemIndex].subItems = [];
 
         this.iterateTreeItems(
-          costCodeData[itemIndex]?.subItems,
+          costCodeData[itemIndex]?.subItems!,
           treeData,
           treeData[item].children ?? []
         );
@@ -208,11 +215,12 @@ export class ConvertTreeData {
           subItems: [],
         });
       }
-      this.iterateTreeItems(
-        costCodeData.divisions[divIndex].subItems,
-        treeData,
-        treeData[division].children ?? []
-      );
+      if (costCodeData.divisions[divIndex].subItems !== undefined)
+        this.iterateTreeItems(
+          costCodeData.divisions[divIndex].subItems as CostCodeItem[],
+          treeData,
+          treeData[division].children ?? []
+        );
     });
 
     return costCodeData;
@@ -228,7 +236,10 @@ export class ConvertTreeData {
       total: 0,
     };
     for (const child of children) {
-      if (treeData[child].children.length > 0) {
+      if (
+        treeData[child].children &&
+        (treeData[child].children as TreeItemIndex[]).length > 0
+      ) {
         cost.total += this.calculateAllSubCost(
           treeData,
           child,
@@ -271,20 +282,20 @@ export class ConvertTreeData {
 
   getTotalBudget = (treeData: TreeData) => {
     let res = 0;
-    treeData.root.children.forEach((child) => {
-      res += parseFloat((treeData[child].data as Divisions).value);
+    treeData.root.children?.forEach((child) => {
+      res += parseFloat((treeData[child].data as Divisions).value || '0');
     });
     return res;
   };
 
   getTotalDivision = (treeData: TreeData) => {
     let res = {};
-    treeData.root.children.forEach((child) => {
+    treeData.root.children?.forEach((child) => {
       res = {
         ...res,
         [(treeData[child].data as Divisions).number]: {
           name: (treeData[child].data as Divisions).name,
-          value: parseFloat((treeData[child].data as Divisions).value),
+          value: parseFloat((treeData[child].data as Divisions).value || '0'),
         },
       };
     });
@@ -293,14 +304,14 @@ export class ConvertTreeData {
 
   getTotalSubDivision = (treeData: TreeData) => {
     let res = {};
-    treeData.root.children.forEach((division) => {
-      treeData[division].children.forEach((subDivision) => {
+    treeData.root.children?.forEach((division) => {
+      treeData[division].children?.forEach((subDivision) => {
         res = {
           ...res,
           [(treeData[subDivision].data as CostCodeItem).number]: {
             division: (treeData[division].data as CostCodeItem).number,
             value: parseFloat(
-              (treeData[subDivision].data as CostCodeItem).value
+              (treeData[subDivision].data as CostCodeItem).value || '0'
             ),
             name: (treeData[subDivision].data as CostCodeItem).name,
           },

@@ -213,7 +213,7 @@ export default function BudgetForm(props: Props) {
     }
 
     const newTreeData = { ...costCodeTreeDataList };
-    newTreeData[treeItemIndex].data.value = value;
+    (newTreeData[treeItemIndex].data as CostCodeItem).value = value;
     const convertTreeData = new ConvertTreeData();
     convertTreeData.calculateCostCode(newTreeData);
     const total = convertTreeData.getTotalBudget(newTreeData);
@@ -226,7 +226,7 @@ export default function BudgetForm(props: Props) {
         subDivisionTotals: {},
       })
     );
-    newTreeData[treeItemIndex].data.value = value;
+    (newTreeData[treeItemIndex].data as CostCodeItem).value = value;
     const newFormData = convertTreeData.convertTreeData2CostCode(newTreeData);
     dispatch(
       projectDataActions.updateCostCodeData({

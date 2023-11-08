@@ -33,7 +33,7 @@ export default function AddDivisionForm({
         {
           name: formData["name"],
           number: formData["number"],
-          subdivisions: [],
+          subItems: [],
           updated: true,
         },
       ].sort((a, b) => {

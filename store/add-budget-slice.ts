@@ -133,7 +133,7 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
     const currentChangeOrderTotal =
       state.projects[projectId].b2a.currentChangeOrderTotal.value ?? 0;
 
-    const { chartData: b2aChartData } = createB2AChartDataV2({
+    const result = createB2AChartDataV2({
       // divisionTotals: state.addBudgetForm.totalDivisions,
       // subDivTotals: state.addBudgetForm.totalSubDivisions,
       budget: state.projects[projectId].budget,
@@ -141,6 +141,8 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
       initActualsToZeros,
       previousData,
     });
+    if (!result) return;
+    const { chartData: b2aChartData } = result;
 
     thunkAPI.dispatch(
       projectDataActions.addFullData({
@@ -268,124 +270,124 @@ const addBudgetFormSlice = createSlice({
         deleteSubDivisions: null,
       };
     },
-    addToUpdateBudgetList(
-      state,
-      action: PayloadAction<{
-        name?: string;
-        number?: string;
-        divisionNumber?: number;
-        subDivNumber?: number;
-        costCodeNumber?: number;
-        isDelete?: boolean;
-      }>
-    ) {
-      const {
-        name,
-        number,
-        divisionNumber,
-        subDivNumber,
-        costCodeNumber,
-        isDelete,
-      } = action.payload;
+    // addToUpdateBudgetList(
+    //   state,
+    //   action: PayloadAction<{
+    //     name?: string;
+    //     number?: string;
+    //     divisionNumber?: number;
+    //     subDivNumber?: number;
+    //     costCodeNumber?: number;
+    //     isDelete?: boolean;
+    //   }>
+    // ) {
+    //   const {
+    //     name,
+    //     number,
+    //     divisionNumber,
+    //     subDivNumber,
+    //     costCodeNumber,
+    //     isDelete,
+    //   } = action.payload;
 
-      if (isDelete) {
-        if (
-          divisionNumber !== undefined &&
-          subDivNumber !== undefined &&
-          costCodeNumber !== undefined
-        ) {
-          state.updateBudget.deleteCostCodes
-            ? state.updateBudget.deleteCostCodes.push({
-                divisionNumber,
-                subDivNumber,
-                costCodeNumber,
-              })
-            : (state.updateBudget.deleteCostCodes = [
-                { divisionNumber, subDivNumber, costCodeNumber },
-              ]);
-        } else if (
-          divisionNumber !== undefined &&
-          subDivNumber !== undefined &&
-          costCodeNumber === undefined
-        ) {
-          state.updateBudget.deleteSubDivisions
-            ? state.updateBudget.deleteSubDivisions.push({
-                divisionNumber,
-                subDivNumber,
-              })
-            : (state.updateBudget.deleteSubDivisions = [
-                { divisionNumber, subDivNumber },
-              ]);
-        } else if (
-          divisionNumber !== undefined &&
-          subDivNumber === undefined &&
-          costCodeNumber === undefined
-        ) {
-          state.updateBudget.deleteDivisions
-            ? state.updateBudget.deleteDivisions.push({ divisionNumber })
-            : (state.updateBudget.deleteDivisions = [{ divisionNumber }]);
-        }
-      } else {
-        if (
-          divisionNumber !== undefined &&
-          subDivNumber !== undefined &&
-          name !== undefined &&
-          number !== undefined
-        ) {
-          state.updateBudget.addCostCodes
-            ? state.updateBudget.addCostCodes.push({
-                name,
-                number,
-                divisionNumber,
-                subDivNumber,
-              })
-            : (state.updateBudget.addCostCodes = [
-                {
-                  name,
-                  number,
-                  divisionNumber,
-                  subDivNumber,
-                },
-              ]);
-        } else if (
-          divisionNumber !== undefined &&
-          subDivNumber === undefined &&
-          name !== undefined &&
-          number !== undefined
-        ) {
-          state.updateBudget.addSubDivisions
-            ? state.updateBudget.addSubDivisions.push({
-                name,
-                number,
-                divisionNumber,
-              })
-            : (state.updateBudget.addSubDivisions = [
-                {
-                  name,
-                  number,
-                  divisionNumber,
-                },
-              ]);
-        } else if (
-          divisionNumber === undefined &&
-          subDivNumber === undefined &&
-          name !== undefined &&
-          number !== undefined
-        ) {
-          state.updateBudget.addDivisions
-            ? state.updateBudget.addDivisions.push({
-                name,
-                number,
-              })
-            : (state.updateBudget.addDivisions = [
-                {
-                  name,
-                  number,
-                },
-              ]);
-        }
-      }
-    },
+    //   if (isDelete) {
+    //     if (
+    //       divisionNumber !== undefined &&
+    //       subDivNumber !== undefined &&
+    //       costCodeNumber !== undefined
+    //     ) {
+    //       state.updateBudget.deleteCostCodes
+    //         ? state.updateBudget.deleteCostCodes.push({
+    //             divisionNumber,
+    //             subDivNumber,
+    //             costCodeNumber,
+    //           })
+    //         : (state.updateBudget.deleteCostCodes = [
+    //             { divisionNumber, subDivNumber, costCodeNumber },
+    //           ]);
+    //     } else if (
+    //       divisionNumber !== undefined &&
+    //       subDivNumber !== undefined &&
+    //       costCodeNumber === undefined
+    //     ) {
+    //       state.updateBudget.deleteSubDivisions
+    //         ? state.updateBudget.deleteSubDivisions.push({
+    //             divisionNumber,
+    //             subDivNumber,
+    //           })
+    //         : (state.updateBudget.deleteSubDivisions = [
+    //             { divisionNumber, subDivNumber },
+    //           ]);
+    //     } else if (
+    //       divisionNumber !== undefined &&
+    //       subDivNumber === undefined &&
+    //       costCodeNumber === undefined
+    //     ) {
+    //       state.updateBudget.deleteDivisions
+    //         ? state.updateBudget.deleteDivisions.push({ divisionNumber })
+    //         : (state.updateBudget.deleteDivisions = [{ divisionNumber }]);
+    //     }
+    //   } else {
+    //     if (
+    //       divisionNumber !== undefined &&
+    //       subDivNumber !== undefined &&
+    //       name !== undefined &&
+    //       number !== undefined
+    //     ) {
+    //       state.updateBudget.addCostCodes
+    //         ? state.updateBudget.addCostCodes.push({
+    //             name,
+    //             number,
+    //             divisionNumber,
+    //             subDivNumber,
+    //           })
+    //         : (state.updateBudget.addCostCodes = [
+    //             {
+    //               name,
+    //               number,
+    //               divisionNumber,
+    //               subDivNumber,
+    //             },
+    //           ]);
+    //     } else if (
+    //       divisionNumber !== undefined &&
+    //       subDivNumber === undefined &&
+    //       name !== undefined &&
+    //       number !== undefined
+    //     ) {
+    //       state.updateBudget.addSubDivisions
+    //         ? state.updateBudget.addSubDivisions.push({
+    //             name,
+    //             number,
+    //             divisionNumber,
+    //           })
+    //         : (state.updateBudget.addSubDivisions = [
+    //             {
+    //               name,
+    //               number,
+    //               divisionNumber,
+    //             },
+    //           ]);
+    //     } else if (
+    //       divisionNumber === undefined &&
+    //       subDivNumber === undefined &&
+    //       name !== undefined &&
+    //       number !== undefined
+    //     ) {
+    //       state.updateBudget.addDivisions
+    //         ? state.updateBudget.addDivisions.push({
+    //             name,
+    //             number,
+    //           })
+    //         : (state.updateBudget.addDivisions = [
+    //             {
+    //               name,
+    //               number,
+    //             },
+    //           ]);
+    //     }
+    //   }
+    // },
   },
   extraReducers: (builder) => {
     builder.addCase(initializeBudgetThunk.fulfilled, (state, action) => {
