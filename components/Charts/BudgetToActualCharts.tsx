@@ -117,9 +117,6 @@ export default function BudgetToActualCharts(props: Props) {
     (state) => state.projects[projectId]?.b2a?.b2aChartData
   );
 
-  console.log('dionY [BudgetToActualCharts] formData: ', formData);
-  console.log('dionY [BudgetToActualCharts] b2aChartData: ', b2aChartData);
-
   useEffect(() => {
     scrollToElement(clickedLink, anchorScrollElement, 'scroll-frame');
   }, [clickedLink, dummyForceRender]);

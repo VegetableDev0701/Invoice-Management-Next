@@ -13,7 +13,7 @@ export const usePageData = (
     subSubCategory && subCategory
       ? categoryData?.[subCategory]?.[subSubCategory]
       : subCategory && !subSubCategory
-      ? categoryData?.[category]?.[subCategory]
+      ? categoryData?.[subCategory]
       : categoryData;
 
   const isLoading = data === undefined;
