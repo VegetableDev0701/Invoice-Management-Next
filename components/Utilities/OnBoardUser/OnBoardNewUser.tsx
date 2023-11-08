@@ -112,41 +112,41 @@ export default function OnBoardNewUser({
   };
 
   const runOnboardProcess = async () => {
-    // if (!isLoading && user) {
-    //   // check 1: check that the domain exists for one of the organizations we hav whitelisted
-    //   const userDomainCheck = await checkUserDomain();
-    //   if (userDomainCheck) {
-    //     // check 2: if the user's email is not verified log them out
-    //     if (!isLoading && !(user as User).email_verified) {
-    //       dispatch(
-    //         uiActions.setModalContent({
-    //           openModal: true,
-    //           message: 'Please verify your email before continuing to Stak.',
-    //           title: 'Error',
-    //           logout: true,
-    //         })
-    //       );
-    //       setVerifiedEmail(false);
-    //     } else if (
-    //       !isLoading &&
-    //       (user as User).email_verified &&
-    //       !hasUserMetadata
-    //     ) {
-    //       setVerifiedEmail(true);
-    //       onBoardNewUser();
-    //     }
-    //   } else {
-    //     dispatch(
-    //       uiActions.setModalContent({
-    //         openModal: true,
-    //         message:
-    //           'You are not associated with any organization. Please contact support@stak.cc.',
-    //         title: 'Unauthorized',
-    //         logout: true,
-    //       })
-    //     );
-    //   }
-    // }
+    if (!isLoading && user) {
+      // check 1: check that the domain exists for one of the organizations we hav whitelisted
+      const userDomainCheck = await checkUserDomain();
+      if (userDomainCheck) {
+        // check 2: if the user's email is not verified log them out
+        if (!isLoading && !(user as User).email_verified) {
+          dispatch(
+            uiActions.setModalContent({
+              openModal: true,
+              message: 'Please verify your email before continuing to Stak.',
+              title: 'Error',
+              logout: true,
+            })
+          );
+          setVerifiedEmail(false);
+        } else if (
+          !isLoading &&
+          (user as User).email_verified &&
+          !hasUserMetadata
+        ) {
+          setVerifiedEmail(true);
+          onBoardNewUser();
+        }
+      } else {
+        dispatch(
+          uiActions.setModalContent({
+            openModal: true,
+            message:
+              'You are not associated with any organization. Please contact support@stak.cc.',
+            title: 'Unauthorized',
+            logout: true,
+          })
+        );
+      }
+    }
   };
 
   useEffect(() => {
