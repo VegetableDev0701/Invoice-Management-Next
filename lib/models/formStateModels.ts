@@ -66,10 +66,6 @@ export interface FormStateItemV2 {
   isTouched?: boolean | null;
   isAdded?: boolean;
   isShowing?: boolean;
-  // division?: number;
-  // divisionName?: string;
-  // subDivision?: number;
-  // subDivisionName?: string;
   recursiveLevel?: Array<number>;
   costCodeName?: string;
   invoiceIds?: string[];

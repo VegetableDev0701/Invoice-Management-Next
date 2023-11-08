@@ -60,7 +60,6 @@ export default function ProjectBudget(props: Props) {
   );
 
   useEffect(() => {
-    // if (currentProjectFormData) return;
     const getCostCodes = async () => {
       try {
         const response = await fetch(
@@ -117,7 +116,6 @@ export default function ProjectBudget(props: Props) {
       updateSubmitHandler();
       onUpdateBudgetClick();
     }
-    // dispatch(addProjectFormActions.resetFormValidation());
   }, [updateBudget]);
 
   const updateSubmitHandler = async () => {
@@ -140,41 +138,6 @@ export default function ProjectBudget(props: Props) {
         }/projects/${projectId}`,
       });
     }
-    // if (blankFormData) {
-    //   const dataToSubmit = createBudgetFormDataForSubmit({
-    //     formData: blankFormData,
-    //     formStateData: formState,
-    //   });
-
-    //   delete dataToSubmit['status'];
-    //   dispatch(
-    //     projectDataActions.addFullData({
-    //       newData: dataToSubmit,
-    //       projectId: projectId,
-    //       stateKey: 'budget',
-    //     })
-    //   );
-    //   if (!userLoading && user) {
-    //     const requestConfig = {
-    //       url: `/api/${
-    //         (user as User).user_metadata.companyId
-    //       }/projects/${projectId}/update-budget`,
-    //       method: 'PATCH',
-    //       body: JSON.stringify(dataToSubmit),
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //     };
-
-    //     await sendRequest({
-    //       requestConfig,
-    //       actions: addBudgetFormActions,
-    //       pushPath: `/${
-    //         (user as User).user_metadata.companyId
-    //       }/projects/${projectId}`,
-    //     });
-    //   }
-    // }
   };
 
   const clickLinkHandler = (linkId: string) => {

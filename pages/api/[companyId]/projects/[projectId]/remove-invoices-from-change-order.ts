@@ -6,7 +6,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const companyId = req.query.companyId as string;
   const projectId = req.query.projectId as string;
-  // const changeOrderId = req.headers.changeorderid as string;
   if (req.method === 'PATCH') {
     try {
       const auth0Session = await getSession(req, res);

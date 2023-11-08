@@ -9,7 +9,6 @@ export interface CostCodesData {
   divisions: Divisions[];
   status?: string;
   isOpened?: boolean;
-  // uuid?: string;
 }
 
 export interface Divisions {
@@ -93,8 +92,6 @@ export interface BudgetTotalItem {
   costCodeName: string;
   invoiceIds?: string[];
   laborFeeIds?: string[];
-  // changeOrder?: string | null;
-  // amount?: string;
 }
 
 export interface BudgetTotals {
@@ -193,15 +190,8 @@ export interface BudgetTotalItemV2 {
   isTouched?: boolean;
   isAdded?: boolean;
   isShowing?: boolean;
-  // division: number;
-  // divisionName: string;
-  // subDivision: number;
-  // subDivisionName: string;
-  // costCodeName: string;
   invoiceIds?: string[];
   laborFeeIds?: string[];
-  // changeOrder?: string | null;
-  // amount?: string;
 }
 
 export interface BudgetTotalsV2 {
@@ -231,12 +221,8 @@ export interface CurrentActualsItemV2 {
   costCodeName: string;
   recursiveLevel?: Array<number>;
   description: string;
-  // division: number;
-  // divisionName: string;
   qtyAmt?: string;
   rateAmt?: string;
-  // subDivision: number;
-  // subDivisionName: string;
   vendor: string;
   changeOrder: string | null;
   invoiceIds?: string[];

@@ -7,7 +7,6 @@ import useCreateInvoiceRows from '@/hooks/use-create-invoice-table-data';
 
 interface Props {
   projectId: string;
-  // clientBillId: string;
   invoices: Invoices;
   isLoading: boolean;
 }

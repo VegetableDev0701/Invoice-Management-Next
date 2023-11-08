@@ -1,7 +1,6 @@
-// Countdown.tsx
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/store/index'; // Import RootState from your store
+import { RootState } from '@/store/index'; 
 
 const Countdown = () => {
   const estimatedTime = useSelector(

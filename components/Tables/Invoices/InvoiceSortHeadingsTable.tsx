@@ -262,40 +262,6 @@ const InvoicesTable = <
       });
       toggleAll();
     }
-    // I removed the functionality to remove anything from a change order.
-    // The user has to go back into the process invoice section to make a change order change.
-    // else if (label === 'Remove from Change Order') {
-    //   if (projectId && onRemoveInvoiceChangeOrder) {
-    //     let changeOrderIds: string[] | Set<string> = selected.map((select) => {
-    //       if (select.change_order?.uuid as string) {
-    //         return select.change_order.uuid;
-    //       }
-    //       return null;
-    //     });
-    //     // Check to make sure we are only removing invoices from a single change order
-    //     // This is likely not possible, but this extra check ensures that it can't happen.
-    //     try {
-    //       changeOrderIds = new Set<string>(changeOrderIds);
-    //       if ([...changeOrderIds].length > 1) {
-    //         throw new Error(
-    //           'Can only remove invoices from a single change order at a time.'
-    //         );
-    //       }
-    //       const invoiceIds = selected.map((select) => select.doc_id as string);
-    //       dispatch(
-    //         removeInvoiceFromChangeOrder({
-    //           projectId,
-    //           invoiceIds,
-    //           changeOrderId: [...changeOrderIds][0],
-    //           companyId: (user as User).user_metadata.companyId as string,
-    //         })
-    //       );
-    //       onRemoveInvoiceChangeOrder(invoiceIds);
-    //     } catch (error) {
-    //       console.error(error);
-    //     }
-    //   }
-    // }
   };
   const stopPropClickHandler: React.MouseEventHandler<
     HTMLButtonElement | HTMLDivElement

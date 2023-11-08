@@ -16,7 +16,6 @@ export const formatNumber = (
     //   style: 'decimal',
     //   maximumFractionDigits: 2,
     // });
-    // // return usaNumberFormat.format(num);
     return (
       num
         .toString()

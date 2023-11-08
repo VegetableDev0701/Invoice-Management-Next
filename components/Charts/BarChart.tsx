@@ -262,7 +262,6 @@ const BarChart = (props: BarChartProps) => {
               },
             },
             events: ['click', 'contextmenu'],
-            // If a subdivision should not be shown, and go straight to the cost codes,
             onClick: (e: ChartEvent, elements) => {
               if (e.type === 'contextmenu') {
                 zoomOut();
@@ -272,51 +271,6 @@ const BarChart = (props: BarChartProps) => {
                 const { index } = elements[0];
                 zoomIn(index);
               }
-
-              // if (elements.length > 0 && !subDivision) {
-              //   const chartElement = elements[0];
-              //   const index = chartElement.index;
-
-              //   const subDivisionNames =
-              //     filterZeroElements && dropZeroSubDivIndex
-              //       ? Object.values(fullData.subDivisions)
-              //           .map((subDiv) => subDiv.subDivisionName)
-              //           .filter(
-              //             (_, index) => !dropZeroSubDivIndex.includes(index)
-              //           )
-              //       : Object.values(fullData.subDivisions).map(
-              //           (subDiv) => subDiv.subDivisionName
-              //         );
-
-              //   // HACK If the subdivision name is "_" then we know that this should be ignored and, there will only ever
-              //   // be a single subdivision with that name. This covers cases where a user has a two level nested cost code
-              //   // or we just want to show the cost codes. The code was originally written for a three nested level cost code
-              //   // setup...should eventually be changed by this hack works for now.
-              //   const subDivName = subDivisionNames.every(
-              //     (name) => name === '_'
-              //   )
-              //     ? subDivisionNames[0]
-              //     : subDivisionNames[index];
-              //   const subDivNumber =
-              //     filterZeroElements && dropZeroSubDivIndex
-              //       ? Object.keys(fullData.subDivisions)
-              //           .sort((a, b) => Number(a) - Number(b))
-              //           .filter(
-              //             (_, index) => !dropZeroSubDivIndex.includes(index)
-              //           )[index]
-              //       : Object.keys(fullData.subDivisions).sort(
-              //           (a, b) => Number(a) - Number(b)
-              //         )[index];
-              //   onClick(subDivNumber, division, subDivName);
-              // } else if (subDivision === null || subDivision === undefined) {
-              //   const subDivNumber = null;
-              //   const subDivName = '_';
-              //   onClick(subDivNumber, division, subDivName);
-              // } else {
-              //   const subDivNumber = null;
-              //   const subDivName = null;
-              //   onClick(subDivNumber, division, subDivName);
-              // }
             },
             onHover(event, chartElement) {
               if (event?.native && event.native.target) {
@@ -381,7 +335,6 @@ const BarChart = (props: BarChartProps) => {
       </div>
     </div>
   );
-  //   return <canvas ref={canvasRef} />;
 };
 
 export default BarChart;

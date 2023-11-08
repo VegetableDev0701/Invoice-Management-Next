@@ -34,8 +34,6 @@ export const useCreateClientBillWorkDescription = ({
   currentActualsChangeOrders: CurrentActualsChangeOrdersV2;
 }) => {
   const profitTaxesOrders = ['profit', 'boTax', 'liability'];
-  // const profitTaxesCostCodes = Object.values(SUMMARY_COST_CODES)
-
   const groupedRowCategories = ['Labor and Fees', 'Invoices', 'Change Orders'];
   const clientBillWorkDescription: {
     [group: string]: Record<string, WorkDescriptionContentItem[]>;
@@ -156,23 +154,6 @@ export const useCreateClientBillWorkDescription = ({
               });
 
               currentGroupRows.push(...profitTaxesObject);
-
-              // here calculating the totals be each change order but need to show the subtotal breakdown
-              // currentGroupRows.push({
-              //   qtyAmt: '',
-              //   description: `${changeOrderSummary[changeOrderId].name} Subtotal`,
-              //   rateAmt: '',
-              //   vendor: '',
-              //   totalAmt: formatNumber(
-              //     (
-              //       clientBillSummary.totalsByChangeOrder as Record<
-              //         string,
-              //         number
-              //       >
-              //     )[changeOrderId].toFixed(2)
-              //   ),
-              //   costCode: '',
-              // });
               changeOrderDescriptions[changeOrderId] = currentGroupRows;
             }
           );
@@ -239,26 +220,6 @@ export const useCreateClientBillWorkDescription = ({
           totalAmt: clientBillSummary.changeOrders,
           costCode: '',
         });
-        // Object.entries(subTotals.changeOrders).forEach(
-        //   ([costCode, actualsItem]) => {
-        //     let { description, rateAmt, totalAmt, vendor } = actualsItem;
-        //     rateAmt =
-        //       description === 'Overhead and Profit' ||
-        //       description === 'Business and Occupation Tax'
-        //         ? `${rateAmt} %`
-        //         : (rateAmt as string);
-        //     if (description !== 'Sales Tax') {
-        //       currentGroupRowsChangeOrders.push({
-        //         qtyAmt: '',
-        //         description,
-        //         rateAmt,
-        //         vendor,
-        //         totalAmt,
-        //         costCode,
-        //       });
-        //     }
-        //   }
-        // );
         // TODO Add in the sales tax for the project and the total invoice amount
         changeOrderDescriptions['Subtotal'] = currentGroupRowsChangeOrders;
       }

@@ -46,12 +46,3 @@ export const Input = (props: Props) => {
     </div>
   );
 };
-
-// export const TextArea = (props) => {
-//   return (
-//     <div className={`${styles['input-container']} ${styles['text']}`}>
-//       <label htmlFor={props.input.id}>{props.input.label}</label>
-//       <textarea {...props.input}></textarea>
-//     </div>
-//   );
-// };

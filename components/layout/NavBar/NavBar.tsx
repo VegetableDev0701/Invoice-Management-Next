@@ -42,7 +42,6 @@ function NavBar() {
                 (user as User).user_metadata.companyId
               }/projects/add-project`,
             },
-            // { name: 'Add Invoice', menuPath: '/projects/add-invoice' },
           ]}
           activeclass={`${
             currentPath.startsWith(

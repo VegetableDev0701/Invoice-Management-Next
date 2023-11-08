@@ -94,7 +94,6 @@ export default function useUploadFilesHandler({
         }
 
         const response = await fetch(url, {
-          // credentials: 'include',
           headers: {
             Authorization: `Bearer ${googleTokenData.token}`,
             Auth0: `Bearer ${authTokenData.token}`,
@@ -146,7 +145,6 @@ export default function useUploadFilesHandler({
         }
 
         if (response.status === 200 || response.ok) {
-          // dispatch(processingActions.setCurrentTaskId(data.task_id));
           dispatch(sseActions.setUploadFileSuccess(true));
           dispatch(
             sseActions.setWhatToListenFor({

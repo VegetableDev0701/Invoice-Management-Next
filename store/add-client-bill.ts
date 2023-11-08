@@ -80,14 +80,14 @@ export const deleteClientBillDataFromB2A = createAsyncThunk(
         isChangeOrder: false,
       });
 
-      const { chartData: actualsChartData } = createB2AChartDataV2({
-        // divisionTotals: totals.divisionTotals,
-        // subDivTotals: totals.subDivisionTotals,
+      const result = createB2AChartDataV2({
         budget,
         costCodeTotals: currentActuals,
         currentBudgetedTotal,
         initActualsToZeros: true,
       });
+      if (!result) return false;
+      const { chartData: actualsChartData } = result;
 
       // add old actuals to this invoice current actuals
       const updatedB2AData = addActualsToTotalsV2({
@@ -381,17 +381,36 @@ export const createBudgetActuals = createAsyncThunk(
 
       // actualsChartData will give all the budgeted totals, and any actuals from previous bills
       // NO CHANGE ORDERS
-      const {
-        chartData: actualsChartData,
-        grandActualsTotal: grandActualsBudgetedTotal,
-      } = createB2AChartDataV2({
-        // divisionTotals: budgetedTotals.divisionTotals,
-        // subDivTotals: budgetedTotals.subDivisionTotals,
+
+      const result = createB2AChartDataV2({
         budget,
         costCodeTotals: currentActuals,
         currentBudgetedTotal,
         initActualsToZeros: true,
       });
+      createB2AChartDataV2({
+        budget,
+        costCodeTotals: currentActuals,
+        currentBudgetedTotal,
+        initActualsToZeros: true,
+      });
+
+      if (!result) {        
+        dispatch(uiActions.setLoadingState({ isLoading: false }));
+        dispatch(
+          uiActions.setNotificationContent({
+            content: 'Error when trying to create actuals data for chart.',
+            openNotification: true,
+            icon: 'error',
+          })
+        );
+        return false;
+      }
+      
+      const {
+        chartData: actualsChartData,
+        grandActualsTotal: grandActualsBudgetedTotal,
+      } = result;
 
       // add previous actuals to this current invoice actuals
       // NO CHANGE ORDERS

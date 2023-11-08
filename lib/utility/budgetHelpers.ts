@@ -217,41 +217,12 @@ export const calculateTotals = ({
   // likely won't need this, but having it is low cost and it may come in handy to have
   // this calculation done
 
-  // TODO reexamine the need for totals calculation by division in n-level recursive structure
-  // let totalByDivision: { [key: string]: { value: number; name: string } } = {};
-  // let totalBySubDivision: {
-  //   [key: string]: { value: number; division: number; name: string };
-  // } = {};
   let amount: number;
   let total: Number = 0;
   const changeOrderTotals: { [changeOrderId: string]: number } = {};
 
   // TODO rearrange total value calculation
   if (isChangeOrder) {
-    // Object.entries(budget as CurrentActualsChangeOrdersV2).forEach(
-    //   ([changeOrderId, changeOrderObject]) => {
-    //     if (changeOrderId !== "profitTaxesLiability") {
-    //       Object.values(changeOrderObject).forEach((costCodeObj) => {
-    //         amount = +costCodeObj.totalAmt.replaceAll(",", "");
-    //         // if (costCodeObj.division !== undefined && costCodeObj.subDivision) {
-    //         //   totalByDivision[costCodeObj.division] = {
-    //         //     value:
-    //         //       (totalByDivision[costCodeObj.division]?.value || 0) + amount,
-    //         //     name: costCodeObj.divisionName,
-    //         //   };
-    //         //   totalBySubDivision[costCodeObj.subDivision] = {
-    //         //     value:
-    //         //       (totalBySubDivision[costCodeObj.subDivision]?.value || 0) +
-    //         //       amount,
-    //         //     division: costCodeObj.division,
-    //         //     name: costCodeObj.subDivisionName,
-    //         //   };
-    //         // }
-    //       });
-    //     }
-    //   }
-    // );
-
     Object.entries(budget as CurrentActualsChangeOrdersV2).forEach(
       ([changeOrderId, changeOrder]) => {
         if (changeOrderId !== 'profitTaxesLiability') {
@@ -269,30 +240,7 @@ export const calculateTotals = ({
       (acc, curr) => acc + curr,
       0
     );
-  }
-  // NOT A CHANGE ORDER
-  else {
-    // Object.values(budget as CurrentActualsV2 | BudgetTotalsV2).forEach(
-    //   (costCodeObj: CurrentActualsItemV2 | BudgetTotalItemV2) => {
-    //     amount = isBudgetTotalItemV2(costCodeObj)
-    //       ? +costCodeObj.value.replaceAll(",", "")
-    //       : +costCodeObj.totalAmt.replaceAll(",", "");
-    //     let value = +formatNumber(amount, false, true);
-    //     // if (costCodeObj.division !== undefined && costCodeObj.subDivision) {
-    //     //   totalByDivision[costCodeObj.division] = {
-    //     //     value: (totalByDivision[costCodeObj.division]?.value || 0) + value,
-    //     //     name: costCodeObj.divisionName,
-    //     //   };
-    //     //   totalBySubDivision[costCodeObj.subDivision] = {
-    //     //     value:
-    //     //       (totalBySubDivision[costCodeObj.subDivision]?.value || 0) + value,
-    //     //     division: costCodeObj.division,
-    //     //     name: costCodeObj.subDivisionName,
-    //     //   };
-    //     // }
-    //   }
-    // );
-
+  } else {
     total = Object.values(budget as CurrentActualsV2 | BudgetTotalsV2)
       .map((costCodeObj: CurrentActualsItemV2 | BudgetTotalItemV2) => {
         amount = isBudgetTotalItemV2(costCodeObj)
@@ -304,14 +252,10 @@ export const calculateTotals = ({
         return acc + curr;
       }, 0);
   }
-  // const { totalByDivisionTransformed, totalBySubDivisionTransformed } =
-  //   transformTotals({ totalByDivision, totalBySubDivision });
 
   return {
     total: formatNumber(total.toFixed(2)),
     changeOrderTotals,
-    // divisionTotals: totalByDivisionTransformed,
-    // subDivisionTotals: totalBySubDivisionTransformed,
     divisionTotals: {},
     subDivisionTotals: {},
   };
@@ -402,7 +346,6 @@ export const createFullBudgetObject = ({
   changeOrder: string | null;
   group: 'Labor and Fees' | 'Invoices' | 'Change Orders';
 }): CurrentActualsItemV2 => {
-  // const { division, divisionName, subDivision, subDivisionName, costCodeName } = budgetTotals[(+costCode).toFixed(4)];
   const { recursiveLevel, costCodeName } = budgetTotals[String(costCode)] ||
     budgetTotals[(+costCode).toFixed(4)] || {
       recursiveLevel: [],
@@ -413,10 +356,6 @@ export const createFullBudgetObject = ({
     totalAmt,
     changeOrder,
     recursiveLevel,
-    // division,
-    // divisionName,
-    // subDivision,
-    // subDivisionName,
     costCodeName,
     qtyAmt,
     rateAmt,
@@ -440,7 +379,6 @@ const handleLineItem = ({
   invoiceBudgetActuals,
   invoiceBudgetActualsChangeOrders,
 }: {
-  // invoice: MakeRequired<InvoiceItem, 'processedData'>;
   lineItems: InvoiceLineItem | LaborLineItem;
   vendorName: string;
   uuid: string;

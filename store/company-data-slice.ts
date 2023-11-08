@@ -615,11 +615,6 @@ export const removeInvoiceFromChangeOrderThunk = createAsyncThunk(
             projectId,
           })
         );
-        // thunkAPI.dispatch(
-        //   companyDataActions.removeChangeOrderIdFromInvoice({
-        //     invoiceIds,
-        //   })
-        // );
       }
     );
     try {

@@ -74,48 +74,6 @@ export function getCurrentInvoiceData(
   }
 }
 
-// export function processLineItems(
-//   lineItems: {
-//     [key: string]: string | null | number | { [key: string]: number[] };
-//   }[]
-// ) {
-//   const items: {
-//     [key: number]: {
-//       type: string;
-//       value: string;
-//       boundingBox: { [key: string]: number[] };
-//       page: number;
-//       topHeight: number;
-//     };
-//   } = {};
-//   let count = 1;
-//   lineItems?.forEach((item, i) => {
-//     if (!lineItems) return;
-//     if (
-//       item.entity_type_minor === 'description' ||
-//       item.entity_type_minor === 'amount' ||
-//       item.entity_type_minor === null
-//     ) {
-//       const page = item.page_reference as number;
-//       const boundingBox = item.bounding_box as { [key: string]: number[] };
-//       const topHeight = boundingBox['ul'][1];
-//       items[count] = {
-//         type: item.entity_type_minor as string,
-//         value: (item.entity_value_raw as string).replaceAll("'", '`'),
-//         page,
-//         boundingBox,
-//         topHeight,
-//       };
-//       count++;
-//     }
-//   });
-//   if (Object.keys(items).length === 0) {
-//     return null;
-//   } else {
-//     return items;
-//   }
-// }
-
 export function getChangeOrderIdFromName({
   changeOrdersSummary,
   changeOrderName,
@@ -133,36 +91,6 @@ export function getChangeOrderIdFromName({
   // and we are TODO forcing no duplicates in the C/O naming convention
   return changeOrder.uuid as string;
 }
-
-// export function getChangeOrderIdFromInvoiceId({
-//   obj,
-//   invoiceId,
-// }: {
-//   obj: ChangeOrderSummary;
-//   invoiceId: string;
-// }) {
-
-//   for (let changeOrderId of Object.keys(obj)) {
-//     let contentKeys = Object.keys(obj[changeOrderId].content).map(
-//       (contentKey) => {
-//         return contentKey.includes('::')
-//           ? contentKey.split('::')[1]
-//           : contentKey;
-//       }
-//     )
-//     if (c)
-//     // remove duplicates
-//     contentKeys = [...new Set(contentKeys)]
-//     if (
-//       contentKeys.find(
-//         (contentKey) => contentKey === invoiceId
-//       )
-//     ) {
-//       return changeOrderId;
-//     }
-//   }
-//   return null;
-// }
 
 export function createSectionBox({
   boundingBox,

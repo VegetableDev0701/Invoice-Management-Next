@@ -202,23 +202,6 @@ export default function ChangeOrderTables(props: Props) {
         rows[changeOrderId] = Object.values(
           value.content as { [itemId: string]: ChangeOrderContentItem }
         );
-        // let combinedData: any = {};
-        // if we want to combine the cost codes together, do that here
-        // .map((value) => {
-        //   console.log(changeOrderIdvalue);
-        //   if (!combinedData?.[value.costCode]) {
-        //     combinedData[value.costCode] = value;
-        //     return combinedData;
-        //   } else {
-        //     combinedData[value.costCode] = {
-        //       ...value,
-        //       amount:
-        //         +combinedData[value.costCode].totalAmt.replaceAll(',', '') +
-        //         +value.totalAmt.replaceAll(',', ''),
-        //     };
-        //     return combinedData;
-        //   }
-        // });
       });
       return rows;
     }

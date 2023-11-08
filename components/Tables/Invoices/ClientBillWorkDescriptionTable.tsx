@@ -72,9 +72,6 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
       currentActualsChangeOrders,
     });
 
-  // delete groupedRows['changeOrders']['subTotal'];
-  // console.log(groupedRows);
-
   const areThereChangeOrders =
     groupedRows &&
     groupedRows?.changeOrders &&

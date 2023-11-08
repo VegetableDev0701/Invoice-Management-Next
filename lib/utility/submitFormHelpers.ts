@@ -304,28 +304,3 @@ export function createFormDataForSubmit({
 
   return newFormData;
 }
-
-// export function createBudgetFormDataForSubmit({
-//   formData,
-//   formStateData,
-// }: {
-//   formData: CostCodesData;
-//   formStateData: FormStateV2;
-// }) {
-//   const newFormData: CostCodesData = JSON.parse(JSON.stringify(formData));
-//   newFormData.divisions.forEach((div, i) => {
-//     div.subdivisions.forEach((subdiv, j) => {
-//       subdiv.items.forEach((item, k) => {
-//         for (const key in formStateData) {
-//           if (key === item.id) {
-//             newFormData.divisions[i].subdivisions[j].items[k].value = (
-//               formStateData[key].value as string
-//             ).replace(/[^0-9.]/g, '');
-//           }
-//         }
-//       });
-//     });
-//   });
-
-//   return newFormData;
-// }

@@ -73,10 +73,6 @@ const AgaveLinkComponent = ({ softwareName, className }: Props) => {
     }
   }, [reference_id]);
 
-  /*
-   * For a full list of available options, see https://docs.agaveapi.com/agave-link/component
-   */
-
   let sourceSystemId: string | null = null;
   if (softwareName.toLowerCase() === 'quickbooks desktop') {
     sourceSystemId = 'quick-books-desktop';

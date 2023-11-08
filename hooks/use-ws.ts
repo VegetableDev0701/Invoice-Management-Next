@@ -128,10 +128,6 @@ export default function useListenWS() {
   }, [isSuccess, wsContent.sseContentType]);
 }
 
-// const logWebSocketState = (webSocket: WebSocket) => {
-//   console.log('WebSocket State: ', webSocket.readyState);
-// };
-
 const onWebSocketEvents = (
   ws: WebSocket,
   dispatch: AppDispatch,
@@ -140,10 +136,8 @@ const onWebSocketEvents = (
 ) => {
   ws.onopen = (event) => {
     console.log('WebSocket is open:', event);
-    // logWebSocketState(webSocket);
   };
   ws.onmessage = (event) => {
-    // logWebSocketState(webSocket);
     const serverMessage = JSON.parse(event.data);
 
     switch (serverMessage.event) {
@@ -236,7 +230,6 @@ const onWebSocketEvents = (
   };
 
   ws.onerror = (error) => {
-    // logWebSocketState(webSocket);
     console.error('WebSocket failed', error);
     dispatch(
       uiActions.setProcessingNotificationContent({

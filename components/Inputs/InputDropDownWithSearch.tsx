@@ -167,20 +167,6 @@ const DropDownWithSearch = (props: Props) => {
             .toLowerCase()
             .includes(query.trim().toLowerCase());
         });
-  // this version will only match if the word starts with the letter typing
-  // so super will not match with project supervision
-  // let filteredOptions =
-  //   query.trim() === ''
-  //     ? (dropDownChoices as SelectMenuOptions[])
-  //     : (dropDownChoices as SelectMenuOptions[]).filter((option) => {
-  //         const queryWords = query.trim().toLowerCase().split(' ');
-  //         const labelWords = option.label.toLowerCase().split(' ');
-  //         return queryWords.every(
-  //           (queryWord, index) =>
-  //             labelWords[index] && labelWords[index].startsWith(queryWord)
-  //         );
-  //       });
-
   const isInputRequired = input.required;
   useEffect(() => {
     dispatch(

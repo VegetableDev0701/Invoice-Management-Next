@@ -29,8 +29,6 @@ import useSetNotification from '@/hooks/use-set-nofitication';
 const AddNewProject = () => {
   useSetStatePath();
 
-  // useLocationChange(addProjectFormActions.resetFormValidation);
-
   const { data: addProjectFormData, isLoading: pageLoading } = usePageData(
     'data',
     'forms',

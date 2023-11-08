@@ -68,10 +68,6 @@ export default function ProjectsChangeOrders(props: Props) {
     (state) => state.projects[projectId]['change-orders-summary']
   );
 
-  // const changeOrderFormData = useSelector(
-  //   (state) => state.projects[projectId]['change-orders']
-  // );
-
   useSetNotification({
     response,
     successJSON,

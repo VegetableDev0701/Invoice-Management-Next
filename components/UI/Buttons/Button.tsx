@@ -8,7 +8,6 @@ interface Props {
   type?: 'submit' | 'reset' | 'button' | undefined;
   disabled?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  // onKeyDown?: (e: KeyboardEvent<HTMLButtonElement>) => void;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, Props>(

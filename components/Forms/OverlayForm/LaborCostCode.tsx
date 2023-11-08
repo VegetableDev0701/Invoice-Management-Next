@@ -46,16 +46,7 @@ function LaborCostCodes(props: Props) {
   const numCostCodes = useSelector((state) => {
     return state.addLaborForm.numCostCodes.value as number;
   });
-  // useEffect(() => {
-  //   setCostCodeNum(currentNumCostCodes)
-  // }, [numCostCodes])
 
-  // const currentData = useSelector((state) => state.overlay.labor.currentData);
-  // const currentNumCostCodes = currentData
-  //   ? currentData.numCostCodes
-  //   : numCostCodes;
-
-  // const currentCostCodeNum = currentData ? currentData.numCostCodes
   // loop through formData and create an object to
   // populate the values in the form
   const costCodesObj = createRecurringFormObject(formData as LaborData);
@@ -63,9 +54,6 @@ function LaborCostCodes(props: Props) {
   const incrementFee = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     dispatch(actions.incrementCostCodes());
-    // setTimeout(() => {
-    //   scrollToElement('add-button', 'project-details', 'scroll-frame');
-    // }, 50);
   };
   const decrementFee = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

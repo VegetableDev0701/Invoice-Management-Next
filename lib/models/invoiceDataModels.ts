@@ -136,7 +136,6 @@ export interface InvoiceProject {
   address: string;
   uuid: string;
   name: string;
-  // project_key?: string;
 }
 interface PredictedProject {
   address: string;

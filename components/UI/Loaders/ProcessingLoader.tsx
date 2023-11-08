@@ -24,42 +24,10 @@ const ProcessingLoader = (props: Props) => {
     (state) => state.ui.processingNotification
   );
 
-  // I may implement a cancel and retry feature in the future so keep this code for now
-  // const cancelHandler = async () => {
-  //   // dispatch(processingActions.setCancel(true));
-  //   const response = await fetch(
-  //     `/api/${(user as User).user_metadata.companyId}/invoices/cancel-upload`,
-  //     {
-  //       method: 'POST',
-  //       headers: {
-  //         task_id: currentTaskId,
-  //       },
-  //     }
-  //   );
-  // };
-  // const retryHandler = async () => {
-  //   // dispatch(processingActions.setCancel(false));
-
-  //   const response = await fetch(
-  //     `/api/${(user as User).user_metadata.companyId}/invoices/retry-upload`,
-  //     {
-  //       method: 'POST',
-  //       headers: {
-  //         task_id: currentTaskId,
-  //       },
-  //     }
-  //   );
-  // };
-
   return (
     <div
       className={`flex items-center justify-center ml-4 pl-2 h-4/6 rounded-md bg-white overflow-hidden`}
     >
-      {/* {cancelButton && (
-        <div className="font-sans text-lg text-black mr-2">
-          Task Cancelled:{' '}
-        </div>
-      )} */}
       {processNotification.openNotification && (
         <div
           className={`font-sans text-lg text-black ${
@@ -82,18 +50,6 @@ const ProcessingLoader = (props: Props) => {
             cssOverride={{ scale: '0.5', top: '10px', left: '12px' }}
           />
         )}
-
-        {/* <Button
-          buttonText="Cancel"
-          onClick={cancelHandler}
-          className="text-base px-3 mr-2"
-          disabled={cancelButton}
-        />
-        <Button
-          buttonText="Retry"
-          onClick={retryHandler}
-          className="text-base px-3 mr-2"
-        /> */}
       </div>
     </div>
   );

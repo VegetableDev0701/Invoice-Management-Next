@@ -39,10 +39,7 @@ export class ConvertTreeData {
   iterateAllItems = (
     divId: string,
     subItems: CostCodeItem[]
-    //   cnt: number
   ) => {
-    //   const subDivision = `item${cnt - 1}`;
-
     subItems?.forEach((subItem: CostCodeItem) => {
       const item = `item${this.itemIndex++}`;
       this.result[divId].children?.push(item);
@@ -109,9 +106,6 @@ export class ConvertTreeData {
         number: division.number,
         isOpened: division?.isOpened ?? false,
       };
-      // `${division.number
-      //   .toString()
-      //   .padStart(2, "0")} - ${division.name}`;
       this.result[divisionItem].children = [];
       this.result[divisionItem].isFolder =
         division.subItems && division.subItems?.length > 0;

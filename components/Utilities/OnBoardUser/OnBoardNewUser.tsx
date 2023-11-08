@@ -217,8 +217,6 @@ export default function OnBoardNewUser({
           if (isInputElementWithAddressElements(el)) {
             el.addressElements.forEach((addEl: AddressItems, jAdd: number) => {
               addEl.items.forEach((addItem: Items, kAdd: number) => {
-                // console.log('here');
-                // console.log(addItem.id);
                 if (addItem.id === 'business-address-as') {
                   updateItemElement({
                     updatedFormData,
@@ -268,7 +266,6 @@ export default function OnBoardNewUser({
           }
           if (isInputElementWithItems(el)) {
             el.items.forEach((item, k) => {
-              // console.log(k);
               if (!newUserData.new_company && item.id === 'company-name-as') {
                 updateItemElement({
                   updatedFormData,

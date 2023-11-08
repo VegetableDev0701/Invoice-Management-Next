@@ -59,14 +59,6 @@ export const addUpdatedChangeOrderContent = createAsyncThunk(
         `/api/${companyId}/projects/${projectId}/update-change-order-content`,
         { method: 'PATCH', body: JSON.stringify(dataToSend) }
       );
-
-      // thunkAPI.dispatch(
-      //   uiActions.setNotificationContent({
-      //     content: data.message,
-      //     icon: 'save',
-      //     openNotification: true,
-      //   })
-      // );
     } catch (error) {
       thunkAPI.dispatch(
         uiActions.setNotificationContent({

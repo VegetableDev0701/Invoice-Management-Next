@@ -55,7 +55,6 @@ const useAutoTokenRefresh = (inactivityTimeout: number) => {
                 setTimeout(() => {
                   fetch('/api/refresh-token').catch((error) => {
                     console.error('Error refreshing token:', error);
-                    // window.location.href = '/api/auth/login';
                     window.location.href = process.env
                       .POST_LOGOUT_REDIRECT_URI as string;
                   });
@@ -63,16 +62,13 @@ const useAutoTokenRefresh = (inactivityTimeout: number) => {
               } else {
                 fetch('/api/refresh-token').catch((error) => {
                   console.error('Error refreshing token:', error);
-                  // window.location.href = '/api/auth/login';
                   window.location.href = process.env
                     .POST_LOGOUT_REDIRECT_URI as string;
                 });
               }
             } else {
-              // window.location.href = 'http://localhost:3001';
               fetch('/api/refresh-token').catch((error) => {
                 console.error('Error refreshing token:', error);
-                // window.location.href = '/api/auth/login';
                 window.location.href = process.env
                   .POST_LOGOUT_REDIRECT_URI as string;
               });

@@ -140,11 +140,6 @@ const EditCostCodeFormat = () => {
         requestConfig,
       });
 
-      // await dispatch(
-      //   updateAllProjectBudgets({
-      //     companyId: (user as User).user_metadata.companyId,
-      //   })
-      // );
       dispatch(
         companyDataActions.changeUpdateTreeStatus({
           updated: true,

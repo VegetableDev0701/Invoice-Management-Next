@@ -7,7 +7,6 @@ import MainDashboard from '@/components/Dashboards/Main/MainDashboard';
 
 const Home = () => {
   useSetStatePath();
-  // const { user } = useUser();
   return (
     <>
       <MainDashboard />

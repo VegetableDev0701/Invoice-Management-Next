@@ -31,7 +31,6 @@ export default function useSetNotification({
       );
     } else if (response) {
       if (response.ok) {
-        // dispatch(uiActions.setOpenNotification({ openNotification: true }));
         dispatch(
           uiActions.setNotificationContent({
             content: (successJSON as ResponseData).message,

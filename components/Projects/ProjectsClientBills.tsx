@@ -65,12 +65,6 @@ export default function ProjectsClientBills(props: Props) {
       (clientBill) => clientBill.uuid as string
     );
 
-    // delete from database
-    // summary
-    // client bill collection
-    // const billLaborFees = useSelector(state => state.projects[projectId]['client-bills'][''])
-    // dispatch(createBudgetActuals({projectInvoices}))
-
     dispatch(
       projectDataActions.removeSelectedRow({
         projectId: projectId,
