@@ -134,8 +134,7 @@ function ProcessInvoiceForm(props: Props) {
                         classes="flex-1 px-5 py-2"
                         actions={actions}
                         input={
-                          (el as InputElementWithAddressItems)
-                            .addressElements
+                          (el as InputElementWithAddressItems).addressElements
                         }
                         formState={formState}
                         showError={showError}

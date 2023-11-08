@@ -1,20 +1,20 @@
 .list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-  
-  .list-item__control {
-    display: none;
-    gap: 8px;
-    align-items: center;
-  }
-  
-  .list-item__show {
-    display: flex;
-  }
-  
-  .list-item:hover .list-item__control {
-    display: flex;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.list-item__control {
+  display: none;
+  gap: 8px;
+  align-items: center;
+}
+
+.list-item__show {
+  display: flex;
+}
+
+.list-item:hover .list-item__control {
+  display: flex;
+}

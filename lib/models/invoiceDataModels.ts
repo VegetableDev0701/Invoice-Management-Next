@@ -163,5 +163,5 @@ export interface InvoiceTableHeadings {
   total_tax_amount?: string;
   predicted_project?: string;
   processed?: string;
-  approved?: string;  
+  approved?: string;
 }

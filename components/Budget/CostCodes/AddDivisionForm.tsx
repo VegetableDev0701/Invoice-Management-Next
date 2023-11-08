@@ -42,7 +42,7 @@ export default function AddDivisionForm({
             if (a.number > b.number) return 1;
             return -1;
           }),
-        } as CostCodesData)
+        }) as CostCodesData
     );
 
     showForm();

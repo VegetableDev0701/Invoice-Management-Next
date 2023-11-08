@@ -70,7 +70,7 @@ export function createRecurringFormObject(formData: FormData) {
 export function useGetInputState(id: string, form: string) {
   const formData = useSelector((state) =>
     form === 'addBudget'
-      ? (state)[`${form}Form`].budget[id]
+      ? state[`${form}Form`].budget[id]
       : (state as any)[`${form}Form`][id]
   );
   return formData;

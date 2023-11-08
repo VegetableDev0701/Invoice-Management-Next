@@ -13,9 +13,7 @@ import {
   CostCodeItemB2AData,
   DivisionDataV2,
 } from '@/lib/models/chartDataModels';
-import {
-  CostCodesData,
-} from '@/lib/models/budgetCostCodeModel';
+import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
 
 interface Props {
   formData: CostCodesData;

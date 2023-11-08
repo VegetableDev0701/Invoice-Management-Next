@@ -1,6 +1,4 @@
-import {
-  useAppSelector as useSelector,
-} from '@/store/hooks';
+import { useAppSelector as useSelector } from '@/store/hooks';
 import { formatNameForID } from '@/lib/utility/formatter';
 import { Divisions } from '@/lib/models/budgetCostCodeModel';
 
@@ -17,13 +15,7 @@ interface Props {
 }
 
 function CostCodeSideLinks(props: Props) {
-  const {
-    divisions,
-    isBudgetForm,
-    isB2APlots,
-    projectId,
-    onclicklink,
-  } = props;
+  const { divisions, isBudgetForm, isB2APlots, projectId, onclicklink } = props;
 
   const totalBudget = useSelector((state) => state.addBudgetForm.totalBudget);
   const projects = useSelector((state) => state.projects);
@@ -65,7 +57,9 @@ function CostCodeSideLinks(props: Props) {
                   className={`${classes['link-container']} flex flex-1 justify-between items-center`}
                 >
                   <li
-                    id={`${formatNameForID(division.name || String(division.number))}_link`}
+                    id={`${formatNameForID(
+                      division.name || String(division.number)
+                    )}_link`}
                     onClick={clickLinkHandler}
                   >
                     {division.number.toString().padStart(2, '0') != '00'

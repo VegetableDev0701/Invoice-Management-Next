@@ -9,7 +9,6 @@ import AddInvoice from '@/public/icons/AddInvoiceSVG';
 
 import classes from './InputFile.module.css';
 
-
 function InputFiles() {
   const isLoading = useSelector((state) => state.ui.isLoading);
 

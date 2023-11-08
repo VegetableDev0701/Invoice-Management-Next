@@ -70,7 +70,7 @@ interface Props<H> {
 }
 
 const InvoicesTable = <
-  H extends Partial<InvoiceTableRow> & InvoiceTableHeadings
+  H extends Partial<InvoiceTableRow> & InvoiceTableHeadings,
 >(
   props: Props<H>
 ) => {

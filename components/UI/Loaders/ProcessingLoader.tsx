@@ -1,6 +1,4 @@
-import {
-  useAppSelector as useSelector,
-} from '@/store/hooks';
+import { useAppSelector as useSelector } from '@/store/hooks';
 import { FadeLoader } from 'react-spinners';
 
 interface Props {

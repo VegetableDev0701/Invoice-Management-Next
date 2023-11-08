@@ -37,7 +37,7 @@ export type ExtendT = {
 
 interface Props<
   T extends ExtendT | InvoiceTableRow | ProjectSummaryItem | VendorSummaryItem,
-  H extends Partial<T>
+  H extends Partial<T>,
 > {
   headings: H;
   rows: T[] | null | undefined;
@@ -53,7 +53,7 @@ interface Props<
 
 export default function CheckboxSortHeadingsTable<
   T extends ExtendT | InvoiceTableRow | ProjectSummaryItem | VendorSummaryItem,
-  H extends Partial<T>
+  H extends Partial<T>,
 >(props: Props<T, H>) {
   const {
     headings,

@@ -1,8 +1,4 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import { uiActions } from './ui-slice';
 import { RootState } from '.';
@@ -30,18 +26,17 @@ import {
 import { FormState, FormStateItem } from '@/lib/models/formStateModels';
 import { getChangeOrderIdFromName } from '@/lib/utility/processInvoiceHelpers';
 import { ProjectData, ProjectDataItems } from '@/lib/models/projectDataModel';
-import {
-  ChangeOrderContent,
-} from '@/lib/models/changeOrderModel';
+import { ChangeOrderContent } from '@/lib/models/changeOrderModel';
 import { Invoices, ProcessedInvoiceData } from '@/lib/models/invoiceDataModels';
-import { costCodeData2NLevel, createCostCodeList } from '@/lib/utility/costCodeHelpers';
+import {
+  costCodeData2NLevel,
+  createCostCodeList,
+} from '@/lib/utility/costCodeHelpers';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
 import { snapshotCopy } from '@/lib/utility/utils';
 import { setTargetValue } from '@/lib/utility/createSummaryDataHelpers';
 import { addUpdatedChangeOrderContent } from './add-change-order';
-import {
-  CostCodesData,
-} from '@/lib/models/budgetCostCodeModel';
+import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
 
 export const fetchProjectData = createAsyncThunk(
   'companyProjects/fetch',
@@ -837,7 +832,6 @@ const projectDataSlice = createSlice({
           if (!newData) return;
 
           newData.budget = costCodeData2NLevel(newData.budget);
-
 
           const { costCodeList, costCodeNameList } = createCostCodeList(
             newData.budget

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/store/index'; 
+import { RootState } from '@/store/index';
 
 const Countdown = () => {
   const estimatedTime = useSelector(

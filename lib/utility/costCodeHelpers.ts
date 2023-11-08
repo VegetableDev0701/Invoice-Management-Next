@@ -7,14 +7,11 @@ import {
   BudgetTotalsV2,
 } from '@/lib/models/budgetCostCodeModel';
 import { SelectMenuOptions } from '../models/formDataModel';
-import {
-  CostCodeItemB2AData,
-  DivisionDataV2,
-} from '../models/chartDataModels';
+import { CostCodeItemB2AData, DivisionDataV2 } from '../models/chartDataModels';
 
 function insertSorted<
   T extends Divisions | SubDivisions | CostCodeItem,
-  K extends keyof T
+  K extends keyof T,
 >(arr: T[], obj: T, key: K, isReturn: boolean) {
   const index = arr.findIndex((item) => item[key] > obj[key]);
   if (index === -1) {

@@ -22,7 +22,7 @@ import { getChangeOrderIdFromName } from '@/lib/utility/processInvoiceHelpers';
 import {
   CostCodeTreeData,
   TreeData,
-  CostCodesData
+  CostCodesData,
 } from '@/lib/models/budgetCostCodeModel';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
 import { processingActions } from './processing-slice';
@@ -205,8 +205,8 @@ export const addProcessedInvoiceData = createAsyncThunk(
       const processInvoiceFormState = state.addProcessInvoiceForm;
       const costCodeList: CostCodeObjType[] = state.data.costCodeList;
       const costCodeNameList: CostCodeObjType[] = state.data.costCodeNameList;
-      const snapShotLineItems: InvoiceLineItem | undefined = state.data
-        .invoices.allInvoices[invoiceId]?.processedData?.line_items
+      const snapShotLineItems: InvoiceLineItem | undefined = state.data.invoices
+        .allInvoices[invoiceId]?.processedData?.line_items
         ? snapshotCopy(
             (
               state.data.invoices.allInvoices[invoiceId]
@@ -219,8 +219,9 @@ export const addProcessedInvoiceData = createAsyncThunk(
         state.data.projectsSummary.allProjects as SummaryProjects
       ).filter((project) => project.projectName === projectName)[0];
 
-      const changeOrdersSummary =
-        state.projects[projectData.uuid as string]['change-orders-summary'] as ChangeOrderSummary;
+      const changeOrdersSummary = state.projects[projectData.uuid as string][
+        'change-orders-summary'
+      ] as ChangeOrderSummary;
 
       const processedInvoiceData = {
         invoice_id: processInvoiceFormState?.['invoice-number']?.value
@@ -996,7 +997,9 @@ export const companyDataSlice = createSlice({
           const forms = { status: action.payload.forms.status, ...baseForms };
           state.forms = { ...forms };
 
-          const allInvoices: Invoices = JSON.parse(action.payload.invoices.value);
+          const allInvoices: Invoices = JSON.parse(
+            action.payload.invoices.value
+          );
 
           // we want to preserve the order of line_items_1, line_item_2, etc.
           // because they are in order from top to bottom for each page of the invoice

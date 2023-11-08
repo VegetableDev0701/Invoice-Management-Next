@@ -27,7 +27,11 @@ import { createSingleLaborSummary } from '@/lib/utility/createSummaryDataHelpers
 import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
 import { checkAllFormFieldsLabor } from '@/lib/validation/formValidation';
 import { LaborData } from '@/lib/models/formDataModel';
-import { ChangeOrderSummary, LaborSummary, Rows } from '@/lib/models/summaryDataModel';
+import {
+  ChangeOrderSummary,
+  LaborSummary,
+  Rows,
+} from '@/lib/models/summaryDataModel';
 import { formatNumber } from '@/lib/utility/formatter';
 import { nanoid } from '@/lib/config';
 import { createChangeOrderContentFromLaborFees } from '@/lib/utility/changeOrderHelpers';

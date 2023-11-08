@@ -36,10 +36,7 @@ export class ConvertTreeData {
     return this.result;
   }
 
-  iterateAllItems = (
-    divId: string,
-    subItems: CostCodeItem[]
-  ) => {
+  iterateAllItems = (divId: string, subItems: CostCodeItem[]) => {
     subItems?.forEach((subItem: CostCodeItem) => {
       const item = `item${this.itemIndex++}`;
       this.result[divId].children?.push(item);

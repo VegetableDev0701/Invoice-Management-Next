@@ -99,9 +99,7 @@ export interface InputElementWithItems {
   items: Items[];
 }
 
-export type InputElement =
-  | InputElementWithAddressItems
-  | InputElementWithItems;
+export type InputElement = InputElementWithAddressItems | InputElementWithItems;
 
 export interface SelectMenuOptions {
   id: number;

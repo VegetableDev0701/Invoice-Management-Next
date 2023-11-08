@@ -248,7 +248,7 @@ export interface InvoiceCurrentActualsChangeOrdersV2 {
 
 export type TreeData = Record<
   TreeItemIndex,
-  TreeItem<Omit<CostCodeItem, "subItems"> | Omit<CostCodesData, "divisions">>
+  TreeItem<Omit<CostCodeItem, 'subItems'> | Omit<CostCodesData, 'divisions'>>
 >;
 
 export type CostCodeTreeData = {

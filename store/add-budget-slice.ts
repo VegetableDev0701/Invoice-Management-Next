@@ -17,9 +17,7 @@ import {
   CostCodesData,
   UpdateBudget,
 } from '@/lib/models/budgetCostCodeModel';
-import {
-  createB2AChartDataV2,
-} from '@/lib/utility/chartHelpers';
+import { createB2AChartDataV2 } from '@/lib/utility/chartHelpers';
 import { projectDataActions } from './projects-data-slice';
 import {
   ChangeOrderChartDataV2,
@@ -78,10 +76,7 @@ export const initializeBudgetTotalsThunk = createAsyncThunk(
 
 export const initializeB2AChartDataThunk = createAsyncThunk(
   'budget/initializeB2AChartDataThunk',
-  async (
-    { projectId }: { projectId: string; companyId: string },
-    thunkAPI
-  ) => {
+  async ({ projectId }: { projectId: string; companyId: string }, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     let b2aChartDataChangeOrder: ChangeOrderChartDataV2 | null = {};
     let updatedCurrentActualsChangeOrders: ChangeOrderFormStateV2 | null = {};

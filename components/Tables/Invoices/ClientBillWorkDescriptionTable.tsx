@@ -12,9 +12,7 @@ import {
   SubTotalsV2,
 } from '@/lib/models/clientBillModel';
 import { classNames } from '@/lib/utility/utils';
-import {
-  CurrentActualsChangeOrdersV2,
-} from '@/lib/models/budgetCostCodeModel';
+import { CurrentActualsChangeOrdersV2 } from '@/lib/models/budgetCostCodeModel';
 
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 

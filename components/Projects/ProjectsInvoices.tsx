@@ -7,7 +7,10 @@ import { getProjectNamesForDropdown } from '@/lib/utility/tableHelpers';
 
 import InvoicesTable from '../Tables/Invoices/InvoiceSortHeadingsTable';
 import ProcessInvoiceSlideOverlay from '../UI/SlideOverlay/ProcessInvoiceSlideOverlay';
-import { InvoiceData, InvoiceTableHeadings } from '@/lib/models/invoiceDataModels';
+import {
+  InvoiceData,
+  InvoiceTableHeadings,
+} from '@/lib/models/invoiceDataModels';
 
 interface ExtendedItems extends Partial<Items> {
   sortBy: 'label' | 'id';

@@ -23,7 +23,11 @@ import { usePageData } from '@/hooks/use-page-data';
 import useLocationChange from '@/hooks/use-location-change';
 
 import { User } from '@/lib/models/formStateModels';
-import { ChangeOrderSummary, LaborSummary, ProjectSummary } from '@/lib/models/summaryDataModel';
+import {
+  ChangeOrderSummary,
+  LaborSummary,
+  ProjectSummary,
+} from '@/lib/models/summaryDataModel';
 import { getProjectName } from '@/lib/utility/projectHelpers';
 import { ProjectDataItems } from '@/lib/models/projectDataModel';
 
@@ -317,7 +321,9 @@ const ProjectHome = () => {
                       <ProjectsLaborFees
                         projectId={projectId}
                         tableData={
-                          projectData ? projectData['labor-summary'] as LaborSummary : null
+                          projectData
+                            ? (projectData['labor-summary'] as LaborSummary)
+                            : null
                         }
                       />
                     )}
@@ -347,7 +353,11 @@ const ProjectHome = () => {
                 <ProjectsChangeOrders
                   projectId={projectId}
                   tableData={
-                    projectData ? projectData['change-orders-summary'] as ChangeOrderSummary : null
+                    projectData
+                      ? (projectData[
+                          'change-orders-summary'
+                        ] as ChangeOrderSummary)
+                      : null
                   }
                 />
               </div>
