@@ -185,16 +185,13 @@ export default function BudgetForm(props: Props) {
     }
   };
 
-  const handleAddValue = (treeItemIndex: TreeItemIndex) => {
+  const handleAddValue = (treeItemIndex: TreeItemIndex, value: string) => {
     if (valueAddedItems.map((item) => item.index).includes(treeItemIndex)) {
       setValueAddedItems((prev) =>
         prev.filter((item) => item.index !== treeItemIndex)
       );
     } else {
-      setValueAddedItems((prev) => [
-        ...prev,
-        { index: treeItemIndex, value: '' },
-      ]);
+      setValueAddedItems((prev) => [...prev, { index: treeItemIndex, value }]);
     }
   };
 
@@ -351,7 +348,11 @@ export default function BudgetForm(props: Props) {
                               valueAddedItems
                                 .map((v) => v.index)
                                 .includes(item.index) ? (
-                                <div onClick={() => handleAddValue(item.index)}>
+                                <div
+                                  onClick={() =>
+                                    handleAddValue(item.index, item.data.value)
+                                  }
+                                >
                                   <ToggleOffInputIcon width={30} height={30} />
                                 </div>
                               ) : (
@@ -361,7 +362,12 @@ export default function BudgetForm(props: Props) {
                                     className={
                                       TreeComponentClasses['list-item__control']
                                     }
-                                    onClick={() => handleAddValue(item.index)}
+                                    onClick={() =>
+                                      handleAddValue(
+                                        item.index,
+                                        item.data.value
+                                      )
+                                    }
                                   >
                                     <ToggleOnInputIcon width={30} height={30} />
                                   </div>
@@ -392,11 +398,12 @@ export default function BudgetForm(props: Props) {
                           )}
                         >
                           <input
+                            type="number"
                             key={item.index}
                             className={`px-10 font-sans w-full block placeholder:text-base border-2 rounded-md py-1.5' text-[1.2rem] text-stak-dark-gray border-stak-light-gray bg-stak-white`}
                             value={
                               valueAddedItems.find((v) => v.index == item.index)
-                                ?.value || item.data.value
+                                ?.value || ''
                             }
                             onChange={(e) => {
                               handleChangeValue(e.target.value, item.index);
