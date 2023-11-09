@@ -326,63 +326,53 @@ export default function BudgetForm(props: Props) {
                             'rct-tree-item-button-search-match'
                         )}
                       >
-                        <div>
+                        <div
+                          className={classNames(
+                            'font-sans',
+                            depth === 0
+                              ? 'text-2xl font-semibold'
+                              : depth === 1
+                              ? 'text-xl font-normal'
+                              : 'text-lg'
+                          )}
+                        >
                           <div
                             className={classNames(
-                              'font-sans',
-                              depth === 0
-                                ? 'text-2xl font-semibold'
-                                : depth === 1
-                                ? 'text-xl font-normal'
-                                : 'text-lg'
+                              'flex items-center gap-2',
+                              TreeComponentClasses['list-item']
                             )}
                           >
-                            <div
-                              className={classNames(
-                                'flex items-center',
-                                TreeComponentClasses['list-item']
-                              )}
-                            >
-                              {depth !== 0 &&
-                              item.children?.length === 0 &&
-                              valueAddedItems
-                                .map((v) => v.index)
-                                .includes(item.index) ? (
+                            {depth !== 0 &&
+                            item.children?.length === 0 &&
+                            valueAddedItems
+                              .map((v) => v.index)
+                              .includes(item.index) ? (
+                              <div
+                                onClick={() =>
+                                  handleAddValue(item.index, item.data.value)
+                                }
+                              >
+                                <ToggleOffInputIcon width={30} height={30} />
+                              </div>
+                            ) : (
+                              depth !== 0 &&
+                              item.children?.length === 0 && (
                                 <div
                                   onClick={() =>
                                     handleAddValue(item.index, item.data.value)
                                   }
                                 >
-                                  <ToggleOffInputIcon width={30} height={30} />
+                                  <ToggleOnInputIcon width={30} height={30} />
                                 </div>
-                              ) : (
-                                depth !== 0 &&
-                                item.children?.length === 0 && (
-                                  <div
-                                    className={
-                                      TreeComponentClasses['list-item__control']
-                                    }
-                                    onClick={() =>
-                                      handleAddValue(
-                                        item.index,
-                                        item.data.value
-                                      )
-                                    }
-                                  >
-                                    <ToggleOnInputIcon width={30} height={30} />
-                                  </div>
-                                )
-                              )}
-                              <p
-                                className={
-                                  item.data.value === '0.00'
-                                    ? 'line-through'
-                                    : ''
-                                }
-                              >
-                                {title}
-                              </p>
-                            </div>
+                              )
+                            )}
+                            <p
+                              className={
+                                item.data.value === '0.00' ? 'line-through' : ''
+                              }
+                            >
+                              {title}
+                            </p>
                           </div>
                         </div>
                       </InteractiveComponent>
