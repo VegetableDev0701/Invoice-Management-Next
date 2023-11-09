@@ -120,16 +120,6 @@ export default function BudgetForm(props: Props) {
   }, [clickedLink, dummyForceRender]);
 
   useEffect(() => {
-    if (costCodeTreeDataList) {
-      const convertTreeData = new ConvertTreeData();
-      convertTreeData.updateTreeDataStatus(costCodeTreeDataList, !isCollapsed);
-      setCostCodeTreeDataList({
-        ...costCodeTreeDataList,
-      });
-    }
-  }, [isCollapsed]);
-
-  useEffect(() => {
     const openedItems = Object.keys(costCodeTreeDataList).filter(
       (treeItemIndex) =>
         treeItemIndex !== 'root' &&
@@ -205,7 +195,10 @@ export default function BudgetForm(props: Props) {
         prev.filter((item) => item.index !== treeItemIndex)
       );
     } else {
-      setValueAddedItems((prev) => [...prev, { index: treeItemIndex, value }]);
+      setValueAddedItems((prev) => [
+        ...prev,
+        { index: treeItemIndex, value: Number(value) ? value : '' },
+      ]);
     }
   };
 
@@ -219,7 +212,7 @@ export default function BudgetForm(props: Props) {
     }
 
     const newTreeData = { ...costCodeTreeDataList };
-    (newTreeData[treeItemIndex].data as CostCodeItem).value = value;
+    (newTreeData[treeItemIndex].data as CostCodeItem).value = value || '0';
     const convertTreeData = new ConvertTreeData();
     convertTreeData.calculateCostCode(newTreeData);
     const total = convertTreeData.getTotalBudget(newTreeData);
@@ -230,7 +223,6 @@ export default function BudgetForm(props: Props) {
         subDivisionTotals: {},
       })
     );
-    (newTreeData[treeItemIndex].data as CostCodeItem).value = value;
     const newFormData = convertTreeData.convertTreeData2CostCode(newTreeData);
     dispatch(
       projectDataActions.updateCostCodeData({
@@ -286,6 +278,12 @@ export default function BudgetForm(props: Props) {
                 ? 'div'
                 : 'button';
               const type = context.isRenaming ? undefined : 'button';
+              if (
+                isCollapsed &&
+                Number(item.data.value) === 0 &&
+                !valueAddedItems.map((v) => v.index).includes(item.index)
+              )
+                return <></>;
               // TODO have only root li component create all the classes
               return (
                 <li
