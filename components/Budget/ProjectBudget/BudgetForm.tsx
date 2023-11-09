@@ -20,6 +20,7 @@ import Card from '@/components/UI/Card';
 import { classNames } from '@/lib/utility/utils';
 
 import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
+import inputClasses from '@/components/Inputs/Input.module.css';
 import ToggleOffInputIcon from '@/public/icons/ToggleOffInput';
 import ToggleOnInputIcon from '@/public/icons/ToggleOnInput';
 
@@ -30,6 +31,7 @@ import {
   CostCodesData,
   TreeData,
 } from '@/lib/models/budgetCostCodeModel';
+import DollarSign from '@/public/icons/DollarSign';
 
 interface Props {
   formData: CostCodesData;
@@ -290,10 +292,12 @@ export default function BudgetForm(props: Props) {
                     '!py-1'
                   )}
                 >
-                  <div className={TreeComponentClasses['list-item']}>
+                  <div
+                    className={TreeComponentClasses['list-item']}
+                    style={{ paddingLeft: `${(depth + 1) * 12}px` }}
+                  >
                     <div
                       {...(context.itemContainerWithoutChildrenProps as any)}
-                      style={{ paddingLeft: `${(depth + 1) * 12}px` }}
                       className={classNames(
                         'rct-tree-item-title-container',
                         item.isFolder &&
@@ -380,17 +384,14 @@ export default function BudgetForm(props: Props) {
                     {valueAddedItems.map((v) => v.index).includes(item.index) &&
                       depth !== 0 &&
                       item.children?.length === 0 && (
-                        <div
-                          className={classNames(
-                            'rct-tree-item-button',
-                            'py-2',
-                            '!mt-4'
-                          )}
-                        >
+                        <div className="relative shadow-sm !mt-4 ml-[30px] mr-2">
+                          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <DollarSign width={24} height={20} />
+                          </div>
                           <input
                             type="number"
                             key={item.index}
-                            className={`px-10 font-sans w-full block placeholder:text-base border-2 rounded-md py-1.5' text-[1.2rem] text-stak-dark-gray border-stak-light-gray bg-stak-white`}
+                            className={`font-sans w-full block placeholder:text-base border-2 pl-10 rounded-md py-1.5 ${inputClasses['input-container__input']}`}
                             value={
                               valueAddedItems.find((v) => v.index == item.index)
                                 ?.value || ''
