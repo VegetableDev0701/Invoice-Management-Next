@@ -41,36 +41,49 @@ export interface NewUserData {
   onboard_form_data: FormData;
 }
 
-export default function OnBoardNewUser({
+export default function OnBoardNewUserParent({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user, isLoading } = useUser();
+  const hasUserMetadata =
+    (user as User).user_metadata && !isObjectEmpty((user as User).user_metadata)
+      ? true
+      : false;
+  return (
+    <>
+      {isLoading && <FullScreenLoader />}
+      {!isLoading && (
+        <OnBoardNewUser user={user} hasUserMetadata={hasUserMetadata}>
+          {children}
+        </OnBoardNewUser>
+      )}
+    </>
+  );
+}
+
+const OnBoardNewUser = ({
+  children,
+  user,
+  hasUserMetadata,
+}: {
+  children: React.ReactNode;
+  user: User;
+  hasUserMetadata: boolean;
+}) => {
   const [newUserData, setNewUserData] = useState<NewUserData>();
   const [verifiedEmail, setVerifiedEmail] = useState<boolean>(false);
   const [reqLoading, setReqLoading] = useState<boolean>(true);
-  const [hasUserMetadata, setHasUserMetadata] = useState<boolean>(false);
-
-  const { user, isLoading } = useUser();
 
   // This makes sure the onboard form elements are cleared. This covers the edge
   // case if two users are sigining into the same computer where the new user form state
   // could be saved in the redux memory and displayed on user's two onbaord form.
+
+  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(onboardUserActions.clearFormState());
   }, []);
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    setHasUserMetadata(
-      !isLoading &&
-        (user as User).user_metadata &&
-        !isObjectEmpty((user as User).user_metadata)
-        ? true
-        : false
-    );
-  }, [isLoading, user]);
 
   const finishOnboardingHandler = () => {
     window.location.href = '/api/auth/logout';
@@ -112,12 +125,12 @@ export default function OnBoardNewUser({
   };
 
   const runOnboardProcess = async () => {
-    if (!isLoading && user) {
+    if (user) {
       // check 1: check that the domain exists for one of the organizations we hav whitelisted
       const userDomainCheck = await checkUserDomain();
       if (userDomainCheck) {
         // check 2: if the user's email is not verified log them out
-        if (!isLoading && !(user as User).email_verified) {
+        if (!(user as User).email_verified) {
           dispatch(
             uiActions.setModalContent({
               openModal: true,
@@ -127,11 +140,7 @@ export default function OnBoardNewUser({
             })
           );
           setVerifiedEmail(false);
-        } else if (
-          !isLoading &&
-          (user as User).email_verified &&
-          !hasUserMetadata
-        ) {
+        } else if ((user as User).email_verified && !hasUserMetadata) {
           setVerifiedEmail(true);
           onBoardNewUser();
         }
@@ -150,10 +159,8 @@ export default function OnBoardNewUser({
   };
 
   useEffect(() => {
-    if (!isLoading) {
-      runOnboardProcess();
-    }
-  }, [isLoading]);
+    runOnboardProcess();
+  }, []);
 
   const updateItemElement = ({
     updatedFormData,
@@ -299,11 +306,7 @@ export default function OnBoardNewUser({
     : undefined;
 
   const showOnboardForm =
-    !isLoading &&
-    verifiedEmail &&
-    !hasUserMetadata &&
-    newUserData &&
-    modifiedFormData;
+    verifiedEmail && !hasUserMetadata && newUserData && modifiedFormData;
 
   return (
     <>
@@ -319,7 +322,7 @@ export default function OnBoardNewUser({
           }}
         />
       )}
-      {!isLoading && hasUserMetadata && children}
+      {hasUserMetadata && children}
     </>
   );
-}
+};
