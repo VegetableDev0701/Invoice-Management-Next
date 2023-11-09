@@ -7,7 +7,10 @@ import {
 } from 'react-complex-tree';
 import 'react-complex-tree/lib/style-modern.css';
 
-import { useAppDispatch as useDispatch } from '@/store/hooks';
+import {
+  useAppSelector as useSelector,
+  useAppDispatch as useDispatch,
+} from '@/store/hooks';
 import { addBudgetFormActions } from '@/store/add-budget-slice';
 import { projectDataActions } from '@/store/projects-data-slice';
 
@@ -60,6 +63,7 @@ export default function BudgetForm(props: Props) {
     projectId,
   } = props;
 
+  const isCollapsed = useSelector((state) => state.addBudgetForm.isCollapsed);
   const [expandedItems, setExpandedItems] = useState<TreeItemIndex[]>([]);
   const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
   const [selectedItems, setSelectedItems] = useState<TreeItemIndex[]>([]);
@@ -86,13 +90,11 @@ export default function BudgetForm(props: Props) {
     });
 
     const total = convertTreeData.getTotalBudget(treeData);
-    const divisionTotals = convertTreeData.getTotalDivision(treeData);
-    const subDivisionTotals = convertTreeData.getTotalSubDivision(treeData);
     dispatch(
       addBudgetFormActions.setFormElement({
         total: total.toFixed(2),
-        divisionTotals,
-        subDivisionTotals,
+        divisionTotals: {},
+        subDivisionTotals: {},
       })
     );
   }, [formData]);
@@ -116,6 +118,16 @@ export default function BudgetForm(props: Props) {
   useEffect(() => {
     scrollToElement(clickedLink, anchorScrollElement, 'scroll-frame');
   }, [clickedLink, dummyForceRender]);
+
+  useEffect(() => {
+    if (costCodeTreeDataList) {
+      const convertTreeData = new ConvertTreeData();
+      convertTreeData.updateTreeDataStatus(costCodeTreeDataList, !isCollapsed);
+      setCostCodeTreeDataList({
+        ...costCodeTreeDataList,
+      });
+    }
+  }, [isCollapsed]);
 
   useEffect(() => {
     const openedItems = Object.keys(costCodeTreeDataList).filter(
@@ -211,8 +223,6 @@ export default function BudgetForm(props: Props) {
     const convertTreeData = new ConvertTreeData();
     convertTreeData.calculateCostCode(newTreeData);
     const total = convertTreeData.getTotalBudget(newTreeData);
-    // const divisionTotals = convertTreeData.getTotalDivision(newTreeData);
-    // const subDivisionTotals = convertTreeData.getTotalSubDivision(newTreeData);
     dispatch(
       addBudgetFormActions.setFormElement({
         total: total.toFixed(2),
