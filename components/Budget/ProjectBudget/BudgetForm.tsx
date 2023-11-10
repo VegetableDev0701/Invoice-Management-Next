@@ -302,7 +302,12 @@ export default function BudgetForm(props: Props) {
                 >
                   <div
                     className={TreeComponentClasses['list-item']}
-                    style={{ paddingLeft: `${(depth + 1) * 12}px` }}
+                    style={{
+                      paddingLeft: `${
+                        (depth + 1) * 12 +
+                        (depth !== 0 && item.children?.length !== 0 ? 8 : 0)
+                      }px`,
+                    }}
                   >
                     <div
                       {...(context.itemContainerWithoutChildrenProps as any)}
@@ -335,7 +340,10 @@ export default function BudgetForm(props: Props) {
                           context.isDraggingOver &&
                             'rct-tree-item-button-dragging-over',
                           context.isSearchMatching &&
-                            'rct-tree-item-button-search-match'
+                            'rct-tree-item-button-search-match',
+                          depth !== 0 &&
+                            item.children?.length === 0 &&
+                            '!pl-0 z-50'
                         )}
                       >
                         <div
@@ -392,7 +400,7 @@ export default function BudgetForm(props: Props) {
                     {valueAddedItems.map((v) => v.index).includes(item.index) &&
                       depth !== 0 &&
                       item.children?.length === 0 && (
-                        <div className="relative shadow-sm !mt-4 ml-[30px] mr-2">
+                        <div className="relative shadow-sm !mt-4 mr-2">
                           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                             <DollarSign width={24} height={20} />
                           </div>
