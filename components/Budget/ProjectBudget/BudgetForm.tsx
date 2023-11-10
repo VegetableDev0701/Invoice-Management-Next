@@ -415,6 +415,12 @@ export default function BudgetForm(props: Props) {
                             onChange={(e) => {
                               handleChangeValue(e.target.value, item.index);
                             }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleAddValue(item.index, item.data.value);
+                              }
+                            }}
                           />
                         </div>
                       )}
