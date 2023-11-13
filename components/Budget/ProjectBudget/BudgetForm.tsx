@@ -7,7 +7,10 @@ import {
 } from 'react-complex-tree';
 import 'react-complex-tree/lib/style-modern.css';
 
-import { useAppDispatch as useDispatch } from '@/store/hooks';
+import {
+  useAppSelector as useSelector,
+  useAppDispatch as useDispatch,
+} from '@/store/hooks';
 import { addBudgetFormActions } from '@/store/add-budget-slice';
 import { projectDataActions } from '@/store/projects-data-slice';
 
@@ -20,6 +23,7 @@ import Card from '@/components/UI/Card';
 import { classNames } from '@/lib/utility/utils';
 
 import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
+import inputClasses from '@/components/Inputs/Input.module.css';
 import ToggleOffInputIcon from '@/public/icons/ToggleOffInput';
 import ToggleOnInputIcon from '@/public/icons/ToggleOnInput';
 
@@ -30,6 +34,7 @@ import {
   CostCodesData,
   TreeData,
 } from '@/lib/models/budgetCostCodeModel';
+import DollarSign from '@/public/icons/DollarSign';
 
 interface Props {
   formData: CostCodesData;
@@ -58,6 +63,7 @@ export default function BudgetForm(props: Props) {
     projectId,
   } = props;
 
+  const isCollapsed = useSelector((state) => state.addBudgetForm.isCollapsed);
   const [expandedItems, setExpandedItems] = useState<TreeItemIndex[]>([]);
   const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
   const [selectedItems, setSelectedItems] = useState<TreeItemIndex[]>([]);
@@ -83,14 +89,27 @@ export default function BudgetForm(props: Props) {
       ...treeData,
     });
 
+    if (!valueAddedItems.length) {
+      setValueAddedItems(
+        Object.entries(treeData)
+          .filter(
+            ([_, value]) =>
+              value.children?.length === 0 &&
+              (value.data as CostCodeItem).value != '0.00'
+          )
+          .map(([key, value]) => ({
+            index: key as TreeItemIndex,
+            value: (value.data as CostCodeItem).value || '',
+          }))
+      );
+    }
+
     const total = convertTreeData.getTotalBudget(treeData);
-    const divisionTotals = convertTreeData.getTotalDivision(treeData);
-    const subDivisionTotals = convertTreeData.getTotalSubDivision(treeData);
     dispatch(
       addBudgetFormActions.setFormElement({
         total: total.toFixed(2),
-        divisionTotals,
-        subDivisionTotals,
+        divisionTotals: {},
+        subDivisionTotals: {},
       })
     );
   }, [formData]);
@@ -185,15 +204,16 @@ export default function BudgetForm(props: Props) {
     }
   };
 
-  const handleAddValue = (treeItemIndex: TreeItemIndex) => {
+  const handleAddValue = (treeItemIndex: TreeItemIndex, value: string) => {
     if (valueAddedItems.map((item) => item.index).includes(treeItemIndex)) {
+      handleChangeValue('0.00', treeItemIndex);
       setValueAddedItems((prev) =>
         prev.filter((item) => item.index !== treeItemIndex)
       );
     } else {
       setValueAddedItems((prev) => [
         ...prev,
-        { index: treeItemIndex, value: '' },
+        { index: treeItemIndex, value: Number(value) ? value : '' },
       ]);
     }
   };
@@ -208,12 +228,10 @@ export default function BudgetForm(props: Props) {
     }
 
     const newTreeData = { ...costCodeTreeDataList };
-    (newTreeData[treeItemIndex].data as CostCodeItem).value = value;
+    (newTreeData[treeItemIndex].data as CostCodeItem).value = value || '0';
     const convertTreeData = new ConvertTreeData();
     convertTreeData.calculateCostCode(newTreeData);
     const total = convertTreeData.getTotalBudget(newTreeData);
-    // const divisionTotals = convertTreeData.getTotalDivision(newTreeData);
-    // const subDivisionTotals = convertTreeData.getTotalSubDivision(newTreeData);
     dispatch(
       addBudgetFormActions.setFormElement({
         total: total.toFixed(2),
@@ -221,7 +239,6 @@ export default function BudgetForm(props: Props) {
         subDivisionTotals: {},
       })
     );
-    (newTreeData[treeItemIndex].data as CostCodeItem).value = value;
     const newFormData = convertTreeData.convertTreeData2CostCode(newTreeData);
     dispatch(
       projectDataActions.updateCostCodeData({
@@ -277,6 +294,12 @@ export default function BudgetForm(props: Props) {
                 ? 'div'
                 : 'button';
               const type = context.isRenaming ? undefined : 'button';
+              if (
+                isCollapsed &&
+                Number(item.data.value) === 0 &&
+                !valueAddedItems.map((v) => v.index).includes(item.index)
+              )
+                return <></>;
               // TODO have only root li component create all the classes
               return (
                 <li
@@ -293,12 +316,19 @@ export default function BudgetForm(props: Props) {
                     '!py-1'
                   )}
                 >
-                  <div className={TreeComponentClasses['list-item']}>
+                  <div
+                    className={TreeComponentClasses['list-item']}
+                    style={{
+                      paddingLeft: `${
+                        (depth + 1) * 12 +
+                        (depth !== 0 && item.children?.length !== 0 ? 8 : 0)
+                      }px`,
+                    }}
+                  >
                     <div
                       {...(context.itemContainerWithoutChildrenProps as any)}
-                      style={{ paddingLeft: `${(depth + 1) * 12}px` }}
                       className={classNames(
-                        'rct-tree-item-title-container',
+                        'rct-tree-item-title-container group',
                         item.isFolder &&
                           'rct-tree-item-title-container-isFolder',
                         context.isSelected &&
@@ -326,57 +356,78 @@ export default function BudgetForm(props: Props) {
                           context.isDraggingOver &&
                             'rct-tree-item-button-dragging-over',
                           context.isSearchMatching &&
-                            'rct-tree-item-button-search-match'
+                            'rct-tree-item-button-search-match',
+                          depth !== 0 &&
+                            item.children?.length === 0 &&
+                            '!pl-0 z-50'
                         )}
                       >
-                        <div>
+                        <div
+                          className={classNames(
+                            'font-sans',
+                            depth === 0
+                              ? 'text-2xl font-semibold'
+                              : depth === 1
+                              ? 'text-xl font-normal'
+                              : 'text-lg'
+                          )}
+                        >
                           <div
                             className={classNames(
-                              'font-sans',
-                              depth === 0
-                                ? 'text-2xl font-semibold'
-                                : depth === 1
-                                ? 'text-xl font-normal'
-                                : 'text-lg'
+                              'flex items-center',
+                              TreeComponentClasses['list-item']
                             )}
                           >
-                            <div
-                              className={classNames(
-                                'flex items-center',
-                                TreeComponentClasses['list-item']
-                              )}
-                            >
-                              {depth !== 0 &&
-                              item.children?.length === 0 &&
-                              valueAddedItems
-                                .map((v) => v.index)
-                                .includes(item.index) ? (
-                                <div onClick={() => handleAddValue(item.index)}>
-                                  <ToggleOffInputIcon width={30} height={30} />
-                                </div>
-                              ) : (
-                                depth !== 0 &&
-                                item.children?.length === 0 && (
-                                  <div
-                                    className={
-                                      TreeComponentClasses['list-item__control']
-                                    }
-                                    onClick={() => handleAddValue(item.index)}
-                                  >
-                                    <ToggleOnInputIcon width={30} height={30} />
-                                  </div>
-                                )
-                              )}
-                              <p
-                                className={
-                                  item.data.value === '0.00'
-                                    ? 'line-through'
-                                    : ''
-                                }
+                            {depth !== 0 && item.children?.length === 0 && (
+                              <div
+                                className="opacity-0 group-hover:opacity-100 mr-2 transition-opacity"
+                                style={{ minWidth: '30px' }}
                               >
-                                {title}
-                              </p>
-                            </div>
+                                {valueAddedItems
+                                  .map((v) => v.index)
+                                  .includes(item.index) ? (
+                                  <div
+                                    className="mb-[1px]"
+                                    onClick={() =>
+                                      handleAddValue(
+                                        item.index,
+                                        item.data.value
+                                      )
+                                    }
+                                  >
+                                    <ToggleOffInputIcon
+                                      width={30}
+                                      height={30}
+                                    />
+                                  </div>
+                                ) : (
+                                  depth !== 0 &&
+                                  item.children?.length === 0 && (
+                                    <div
+                                      className="mb-[1px]"
+                                      onClick={() =>
+                                        handleAddValue(
+                                          item.index,
+                                          item.data.value
+                                        )
+                                      }
+                                    >
+                                      <ToggleOnInputIcon
+                                        width={30}
+                                        height={30}
+                                      />
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            )}
+                            <p
+                              className={
+                                item.data.value === '0.00' ? 'line-through' : ''
+                              }
+                            >
+                              {title}
+                            </p>
                           </div>
                         </div>
                       </InteractiveComponent>
@@ -384,22 +435,26 @@ export default function BudgetForm(props: Props) {
                     {valueAddedItems.map((v) => v.index).includes(item.index) &&
                       depth !== 0 &&
                       item.children?.length === 0 && (
-                        <div
-                          className={classNames(
-                            'rct-tree-item-button',
-                            'py-2',
-                            '!mt-4'
-                          )}
-                        >
+                        <div className="relative shadow-sm !mt-4 mr-2 ml-[30px]">
+                          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <DollarSign width={24} height={20} />
+                          </div>
                           <input
+                            type="number"
                             key={item.index}
-                            className={`px-10 font-sans w-full block placeholder:text-base border-2 rounded-md py-1.5' text-[1.2rem] text-stak-dark-gray border-stak-light-gray bg-stak-white`}
+                            className={`font-sans w-full block placeholder:text-base border-2 pl-10 rounded-md py-1.5 ${inputClasses['input-container__input']}`}
                             value={
                               valueAddedItems.find((v) => v.index == item.index)
-                                ?.value || item.data.value
+                                ?.value || ''
                             }
                             onChange={(e) => {
                               handleChangeValue(e.target.value, item.index);
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleAddValue(item.index, item.data.value);
+                              }
                             }}
                           />
                         </div>

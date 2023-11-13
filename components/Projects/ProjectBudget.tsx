@@ -136,23 +136,22 @@ export default function ProjectBudget(props: Props) {
 
   return (
     <div className="flex gap-5 h-full max-w-full">
-      {!formData && <FullScreenLoader />}
+      {!formData && <FullScreenLoader className="absolute inset-0 z-10" />}
       {formData && (
-        <CostCodeSideLinks
-          divisions={formData.divisions}
-          isBudgetForm={true}
-          onclicklink={clickLinkHandler}
-        />
-      )}
-      {!formData && <FullScreenLoader />}
-      {formData && (
-        <BudgetForm
-          projectId={projectId}
-          formData={formData}
-          clickedLink={clickedLinkId}
-          dummyForceRender={state}
-          anchorScrollElement={anchorScrollElement}
-        />
+        <>
+          <CostCodeSideLinks
+            divisions={formData.divisions}
+            isBudgetForm={true}
+            onclicklink={clickLinkHandler}
+          />
+          <BudgetForm
+            projectId={projectId}
+            formData={formData}
+            clickedLink={clickedLinkId}
+            dummyForceRender={state}
+            anchorScrollElement={anchorScrollElement}
+          />
+        </>
       )}
     </div>
   );

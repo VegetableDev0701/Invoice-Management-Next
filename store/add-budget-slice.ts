@@ -23,6 +23,7 @@ import {
   ChangeOrderChartDataV2,
   ChartDataV2,
 } from '@/lib/models/chartDataModels';
+import { isObjectEmpty } from '@/lib/utility/utils';
 
 type ProjectBudgetTotals = PayloadAction<{
   total: string;
@@ -84,7 +85,7 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
     let previousData: ChartDataV2 | undefined = undefined;
     if (
       state.projects[projectId].b2a?.b2aChartData &&
-      Object.keys(state.projects[projectId].b2a.b2aChartData).length > 0
+      !isObjectEmpty(state.projects[projectId].b2a.b2aChartData)
     ) {
       initActualsToZeros = false;
       previousData = state.projects[projectId].b2a.b2aChartData as ChartDataV2;
@@ -95,8 +96,7 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
     // check for the b2aChangeOrder chart data
     if (
       state.projects[projectId].b2a?.b2aChartDataChangeOrder &&
-      Object.keys(state.projects[projectId].b2a.b2aChartDataChangeOrder)
-        .length > 0
+      !isObjectEmpty(state.projects[projectId].b2a.b2aChartDataChangeOrder)
     ) {
       b2aChartDataChangeOrder = state.projects[projectId].b2a
         .b2aChartDataChangeOrder as unknown as ChangeOrderChartDataV2;
@@ -107,9 +107,9 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
     // check for any currentActualsChangeOrder data to initilize into the state
     if (
       state.projects[projectId].b2a?.updatedCurrentActualsChangeOrders &&
-      Object.keys(
+      !isObjectEmpty(
         state.projects[projectId].b2a.updatedCurrentActualsChangeOrders
-      ).length > 0
+      )
     ) {
       updatedCurrentActualsChangeOrders = state.projects[projectId].b2a
         .updatedCurrentActualsChangeOrders as unknown as ChangeOrderFormStateV2;
@@ -118,11 +118,11 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
     }
 
     const currentBudgetedTotal =
-      state.projects[projectId].b2a.currentBudgetedTotal.value ?? 0;
+      state.projects[projectId].b2a?.currentBudgetedTotal.value ?? 0;
     const currentGrandTotal =
-      state.projects[projectId].b2a.currentGrandTotal.value ?? 0;
+      state.projects[projectId].b2a?.currentGrandTotal.value ?? 0;
     const currentChangeOrderTotal =
-      state.projects[projectId].b2a.currentChangeOrderTotal.value ?? 0;
+      state.projects[projectId].b2a?.currentChangeOrderTotal.value ?? 0;
 
     const result = createB2AChartDataV2({
       budget: state.projects[projectId].budget,

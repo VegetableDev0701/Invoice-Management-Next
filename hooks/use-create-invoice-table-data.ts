@@ -10,6 +10,7 @@ import {
   Invoices,
   ProcessedInvoiceData,
 } from '@/lib/models/invoiceDataModels';
+import { isObjectEmpty } from '@/lib/utility/utils';
 /**
  * Custom hook for creating invoice rows.
  * Whenever there is processed data, this will use that data to create the invoice rows.
@@ -45,6 +46,12 @@ export default function useCreateInvoiceRows({
       state.data.projectsSummary.allProjects[projectId].projectSuper
   );
 
+  function formatTaxAmount(amount: string | undefined) {
+    if (!amount) return false;
+    const num = Number(amount.replaceAll(',', ''));
+    return !isNaN(num) ? formatNumber(num.toFixed(2)) : '0.00';
+  }
+
   // Normalize invoice data for table
   const invoiceRows: InvoiceTableRow[] | null = useMemo(() => {
     if (!pageLoading && allInvoices) {
@@ -62,29 +69,25 @@ export default function useCreateInvoiceRows({
         })
         .map((row) => {
           return {
-            vendor_name: row?.processedData?.vendor_name
-              ? row.processedData.vendor_name
-              : row.predicted_supplier_name?.supplier_name,
+            vendor_name:
+              row?.processedData?.vendor_name ??
+              row.predicted_supplier_name?.supplier_name,
             vendor_name_bb: row?.supplier_name?.bounding_box
               ? [
                   {
                     ...row.supplier_name.bounding_box,
-                    page: row.supplier_name?.page_reference
-                      ? row.supplier_name.page_reference
-                      : 1,
+                    page: row.supplier_name?.page_reference ?? 1,
                   },
                 ]
               : null,
-            invoice_id: row?.processedData?.invoice_id
-              ? row.processedData.invoice_id
-              : row.invoice_id?.entity_value_raw,
+            invoice_id:
+              row?.processedData?.invoice_id ??
+              row.invoice_id?.entity_value_raw,
             invoice_id_bb: row?.invoice_id?.bounding_box
               ? [
                   {
                     ...row.invoice_id.bounding_box,
-                    page: row.invoice_id?.page_reference
-                      ? row.invoice_id.page_reference
-                      : 1,
+                    page: row.invoice_id?.page_reference ?? 1,
                   },
                 ]
               : null,
@@ -94,36 +97,26 @@ export default function useCreateInvoiceRows({
               ? formatNumber(row.total_amount.entity_value_raw)
               : row.net_amount?.entity_value_raw
               ? formatNumber(row.net_amount.entity_value_raw)
-              : '',
+              : '0.00',
             total_amount_bb: row?.total_amount?.bounding_box
               ? [
                   {
                     ...row.total_amount.bounding_box,
-                    page: row.total_amount?.page_reference
-                      ? row.total_amount.page_reference
-                      : 1,
+                    page: row.total_amount?.page_reference ?? 1,
                   },
                 ]
               : row?.net_amount?.bounding_box
               ? [
                   {
                     ...row.net_amount.bounding_box,
-                    page: row.net_amount?.page_reference
-                      ? row.net_amount.page_reference
-                      : 1,
+                    page: row.net_amount?.page_reference ?? 1,
                   },
                 ]
               : null,
-            total_tax_amount: row?.processedData?.total_tax_amount
-              ? !isNaN(+formatNumber(row.processedData.total_tax_amount))
-                ? (+formatNumber(row.processedData.total_tax_amount)).toFixed(2)
-                : '0.00'
-              : row.total_tax_amount?.entity_value_raw &&
-                row.total_tax_amount.entity_value_raw !== ''
-              ? !isNaN(+row.total_tax_amount.entity_value_raw)
-                ? (+row.total_tax_amount.entity_value_raw).toFixed(2)
-                : '0.00'
-              : '0.00',
+            total_tax_amount:
+              formatTaxAmount(row?.processedData?.total_tax_amount) ||
+              formatTaxAmount(row?.total_tax_amount?.entity_value_raw) ||
+              '0.00',
             total_tax_amount_bb:
               row?.total_tax_amount?.entity_value_raw &&
               row.total_tax_amount.entity_value_raw !== ''
@@ -131,9 +124,7 @@ export default function useCreateInvoiceRows({
                   ? [
                       {
                         ...row.total_tax_amount.bounding_box,
-                        page: row.total_tax_amount?.page_reference
-                          ? row.total_tax_amount.page_reference
-                          : 1,
+                        page: row.total_tax_amount?.page_reference ?? 1,
                       },
                     ]
                   : null
@@ -141,24 +132,34 @@ export default function useCreateInvoiceRows({
             predicted_project: row.predicted_project.name,
             project: row.project.name,
             project_id: row.project.uuid,
-            date_received: row?.processedData?.date_received
-              ? row.processedData.date_received
-              : convertUtcToLocalTime(row.date_received, 'US/Pacific', true),
-            cost_code: row?.processedData?.cost_code
-              ? [row.processedData.cost_code]
-              : undefined,
-
+            invoice_date:
+              row?.processedData?.invoice_date ??
+              row?.invoice_date?.entity_value_norm ??
+              row?.invoice_date?.entity_value_raw ??
+              null,
+            invoice_date_bb: row?.invoice_date?.bounding_box
+              ? [
+                  {
+                    ...row.invoice_date.bounding_box,
+                    page: row.invoice_date?.page_reference ?? 1,
+                  },
+                ]
+              : null,
+            date_received:
+              row?.processedData?.date_received ??
+              convertUtcToLocalTime(row.date_received, 'US/Pacific', true),
+            cost_code: row?.processedData?.cost_code,
             line_items_toggle:
               'line_items_toggle' in (row.processedData || {})
                 ? (row.processedData as ProcessedInvoiceData).line_items_toggle
                 : row?.processedData?.line_items &&
-                  Object.keys(row.processedData.line_items).length > 0
+                  !isObjectEmpty(row.processedData.line_items)
                 ? true
                 : false,
             line_items: row.line_items,
             line_items_gpt:
               row?.processedData?.line_items &&
-              Object.keys(row.processedData.line_items).length > 0
+              !isObjectEmpty(row.processedData.line_items)
                 ? row.processedData.line_items
                 : row?.line_items_gpt
                 ? row.line_items_gpt
@@ -172,19 +173,14 @@ export default function useCreateInvoiceRows({
                   uuid: row.processedData.change_order.uuid,
                 }
               : null,
-            is_credit: row?.processedData?.is_credit
-              ? row.processedData.is_credit
-              : false,
+            is_credit: row?.processedData?.is_credit ?? false,
             processed: row.processed ? 'Yes' : 'No',
             approved: row.approved ? 'Yes' : 'No',
-            is_synced: row?.processedData?.is_synced
-              ? row?.processedData?.is_synced
-              : 'No',
-            approver: row?.processedData?.approver
-              ? row.processedData.approver
-              : projectSupervisor,
+            is_synced: row?.processedData?.is_synced ?? 'No',
+            approver: row?.processedData?.approver ?? projectSupervisor,
             gcs_img_uri: row.gcs_img_uri,
             doc_id: row.doc_id,
+            billable: row?.processedData?.billable ?? true,
             image_dim: {
               width: row.pages[0].width,
               height: row.pages[0].height,

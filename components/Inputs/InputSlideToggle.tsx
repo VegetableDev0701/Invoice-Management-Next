@@ -52,17 +52,17 @@ export default function SlideToggle(props: Props) {
     }
   }, [enabled]);
 
+  const topClasses = input.id.includes('billable')
+    ? 'flex flex-col items-center my-2 w-[5rem]'
+    : 'flex items-center justify-between gap-10 my-2';
+  const labelClasses = input.id.includes('billable')
+    ? 'font-sans font-semibold text-md -mt-1'
+    : 'font-sans font-semibold text-lg';
+
   return (
-    <Switch.Group
-      as="div"
-      className="flex items-center justify-between gap-10 my-2"
-    >
+    <Switch.Group as="div" className={topClasses}>
       <span className="flex flex-grow flex-col">
-        <Switch.Label
-          as="span"
-          className="font-sans font-semibold text-lg"
-          passive
-        >
+        <Switch.Label as="span" className={labelClasses} passive>
           {input.label}
         </Switch.Label>
         {/* <Switch.Description as="span" className="text-sm text-gray-500">

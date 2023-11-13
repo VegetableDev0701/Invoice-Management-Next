@@ -61,7 +61,6 @@ export const createB2AChartData = ({
     } else {
       chartData[divisionKey].subDivisionTotals.push(Number(subDivValue.value));
     }
-
     // initalize the actuals array to all zeros if this object doesn't already exist
     // otherwise insert the old actuals values
     if (initActualsToZeros) {

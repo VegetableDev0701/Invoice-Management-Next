@@ -58,6 +58,7 @@ function ProcessInvoiceForm(props: Props) {
     (state) => state.projects[projectId]?.['change-orders-summary']
   ) as ChangeOrderSummary;
 
+
   useEffect(() => {
     onRenderComplete();
   }, []);
@@ -87,6 +88,8 @@ function ProcessInvoiceForm(props: Props) {
       boundingBox = currentData?.total_amount_bb;
     } else if (id === 'total-tax') {
       boundingBox = currentData?.total_tax_amount_bb;
+    } else if (id === 'invoice-date') {
+      boundingBox = currentData?.invoice_date_bb;
     } else {
       return;
     }
@@ -143,43 +146,42 @@ function ProcessInvoiceForm(props: Props) {
                   } else {
                     return (
                       <>
-                        {el.items.map((item, p) => {
-                          const currentItem = currentData
-                            ? getCurrentInvoiceData(item, currentData)
-                            : item;
-
-                          if (
-                            item.id === 'work-description' &&
-                            formState['line-item-toggle']?.value
-                          ) {
-                            return (
-                              <div
-                                key={`${i}_${j}`}
-                                className="flex py-2 px-5 self-stretch gap-4"
-                              >
-                                <MultipleCostCodes
-                                  key={`${formatNameForID(item.label)}_${p}`}
-                                  currentData={currentData}
+                        <div
+                          key={`${i}_${j}`}
+                          className="flex py-2 px-5 self-stretch gap-4"
+                        >
+                          {el.items.map((item, p) => {
+                            const currentItem = currentData
+                              ? getCurrentInvoiceData(item, currentData)
+                              : item;
+                            if (
+                              item.id === 'work-description' &&
+                              formState['line-item-toggle']?.value
+                            ) {
+                              return (
+                                <div
+                                  key={`${i}_${j}`}
+                                  className="flex py-2 px-5 self-stretch gap-4"
+                                >
+                                  <MultipleCostCodes
+                                    key={`${formatNameForID(item.label)}_${p}`}
+                                    currentData={currentData}
+                                  />
+                                </div>
+                              );
+                            } else if (
+                              (item.id === 'cost-code' ||
+                                item.id === 'change-order') &&
+                              formState['line-item-toggle']?.value
+                            ) {
+                              return (
+                                <div
+                                  key={`${i}_${j}`}
+                                  className="flex p-0 self-stretch gap-4"
                                 />
-                              </div>
-                            );
-                          } else if (
-                            (item.id === 'cost-code' ||
-                              item.id === 'change-order') &&
-                            formState['line-item-toggle']?.value
-                          ) {
-                            return (
-                              <div
-                                key={`${i}_${j}`}
-                                className="flex p-0 self-stretch gap-4"
-                              />
-                            );
-                          } else {
-                            return (
-                              <div
-                                key={`${i}_${j}`}
-                                className="flex py-2 px-5 self-stretch gap-4"
-                              >
+                              );
+                            } else {
+                              return (
                                 <Input
                                   classes="flex-1"
                                   key={`${formatNameForID(item.label)}_${p}`}
@@ -204,10 +206,10 @@ function ProcessInvoiceForm(props: Props) {
                                     i === 0 && j === 0 && p === 0 ? true : false
                                   }
                                 />
-                              </div>
-                            );
-                          }
-                        })}
+                              );
+                            }
+                          })}
+                        </div>
                       </>
                     );
                   }

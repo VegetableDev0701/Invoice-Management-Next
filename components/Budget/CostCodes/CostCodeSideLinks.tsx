@@ -1,5 +1,5 @@
 import { useAppSelector as useSelector } from '@/store/hooks';
-import { formatNameForID } from '@/lib/utility/formatter';
+import { formatNameForID, formatNumber } from '@/lib/utility/formatter';
 import { Divisions } from '@/lib/models/budgetCostCodeModel';
 
 import Card from '@/components/UI/Card';
@@ -35,7 +35,7 @@ function CostCodeSideLinks(props: Props) {
     <div className={`flex flex-col h-full w-80 gap-4`}>
       {isBudgetForm && (
         <div className="flex justify-center rounded-[50px] bg-stak-dark-green text-white font-sans font-normal text-3xl w-full py-2">
-          {`$ ${totalBudget}`}
+          {`$ ${formatNumber(totalBudget)}`}
         </div>
       )}
       {isB2APlots && (

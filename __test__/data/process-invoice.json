@@ -116,6 +116,13 @@
               "required": false,
               "value": "",
               "isOnOverlay": true
+            },
+            {
+              "label": "Billable",
+              "id": "billable",
+              "inputType": "slideToggle",
+              "required": false,
+              "value": true
             }
           ]
         },
@@ -173,13 +180,22 @@
         {
           "items": [
             {
-              "label": "Date Received",
+              "label": "Invoice Date",
+              "id": "invoice-date",
+              "type": "date",
+              "data-testid": "date-input",
+              "value": "",
+              "required": false,
+              "errormessage": "Invoice date is required."
+            },
+            {
+              "label": "Date Loaded into Stak",
               "id": "date-received",
               "type": "date",
               "data-testid": "date-input",
               "value": "",
               "required": false,
-              "errormessage": "Workers compensation expiration date is required."
+              "errormessage": "Must include when the invoices was loaded into Stak."
             }
           ]
         },

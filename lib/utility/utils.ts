@@ -34,3 +34,14 @@ export function classNames(...classes: Array<string | undefined | false>) {
 export const isObjectEmpty = (object: object) => {
   return JSON.stringify(object) === '{}';
 };
+
+export function formatDateForInput(dateStr: string) {
+  const date = new Date(dateStr);
+
+  // JavaScript months are 0-indexed, so add 1
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}

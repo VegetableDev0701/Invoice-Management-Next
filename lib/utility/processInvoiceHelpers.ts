@@ -1,6 +1,7 @@
 import { Items } from '../models/formDataModel';
 import { BoundingBox, InvoiceTableRow } from '../models/invoiceDataModels';
 import { ChangeOrderSummary } from '../models/summaryDataModel';
+import { formatDateForInput } from './utils';
 
 export function getCurrentInvoiceData(
   item: Items,
@@ -40,15 +41,20 @@ export function getCurrentInvoiceData(
     return {
       ...item,
       ...{
-        value: currentData?.change_order?.name
-          ? currentData.change_order.name
-          : 'None',
+        value: currentData?.change_order?.name ?? 'None',
       },
     };
   } else if (item.id === 'approver') {
     return {
       ...item,
       ...{ value: currentData.approver },
+    };
+  } else if (item.id === 'invoice-date') {
+    return {
+      ...item,
+      value: currentData?.invoice_date
+        ? formatDateForInput(currentData.invoice_date)
+        : null,
     };
   } else if (item.id === 'date-received') {
     if (currentData?.date_received) {

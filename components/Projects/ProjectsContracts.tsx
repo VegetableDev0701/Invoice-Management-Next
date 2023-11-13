@@ -45,7 +45,7 @@ export default function ProjectsContracts(props: Props) {
   const { isLoading: isLoading } = usePageData(
     'data',
     'forms',
-    'add-contracts'
+    'add-contract'
   );
 
   // TODO add functionality to edit a contract (use the process-invoice form)

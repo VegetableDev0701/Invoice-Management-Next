@@ -73,5 +73,6 @@ export function isKeyOfLineItemItem(
     'bounding_box',
     'change_order',
     'number_of_hours',
+    'billable',
   ].includes(key);
 }

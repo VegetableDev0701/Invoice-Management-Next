@@ -101,9 +101,7 @@ export default function ProjectsChangeOrders(props: Props) {
       })
     );
 
-    const changeOrderUUID = overlayContent?.currentId
-      ? overlayContent.currentId
-      : nanoid();
+    const changeOrderUUID = overlayContent?.currentId ?? nanoid();
 
     // create the form data to push to the DB
     const dataToSubmit = createFormDataForSubmit({
@@ -116,13 +114,12 @@ export default function ProjectsChangeOrders(props: Props) {
 
     dataToSubmit.uuid = changeOrderUUID;
 
-    (changeOrderSummaryState as ChangeOrderSummary)[changeOrderUUID];
-
     const changeOrderSummary = createSingleChangeOrderSummary({
       changeOrder: dataToSubmit as LaborData,
       changeOrderId: changeOrderUUID,
-      content: (changeOrderSummaryState as ChangeOrderSummary)[changeOrderUUID]
-        ?.content as ChangeOrderContent,
+      content: (changeOrderSummaryState as ChangeOrderSummary)?.[
+        changeOrderUUID
+      ]?.content as ChangeOrderContent,
     });
 
     dispatch(

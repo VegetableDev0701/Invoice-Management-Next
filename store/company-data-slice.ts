@@ -215,45 +215,52 @@ export const addProcessedInvoiceData = createAsyncThunk(
           )
         : {};
 
+      // check if the current chosen project in the processed invoice form
+      // is the same as the project the invoice is currently associated with
+      const currentProjectName =
+        processInvoiceFormState?.['project-name']?.value &&
+        projectName !== processInvoiceFormState['project-name'].value
+          ? (processInvoiceFormState?.['project-name']?.value as string)
+          : projectName;
+
+      // grab the project data for the current project associated with the clicked invoice
       const projectData = Object.values(
         state.data.projectsSummary.allProjects as SummaryProjects
-      ).filter((project) => project.projectName === projectName)[0];
+      ).filter((project) => project.projectName === currentProjectName)[0];
 
       const changeOrdersSummary = state.projects[projectData.uuid as string][
         'change-orders-summary'
       ] as ChangeOrderSummary;
 
       const processedInvoiceData = {
-        invoice_id: processInvoiceFormState?.['invoice-number']?.value
-          ? (processInvoiceFormState['invoice-number'].value as string)
-          : '',
-        vendor_name: processInvoiceFormState?.['vendor-name']?.value
-          ? (processInvoiceFormState['vendor-name'].value as string)
-          : '',
+        invoice_id:
+          (processInvoiceFormState?.['invoice-number']?.value as string) ??
+          null,
+        vendor_name:
+          (processInvoiceFormState?.['vendor-name']?.value as string) ?? null,
         cost_code:
           processInvoiceFormState?.['cost-code']?.value &&
           processInvoiceFormState['cost-code'].value !== 'None' &&
           processInvoiceFormState['cost-code'].value !== ''
             ? (processInvoiceFormState['cost-code'].value as string)
             : null,
-        total_tax_amount: processInvoiceFormState?.['total-tax']?.value
-          ? (processInvoiceFormState['total-tax'].value as string)
-          : '',
-        total_amount: processInvoiceFormState?.['invoice-total']?.value
-          ? (processInvoiceFormState['invoice-total'].value as string)
-          : '',
-        approver: processInvoiceFormState?.['approver']?.value
-          ? (processInvoiceFormState['approver'].value as string)
-          : '',
-        is_credit: processInvoiceFormState?.['credit']?.value
-          ? (processInvoiceFormState['credit'].value as boolean)
-          : false,
-        date_received: processInvoiceFormState?.['date-received']?.value
-          ? (processInvoiceFormState['date-received'].value as string)
-          : '',
-        line_items_toggle: processInvoiceFormState?.['line-item-toggle']?.value
-          ? (processInvoiceFormState['line-item-toggle'].value as boolean)
-          : false,
+        total_tax_amount:
+          (processInvoiceFormState?.['total-tax']?.value as string) ?? null,
+        total_amount:
+          (processInvoiceFormState?.['invoice-total']?.value as string) ?? null,
+        approver:
+          (processInvoiceFormState?.['approver']?.value as string) ?? null,
+        is_credit:
+          (processInvoiceFormState?.['credit']?.value as boolean) ?? false,
+        date_received:
+          (processInvoiceFormState?.['date-received']?.value as string) ?? null,
+        invoice_date:
+          (processInvoiceFormState?.['invoice-date']?.value as string) ?? null,
+        line_items_toggle:
+          (processInvoiceFormState?.['line-item-toggle']?.value as boolean) ??
+          false,
+        billable:
+          (processInvoiceFormState?.['billable']?.value as boolean) ?? true,
       };
 
       const numLineItems = +(state.addProcessInvoiceForm.numLineItems.value as
@@ -281,8 +288,8 @@ export const addProcessedInvoiceData = createAsyncThunk(
       }
 
       // Check to make sure that the user has not selected a change order for any line items
-      // and the whole invoice. This wouldn't make sense becuase the whole invoice line item would
-      // cover all line items, and this will not be the desired behavior.
+      // and the whole invoice. This wouldn't make sense becuase the whole invoice would
+      // cover all line items, and this would be in conflict with selecting an specific line item for a change order.
       try {
         if (
           Object.values(groupedLineItems).some((lineItem) => {
@@ -484,12 +491,13 @@ export const addProcessedInvoiceData = createAsyncThunk(
         changeOrderObj = null;
         updatedLineItems = groupedLineItems; // which will equal just {}
       }
-
       const processedInvoiceDataUpdated: ProcessedInvoiceData = {
         ...processedInvoiceData,
         ...{ change_order: changeOrderObj },
         ...{ line_items: groupedLineItems },
       };
+
+      console.log(snapshotCopy(processedInvoiceDataUpdated));
 
       thunkAPI.dispatch(
         companyDataActions.addProcessedInvoiceData({
@@ -896,6 +904,7 @@ export const companyDataSlice = createSlice({
     ) {
       const { isProcessed, invoiceId, projectData, processedInvoiceData } =
         action.payload;
+
       state.invoices.allInvoices[invoiceId] = {
         ...state.invoices.allInvoices[invoiceId],
         ...{

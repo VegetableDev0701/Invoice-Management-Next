@@ -220,9 +220,7 @@ export default function ProjectsLaborFees(props: Props) {
       })
     );
 
-    const laborUUID = overlayContent?.currentId
-      ? overlayContent.currentId
-      : nanoid();
+    const laborUUID = overlayContent?.currentId ?? nanoid();
 
     // create the form data to push to the DB
     const dataToSubmit = createFormDataForSubmit({
@@ -246,7 +244,7 @@ export default function ProjectsLaborFees(props: Props) {
     // check if any piece of the labor is a change order
     const laborFeesChangeOrders = Object.values(
       laborFeeSummary.line_items
-    ).some((item) => item);
+    ).some((item) => item.change_order);
     let changeOrderContent: {
       [changeOrderId: string]: ChangeOrderContent;
     } = {};

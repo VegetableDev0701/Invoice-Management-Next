@@ -48,14 +48,16 @@ export interface InvoiceTableRows {
 export interface InvoiceTableRow {
   [key: string]: any;
   approved: string;
-  approver: string | undefined;
+  approver?: string;
   change_order: { uuid: string; name: string } | null | undefined;
-  cost_code: [object] | undefined; // TODO remove from data???
+  cost_code?: [object]; // TODO remove from data???
   date_received: string;
   doc_id: string;
   gcs_img_uri: string[];
   image_dim: { width: number; height: number };
-  invoice_id: string | undefined;
+  invoice_date?: string;
+  invoice_date_bb: BoundingBox[] | null;
+  invoice_id?: string;
   invoice_id_bb: BoundingBox[] | null;
   is_credit: boolean;
   is_synced: string;
@@ -96,6 +98,8 @@ export interface ProcessedInvoiceData {
   invoice_id: string;
   date_received: string;
   is_synced?: string;
+  invoice_date?: string;
+  billable: boolean;
 }
 
 export interface InvoiceLineItem {
@@ -110,6 +114,7 @@ export interface InvoiceLineItemItem {
   page: number | null;
   bounding_box: BoundingBox | null;
   number_of_hours?: number;
+  billable: boolean;
   change_order: { name: string; uuid: string } | null;
 }
 

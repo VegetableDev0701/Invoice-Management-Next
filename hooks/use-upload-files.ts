@@ -90,7 +90,7 @@ export default function useUploadFilesHandler({
         } else if (uploadFileType === 'contract') {
           url = `${getAPIUrl({ ...nodeEnv })}/${
             (user as User).user_metadata.companyId
-          }/upload-contracts/?project_id=${projectId ? projectId : 'None'}`;
+          }/upload-contracts?project_id=${projectId ? projectId : 'None'}`;
         }
 
         const response = await fetch(url, {

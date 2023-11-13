@@ -93,11 +93,11 @@ export function createCostCodeList(costCodes: CostCodesData) {
     item: CostCodeItem | CostCodeItemB2AData,
     _: Array<number>
   ) => {
-    costCodeList.push({ id: count, label: String(item.number) });
+    costCodeList.push({ id: count, label: String(item.number.toFixed(4)) });
     costCodeNameList.push({
       id: count,
       label: (item as CostCodeItem).label || item.name || '',
-      costCode: String(item.number),
+      costCode: String(item.number.toFixed(4)),
     });
     count++;
   };

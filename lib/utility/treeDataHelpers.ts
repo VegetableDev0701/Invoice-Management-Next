@@ -36,6 +36,14 @@ export class ConvertTreeData {
     return this.result;
   }
 
+  updateTreeDataStatus = (treeData: TreeData, isOpened: boolean) => {
+    Object.values(treeData).forEach((item) => {
+      if (item.data.isOpened !== undefined && item.data.isOpened !== isOpened) {
+        treeData[item.index].data.isOpened = isOpened;
+      }
+    });
+  };
+
   iterateAllItems = (divId: string, subItems: CostCodeItem[]) => {
     subItems?.forEach((subItem: CostCodeItem) => {
       const item = `item${this.itemIndex++}`;
@@ -275,39 +283,6 @@ export class ConvertTreeData {
     let res = 0;
     treeData.root.children?.forEach((child) => {
       res += parseFloat((treeData[child].data as Divisions).value || '0');
-    });
-    return res;
-  };
-
-  getTotalDivision = (treeData: TreeData) => {
-    let res = {};
-    treeData.root.children?.forEach((child) => {
-      res = {
-        ...res,
-        [(treeData[child].data as Divisions).number]: {
-          name: (treeData[child].data as Divisions).name,
-          value: parseFloat((treeData[child].data as Divisions).value || '0'),
-        },
-      };
-    });
-    return res;
-  };
-
-  getTotalSubDivision = (treeData: TreeData) => {
-    let res = {};
-    treeData.root.children?.forEach((division) => {
-      treeData[division].children?.forEach((subDivision) => {
-        res = {
-          ...res,
-          [(treeData[subDivision].data as CostCodeItem).number]: {
-            division: (treeData[division].data as CostCodeItem).number,
-            value: parseFloat(
-              (treeData[subDivision].data as CostCodeItem).value || '0'
-            ),
-            name: (treeData[subDivision].data as CostCodeItem).name,
-          },
-        };
-      });
     });
     return res;
   };

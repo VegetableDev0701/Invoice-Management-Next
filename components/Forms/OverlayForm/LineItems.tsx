@@ -121,7 +121,7 @@ function LineItems(props: Props) {
               errormessage: 'Number of hours worked is required.',
               value:
                 lineItemsGPT && lineItemsGPT[i]?.['amount']
-                  ? (lineItemsGPT[i]['amount'] as string)
+                  ? lineItemsGPT[i]['amount']
                   : '',
               isCurrency: true,
               isOnOverlay: true,
@@ -138,6 +138,23 @@ function LineItems(props: Props) {
             }
             onBlur={onMouseLeaveHandler}
           />
+          <Input
+            form={form}
+            classes="flex-1"
+            input={{
+              label: 'Billable',
+              id: `${i + 1}-billable`,
+              inputType: 'slideToggle',
+              required: false,
+              value:
+                lineItemsGPT && lineItemsGPT[i]?.['billable']
+                  ? lineItemsGPT[i]['billable']
+                  : true,
+              isOnOverlay: true,
+            }}
+            projectId={projectId}
+            actions={actions}
+          />
         </div>
         <div className="flex py-2 px-5 self-stretch gap-4">
           <Input
@@ -150,7 +167,7 @@ function LineItems(props: Props) {
               inputType: 'dropdownWithSearch',
               value:
                 lineItemsGPT && lineItemsGPT[i]?.['cost_code']
-                  ? (lineItemsGPT[i]['cost_code'] as string)
+                  ? lineItemsGPT[i]['cost_code']
                   : 'None',
               required: false,
               isOnOverlay: true,
@@ -180,7 +197,7 @@ function LineItems(props: Props) {
               errormessage: 'Work description is required.',
               value:
                 lineItemsGPT && lineItemsGPT[i]?.['work_description']
-                  ? (lineItemsGPT[i]['work_description'] as string)
+                  ? lineItemsGPT[i]['work_description']
                   : 'None',
               isCurrency: false,
               isOnOverlay: true,
