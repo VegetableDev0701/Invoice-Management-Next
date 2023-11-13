@@ -89,6 +89,21 @@ export default function BudgetForm(props: Props) {
       ...treeData,
     });
 
+    if (!valueAddedItems.length) {
+      setValueAddedItems(
+        Object.entries(treeData)
+          .filter(
+            ([_, value]) =>
+              value.children?.length === 0 &&
+              (value.data as CostCodeItem).value != '0.00'
+          )
+          .map(([key, value]) => ({
+            index: key as TreeItemIndex,
+            value: (value.data as CostCodeItem).value || '',
+          }))
+      );
+    }
+
     const total = convertTreeData.getTotalBudget(treeData);
     dispatch(
       addBudgetFormActions.setFormElement({
@@ -191,6 +206,7 @@ export default function BudgetForm(props: Props) {
 
   const handleAddValue = (treeItemIndex: TreeItemIndex, value: string) => {
     if (valueAddedItems.map((item) => item.index).includes(treeItemIndex)) {
+      handleChangeValue('0.00', treeItemIndex);
       setValueAddedItems((prev) =>
         prev.filter((item) => item.index !== treeItemIndex)
       );
@@ -312,7 +328,7 @@ export default function BudgetForm(props: Props) {
                     <div
                       {...(context.itemContainerWithoutChildrenProps as any)}
                       className={classNames(
-                        'rct-tree-item-title-container',
+                        'rct-tree-item-title-container group',
                         item.isFolder &&
                           'rct-tree-item-title-container-isFolder',
                         context.isSelected &&
@@ -358,33 +374,50 @@ export default function BudgetForm(props: Props) {
                         >
                           <div
                             className={classNames(
-                              'flex items-center gap-2',
+                              'flex items-center',
                               TreeComponentClasses['list-item']
                             )}
                           >
-                            {depth !== 0 &&
-                            item.children?.length === 0 &&
-                            valueAddedItems
-                              .map((v) => v.index)
-                              .includes(item.index) ? (
+                            {depth !== 0 && item.children?.length === 0 && (
                               <div
-                                onClick={() =>
-                                  handleAddValue(item.index, item.data.value)
-                                }
+                                className="opacity-0 group-hover:opacity-100 mr-2 transition-opacity"
+                                style={{ minWidth: '30px' }}
                               >
-                                <ToggleOffInputIcon width={30} height={30} />
+                                {valueAddedItems
+                                  .map((v) => v.index)
+                                  .includes(item.index) ? (
+                                  <div
+                                    onClick={() =>
+                                      handleAddValue(
+                                        item.index,
+                                        item.data.value
+                                      )
+                                    }
+                                  >
+                                    <ToggleOffInputIcon
+                                      width={30}
+                                      height={30}
+                                    />
+                                  </div>
+                                ) : (
+                                  depth !== 0 &&
+                                  item.children?.length === 0 && (
+                                    <div
+                                      onClick={() =>
+                                        handleAddValue(
+                                          item.index,
+                                          item.data.value
+                                        )
+                                      }
+                                    >
+                                      <ToggleOnInputIcon
+                                        width={30}
+                                        height={30}
+                                      />
+                                    </div>
+                                  )
+                                )}
                               </div>
-                            ) : (
-                              depth !== 0 &&
-                              item.children?.length === 0 && (
-                                <div
-                                  onClick={() =>
-                                    handleAddValue(item.index, item.data.value)
-                                  }
-                                >
-                                  <ToggleOnInputIcon width={30} height={30} />
-                                </div>
-                              )
                             )}
                             <p
                               className={
@@ -400,7 +433,7 @@ export default function BudgetForm(props: Props) {
                     {valueAddedItems.map((v) => v.index).includes(item.index) &&
                       depth !== 0 &&
                       item.children?.length === 0 && (
-                        <div className="relative shadow-sm !mt-4 mr-2">
+                        <div className="relative shadow-sm !mt-4 mr-2 ml-[30px]">
                           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                             <DollarSign width={24} height={20} />
                           </div>
