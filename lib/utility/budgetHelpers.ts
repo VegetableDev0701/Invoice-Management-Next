@@ -425,7 +425,7 @@ const handleLineItem = ({
         qtyAmt: '1',
         rateAmt: formatNumber(amount.toFixed(2)),
         description: getCostCodeDescriptionFromNumber(
-          (+costCode).toFixed(4),
+          costCode,
           costCodeNameList
         ),
         vendor: vendorName,
@@ -439,7 +439,7 @@ const handleLineItem = ({
         qtyAmt: '1',
         rateAmt: formatNumber(amount.toFixed(2)),
         description: getCostCodeDescriptionFromNumber(
-          (+costCode).toFixed(4),
+          costCode,
           costCodeNameList
         ),
         vendor: vendorName,
@@ -527,7 +527,7 @@ const handleLineItem = ({
         qtyAmt: '1',
         rateAmt: formatNumber(amount.toFixed(2)),
         description: getCostCodeDescriptionFromNumber(
-          (+costCode).toFixed(4),
+          costCode,
           costCodeNameList
         ),
         vendor: vendorName,
@@ -542,7 +542,7 @@ const handleLineItem = ({
         qtyAmt: '1',
         rateAmt: formatNumber(amountInvoice.toFixed(2)),
         description: getCostCodeDescriptionFromNumber(
-          (+costCode).toFixed(4),
+          costCode,
           costCodeNameList
         ),
         vendor: vendorName,
@@ -656,10 +656,7 @@ const handleWholeInvoice = ({
       costCode,
       qtyAmt: '1',
       rateAmt: formatNumber(amount.toFixed(2)),
-      description: getCostCodeDescriptionFromNumber(
-        (+costCode).toFixed(4),
-        costCodeNameList
-      ),
+      description: getCostCodeDescriptionFromNumber(costCode, costCodeNameList),
       vendor: invoice.processedData.vendor_name,
       changeOrder: changeOrder.name,
       group: 'Change Orders',
@@ -670,10 +667,7 @@ const handleWholeInvoice = ({
       costCode,
       qtyAmt: '1',
       rateAmt: formatNumber(amountInvoice.toFixed(2)),
-      description: getCostCodeDescriptionFromNumber(
-        (+costCode).toFixed(4),
-        costCodeNameList
-      ),
+      description: getCostCodeDescriptionFromNumber(costCode, costCodeNameList),
       vendor: invoice.processedData.vendor_name,
       changeOrder: changeOrder.name,
       group: 'Change Orders',
@@ -724,10 +718,7 @@ const handleWholeInvoice = ({
       costCode,
       qtyAmt: '1',
       rateAmt: formatNumber(amount.toFixed(2)),
-      description: getCostCodeDescriptionFromNumber(
-        (+costCode).toFixed(4),
-        costCodeNameList
-      ),
+      description: getCostCodeDescriptionFromNumber(costCode, costCodeNameList),
       vendor: invoice.processedData.vendor_name,
       changeOrder: null,
       group: 'Invoices',
@@ -738,10 +729,7 @@ const handleWholeInvoice = ({
       costCode,
       qtyAmt: '1',
       rateAmt: formatNumber(amountInvoice.toFixed(2)),
-      description: getCostCodeDescriptionFromNumber(
-        (+costCode).toFixed(4),
-        costCodeNameList
-      ),
+      description: getCostCodeDescriptionFromNumber(costCode, costCodeNameList),
       vendor: invoice.processedData.vendor_name,
       changeOrder: null,
       group: 'Invoices',

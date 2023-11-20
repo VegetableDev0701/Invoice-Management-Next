@@ -226,6 +226,7 @@ const onWebSocketEvents = (
             })
           );
         }
+        break;
     }
   };
 

@@ -3,33 +3,13 @@ import { RootState } from '.';
 import {
   ChangeOrderData,
   LaborData,
+  ProjectFormData,
   VendorData,
 } from '@/lib/models/formDataModel';
 import { FormData } from '@/lib/models/types';
 import { createSectionBox } from '@/lib/utility/processInvoiceHelpers';
 import { ContractEntry } from '@/lib/models/summaryDataModel';
 import { BoundingBox } from '@/lib/models/invoiceDataModels';
-
-interface OverlayGroup {
-  [key: string]: OverlayContent;
-}
-
-export interface OverlayContent {
-  overlayTitle?: string;
-  overlaySubtitle?: string;
-  open?: boolean;
-  isSave?: boolean;
-  currentData?: FormData | { [key: string]: any } | null;
-  currentId?: string | null | undefined;
-  isNameDuped?: boolean;
-  currentBoundingBox?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    page: number;
-  } | null;
-}
 
 export const getCurrentProjectData = createAsyncThunk(
   'overlay/getCurrentProjectData',
@@ -63,11 +43,11 @@ export const getCurrentProjectData = createAsyncThunk(
 );
 export const getCurrentVendor = createAsyncThunk(
   'overlay/getCurrentVendor',
-  async ({ vendorId }: { vendorId: string }, { getState, dispatch }) => {
+  async ({ vendorId }: { vendorId: string }, thunkAPI) => {
     try {
-      const state = getState() as RootState;
+      const state = thunkAPI.getState() as RootState;
       const vendor: VendorData = state.data.vendors[vendorId];
-      dispatch(
+      thunkAPI.dispatch(
         overlaySlice.actions.setCurrentOverlayData({
           data: {
             currentData: vendor,
@@ -81,6 +61,48 @@ export const getCurrentVendor = createAsyncThunk(
     }
   }
 );
+
+export const getCurrentProject = createAsyncThunk(
+  'overlay/getCurrentProject',
+  async ({ projectId }: { projectId: string }, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState() as RootState;
+      const project = state.projects[projectId]['project-details'];
+      thunkAPI.dispatch(
+        overlaySlice.actions.setCurrentOverlayData({
+          data: {
+            currentData: project as ProjectFormData,
+            currentId: projectId,
+          },
+          stateKey: 'projects',
+        })
+      );
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
+);
+
+interface OverlayGroup {
+  [key: string]: OverlayContent;
+}
+
+export interface OverlayContent {
+  overlayTitle?: string;
+  overlaySubtitle?: string;
+  open?: boolean;
+  isSave?: boolean;
+  currentData?: FormData | { [key: string]: any } | null;
+  currentId?: string | null | undefined;
+  isNameDuped?: boolean;
+  currentBoundingBox?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    page: number;
+  } | null;
+}
 
 const overlayIntitialState: OverlayGroup = {
   labor: {
@@ -109,6 +131,14 @@ const overlayIntitialState: OverlayGroup = {
     isNameDuped: false,
   },
   vendors: {
+    overlayTitle: '',
+    overlaySubtitle: '',
+    open: false,
+    isSave: true,
+    currentData: null,
+    currentId: null,
+  },
+  projects: {
     overlayTitle: '',
     overlaySubtitle: '',
     open: false,
@@ -151,7 +181,12 @@ const overlaySlice = createSlice({
       state,
       action: PayloadAction<{
         data: {
-          currentData: LaborData | ChangeOrderData | ContractEntry | null;
+          currentData:
+            | LaborData
+            | ChangeOrderData
+            | ContractEntry
+            | ProjectFormData
+            | null;
           currentId: string | null;
         };
         stateKey: string;

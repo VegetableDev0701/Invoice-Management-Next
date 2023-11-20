@@ -19,6 +19,17 @@ import {
 } from '../models/summaryDataModel';
 import { formatNumber } from './formatter';
 import { sortTableData } from './tableHelpers';
+import { snapshotCopy } from './utils';
+import {
+  AddressItems,
+  ChangeOrderData,
+  InputElement,
+  Items,
+  MainCategories,
+  isInputElementWithAddressElements,
+  isInputElementWithItems,
+} from '../models/formDataModel';
+import { updateItemElement } from './formHelpers';
 
 export const createChangeOrderContentFromLaborFees = ({
   laborFeeSummary,
@@ -301,4 +312,103 @@ export const useCreateChangeOrderTable = ({
   }, [tableData, sortKey, sortOrder, clickedChangeOrderId]);
 
   return groupedRows;
+};
+
+export const updateProjectDataInChangeOrders = ({
+  formData,
+  newProjectName,
+  newProjectAddress,
+  newProjectCity,
+  newProjectState,
+  newProjectZip,
+  newProjectOwnerName,
+}: {
+  formData: ChangeOrderData;
+  newProjectName: string;
+  newProjectAddress: string;
+  newProjectCity: string;
+  newProjectState: string;
+  newProjectZip: string;
+  newProjectOwnerName: string;
+}) => {
+  const updatedFormData: ChangeOrderData = snapshotCopy(formData);
+  formData.mainCategories.forEach((category: MainCategories, i: number) => {
+    category.inputElements.forEach((el: InputElement, j: number) => {
+      if (isInputElementWithAddressElements(el)) {
+        el.addressElements.forEach((addEl: AddressItems, jAdd: number) => {
+          addEl.items.forEach((addItem: Items, kAdd: number) => {
+            if (addItem.id === 'project-address') {
+              updateItemElement({
+                updatedFormData,
+                value: newProjectAddress,
+                i,
+                j,
+                jAdd,
+                kAdd,
+                isAddress: true,
+              });
+            }
+            if (addItem.id === 'city-project') {
+              updateItemElement({
+                updatedFormData,
+                value: newProjectCity,
+                i,
+                j,
+                jAdd,
+                kAdd,
+                isAddress: true,
+              });
+            }
+            if (addItem.id === 'state-project') {
+              updateItemElement({
+                updatedFormData,
+                value: newProjectState,
+                i,
+                j,
+                jAdd,
+                kAdd,
+                isAddress: true,
+              });
+            }
+            if (addItem.id === 'zip-code-project') {
+              updateItemElement({
+                updatedFormData,
+                value: newProjectZip,
+                i,
+                j,
+                jAdd,
+                kAdd,
+                isAddress: true,
+              });
+            }
+          });
+        });
+      }
+      if (isInputElementWithItems(el)) {
+        el.items.forEach((item, k) => {
+          if (item.id === 'project-name') {
+            updateItemElement({
+              updatedFormData,
+              value: newProjectName,
+              i,
+              j,
+              k,
+              isAddress: false,
+            });
+          }
+          if (item.id === 'client-name') {
+            updateItemElement({
+              updatedFormData,
+              value: newProjectOwnerName,
+              i,
+              j,
+              k,
+              isAddress: false,
+            });
+          }
+        });
+      }
+    });
+  });
+  return updatedFormData;
 };

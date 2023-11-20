@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 
 import { useAppSelector as useSelector } from '@/store/hooks';
 import { Items } from '@/lib/models/formDataModel';
@@ -9,19 +8,12 @@ import FilterDropdown from '@/components/Inputs/InputFilterDropdown';
 import SimpleUploadForm from '@/components/Forms/FileForm/SimpleUploadForm';
 import { InvoiceProject } from '@/lib/models/invoiceDataModels';
 import { classNames } from '@/lib/utility/utils';
+import { Buttons } from '@/lib/models/uiModels';
 
 interface SectionTabs {
   name: string;
   keyName: string;
   current: boolean;
-}
-
-interface Buttons {
-  label: string;
-  buttonPath?: string;
-  disabled?: boolean;
-  onAddInvoice?: (state: boolean) => void;
-  inputClick?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface ExtendedItems extends Items {
@@ -116,14 +108,13 @@ export default function SectionHeading(props: Props) {
                   );
                 } else {
                   return (
-                    <Link key={i} href={button.buttonPath as string}>
-                      <Button
-                        type="button"
-                        buttonText={button.label}
-                        className="px-8 py-1 text-xl font-normal bg-stak-dark-green"
-                        disabled={button.disabled}
-                      />
-                    </Link>
+                    <Button
+                      type="button"
+                      buttonText={button.label}
+                      className="px-8 py-1 text-xl font-normal bg-stak-dark-green"
+                      disabled={button.disabled}
+                      onClick={button.onClick}
+                    />
                   );
                 }
               })}

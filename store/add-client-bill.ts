@@ -37,6 +37,7 @@ import {
   InvoiceLineItemItem,
 } from '@/lib/models/invoiceDataModels';
 import { ChartDataV2 } from '@/lib/models/chartDataModels';
+import { Labor } from '@/lib/models/formDataModel';
 
 // TODO Fix delete bill logic
 export const deleteClientBillDataFromB2A = createAsyncThunk(
@@ -383,12 +384,6 @@ export const createBudgetActuals = createAsyncThunk(
         currentBudgetedTotal,
         initActualsToZeros: true,
       });
-      createB2AChartDataV2({
-        budget,
-        costCodeTotals: currentActuals,
-        currentBudgetedTotal,
-        initActualsToZeros: true,
-      });
 
       if (!result) {
         dispatch(uiActions.setLoadingState({ isLoading: false }));
@@ -549,6 +544,382 @@ export const createBudgetActuals = createAsyncThunk(
           actualsChangeOrders: invoiceCurrentActualsChangeOrders,
         },
       };
+    } catch (error) {
+      console.error(error);
+      dispatch(uiActions.setLoadingState({ isLoading: false }));
+    }
+  }
+);
+
+export const updateBudgetActuals = createAsyncThunk(
+  'addClientBill/updateBudgetActuals',
+  async (
+    {
+      projectId,
+      companyId,
+      clientBillId,
+      updatedInvoices,
+      updatedLabor,
+      updatedLaborSummary,
+      oldCurrentActuals,
+    }: {
+      projectId: string;
+      companyId: string;
+      clientBillId: string;
+      updatedInvoices: Invoices;
+      updatedLabor: Labor;
+      updatedLaborSummary: LaborSummaryItem[];
+      oldCurrentActuals: CurrentActualsV2;
+    },
+    { getState, dispatch }
+  ) => {
+    try {
+      const state = getState() as RootState;
+      const projectSummary = state.data.projectsSummary.allProjects[projectId];
+      const budget = state.projects[projectId].budget;
+      const budgetTotalsV2 = state.addBudgetForm.budgetV2;
+      const changeOrdersSummary =
+        state.projects[projectId]['change-orders-summary'];
+      const previousCurrentActualsChangeOrders =
+        state.projects[projectId].b2a?.updatedCurrentActualsChangeOrders;
+      const costCodeNameList = state.data.costCodeNameList;
+      const oldClientBillSummary = (
+        state.projects[projectId]['client-bills-summary'] as ClientBillSummary
+      )[clientBillId];
+
+      const {
+        budgetActuals: currentActuals,
+        budgetActualsChangeOrders: currentActualsChangeOrders,
+        numInvoices,
+        numChangeOrders,
+        // totalLaborFeesAmountWithoutChangeOrders,
+        invoiceBudgetActuals: invoiceCurrentActuals,
+        invoiceBudgetActualsChangeOrders: invoiceCurrentActualsChangeOrders,
+      } = createBudgetActualsObject({
+        projectInvoices: Object.values(updatedInvoices) as MakeRequired<
+          InvoiceItem,
+          'processedData'
+        >[],
+        projectLaborFees: updatedLaborSummary,
+        budgetTotals: budgetTotalsV2,
+        changeOrdersSummary: changeOrdersSummary as ChangeOrderSummary,
+        costCodeNameList,
+        dispatch,
+      });
+
+      // This should be the grand total of the project. This would be the value we calculate project
+      // completion percentage from
+      const currentBudgetedTotal: number = state.projects[projectId].b2a
+        ?.currentBudgetedTotal
+        ? +state.projects[projectId].b2a.currentBudgetedTotal.value
+        : 0;
+
+      let budgetedTotals = calculateTotals({
+        budget: currentActuals,
+        isChangeOrder: false,
+      });
+      let changeOrderTotals = calculateTotals({
+        budget: currentActualsChangeOrders,
+        isChangeOrder: true,
+      });
+
+      // use this subtotal before adding profits in the client bill summary
+      // make a deep copy just to be certain this value does not get changed
+      // on reference
+      const budgetedSubTotal: string = snapshotCopy(budgetedTotals.total);
+
+      // Calculate the profit, liability and taxes, for all invoices and labor
+      // that are not change orders
+      const budgetedProfitTaxes = getBillProfitTaxes({
+        projectSummary,
+        total: budgetedTotals.total,
+      });
+      const currentBudgetedProfitTaxesObject = createBillProfitTaxesObject({
+        profitTaxes: budgetedProfitTaxes,
+        projectSummary,
+        prefix: '',
+      });
+
+      // update the currentActuals with the tax, profit, liability etc.
+      updateActuals({
+        billProfitTaxesObject: currentBudgetedProfitTaxesObject,
+        actuals: currentActuals,
+        summaryCostCodes: SUMMARY_COST_CODES,
+        budgetTotals: budgetTotalsV2,
+      });
+
+      // Same for CHANGE ORDERS, need to keep them separate; for ALL change orders combined
+      const changeOrderProfitTaxes = getBillProfitTaxes({
+        projectSummary,
+        total: changeOrderTotals.total,
+      });
+      const currentChangeOrderProfitTaxesObject = createBillProfitTaxesObject({
+        profitTaxes: changeOrderProfitTaxes,
+        projectSummary,
+        prefix: '',
+      });
+      if (!currentActualsChangeOrders?.['profitTaxesLiability']) {
+        currentActualsChangeOrders['profitTaxesLiability'] = {};
+      }
+      updateActuals({
+        billProfitTaxesObject: currentChangeOrderProfitTaxesObject,
+        actuals: currentActualsChangeOrders?.['profitTaxesLiability'],
+        summaryCostCodes: SUMMARY_COST_CODES,
+        budgetTotals: budgetTotalsV2,
+      });
+
+      // create the profit subtotals taxes for EACH CHANGE ORDER
+      // good to have all this separate for each change order in case we want to
+      // show this data for each change order indenpendently
+      Object.entries(
+        changeOrderTotals.changeOrderTotals as {
+          [changeOrderID: string]: number;
+        }
+      ).forEach(([changeOrderId, total]) => {
+        const tempChangeOrderProfitTaxes = getBillProfitTaxes({
+          projectSummary,
+          total,
+        });
+        const tempChangeOrderProfitTaxesObject = createBillProfitTaxesObject({
+          profitTaxes: tempChangeOrderProfitTaxes,
+          projectSummary,
+          prefix: '',
+        });
+        updateActuals({
+          billProfitTaxesObject: tempChangeOrderProfitTaxesObject,
+          actuals: currentActualsChangeOrders[changeOrderId],
+          summaryCostCodes: SUMMARY_COST_CODES,
+          budgetTotals: budgetTotalsV2,
+        });
+      });
+
+      const snapShotCurrentActuals: CurrentActualsV2 =
+        snapshotCopy(currentActuals);
+      const snapShotCurrentActualsChangeOrders: InvoiceCurrentActualsV2 =
+        snapshotCopy(currentActualsChangeOrders);
+
+      try {
+        await fetchWithRetry(
+          `/api/${companyId}/projects/${projectId}/add-client-bill`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              currentActuals: snapShotCurrentActuals,
+              currentActualsChangeOrders: snapShotCurrentActualsChangeOrders,
+            }),
+            headers: {
+              clientBillId,
+            },
+          }
+        );
+      } catch (error) {
+        dispatch(uiActions.setLoadingState({ isLoading: false }));
+        console.error(error);
+      }
+
+      // Add the profit, liability and taxes to the overall totals.
+      // Those are calculated on the subtotals above.
+      budgetedTotals = calculateTotals({
+        budget: currentActuals,
+        isChangeOrder: false,
+      });
+
+      // the change ChangeOrderFormState has one extra level of nesting
+      // where the parent level is the changeOrderId. this is different from the
+      // current actuals where we aggregate everything by cost code across all invoices/labor
+      changeOrderTotals = calculateTotals({
+        budget: currentActualsChangeOrders,
+        isChangeOrder: true,
+      });
+
+      const newResult = createB2AChartDataV2({
+        budget,
+        costCodeTotals: currentActuals,
+        currentBudgetedTotal: 0,
+        initActualsToZeros: true,
+      });
+
+      const oldResult = createB2AChartDataV2({
+        budget,
+        costCodeTotals: oldCurrentActuals,
+        currentBudgetedTotal: 0,
+        initActualsToZeros: true,
+      });
+
+      if (!newResult || !oldResult) {
+        dispatch(uiActions.setLoadingState({ isLoading: false }));
+        dispatch(
+          uiActions.setNotificationContent({
+            content: 'Error when trying to create actuals data for chart.',
+            openNotification: true,
+            icon: 'error',
+          })
+        );
+        return false;
+      }
+
+      // add previous actuals to this current invoice actuals
+      // NO CHANGE ORDERS
+      const tempB2AData = addActualsToTotalsV2({
+        budget,
+        totals: state.projects[projectId].b2a.b2aChartData as ChartDataV2,
+        actuals: newResult.chartData,
+        isDeleteBill: false,
+      });
+
+      // sub old actuals to this current invoice actuals
+      // NO CHANGE ORDERS
+      const updatedB2AData = addActualsToTotalsV2({
+        budget,
+        totals: tempB2AData,
+        actuals: oldResult.chartData,
+        isDeleteBill: true,
+      });
+
+      const grandActualsBudgetedTotal =
+        currentBudgetedTotal -
+        oldResult.grandActualsTotal +
+        newResult.grandActualsTotal;
+
+      // TODO
+      // CHANGE ORDERS
+      // if there is previous data it will add that data to the currentActualsChangeOrders
+      // this will be a running sum of all change orders from previous client bills
+      const { updatedCurrentActualsChangeOrders } =
+        addNewChangeOrderValuesToPreviousData({
+          currentActualsChangeOrders,
+          previousCurrentActualsChangeOrders,
+        });
+
+      // create the data to be displayed on the chart for change orders. this will be the cumulative
+      // data from current and previous change orders
+      const { changeOrderChartData, grandTotal: changeOrderTotal } =
+        createB2AChangeOrderChartData({
+          updatedCurrentActualsChangeOrders,
+          changeOrdersSummary: changeOrdersSummary as ChangeOrderSummary,
+        });
+
+      dispatch(
+        projectDataActions.addFullData({
+          newData: {
+            b2aChartData: updatedB2AData,
+            b2aChartDataChangeOrder: changeOrderChartData,
+            updatedCurrentActualsChangeOrders,
+            currentGrandTotal: {
+              // value: grandActualsBudgetedTotal + changeOrderTotal,
+              value: grandActualsBudgetedTotal,
+            },
+            currentBudgetedTotal: { value: grandActualsBudgetedTotal },
+            currentChangeOrderTotal: { value: changeOrderTotal },
+          },
+          projectId,
+          stateKey: 'b2a',
+        })
+      );
+
+      const clientBillSummary = createSingleClientBillSummary({
+        subTotal: budgetedSubTotal,
+        currentActuals: currentActuals,
+        changeOrderTotals,
+        totals: budgetedTotals,
+        billTitle: oldClientBillSummary.billTitle,
+        uuid: clientBillId,
+        numInvoices,
+        numChangeOrders,
+        laborFeeIds: [...oldClientBillSummary.laborFeeIds],
+        invoiceIds: [...oldClientBillSummary.invoiceIds],
+      });
+
+      dispatch(
+        projectDataActions.addSummaryTableRow({
+          newData: clientBillSummary,
+          projectId,
+          stateKey: 'client-bills-summary',
+        })
+      );
+
+      // build the change order plot
+      try {
+        await fetchWithRetry(
+          `/api/${companyId}/projects/${projectId}/add-b2achartdata`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              b2aChartData: updatedB2AData,
+              b2aChartDataChangeOrder: changeOrderChartData,
+              updatedCurrentActualsChangeOrders,
+              currentGrandTotal: {
+                value: +(grandActualsBudgetedTotal + changeOrderTotal).toFixed(
+                  2
+                ),
+              },
+              currentBudgetedTotal: { value: grandActualsBudgetedTotal },
+              currentChangeOrderTotal: { value: changeOrderTotal },
+            }),
+          }
+        );
+        dispatch(
+          uiActions.setNotificationContent({
+            content: 'Succesfully updated budget to actuals data.',
+            openNotification: true,
+            icon: 'success',
+          })
+        );
+      } catch (error) {
+        console.error(error);
+        dispatch(uiActions.setLoadingState({ isLoading: false }));
+        dispatch(
+          uiActions.setNotificationContent({
+            content: 'Error when trying to update budget to actuals data.',
+            openNotification: true,
+            icon: 'error',
+          })
+        );
+        return false;
+      }
+
+      // update client bill data
+      try {
+        await fetchWithRetry(
+          `/api/${companyId}/projects/${projectId}/update-client-bill`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              labor: updatedLabor,
+              laborSummary: updatedLaborSummary,
+              invoices: updatedInvoices,
+              clientBillSummary: clientBillSummary,
+              clientBillObj: {
+                actuals: invoiceCurrentActuals,
+                actualsChangeOrders: invoiceCurrentActualsChangeOrders,
+              },
+            }),
+            headers: {
+              clientBillId,
+            },
+          }
+        );
+        dispatch(
+          uiActions.setNotificationContent({
+            content: 'Succesfully updated client bill.',
+            openNotification: true,
+            icon: 'success',
+          })
+        );
+      } catch (error) {
+        console.error(error);
+        dispatch(uiActions.setLoadingState({ isLoading: false }));
+        dispatch(
+          uiActions.setNotificationContent({
+            content: 'Error when trying to update budget to actuals data.',
+            openNotification: true,
+            icon: 'error',
+          })
+        );
+        return false;
+      }
+
+      dispatch(uiActions.setLoadingState({ isLoading: false }));
     } catch (error) {
       console.error(error);
       dispatch(uiActions.setLoadingState({ isLoading: false }));

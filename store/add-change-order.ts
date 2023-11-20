@@ -12,6 +12,10 @@ import { RootState } from '.';
 import { snapshotCopy } from '@/lib/utility/utils';
 import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
 import { ChangeOrderContent } from '@/lib/models/changeOrderModel';
+import { ChangeOrderData } from '@/lib/models/formDataModel';
+import { updateProjectDataInChangeOrders } from '@/lib/utility/changeOrderHelpers';
+import { createSingleChangeOrderSummary } from '@/lib/utility/createSummaryDataHelpers';
+import { projectDataActions } from './projects-data-slice';
 
 export const addUpdatedChangeOrderContent = createAsyncThunk(
   'addChangeOrder/updateContent',
@@ -70,6 +74,113 @@ export const addUpdatedChangeOrderContent = createAsyncThunk(
       );
       console.error(error);
       return;
+    }
+  }
+);
+
+export const updateProjectDataInChangeOrdersThunk = createAsyncThunk(
+  'addChangeOrder/updateContent',
+  async (
+    {
+      companyId,
+      projectId,
+
+      newProjectName,
+      newProjectAddress,
+      newProjectCity,
+      newProjectState,
+      newProjectZip,
+      newProjectOwnerName,
+    }: {
+      companyId: string;
+      projectId: string;
+      newProjectName: string;
+      newProjectAddress: string;
+      newProjectCity: string;
+      newProjectState: string;
+      newProjectZip: string;
+      newProjectOwnerName: string;
+    },
+    thunkAPI
+  ) => {
+    const state = thunkAPI.getState() as RootState;
+    const changeOrderFormData = state.projects[projectId]['change-orders'];
+    const changeOrderSummary =
+      state.projects[projectId]['change-orders-summary'];
+    const updateChangeOrderFormData = Object.entries(
+      changeOrderFormData
+    ).reduce(
+      (acc, [changeOrderId, changeOrderFormData]) => {
+        acc[changeOrderId] = updateProjectDataInChangeOrders({
+          formData: changeOrderFormData,
+          newProjectName,
+          newProjectAddress,
+          newProjectCity,
+          newProjectState,
+          newProjectZip,
+          newProjectOwnerName,
+        });
+        return acc;
+      },
+      {} as { [changeOrderId: string]: ChangeOrderData }
+    );
+
+    const updateChangeOrderSummaryData = Object.entries(
+      changeOrderSummary
+    ).reduce((acc, [changeOrderId, changeOrderSummary]) => {
+      const changeOrderFormData = updateChangeOrderFormData[changeOrderId];
+      acc[changeOrderId] = createSingleChangeOrderSummary({
+        changeOrder: changeOrderFormData,
+        changeOrderId: changeOrderFormData.uuid as string,
+        content: changeOrderSummary.content,
+      });
+      return acc;
+    }, {} as ChangeOrderSummary);
+
+    thunkAPI.dispatch(
+      projectDataActions.updateBulkChangeOrderFormData({
+        updateChangeOrderFormData,
+        projectId: projectId,
+        stateKey: 'change-orders',
+      })
+    );
+    thunkAPI.dispatch(
+      projectDataActions.updateBulkChangeOrderSummaryData({
+        updateChangeOrderSummaryData,
+        projectId: projectId,
+        stateKey: 'change-orders-summary',
+      })
+    );
+    try {
+      const data = await fetchWithRetry(
+        `/api/${companyId}/projects/${projectId}/update-bulk-change-orders`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            fullData: updateChangeOrderFormData,
+            summaryData: updateChangeOrderSummaryData,
+          }),
+        }
+      );
+      thunkAPI.dispatch(
+        uiActions.setNotificationContent({
+          content: data.message,
+          icon: 'save',
+          openNotification: true,
+        })
+      );
+    } catch (error: any) {
+      thunkAPI.dispatch(
+        uiActions.setNotificationContent({
+          content:
+            'Something went wrong with updating change order content. Please try again.',
+          icon: 'error',
+          openNotification: true,
+        })
+      );
     }
   }
 );

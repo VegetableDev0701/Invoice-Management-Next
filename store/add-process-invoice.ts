@@ -2,13 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import {
-  FormState,
+  FormStateV2,
   IsTouchedPayload,
   SetFormElementPayload,
 } from '@/lib/models/formStateModels';
 import { resetAllFormValidation } from '@/lib/utility/formHelpers';
 
-const initialProcessInvoiceFormState: FormState = {
+const initialProcessInvoiceFormState: FormStateV2 = {
   numLineItems: { value: 0 },
   isUpdated: { value: false },
 };
@@ -32,7 +32,8 @@ const addProcessInvoiceFormSlice = createSlice({
       const { inputKey, isTouched, isValid } = action.payload;
       state[inputKey] = {
         ...state[inputKey],
-        value: state[inputKey]?.value ? state[inputKey].value : '',
+        // TODO updated this because was forcing true/false valuse to empty strings...not sure if this will have any unintended downstream effects so leaving this comment here
+        // value: state[inputKey]?.value ? state[inputKey].value : '',
         isValid: isValid,
         isTouched: isTouched,
       };

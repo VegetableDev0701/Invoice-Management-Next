@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { addProcessInvoiceFormActions } from '@/store/add-process-invoice';
 import {
@@ -54,13 +54,32 @@ function ProcessInvoiceForm(props: Props) {
     onRenderComplete,
   } = props;
   const dispatch = useDispatch();
+
+  const [tabPressed, setTabPressed] = useState<boolean>(false);
+
   const changeOrdersSummary: ChangeOrderSummary = useSelector(
     (state) => state.projects[projectId]?.['change-orders-summary']
   ) as ChangeOrderSummary;
 
-
   useEffect(() => {
     onRenderComplete();
+  }, []);
+
+  // we only autofocus on the first input element if the user presses the tab key. This protects
+  // against always updating an invoice if the user clicks next invoie which will trick the system
+  // into thinking the invoice has been updated, even though it has not.
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Tab') {
+        setTabPressed(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   // logic to handle the mouse hover over input field and magnify that
@@ -107,21 +126,22 @@ function ProcessInvoiceForm(props: Props) {
       <div className={classes['scroll-frame']} id="scroll-frame">
         <form id="form-id" className="flex flex-col flex-grow">
           {formData.mainCategories.map((category, i) => {
-            if (category.name === 'Line Items') {
-              if (formState['line-item-toggle']?.value) {
-                return (
-                  <LineItems
-                    projectId={projectId}
-                    key={`${category.name}_${i}`}
-                    form="addProcessInvoice"
-                    actions={addProcessInvoiceFormActions}
-                    currentData={currentData}
-                    changeOrdersSummary={changeOrdersSummary}
-                    onMouseEnterHandler={onMouseEnterHandler}
-                    onMouseLeaveHandler={onMouseLeaveHandler}
-                  />
-                );
-              }
+            if (
+              category.name === 'Line Items' &&
+              formState['line-item-toggle']?.value
+            ) {
+              return (
+                <LineItems
+                  projectId={projectId}
+                  key={`${category.name}_${i}`}
+                  form="addProcessInvoice"
+                  actions={addProcessInvoiceFormActions}
+                  currentData={currentData}
+                  changeOrdersSummary={changeOrdersSummary}
+                  onMouseEnterHandler={onMouseEnterHandler}
+                  onMouseLeaveHandler={onMouseLeaveHandler}
+                />
+              );
             }
             return (
               <div
@@ -145,72 +165,74 @@ function ProcessInvoiceForm(props: Props) {
                     );
                   } else {
                     return (
-                      <>
-                        <div
-                          key={`${i}_${j}`}
-                          className="flex py-2 px-5 self-stretch gap-4"
-                        >
-                          {el.items.map((item, p) => {
-                            const currentItem = currentData
-                              ? getCurrentInvoiceData(item, currentData)
-                              : item;
-                            if (
-                              item.id === 'work-description' &&
-                              formState['line-item-toggle']?.value
-                            ) {
-                              return (
-                                <div
-                                  key={`${i}_${j}`}
-                                  className="flex py-2 px-5 self-stretch gap-4"
-                                >
-                                  <MultipleCostCodes
-                                    key={`${formatNameForID(item.label)}_${p}`}
-                                    currentData={currentData}
-                                  />
-                                </div>
-                              );
-                            } else if (
-                              (item.id === 'cost-code' ||
-                                item.id === 'change-order') &&
-                              formState['line-item-toggle']?.value
-                            ) {
-                              return (
-                                <div
-                                  key={`${i}_${j}`}
-                                  className="flex p-0 self-stretch gap-4"
-                                />
-                              );
-                            } else {
-                              return (
-                                <Input
-                                  classes="flex-1"
+                      <div
+                        key={j}
+                        className="flex py-2 px-5 self-stretch gap-4"
+                      >
+                        {el.items.map((item, p) => {
+                          const currentItem = currentData
+                            ? getCurrentInvoiceData(item, currentData)
+                            : item;
+                          if (
+                            item.id === 'work-description' &&
+                            formState['line-item-toggle']?.value
+                          ) {
+                            return (
+                              <div
+                                key={`${i}_${j}`}
+                                className="flex py-2 px-5 self-stretch gap-4"
+                              >
+                                <MultipleCostCodes
                                   key={`${formatNameForID(item.label)}_${p}`}
-                                  input={{
-                                    ...currentItem,
-                                  }}
-                                  icon={getFormIcon(item)}
-                                  showError={showError}
-                                  actions={actions}
-                                  form={form}
-                                  projectId={projectId}
-                                  changeOrdersSummary={changeOrdersSummary}
-                                  onMouseEnter={() =>
-                                    onMouseEnterHandler(currentData, item.id)
-                                  }
-                                  onMouseLeave={onMouseLeaveHandler}
-                                  onFocus={() =>
-                                    onMouseEnterHandler(currentData, item.id)
-                                  }
-                                  onBlur={onMouseLeaveHandler}
-                                  autofocus={
-                                    i === 0 && j === 0 && p === 0 ? true : false
-                                  }
+                                  currentData={currentData}
                                 />
-                              );
-                            }
-                          })}
-                        </div>
-                      </>
+                              </div>
+                            );
+                          } else if (
+                            (item.id === 'cost-code' ||
+                              item.id === 'change-order') &&
+                            formState['line-item-toggle']?.value
+                          ) {
+                            return (
+                              <div
+                                key={`${i}_${j}`}
+                                className="flex p-0 self-stretch gap-4"
+                              />
+                            );
+                          } else {
+                            return (
+                              <Input
+                                classes="flex-1"
+                                key={`${formatNameForID(item.label)}_${p}`}
+                                input={{
+                                  ...currentItem,
+                                }}
+                                icon={getFormIcon(item)}
+                                showError={showError}
+                                actions={actions}
+                                form={form}
+                                projectId={projectId}
+                                changeOrdersSummary={changeOrdersSummary}
+                                onMouseEnter={() =>
+                                  onMouseEnterHandler(currentData, item.id)
+                                }
+                                onMouseLeave={onMouseLeaveHandler}
+                                onFocus={() =>
+                                  onMouseEnterHandler(currentData, item.id)
+                                }
+                                onBlur={onMouseLeaveHandler}
+                                autofocus={
+                                  (i === 0 &&
+                                    j === 0 &&
+                                    p === 0 &&
+                                    tabPressed) ||
+                                  false
+                                }
+                              />
+                            );
+                          }
+                        })}
+                      </div>
                     );
                   }
                 })}

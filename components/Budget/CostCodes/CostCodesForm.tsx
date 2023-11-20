@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ControlledTreeEnvironment,
   Tree,
@@ -6,20 +6,6 @@ import {
   TreeItemIndex,
 } from 'react-complex-tree';
 import 'react-complex-tree/lib/style-modern.css';
-import {
-  TrashIcon,
-  DocumentPlusIcon,
-  PencilIcon,
-} from '@heroicons/react/20/solid';
-
-import InputBaseAddItem from '@/components/Inputs/InputBaseAddDivision';
-import Card from '@/components/UI/Card';
-import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
-import classes from '@/components/Forms/InputFormLayout/FormLayout.module.css';
-
-import scrollToElement from '@/lib/utility/scrollToElement';
-import { formatNameForID } from '@/lib/utility/formatter';
-import { classNames } from '@/lib/utility/utils';
 
 import {
   useAppDispatch as useDispatch,
@@ -27,13 +13,28 @@ import {
 } from '@/store/hooks';
 import { companyDataActions } from '@/store/company-data-slice';
 
-import TreeComponentClasses from './CostCodesForm.module.css';
+import { useKeyPressAction } from '@/hooks/use-save-on-key-press';
+
+import scrollToElement from '@/lib/utility/scrollToElement';
+import { formatNameForID } from '@/lib/utility/formatter';
+import { classNames } from '@/lib/utility/utils';
 import { ConvertTreeData } from '@/lib/utility/treeDataHelpers';
 import {
   CostCodeItem,
   CostCodesData,
   TreeData,
 } from '@/lib/models/budgetCostCodeModel';
+
+import InputBaseAddItem from '@/components/Inputs/InputBaseAddDivision';
+import Card from '@/components/UI/Card';
+import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
+import classes from '@/components/Forms/InputFormLayout/FormLayout.module.css';
+import {
+  TrashIcon,
+  DocumentPlusIcon,
+  PencilIcon,
+} from '@heroicons/react/20/solid';
+import TreeComponentClasses from './CostCodesForm.module.css';
 
 export interface Props {
   formData: CostCodesData;
@@ -73,6 +74,8 @@ function CostCodeForm(props: Props) {
   const [selectedItems, setSelectedItems] = useState<TreeItemIndex[]>([]);
   const treeDataList = useSelector((state) => state.data.treeData);
 
+  const addItemRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     scrollToElement(clickedLink, anchorScrollElement, 'scroll-frame');
   }, [clickedLink, anchorScrollElement, dummyForceRender]);
@@ -92,6 +95,8 @@ function CostCodeForm(props: Props) {
     );
     setExpandedItems(openedItems);
   }, [costCodeDataList]);
+
+  useKeyPressAction({ ref: addItemRef, keyName: 'Enter' });
 
   const saveData = (newCodeDataList: TreeData) => {
     const costCodeDataList =
@@ -212,7 +217,7 @@ function CostCodeForm(props: Props) {
         return itemData.data.number.toString() + ' - ' + itemData.data.name;
       }
     }
-    return itemData.data.number.toFixed(4) + ' - ' + itemData.data.name;
+    return itemData.data.number + ' - ' + itemData.data.name;
   };
 
   const handleRenameItem = (item: TreeItem, name: string) => {
@@ -420,7 +425,15 @@ function CostCodeForm(props: Props) {
                 </div>
                 <div>
                   {item.index === addItemIndex && (
-                    <div className={`flex gap-2 items-end`}>
+                    <div
+                      className={`flex gap-2 items-end`}
+                      style={{
+                        paddingLeft: `${
+                          (depth + 1) * 20 +
+                          (depth !== 0 && item.children?.length !== 0 ? 8 : 0)
+                        }px`,
+                      }}
+                    >
                       <InputBaseAddItem
                         classes="w-3/12"
                         showError={isError}
@@ -446,34 +459,34 @@ function CostCodeForm(props: Props) {
                           required: false,
                         }}
                       />
-                      <div>
-                        <div className="flex gap-2">
-                          <div
-                            onClick={() => {
-                              handleSaveAddItem(depth);
-                              setFormData({
-                                name: '',
-                                number: '',
-                              });
-                            }}
-                            className="rounded-full bg-[rgb(86,144,146)] font-sans font-md focus:ring-0 focus-visible:outline-0 min-w-fit text-2xl font-normal px-3 py-2 flex items-center text-white"
-                          >
-                            Save
-                          </div>
-                          <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setAddItemIndex('');
-                              setFormData({
-                                name: '',
-                                number: '',
-                              });
-                              setIsError(false);
-                            }}
-                            className="rounded-full bg-[rgb(86,144,146)] font-sans font-md focus:ring-0 focus-visible:outline-0 min-w-fit text-2xl font-normal px-3 py-2 flex items-center text-white"
-                          >
-                            Cancel
-                          </div>
+
+                      <div className="flex gap-2 mb-1">
+                        <div
+                          ref={addItemRef}
+                          onClick={() => {
+                            handleSaveAddItem(depth);
+                            setFormData({
+                              name: '',
+                              number: '',
+                            });
+                          }}
+                          className="rounded-full bg-stak-dark-green font-sans font-md focus:ring-0 focus-visible:outline-0 min-w-fit text-2xl font-normal px-3 py-1 flex items-center text-white"
+                        >
+                          Save
+                        </div>
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setAddItemIndex('');
+                            setFormData({
+                              name: '',
+                              number: '',
+                            });
+                            setIsError(false);
+                          }}
+                          className="rounded-full bg-stak-dark-green font-sans font-md focus:ring-0 focus-visible:outline-0 min-w-fit text-2xl font-normal px-3 py-1 flex items-center text-white"
+                        >
+                          Cancel
                         </div>
                       </div>
                     </div>
@@ -491,9 +504,11 @@ function CostCodeForm(props: Props) {
           />
         </ControlledTreeEnvironment>
         <ModalConfirm
-          message={`Are you sure to delete "${`${removeItemIndex?.data.number.toFixed(
-            4
-          )} - ${removeItemIndex?.data.name}`}"`}
+          message={`Are you sure to delete "${`${
+            typeof removeItemIndex?.data.number === 'number'
+              ? removeItemIndex?.data.number.toFixed(4)
+              : removeItemIndex?.data.number
+          } - ${removeItemIndex?.data.name}`}"`}
           title="Delete"
           openModal={openConfirmModal}
           onCloseModal={() => setOpenConfirmModal(false)}

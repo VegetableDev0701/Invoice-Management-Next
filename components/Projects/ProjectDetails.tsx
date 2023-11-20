@@ -22,6 +22,8 @@ import { createSingleProjectSummary } from '@/lib/utility/createSummaryDataHelpe
 
 import Form from '../Forms/InputFormLayout/Form';
 import SideLinksCard from '../UI/FormLayout/SideLinksCard';
+import { updateInvoiceProjectObject } from '@/store/invoice-slice';
+import { updateProjectDataInChangeOrdersThunk } from '@/store/add-change-order';
 
 interface Props {
   projectId: string;
@@ -39,10 +41,22 @@ export default function ProjectDetails(props: Props) {
   const { user, isLoading: userLoading } = useUser();
 
   const formState = useSelector((state) => state.addProjectForm);
-
   const formData = useSelector(
     (state) => state.projects[projectId]['project-details']
   );
+
+  // Use this data to see if we need to call the thunk to update
+  // invoices currently associated with this project
+  const projectSummary = useSelector(
+    (state) => state.data.projectsSummary.allProjects[projectId]
+  );
+  const currentProjectName = projectSummary.projectName;
+  const currentProjectAddress = projectSummary.address;
+  const currentProjectCity = projectSummary.city;
+  const currentProjectState = projectSummary.state;
+  const currentProjectZip = projectSummary.zipCode;
+  const currentProjectOwnerName = projectSummary.ownerName;
+
   let sideLinks: string[] = [];
   let anchorScrollElement = '';
   if (formData) {
@@ -92,6 +106,45 @@ export default function ProjectDetails(props: Props) {
       dataToSubmit,
       projectId
     );
+
+    // if the project name or street address has changed we need to update
+    // that in the invoices `project` object
+    if (
+      summaryProjectData.projectName !== currentProjectName ||
+      summaryProjectData.address !== currentProjectAddress
+    ) {
+      dispatch(
+        updateInvoiceProjectObject({
+          projectId,
+          companyId: (user as User).user_metadata.companyId,
+          newProjectName: summaryProjectData.projectName,
+          newProjectAddress: summaryProjectData.address,
+        })
+      );
+    }
+    // if project name, street address, city, state, zip, or client first or last name changes
+    // we need to update that in the change order
+    if (
+      summaryProjectData.projectName !== currentProjectName ||
+      summaryProjectData.address !== currentProjectAddress ||
+      summaryProjectData.city !== currentProjectCity ||
+      summaryProjectData.state !== currentProjectState ||
+      summaryProjectData.zipCode !== currentProjectZip ||
+      summaryProjectData.ownerName !== currentProjectOwnerName
+    ) {
+      dispatch(
+        updateProjectDataInChangeOrdersThunk({
+          projectId,
+          companyId: (user as User).user_metadata.companyId,
+          newProjectName: summaryProjectData.projectName,
+          newProjectAddress: summaryProjectData.address,
+          newProjectCity: summaryProjectData.city,
+          newProjectState: summaryProjectData.state,
+          newProjectZip: summaryProjectData.zipCode,
+          newProjectOwnerName: summaryProjectData.ownerName,
+        })
+      );
+    }
 
     dispatch(
       companyDataActions.addToProjectsSummaryData({

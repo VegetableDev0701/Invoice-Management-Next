@@ -54,7 +54,8 @@ export const useAddCurrentDataToFormData = ({
             ).items[k] = {
               label: 'Project Name',
               id: 'project-name',
-              inputType: 'dropdownWithSearch',
+              // inputType: 'dropdownWithSearch',
+              disabled: true,
               required: true,
               errormessage: 'Project is required.',
               value: formValues.projectName as string,
@@ -74,6 +75,7 @@ export const useAddCurrentDataToFormData = ({
               errormessage: "Client's name is required.",
               value: formValues.ownerName as string,
               isOnOverlay: true,
+              disabled: true,
             };
           }
         });
@@ -96,6 +98,7 @@ export const useAddCurrentDataToFormData = ({
                   isAddress: true,
                   value: formValues.address as string,
                   isOnOverlay: true,
+                  disabled: true,
                 };
               }
               if (addItem.id === 'city-project') {
@@ -111,6 +114,7 @@ export const useAddCurrentDataToFormData = ({
                   isAddress: true,
                   value: formValues.city as string,
                   isOnOverlay: true,
+                  disabled: true,
                 };
               }
               if (addItem.id === 'state-project') {
@@ -126,6 +130,7 @@ export const useAddCurrentDataToFormData = ({
                   isAddress: true,
                   value: formValues.state as string,
                   isOnOverlay: true,
+                  disabled: true,
                 };
               }
               if (addItem.id === 'zip-code-project') {
@@ -142,6 +147,7 @@ export const useAddCurrentDataToFormData = ({
                   isAddress: true,
                   value: formValues.zipCode as string,
                   isOnOverlay: true,
+                  disabled: true,
                 };
               }
             });

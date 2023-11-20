@@ -353,6 +353,66 @@ const projectDataSlice = createSlice({
         ...{ [newData.uuid as string]: newData },
       };
     },
+    // TODO fix the any typescript workaround
+    addFullData(
+      state,
+      action: PayloadAction<{
+        newData: any;
+        projectId: string;
+        stateKey:
+          | 'budget'
+          | 'change-orders'
+          | 'contracts'
+          | 'labor'
+          | 'b2a'
+          | 'client-bills';
+      }>
+    ) {
+      const { newData, projectId, stateKey } = action.payload;
+      if (newData?.uuid) {
+        state[projectId][stateKey] = {
+          ...state[projectId][stateKey],
+          ...{ [newData.uuid]: newData },
+        } as any;
+      } else {
+        state[projectId][stateKey] = {
+          ...state[projectId][stateKey],
+          ...newData,
+        };
+      }
+    },
+    updateBulkChangeOrderSummaryData(
+      state,
+      action: PayloadAction<{
+        updateChangeOrderSummaryData: ChangeOrderSummary;
+        projectId: string;
+        stateKey: 'change-orders-summary';
+      }>
+    ) {
+      const { updateChangeOrderSummaryData, projectId, stateKey } =
+        action.payload;
+      state[projectId][stateKey] = {
+        ...state[projectId][stateKey],
+        ...updateChangeOrderSummaryData,
+      };
+    },
+    // TODO fix the any typescript workaround
+    updateBulkChangeOrderFormData(
+      state,
+      action: PayloadAction<{
+        updateChangeOrderFormData: {
+          [changeOrderId: string]: ChangeOrderData;
+        };
+        projectId: string;
+        stateKey: 'change-orders';
+      }>
+    ) {
+      const { updateChangeOrderFormData, projectId, stateKey } = action.payload;
+      state[projectId][stateKey] = {
+        ...state[projectId][stateKey],
+        ...updateChangeOrderFormData,
+      };
+    },
     addChangeOrderContent(
       state,
       action: PayloadAction<{
@@ -564,34 +624,7 @@ const projectDataSlice = createSlice({
         }) = { ...filteredLabor };
       }
     },
-    // TODO fix the any typescript workaround
-    addFullData(
-      state,
-      action: PayloadAction<{
-        newData: any;
-        projectId: string;
-        stateKey:
-          | 'budget'
-          | 'change-orders'
-          | 'contracts'
-          | 'labor'
-          | 'b2a'
-          | 'client-bills';
-      }>
-    ) {
-      const { newData, projectId, stateKey } = action.payload;
-      if (newData?.uuid) {
-        state[projectId][stateKey] = {
-          ...state[projectId][stateKey],
-          ...{ [newData.uuid]: newData },
-        } as any;
-      } else {
-        state[projectId][stateKey] = {
-          ...state[projectId][stateKey],
-          ...newData,
-        };
-      }
-    },
+
     addContractFromSSE(
       state,
       action: PayloadAction<{ newContracts: ContractData; projectId: string }>

@@ -193,14 +193,14 @@ export default function BudgetForm(props: Props) {
     }
     if (itemData.data.value !== '0.00') {
       return (
-        itemData.data.number.toFixed(4) +
+        itemData.data.number +
         ' - ' +
         itemData.data.name +
         ' $' +
         formatNumber(itemData.data.value)
       );
     } else {
-      return itemData.data.number.toFixed(4) + ' - ' + itemData.data.name;
+      return itemData.data.number + ' - ' + itemData.data.name;
     }
   };
 
@@ -435,7 +435,7 @@ export default function BudgetForm(props: Props) {
                     {valueAddedItems.map((v) => v.index).includes(item.index) &&
                       depth !== 0 &&
                       item.children?.length === 0 && (
-                        <div className="relative shadow-sm !mt-4 mr-2 ml-[30px]">
+                        <div className="relative shadow-sm !my-1 mr-2 ml-[30px]">
                           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                             <DollarSign width={24} height={20} />
                           </div>

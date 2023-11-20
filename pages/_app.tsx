@@ -23,8 +23,8 @@ const App = ({ Component, pageProps }: AppProps) => {
     <UserProvider>
       <Provider store={store}>
         <OnBoardNewUser>
-          <InitialLoadWrapper>
-            <PersistGate loading={null} persistor={persistor}>
+          <PersistGate loading={null} persistor={persistor}>
+            <InitialLoadWrapper>
               <Layout>
                 <Head>
                   <title>Stak</title>
@@ -45,8 +45,8 @@ const App = ({ Component, pageProps }: AppProps) => {
 
                 {/* </Profiler> */}
               </Layout>
-            </PersistGate>
-          </InitialLoadWrapper>
+            </InitialLoadWrapper>
+          </PersistGate>
         </OnBoardNewUser>
       </Provider>
     </UserProvider>

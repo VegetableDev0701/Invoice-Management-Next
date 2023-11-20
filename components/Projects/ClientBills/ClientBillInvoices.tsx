@@ -1,13 +1,16 @@
+import useCreateInvoiceRows from '@/hooks/use-create-invoice-table-data';
+
 import { InvoiceTableHeadings, Invoices } from '@/lib/models/invoiceDataModels';
+import { FormStateV2 } from '@/lib/models/formStateModels';
 
 import InvoicesTable from '@/components/Tables/Invoices/InvoiceSortHeadingsTable';
-import ClientBillInvoiceSlideOverlayImage from '@/components/UI/SlideOverlay/ClientBillInvoiceSlideOverlayImage';
-import useCreateInvoiceRows from '@/hooks/use-create-invoice-table-data';
+import ProcessInvoiceSlideOverlay from '@/components/UI/SlideOverlay/ProcessInvoiceSlideOverlay';
 
 interface Props {
   projectId: string;
   invoices: Invoices;
   isLoading: boolean;
+  onGetSnapShotFormState: (data: FormStateV2) => void;
 }
 
 const tableHeadings: InvoiceTableHeadings = {
@@ -24,7 +27,7 @@ const checkBoxButtons = [
 ];
 
 export default function ClientBillInvoices(props: Props) {
-  const { projectId, invoices } = props;
+  const { projectId, invoices, onGetSnapShotFormState } = props;
 
   const invoiceRows = useCreateInvoiceRows({
     pageLoading: false,
@@ -32,9 +35,19 @@ export default function ClientBillInvoices(props: Props) {
     projectId,
   });
 
+  const getSnapShotFormStateHandler = (data: FormStateV2) => {
+    onGetSnapShotFormState(data);
+  };
+
   return (
     <>
-      {invoiceRows && <ClientBillInvoiceSlideOverlayImage rows={invoiceRows} />}
+      <ProcessInvoiceSlideOverlay
+        rows={invoiceRows}
+        projectId={projectId}
+        contractData={null}
+        updateData={false}
+        onGetSnapShotFormState={getSnapShotFormStateHandler}
+      />
       <InvoicesTable
         isProjectPage={true}
         headings={tableHeadings}

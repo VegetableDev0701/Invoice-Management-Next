@@ -93,11 +93,11 @@ export function createCostCodeList(costCodes: CostCodesData) {
     item: CostCodeItem | CostCodeItemB2AData,
     _: Array<number>
   ) => {
-    costCodeList.push({ id: count, label: String(item.number.toFixed(4)) });
+    costCodeList.push({ id: count, label: String(item.number) });
     costCodeNameList.push({
       id: count,
       label: (item as CostCodeItem).label || item.name || '',
-      costCode: String(item.number.toFixed(4)),
+      costCode: String(item.number),
     });
     count++;
   };
@@ -227,7 +227,7 @@ export const costCodeData2NLevel = (oldCostCodeData: any) => {
           number: _number,
           name: item?.name || item?.label,
           label: item?.label,
-          id: String(_number.toFixed(4)),
+          id: String(_number),
           inputType: item?.inputType,
           isCurrency: item?.isCurrency,
           required: item?.required,

@@ -39,22 +39,22 @@ const addProjectFormSlice = createSlice({
     resetFormValidation(state) {
       return resetAllFormValidation(state);
     },
-    removeRecurringFeeState(
-      state,
-      action: PayloadAction<{ inputKey: string }>
-    ) {
-      const { inputKey } = action.payload;
-      delete state[inputKey];
-    },
-    incrementRecurringFee(state) {
-      (state.numRecurringFees.value as number)++;
-    },
-    decrementRecurringFee(state) {
-      (state.numRecurringFees.value as number)--;
-    },
-    setRecurringFee(state, action: PayloadAction<number>) {
-      state.numRecurringFees.value = action.payload;
-    },
+    // removeRecurringFeeState(
+    //   state,
+    //   action: PayloadAction<{ inputKey: string }>
+    // ) {
+    //   const { inputKey } = action.payload;
+    //   delete state[inputKey];
+    // },
+    // incrementRecurringFee(state) {
+    //   (state.numRecurringFees.value as number)++;
+    // },
+    // decrementRecurringFee(state) {
+    //   (state.numRecurringFees.value as number)--;
+    // },
+    // setRecurringFee(state, action: PayloadAction<number>) {
+    //   state.numRecurringFees.value = action.payload;
+    // },
   },
 });
 

@@ -33,14 +33,6 @@ function NavBar() {
           path={`/${(user as User).user_metadata.companyId}/projects`}
           name="Projects"
           testId="projects-tab"
-          items={[
-            {
-              name: 'Add Project',
-              menuPath: `/${
-                (user as User).user_metadata.companyId
-              }/projects/add-project`,
-            },
-          ]}
           activeclass={`${
             currentPath.startsWith(
               `/${(user as User).user_metadata.companyId}/projects`
@@ -53,14 +45,6 @@ function NavBar() {
           path={`/${(user as User).user_metadata.companyId}/vendors`}
           name="Vendors"
           testId="vendors-tab"
-          items={[
-            {
-              name: 'Add Vendor',
-              menuPath: `/${
-                (user as User).user_metadata.companyId
-              }/vendors/add-vendor`,
-            },
-          ]}
           activeclass={`${
             currentPath.startsWith(
               `/${(user as User).user_metadata.companyId}/vendors`

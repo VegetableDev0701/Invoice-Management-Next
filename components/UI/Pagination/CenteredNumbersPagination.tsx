@@ -13,8 +13,9 @@ import { contractActions } from '@/store/contract-slice';
 
 import { useKeyPressActionOverlay } from '@/hooks/use-save-on-key-press';
 
-import { FormState, User } from '@/lib/models/formStateModels';
+import { FormStateV2, User } from '@/lib/models/formStateModels';
 import { InvoiceTableRow, Invoices } from '@/lib/models/invoiceDataModels';
+import { snapshotCopy } from '@/lib/utility/utils';
 
 import {
   ArrowLongLeftIcon,
@@ -26,7 +27,8 @@ interface Props {
   open: boolean;
   currentRow?: number;
   rows: InvoiceTableRow[] | null;
-  snapShotFormState?: FormState;
+  snapShotFormState?: FormStateV2;
+  updateData?: boolean;
   onChangePage: (activePage: number) => void;
 }
 
@@ -36,21 +38,31 @@ const activeClasses =
   'inline-flex items-center border-t-2 border-stak-dark-green px-4 pt-4 text-sm font-medium text-gray-800';
 
 export default function CenteredPagination(props: Props) {
-  const { pageArray, rows, currentRow, open, snapShotFormState, onChangePage } =
-    props;
+  const {
+    pageArray,
+    rows,
+    currentRow,
+    open,
+    snapShotFormState,
+    updateData = true,
+    onChangePage,
+  } = props;
   const [activePageIdx, setActivePageIdx] = useState(0);
 
   const forwardButtonRef = useRef<HTMLDivElement>(null);
   const backButtonRef = useRef<HTMLDivElement>(null);
+
   useKeyPressActionOverlay({
     formOverlayOpen: open,
     ref: forwardButtonRef,
-    keyName: 'ArrowRight',
+    isMoveForward: true,
+    keyName: 'Enter',
   });
   useKeyPressActionOverlay({
     formOverlayOpen: open,
     ref: backButtonRef,
-    keyName: 'ArrowLeft',
+    isMoveBackward: true,
+    keyName: 'Enter',
   });
 
   const { user } = useUser();
@@ -59,9 +71,10 @@ export default function CenteredPagination(props: Props) {
   const allInvoices: Invoices = useSelector(
     (state) => state.data.invoices.allInvoices
   );
-  const isInvoiceUpdated: boolean = useSelector(
-    (state) => state.addProcessInvoiceForm?.isUpdated.value
-  ) as boolean;
+
+  const processInvoiceFormState: FormStateV2 = useSelector(
+    (state) => state.addProcessInvoiceForm
+  );
 
   useEffect(() => {
     onChangePage(activePageIdx);
@@ -91,7 +104,12 @@ export default function CenteredPagination(props: Props) {
           isRowClicked: false,
         })
       );
-      if (isInvoiceUpdated && snapShotFormState) {
+
+      if (
+        processInvoiceFormState?.isUpdated.value &&
+        snapShotFormState &&
+        updateData
+      ) {
         dispatch(
           addProcessedInvoiceData({
             companyId: (user as User).user_metadata.companyId,
@@ -101,6 +119,12 @@ export default function CenteredPagination(props: Props) {
           })
         );
       }
+      dispatch(
+        invoiceActions.getInvoiceSnapshot({
+          formState: snapshotCopy(processInvoiceFormState) as FormStateV2,
+          doc_id: rows[currentRow].doc_id,
+        })
+      );
       dispatch(addProcessInvoiceFormActions.clearFormState());
     }
   };
@@ -129,7 +153,12 @@ export default function CenteredPagination(props: Props) {
           isRowClicked: false,
         })
       );
-      if (isInvoiceUpdated && snapShotFormState) {
+
+      if (
+        processInvoiceFormState?.isUpdated.value &&
+        snapShotFormState &&
+        updateData
+      ) {
         dispatch(
           addProcessedInvoiceData({
             companyId: (user as User).user_metadata.companyId,
@@ -139,6 +168,12 @@ export default function CenteredPagination(props: Props) {
           })
         );
       }
+      dispatch(
+        invoiceActions.getInvoiceSnapshot({
+          formState: snapshotCopy(processInvoiceFormState) as FormStateV2,
+          doc_id: rows[currentRow].doc_id,
+        })
+      );
       dispatch(addProcessInvoiceFormActions.clearFormState());
     }
   };

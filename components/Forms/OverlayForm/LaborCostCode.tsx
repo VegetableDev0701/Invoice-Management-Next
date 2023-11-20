@@ -79,6 +79,7 @@ function LaborCostCodes(props: Props) {
               isCurrency: false,
               isOnOverlay: true,
             }}
+            projectId={projectId}
             icon={<DollarSign width={null} height={null} />}
             actions={actions}
             showError={showError}
@@ -97,6 +98,7 @@ function LaborCostCodes(props: Props) {
               isCurrency: false,
               isOnOverlay: true,
             }}
+            projectId={projectId}
             actions={actions}
             showError={showError}
           />

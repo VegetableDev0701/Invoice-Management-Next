@@ -9,6 +9,7 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
+// import autoMergeLevel1 from 'redux-persist/es/stateReconciler/autoMergeLevel1';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import localforage from 'localforage';
@@ -35,6 +36,7 @@ import addProcessInvoiceFormSlice from './add-process-invoice';
 import addClientBillSlice from './add-client-bill';
 import nodeEnvSlice from './node-env-slice';
 import onboardUserFormSlice from './onboard-user-slice';
+import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1';
 
 const rootReducer = combineReducers({
   path: currentPathSlice.reducer,
@@ -88,16 +90,21 @@ if (typeof window !== 'undefined') {
   persistConfig = {
     key: 'root',
     storage: localforage,
+    stateReconciler: autoMergeLevel1,
   };
 } else {
   const noopStorage = createNoopStorage();
   persistConfig = {
     key: 'root',
     storage: noopStorage,
+    stateReconciler: autoMergeLevel1,
   };
 }
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer<ReturnType<typeof rootReducer>>(
+  persistConfig,
+  rootReducer
+);
 
 export const store = configureStore({
   reducer: persistedReducer,

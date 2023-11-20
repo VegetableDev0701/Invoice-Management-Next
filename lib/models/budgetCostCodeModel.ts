@@ -9,6 +9,7 @@ export interface CostCodesData {
   divisions: Divisions[];
   status?: string;
   isOpened?: boolean;
+  uuid?: string;
 }
 
 export interface Divisions {

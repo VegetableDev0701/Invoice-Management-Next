@@ -4,19 +4,33 @@ export const useKeyPressActionOverlay = ({
   formOverlayOpen,
   ref,
   keyName,
+  isMoveForward,
+  isMoveBackward,
   backButton = 4,
   forwardButton = 5,
 }: {
   formOverlayOpen: boolean;
   ref: RefObject<HTMLButtonElement> | RefObject<HTMLDivElement>;
   keyName: string;
+  isMoveForward?: boolean;
+  isMoveBackward?: boolean;
   backButton?: number;
   forwardButton?: number;
 }) => {
   useEffect(() => {
     const keyDownHandler = (e: KeyboardEvent) => {
-      if (e.key === keyName && ref && formOverlayOpen) {
-        ref.current?.click();
+      if (isMoveForward) {
+        if (e.key === keyName && !e.shiftKey && ref && formOverlayOpen) {
+          ref.current?.click();
+        }
+      } else if (isMoveBackward) {
+        if (e.key === keyName && e.shiftKey && ref && formOverlayOpen) {
+          ref.current?.click();
+        }
+      } else {
+        if (e.key === keyName && ref && formOverlayOpen) {
+          ref.current?.click();
+        }
       }
     };
 

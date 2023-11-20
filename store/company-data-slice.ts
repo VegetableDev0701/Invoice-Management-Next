@@ -47,7 +47,7 @@ import {
   ChangeOrderContentItem,
 } from '@/lib/models/changeOrderModel';
 import { ExtendedCompanyData } from '@/lib/models/companyDataModel';
-import { snapshotCopy } from '@/lib/utility/utils';
+import { isObjectEmpty, snapshotCopy } from '@/lib/utility/utils';
 
 export const fetchCompanyData = createAsyncThunk(
   'companyDataAsync/fetch',
@@ -94,6 +94,10 @@ export const fetchCompanyData = createAsyncThunk(
   }
 );
 
+/**
+ * This thunk will update an invoice when it first gets ingested into the
+ * system and first classified to a project.
+ */
 export const updateInvoices = createAsyncThunk(
   'invoiceUpdates/updateInvoices',
   async (invoicesToUpdate: string[], thunkAPI) => {
@@ -112,7 +116,7 @@ export const updateInvoices = createAsyncThunk(
       if (intersection.length === 0) {
         return false;
       }
-      if (Object.keys(invoiceProjects).length > 0) {
+      if (!isObjectEmpty(invoiceProjects)) {
         const updatedAllInvoices: Invoices = invoicesToUpdate.reduce(
           (obj: Invoices, invoiceId: string) => {
             if (allInvoices[invoiceId] && invoiceProjects[invoiceId]) {
@@ -173,7 +177,7 @@ export const patchInvoiceUpdates = createAsyncThunk(
       thunkAPI.dispatch(
         uiActions.setNotificationContent({
           content:
-            'Something went wrong with saving invoices to projects. Please try again.',
+            'Something went wrong with saving projects to invoices. Please try again.',
           icon: 'error',
           openNotification: true,
         })
@@ -215,13 +219,17 @@ export const addProcessedInvoiceData = createAsyncThunk(
           )
         : {};
 
-      // check if the current chosen project in the processed invoice form
-      // is the same as the project the invoice is currently associated with
-      const currentProjectName =
+      const isProjectNameChanged =
         processInvoiceFormState?.['project-name']?.value &&
         projectName !== processInvoiceFormState['project-name'].value
-          ? (processInvoiceFormState?.['project-name']?.value as string)
-          : projectName;
+          ? true
+          : false;
+
+      // check if the current chosen project in the processed invoice form
+      // is the same as the project the invoice is currently associated with
+      const currentProjectName = isProjectNameChanged
+        ? (processInvoiceFormState?.['project-name']?.value as string)
+        : projectName;
 
       // grab the project data for the current project associated with the clicked invoice
       const projectData = Object.values(
@@ -284,12 +292,13 @@ export const addProcessedInvoiceData = createAsyncThunk(
           lineItems,
           changeOrdersSummary,
           lineItemBoundingBoxes,
+          isProjectNameChanged,
         });
       }
 
-      // Check to make sure that the user has not selected a change order for any line items
-      // and the whole invoice. This wouldn't make sense becuase the whole invoice would
-      // cover all line items, and this would be in conflict with selecting an specific line item for a change order.
+      // This code ensures that a change order is set for either the entire invoice or an individual line item, but not both.
+      // It prevents conflicting change orders. TODO However, utilizing the line-item-toggle to clear any whole invoice change order
+      // when saving with the toggle switch open can improve user experience by eliminating the need for error modals in such cases.
       try {
         if (
           Object.values(groupedLineItems).some((lineItem) => {
@@ -326,8 +335,12 @@ export const addProcessedInvoiceData = createAsyncThunk(
       const isNoLineItemsSelected =
         Object.values(groupedLineItems).every(isChangeOrderNone);
 
-      const wholeInvoiceChangeOrderValue =
-        processInvoiceFormState['change-order'].value;
+      // If the line item toggle is open, then the whole invoice change order is automatically
+      // set to null so that there can be no conflicts.
+      const wholeInvoiceChangeOrderValue = isProjectNameChanged
+        ? null
+        : processInvoiceFormState['change-order'].value;
+
       const wholeInvoiceCostCodeValue =
         processInvoiceFormState['cost-code'].value;
 
@@ -356,33 +369,38 @@ export const addProcessedInvoiceData = createAsyncThunk(
         }
 
         // you cannot choose a cost code when processing invoices that do not
-        // already exist so we can force the description type here
-        changeOrderContentList.push({
-          [getChangeOrderIdFromName({
-            changeOrdersSummary,
-            changeOrderName: wholeInvoiceChangeOrderValue as string,
-          })]: {
-            [invoiceId]: {
-              costCode: wholeInvoiceCostCodeValue as string,
-              totalAmt: formatNumber(
-                (+(
-                  processInvoiceFormState['invoice-total'].value as string
-                ).replaceAll(',', '')).toFixed(2)
-              ),
-              qtyAmt: '1',
-              rateAmt: formatNumber(
-                (+(
-                  processInvoiceFormState['invoice-total'].value as string
-                ).replaceAll(',', '')).toFixed(2)
-              ),
-              description: (description as CostCodeObjType).label,
-              vendor: processInvoiceFormState['vendor-name'].value as string,
-              uuid: invoiceId,
-              isInvoice: true,
-              isLaborFee: null,
+        // already exist so we can force the description type here.
+        // If the project name changes, i.e. the invoice was assigned to the wrong project,
+        // we would just negate any change order designation so skip this step. Change orders
+        // are associated with projects so all change order assignments get reset for that invoice.
+        if (!isProjectNameChanged) {
+          changeOrderContentList.push({
+            [getChangeOrderIdFromName({
+              changeOrdersSummary,
+              changeOrderName: wholeInvoiceChangeOrderValue as string,
+            })]: {
+              [invoiceId]: {
+                costCode: wholeInvoiceCostCodeValue as string,
+                totalAmt: formatNumber(
+                  (+(
+                    processInvoiceFormState['invoice-total'].value as string
+                  ).replaceAll(',', '')).toFixed(2)
+                ),
+                qtyAmt: '1',
+                rateAmt: formatNumber(
+                  (+(
+                    processInvoiceFormState['invoice-total'].value as string
+                  ).replaceAll(',', '')).toFixed(2)
+                ),
+                description: (description as CostCodeObjType).label,
+                vendor: processInvoiceFormState['vendor-name'].value as string,
+                uuid: invoiceId,
+                isInvoice: true,
+                isLaborFee: null,
+              },
             },
-          },
-        });
+          });
+        }
       }
       // LINE ITEMS
       else {
@@ -392,7 +410,9 @@ export const addProcessedInvoiceData = createAsyncThunk(
         Object.entries(groupedLineItems).forEach(
           ([lineItemNumber, lineItem]) => {
             const changeOrder = lineItem.change_order;
-            if (changeOrder !== null) {
+            // check if we are changing the project assignment for this invoice and skip
+            // any change order operations if this is case
+            if (changeOrder !== null && !isProjectNameChanged) {
               const newItem: ChangeOrderContentItem = {
                 costCode: lineItem.cost_code as string,
                 totalAmt: formatNumber(
@@ -417,6 +437,8 @@ export const addProcessedInvoiceData = createAsyncThunk(
           }
         );
         changeOrderContentList.push(dataObj);
+
+        processedInvoiceData;
       }
 
       const changeOrderContent = changeOrderContentList.reduce((acc, curr) => {
@@ -442,16 +464,21 @@ export const addProcessedInvoiceData = createAsyncThunk(
         })
       );
 
-      // in teh following logic groupedLineItems and the new or current ones,
+      // in the following logic groupedLineItems and the new or current ones,
       // while snapShotLineItems are the old ones to compare to
       type ChangeOrderCont = { name: string; uuid: string };
       let changeOrderObj: ChangeOrderCont | null = null;
       let updatedLineItems: InvoiceLineItem = {};
-      // if the formState has a value for this change-order we know that it is for
-      // the whole invoice, and therefore no line items can have a change order on them
+
+      // Check if formState contains a value for this change order.
+      // If it does, it implies the change order applies to the entire invoice.
+      // Consequently, we set all line item change orders to null when the entire invoice change order is set.
+      // Additionally, there's a check for the line-item-toggle switch.
+      // This allows setting a whole invoice change order even if line items have their own change orders.
       if (
         processInvoiceFormState?.['change-order']?.value &&
-        processInvoiceFormState['change-order'].value !== 'None'
+        processInvoiceFormState['change-order'].value !== 'None' &&
+        !isProjectNameChanged
       ) {
         // You can't select a change order unless it already exists in the data so this
         // can never be undefined or null so force with !
@@ -473,7 +500,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
           })
         );
       }
-      // if the line items have not been edited at all, don't have to check them for updates
+      // Here we check if the any line items were added or
       else if (
         groupedLineItems &&
         Object.keys(groupedLineItems).length > 0 &&
@@ -494,10 +521,8 @@ export const addProcessedInvoiceData = createAsyncThunk(
       const processedInvoiceDataUpdated: ProcessedInvoiceData = {
         ...processedInvoiceData,
         ...{ change_order: changeOrderObj },
-        ...{ line_items: groupedLineItems },
+        ...{ line_items: updatedLineItems },
       };
-
-      console.log(snapshotCopy(processedInvoiceDataUpdated));
 
       thunkAPI.dispatch(
         companyDataActions.addProcessedInvoiceData({
@@ -885,6 +910,7 @@ export const companyDataSlice = createSlice({
       const allInvoices: Invoices = {
         ...state.invoices.allInvoices,
       };
+
       const updatedInvoices: Invoices = Object.keys(allInvoices)
         .filter((invoiceId) => !action.payload.includes(invoiceId))
         .reduce((obj: Invoices, key: string) => {
@@ -892,6 +918,10 @@ export const companyDataSlice = createSlice({
           return obj;
         }, {});
       state.invoices.allInvoices = updatedInvoices;
+    },
+    updateInvoiceProjectObject(state, action: PayloadAction<Invoices>) {
+      const allInvoices: Invoices = { ...state.invoices.allInvoices };
+      state.invoices.allInvoices = { ...allInvoices, ...action.payload };
     },
     addProcessedInvoiceData(
       state,

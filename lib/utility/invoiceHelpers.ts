@@ -51,11 +51,13 @@ export const groupLineItems = ({
   changeOrdersSummary,
   lineItemBoundingBoxes,
   laborRate,
+  isProjectNameChanged,
 }: {
   lineItems: { [key: string]: FormStateItem };
   changeOrdersSummary: ChangeOrderSummary;
   lineItemBoundingBoxes?: InvoiceLineItem;
   laborRate?: string;
+  isProjectNameChanged?: boolean;
 }) => {
   const groupedLineItems: InvoiceLineItem = {};
   Object.entries(lineItems).forEach(([key, value]) => {
@@ -72,16 +74,20 @@ export const groupLineItems = ({
     // conditionals in the first bit, keep it, otherwise take the data for the other
     // suffix values and set change_order to null
     if (suffix === 'change_order') {
-      groupedLineItems[lineItemKey][suffix] =
-        value?.value && value.value === 'None'
-          ? null
-          : {
-              name: value.value as string,
-              uuid: getChangeOrderIdFromName({
-                changeOrdersSummary,
-                changeOrderName: value.value as string,
-              }),
-            };
+      if (isProjectNameChanged !== undefined && isProjectNameChanged) {
+        groupedLineItems[lineItemKey][suffix] = null;
+      } else {
+        groupedLineItems[lineItemKey][suffix] =
+          value?.value && value.value === 'None'
+            ? null
+            : {
+                name: value.value as string,
+                uuid: getChangeOrderIdFromName({
+                  changeOrdersSummary,
+                  changeOrderName: value.value as string,
+                }),
+              };
+      }
     } else if (suffix === 'cost_code') {
       groupedLineItems[lineItemKey][suffix] =
         value?.value && value.value === 'None' ? null : (value.value as string);

@@ -22,7 +22,7 @@ import useHttp from '@/hooks/use-http';
 import useSetNotification from '@/hooks/use-set-nofitication';
 import { useAddCurrentDataToFormData } from '@/hooks/use-add-current-page-data';
 
-import { FormState, User } from '@/lib/models/formStateModels';
+import { FormStateV2, User } from '@/lib/models/formStateModels';
 import { createSingleLaborSummary } from '@/lib/utility/createSummaryDataHelpers';
 import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
 import { checkAllFormFieldsLabor } from '@/lib/validation/formValidation';
@@ -79,7 +79,7 @@ export default function ProjectsLaborFees(props: Props) {
   const [missingInputs, setMissingInputs] = useState<boolean>(false);
   const [dummyUpdate, setDummyUpdate] = useState<number>(0);
   const [snapShotCurrentFormState, setSnapShotCurrentFormState] =
-    useState<FormState | null>(null);
+    useState<FormStateV2 | null>(null);
 
   const { user, isLoading: userLoading } = useUser();
 
@@ -194,14 +194,16 @@ export default function ProjectsLaborFees(props: Props) {
 
   const submitFormHandler = async (
     e: React.FormEvent,
-    formStateData?: FormState
+    formStateData?: FormStateV2
   ) => {
     e.preventDefault();
+
     // Grab all of the cost codes then slice only the currently open inputs
-    const numberOfWorkItems = Object.keys(formStateData as FormState)
+    const numberOfWorkItems = Object.keys(formStateData as FormStateV2)
       .filter((key) => key.includes('work-description'))
       .map((key) => key.split('-')[0])
       .slice(0, addLaborFormStateData.numCostCodes.value as number);
+
     const allValid = checkAllFormFieldsLabor(
       addLaborFormData,
       addLaborFormStateData,
@@ -225,7 +227,7 @@ export default function ProjectsLaborFees(props: Props) {
     // create the form data to push to the DB
     const dataToSubmit = createFormDataForSubmit({
       formData: addLaborFormData,
-      formStateData: formStateData as FormState,
+      formStateData: formStateData as FormStateV2,
       isAddProject: false,
       isAddVendor: false,
       isAddLabor: true,

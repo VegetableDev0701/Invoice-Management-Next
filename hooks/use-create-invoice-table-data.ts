@@ -38,7 +38,7 @@ export default function useCreateInvoiceRows({
   // for some reason I'm using slightly different forms for my invoices in
   // the project invoice tables and the client bill invoice tables. Just another
   // thing to fucking deal with...
-  const allInvoices = invoices?.allInvoices ? invoices.allInvoices : invoices;
+  const allInvoices = invoices?.allInvoices ?? invoices;
 
   const projectSupervisor: string | undefined = useSelector(
     (state) =>
@@ -190,7 +190,7 @@ export default function useCreateInvoiceRows({
     } else {
       return null;
     }
-  }, [invoices?.allInvoices, pageLoading]);
+  }, [invoices?.allInvoices ? invoices.allInvoices : invoices, pageLoading]);
 
   return invoiceRows;
 }

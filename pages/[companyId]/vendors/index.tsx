@@ -35,6 +35,7 @@ import SectionHeading from '@/components/UI/SectionHeadings/SectionHeading';
 import CheckboxSortHeadingsTable from '@/components/Tables/MainTables/CheckboxSortHeadingsTableWithFilter';
 import SlideOverlayForm from '@/components/UI/SlideOverlay/SlideOverlayForm';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
+import { nanoid } from '@/lib/config';
 
 const tabs = [
   { name: 'All', keyName: 'all', current: true },
@@ -143,6 +144,30 @@ function Vendors() {
     dispatch(getCurrentVendor({ vendorId: uuid }));
   };
 
+  const addVendorHandler = () => {
+    dispatch(addVendorFormActions.clearFormState());
+    dispatch(addVendorFormActions.resetFormValidation());
+    dispatch(
+      overlayActions.setOverlayContent({
+        data: {
+          overlayTitle: 'Add Vendor',
+          open: true,
+          isSave: true,
+        },
+        stateKey: 'vendors',
+      })
+    );
+    dispatch(
+      overlayActions.setCurrentOverlayData({
+        data: {
+          currentData: null,
+          currentId: null,
+        },
+        stateKey: 'vendors',
+      })
+    );
+  };
+
   const buttonClickHandler = (label: string, selected: VendorSummaryItem[]) => {
     setSelected(selected);
     if (label === 'Delete') {
@@ -172,13 +197,11 @@ function Vendors() {
     overlayStateKey: 'vendors',
   });
 
-  const updateSubmitHandler = async (
+  const submitFormHandler = async (
     e: React.FormEvent,
     formStateData?: FormState
   ) => {
     e.preventDefault();
-
-    if (!overlayContent?.currentId) return;
 
     const allValid = checkAllFormFields(
       addVendorFormData,
@@ -198,7 +221,7 @@ function Vendors() {
       })
     );
 
-    const vendorUUID = overlayContent.currentId as string;
+    const vendorUUID = overlayContent?.currentId ?? nanoid();
 
     // create the form data to push to the DB
     const dataToSubmit = createFormDataForSubmit({
@@ -233,14 +256,13 @@ function Vendors() {
       const requestConfig = {
         url: `/api/${
           (user as User).user_metadata.companyId
-        }/vendors/add-vendor`,
-        method: 'PATCH',
+        }/vendors/add-vendor?vendorId=${overlayContent.currentId}`,
+        method: `${overlayContent.isSave ? 'POST' : 'PATCH'}`,
         body: JSON.stringify({
           fullData: dataToSubmit,
           summaryData: summaryVendorData,
         }),
         headers: {
-          vendorId: overlayContent.currentId,
           'Content-Type': 'application/json',
         },
       };
@@ -248,10 +270,10 @@ function Vendors() {
       await sendRequest({
         requestConfig,
         actions: addVendorFormActions,
-        pushPath: `/${(user as User).user_metadata.companyId}/vendors`,
       });
     }
   };
+
   return (
     <>
       {(userLoading || pageLoading) && <FullScreenLoader />}
@@ -265,7 +287,7 @@ function Vendors() {
             overlayContent={overlayContent}
             form="addVendor"
             overlayStateKey="vendors"
-            onSubmit={(e) => updateSubmitHandler(e, addVendorFormStateData)}
+            onSubmit={(e) => submitFormHandler(e, addVendorFormStateData)}
           />
           <ModalConfirm
             onCloseModal={closeModalHandler}
@@ -280,9 +302,7 @@ function Vendors() {
               buttons={[
                 {
                   label: 'Add Vendor',
-                  buttonPath: `/${
-                    (user as User).user_metadata.companyId
-                  }/vendors/add-vendor`,
+                  onClick: addVendorHandler,
                 },
               ]}
               dropdownFilter={{
@@ -307,7 +327,7 @@ function Vendors() {
                 >
                   <CheckboxSortHeadingsTable
                     headings={tableHeadings}
-                    rows={filteredData} // TODO fix this type issue
+                    rows={filteredData}
                     activeFilter={activeFilter}
                     checkboxButtons={[
                       { label: 'Draft Email', buttonPath: '#', disabled: true },

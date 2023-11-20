@@ -14,14 +14,13 @@ import { FormData } from '@/lib/models/types';
 import {
   AddressItems,
   InputElement,
-  InputElementWithAddressItems,
-  InputElementWithItems,
   Items,
   MainCategories,
   isInputElementWithAddressElements,
   isInputElementWithItems,
 } from '@/lib/models/formDataModel';
 import { onboardUserActions } from '@/store/onboard-user-slice';
+import { updateItemElement } from '@/lib/utility/formHelpers';
 
 interface UserData {
   company_id: string;
@@ -161,58 +160,6 @@ const OnBoardNewUser = ({
   useEffect(() => {
     runOnboardProcess();
   }, []);
-
-  const updateItemElement = ({
-    updatedFormData,
-    value,
-    i,
-    j,
-    k,
-    jAdd,
-    kAdd,
-    isAddress,
-  }: {
-    updatedFormData: FormData;
-    value: string | null;
-    i: number;
-    j: number;
-    k?: number;
-    jAdd?: number;
-    kAdd?: number;
-    isAddress: boolean;
-  }) => {
-    if (isAddress) {
-      (
-        updatedFormData.mainCategories[i].inputElements[
-          j
-        ] as InputElementWithAddressItems
-      ).addressElements[jAdd as number].items[kAdd as number] = {
-        ...(
-          updatedFormData.mainCategories[i].inputElements[
-            j
-          ] as InputElementWithAddressItems
-        ).addressElements[jAdd as number].items[kAdd as number],
-        value,
-        disabled: value ? true : false,
-        required: false,
-      };
-    } else {
-      (
-        updatedFormData.mainCategories[i].inputElements[
-          j
-        ] as InputElementWithItems
-      ).items[k as number] = {
-        ...(
-          updatedFormData.mainCategories[i].inputElements[
-            j
-          ] as InputElementWithItems
-        ).items[k as number],
-        value,
-        disabled: value ? true : false,
-        required: false,
-      };
-    }
-  };
 
   // If this is the second or more user to a company this code will pre fill that data
   // and disable that input field. This

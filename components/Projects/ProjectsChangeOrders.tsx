@@ -18,7 +18,7 @@ import { FormState, User } from '@/lib/models/formStateModels';
 import { createSingleChangeOrderSummary } from '@/lib/utility/createSummaryDataHelpers';
 import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
 import { checkAllFormFields } from '@/lib/validation/formValidation';
-import { ChangeOrderData, LaborData } from '@/lib/models/formDataModel';
+import { ChangeOrderData } from '@/lib/models/formDataModel';
 import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
 import { nanoid } from '@/lib/config';
 
@@ -115,7 +115,7 @@ export default function ProjectsChangeOrders(props: Props) {
     dataToSubmit.uuid = changeOrderUUID;
 
     const changeOrderSummary = createSingleChangeOrderSummary({
-      changeOrder: dataToSubmit as LaborData,
+      changeOrder: dataToSubmit,
       changeOrderId: changeOrderUUID,
       content: (changeOrderSummaryState as ChangeOrderSummary)?.[
         changeOrderUUID

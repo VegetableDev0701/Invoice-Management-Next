@@ -62,6 +62,9 @@ export default function SlideOverlayForm(props: Props) {
 
   const dispatch = useDispatch();
 
+  // make the slide overlay bigger for these forms, since there is more detail in them.
+  const isWideForm = (form === 'addVendor' || form === 'addProject') ?? false;
+
   return (
     <>
       <Transition.Root show={open} as={Fragment}>
@@ -96,7 +99,11 @@ export default function SlideOverlayForm(props: Props) {
                   leaveFrom="translate-x-0"
                   leaveTo="translate-x-full"
                 >
-                  <Dialog.Panel className="pointer-events-auto w-screen max-w-3xl">
+                  <Dialog.Panel
+                    className={`pointer-events-auto w-screen ${
+                      isWideForm ? 'max-w-5xl' : 'max-w-3xl'
+                    }`}
+                  >
                     <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-2xl">
                       {responseLoading && <FullScreenLoader />}
                       {!responseLoading && (

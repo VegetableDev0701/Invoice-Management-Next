@@ -24,7 +24,7 @@ export default function useConnectDescriptionToCostCode({
     if (input.id.includes('-cost-code') || input.id.includes('-cost_code')) {
       if (
         laborFormState[`${workItemNumber}-work-description`] &&
-        laborFormState[`${workItemNumber}-work-description`].value !== ''
+        laborFormState[`${workItemNumber}-work-description`].value
       ) {
         const costCodeId = costCodeNameList.filter(
           (costCodeName: { id: number; label: string }) => {
@@ -34,12 +34,13 @@ export default function useConnectDescriptionToCostCode({
             );
           }
         )[0];
-        setSelected({
-          label: costCodeList.filter(
-            (costCode: { id: number; label: string }) =>
-              costCode.id === costCodeId.id
-          )[0].label,
-        });
+        costCodeId &&
+          setSelected({
+            label: costCodeList.filter(
+              (costCode: { id: number; label: string }) =>
+                costCode.id === costCodeId.id
+            )[0].label,
+          });
       }
     }
   }, [laborFormState?.[`${workItemNumber}-work-description`]?.value]);
@@ -157,8 +158,8 @@ export default function useConnectDescriptionToCostCode({
         const costCodeId = costCodeList.filter(
           (costCode: { id: number; label: string }) => {
             return (
-              (+costCode.label).toFixed(4) ===
-              (+(processInvoiceState['cost-code'].value as string)).toFixed(4)
+              +costCode.label ===
+              +(processInvoiceState['cost-code'].value as string)
             );
           }
         )[0];

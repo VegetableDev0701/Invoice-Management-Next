@@ -78,7 +78,7 @@ const useHttp = ({ isClearData }: { isClearData: boolean }) => {
       }
     } catch (error: any) {
       if (error.name === 'AbortError') {
-        console.log('Fetch aborted');
+        console.error('Fetch aborted');
       } else {
         setError(error || 'Something went wrong.');
       }

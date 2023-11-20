@@ -18,7 +18,7 @@ import { usePageData } from '@/hooks/use-page-data';
 import { useKeyPressActionOverlay } from '@/hooks/use-save-on-key-press';
 
 import { FormData } from '@/lib/models/types';
-import { FormState, User } from '@/lib/models/formStateModels';
+import { FormStateV2, User } from '@/lib/models/formStateModels';
 import { ContractData } from '@/lib/models/summaryDataModel';
 import { Items } from '@/lib/models/formDataModel';
 import { snapshotCopy } from '@/lib/utility/utils';
@@ -44,15 +44,24 @@ interface Props {
   projectId: string;
   contractData: ContractData | null;
   dropdown?: ExtendedItems;
+  updateData?: boolean;
+  onGetSnapShotFormState?: (data: FormStateV2) => void;
 }
 
 export default function ProcessInvoiceSlideOverlay(props: Props) {
-  const { dropdown, rows, projectId, contractData } = props;
+  const {
+    dropdown,
+    rows,
+    projectId,
+    contractData,
+    onGetSnapShotFormState,
+    updateData = true,
+  } = props;
   const [open, setOpen] = useState(false);
   const [pageIdx, setPageIdx] = useState(0);
   const [key, setKey] = useState(0);
   const [snapShotCurrentFormState, setSnapShotCurrentFormState] =
-    useState<FormState | null>(null);
+    useState<FormStateV2 | null>(null);
   const [childHasRendered, setChildHasRendered] = useState(false);
 
   const processInvoiceFormState = useSelector(
@@ -79,10 +88,11 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
   );
 
   const closeAndSaveFormRef = useRef<HTMLButtonElement>(null);
+
   useKeyPressActionOverlay({
     formOverlayOpen: open,
     ref: closeAndSaveFormRef,
-    keyName: 'Enter',
+    keyName: 'Esc',
   });
 
   const currentRow = useMemo(() => {
@@ -112,6 +122,9 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
   useEffect(() => {
     if (childHasRendered && !processedRef.current) {
       setSnapShotCurrentFormState(snapshotCopy(latestFormState));
+      if (onGetSnapShotFormState) {
+        onGetSnapShotFormState(snapshotCopy(latestFormState));
+      }
       processedRef.current = true;
     } else if (!childHasRendered) {
       setSnapShotCurrentFormState(null);
@@ -189,14 +202,14 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
 
   const closeOverlay = () => {
     setOpen(false);
-    if (processInvoiceFormState?.isUpdated.value) {
+    if (processInvoiceFormState?.isUpdated.value && updateData) {
       dispatch(
         addProcessedInvoiceData({
           companyId: (user as User).user_metadata.companyId,
           invoiceId: (invoiceObj.clickedInvoice as InvoiceTableRow).doc_id,
           projectName: (invoiceObj.clickedInvoice as InvoiceTableRow)
             .project as string,
-          snapShotFormState: snapShotCurrentFormState as FormState,
+          snapShotFormState: snapShotCurrentFormState as FormStateV2,
         })
       );
     }
@@ -204,6 +217,12 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
       invoiceActions.setClickedInvoice({
         invoice: null,
         isRowClicked: false,
+      })
+    );
+    dispatch(
+      invoiceActions.getInvoiceSnapshot({
+        formState: snapshotCopy(processInvoiceFormState) as FormStateV2,
+        doc_id: (invoiceObj.clickedInvoice as InvoiceTableRow)?.doc_id,
       })
     );
     dispatch(
@@ -367,8 +386,9 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
                           currentRow={invoiceObj.invoiceRowNumber}
                           open={open}
                           snapShotFormState={
-                            snapShotCurrentFormState as FormState
+                            snapShotCurrentFormState as FormStateV2
                           }
+                          updateData={updateData}
                         />
                       )}
                     </div>

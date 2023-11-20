@@ -1,41 +1,35 @@
 import { getAPIUrl } from '@/lib/config';
-import { getGoogleToken } from '@/lib/utility/auth';
 import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const companyId = req.query.companyId as string;
-  const vendorId = req.query.vendorId as string;
-
-  if (req.method === 'POST' || req.method === 'PATCH') {
+  const projectId = req.query.projectId as string;
+  const clientBillId = req.headers.clientbillid as string;
+  if (req.method === 'POST') {
     try {
       const auth0Session = await getSession(req, res);
       if (!auth0Session || !auth0Session.user) {
         res.status(401).json({ error: 'Not authenticated' });
         return;
       }
-      const googleToken = await getGoogleToken();
-      if (!googleToken) {
-        res.status(401).json({ error: 'Not Authenticated' });
-      }
+      // const googleToken = await getGoogleToken();
+      // if (!googleToken) {
+      //   res.status(401).json({ error: 'Not Authenticated' });
+      // }
 
-      let url = '';
-      if (req.method === 'POST') {
-        url = `${getAPIUrl()}/${companyId}/add-vendor`;
-      }
-      if (req.method === 'PATCH') {
-        url = `${getAPIUrl()}/${companyId}/update-vendor?vendor_id=${vendorId}`;
-      }
-
-      const response = await fetch(url, {
-        method: req.method,
-        body: req.body,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${googleToken}`,
-          Auth0: `Bearer ${auth0Session.accessToken}`,
-        },
-      });
+      const response = await fetch(
+        `${getAPIUrl()}/${companyId}/update-client-bill?project_id=${projectId}&client_bill_id=${clientBillId}`,
+        {
+          method: req.method,
+          body: req.body,
+          headers: {
+            'Content-Type': 'application/json',
+            // Authorization: `Bearer ${googleToken}`,
+            Auth0: `Bearer ${auth0Session.accessToken}`,
+          },
+        }
+      );
 
       if (response.statusText !== 'OK') {
         const errorData = await response.json();
@@ -54,6 +48,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       });
     }
     return;
+  } else {
+    res.status(405).json({ error: 'Not a PATCH request.' });
   }
 }
 

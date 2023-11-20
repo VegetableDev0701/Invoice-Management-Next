@@ -2,10 +2,11 @@ import { useAppSelector as useSelector } from '@/store/hooks';
 import { FormData } from '@/lib/models/types';
 import {
   InputElement,
+  InputElementWithAddressItems,
   InputElementWithItems,
   Items,
 } from '@/lib/models/formDataModel';
-import { FormState } from '@/lib/models/formStateModels';
+import { FormStateV2 } from '@/lib/models/formStateModels';
 
 import DollarSign from '@/public/icons/DollarSign';
 import Calendar from '@/public/icons/Calendar';
@@ -82,7 +83,7 @@ export function useGetInputState(id: string, form: string) {
  * @param formState
  * @returns formState
  */
-export function resetAllFormValidation(formState: FormState) {
+export function resetAllFormValidation(formState: FormStateV2) {
   for (const key in formState) {
     if (formState[key].value === '') {
       formState[key].isTouched = false;
@@ -97,3 +98,59 @@ export function resetAllFormValidation(formState: FormState) {
   }
   return formState;
 }
+
+/**
+ * When the form data needs to be updated this utility function will update the
+ * section of that object that needs to be updated.
+ */
+export const updateItemElement = ({
+  updatedFormData,
+  value,
+  i,
+  j,
+  k,
+  jAdd,
+  kAdd,
+  isAddress,
+}: {
+  updatedFormData: FormData;
+  value: string | null;
+  i: number;
+  j: number;
+  k?: number;
+  jAdd?: number;
+  kAdd?: number;
+  isAddress: boolean;
+}) => {
+  if (isAddress) {
+    (
+      updatedFormData.mainCategories[i].inputElements[
+        j
+      ] as InputElementWithAddressItems
+    ).addressElements[jAdd as number].items[kAdd as number] = {
+      ...(
+        updatedFormData.mainCategories[i].inputElements[
+          j
+        ] as InputElementWithAddressItems
+      ).addressElements[jAdd as number].items[kAdd as number],
+      value,
+      disabled: value ? true : false,
+      required: false,
+    };
+  } else {
+    (
+      updatedFormData.mainCategories[i].inputElements[
+        j
+      ] as InputElementWithItems
+    ).items[k as number] = {
+      ...(
+        updatedFormData.mainCategories[i].inputElements[
+          j
+        ] as InputElementWithItems
+      ).items[k as number],
+      value,
+      disabled: value ? true : false,
+      required: false,
+    };
+  }
+};

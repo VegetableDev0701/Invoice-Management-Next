@@ -59,11 +59,11 @@
             {
               "label": "Project Name",
               "id": "project-name",
-              "inputType": "dropdownWithSearch",
               "required": true,
               "errormessage": "Project is required.",
               "value": "",
-              "isOnOverlay": true
+              "isOnOverlay": true,
+              "disabled": true
             }
           ]
         },
@@ -76,7 +76,8 @@
               "required": false,
               "errormessage": "Client's name is required.",
               "value": "",
-              "isOnOverlay": true
+              "isOnOverlay": true,
+              "disabled": true
             }
           ]
         },
@@ -93,7 +94,8 @@
                   "errormessage": "Project address is required.",
                   "isAddress": true,
                   "value": "",
-                  "isOnOverlay": true
+                  "isOnOverlay": true,
+                  "disabled": true
                 }
               ]
             },
@@ -106,7 +108,8 @@
                   "required": true,
                   "isAddress": true,
                   "value": "",
-                  "isOnOverlay": true
+                  "isOnOverlay": true,
+                  "disabled": true
                 },
                 {
                   "label": "State",
@@ -115,7 +118,8 @@
                   "required": true,
                   "isAddress": true,
                   "value": "",
-                  "isOnOverlay": true
+                  "isOnOverlay": true,
+                  "disabled": true
                 },
                 {
                   "label": "Zip Code",
@@ -125,7 +129,8 @@
                   "required": true,
                   "isAddress": true,
                   "value": "",
-                  "isOnOverlay": true
+                  "isOnOverlay": true,
+                  "disabled": true
                 }
               ]
             }
