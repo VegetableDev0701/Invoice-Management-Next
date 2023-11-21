@@ -43,7 +43,7 @@ export interface DivisionDataV2 {
 export interface CostCodeItemB2AData {
   number: number;
   name?: string;
-  value?: string | number;
+  value?: string;
   actual?: string | number;
   subItems?: CostCodeItemB2AData[];
   isCurrency?: boolean;

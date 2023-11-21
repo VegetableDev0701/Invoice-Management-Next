@@ -5,9 +5,11 @@ import {
   SubDivisions,
   BudgetTotals,
   BudgetTotalsV2,
+  UpdateCostCode,
 } from '@/lib/models/budgetCostCodeModel';
 import { SelectMenuOptions } from '../models/formDataModel';
 import { CostCodeItemB2AData, DivisionDataV2 } from '../models/chartDataModels';
+import { MakeRequired } from './budgetHelpers';
 
 function insertSorted<
   T extends Divisions | SubDivisions | CostCodeItem,
@@ -277,3 +279,121 @@ export const getDataByRecursiveLevel = ({
     prefix,
   };
 };
+
+export function addCostCode(costCodes: CostCodesData, action: UpdateCostCode) {
+  const { type, name, number, recursiveLevel } = action as MakeRequired<
+    MakeRequired<UpdateCostCode, 'name'>,
+    'number'
+  >;
+  if (type !== 'Create' || !recursiveLevel) {
+    console.error('Invalid action type.');
+    return;
+  }
+
+  // create new division
+  if (recursiveLevel.length === 0) {
+    const newDivision: Divisions = {
+      name: name,
+      number: number,
+      subItems: [],
+    };
+
+    addDivision(costCodes, newDivision, false);
+  } else {
+    const result = getDataByRecursiveLevel({
+      fullData: costCodes.divisions,
+      level: recursiveLevel,
+    });
+
+    if (!result || !result.data) {
+      console.error('CostCode Item not found.');
+      return;
+    }
+
+    const parentItem = result.data;
+
+    const newCostCode: CostCodeItem = {
+      number: number,
+      name: name,
+      value: '0.00',
+      id: String(number),
+      type: 'text',
+      required: false,
+      isCurrency: true,
+      inputType: 'toggleInput',
+      subItems: [],
+    };
+
+    if (!parentItem.subItems?.length) {
+      if ((parentItem as CostCodeItem)?.isCurrency) {
+        (parentItem as CostCodeItem).isCurrency = false;
+        (parentItem as CostCodeItem).value = '0.00';
+      }
+      parentItem.subItems = [];
+    }
+
+    insertSorted(parentItem.subItems, newCostCode, 'number', false);
+  }
+}
+
+export function removeCostCode(
+  costCodes: CostCodesData,
+  action: UpdateCostCode
+) {
+  const { type, recursiveLevel } = action as UpdateCostCode;
+  if (type !== 'Delete' || !recursiveLevel || !recursiveLevel.length) {
+    console.error('Invalid action type.');
+    return;
+  }
+
+  // remove division
+  if (recursiveLevel.length === 1) {
+    costCodes.divisions.splice(recursiveLevel[0], 1);
+  } else {
+    const parentLevel = [...recursiveLevel];
+    parentLevel.pop();
+
+    const result = getDataByRecursiveLevel({
+      fullData: costCodes.divisions,
+      level: parentLevel,
+    });
+
+    if (!result || !result.data) {
+      console.error('CostCode Item not found.');
+      return;
+    }
+
+    const parentItem = result.data;
+    parentItem.subItems?.splice(recursiveLevel[recursiveLevel.length - 1], 1);
+
+    // if parent item is CostCode item and has no children
+    if (parentLevel.length !== 1 && !parentItem.subItems?.length) {
+      (parentItem as CostCodeItem).isCurrency = true;
+      (parentItem as CostCodeItem).value = '0.00';
+    }
+  }
+}
+
+export function editCostCode(costCodes: CostCodesData, action: UpdateCostCode) {
+  const { type, name, number, recursiveLevel } = action as MakeRequired<
+    MakeRequired<UpdateCostCode, 'name'>,
+    'number'
+  >;
+  if (type !== 'Update' || !recursiveLevel || !recursiveLevel.length) {
+    console.error('Invalid action type.');
+    return;
+  }
+
+  const result = getDataByRecursiveLevel({
+    fullData: costCodes.divisions,
+    level: recursiveLevel,
+  });
+
+  if (!result || !result.data) {
+    console.error('CostCode Item not found.');
+    return;
+  }
+
+  result.data.name = name;
+  result.data.number = number;
+}

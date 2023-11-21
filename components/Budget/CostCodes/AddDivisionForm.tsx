@@ -1,8 +1,11 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 
+import { useAppDispatch as useDispatch } from '@/store/hooks';
+
 import InputBaseAddDivision from '@/components/Inputs/InputBaseAddDivision';
 import Button from '@/components/UI/Buttons/Button';
 import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
+import { addBudgetFormActions } from '@/store/add-budget-slice';
 
 interface Props {
   showForm: () => void;
@@ -13,6 +16,7 @@ export default function AddDivisionForm({
   showForm,
   setCostCodeDataList,
 }: Props) {
+  const dispatch = useDispatch();
   const [isError, setIsError] = useState(false);
   const [formData, setFormData] = useState({
     number: '',
@@ -25,6 +29,16 @@ export default function AddDivisionForm({
       setIsError(true);
       return;
     }
+
+    dispatch(
+      addBudgetFormActions.addToUpdateBudgetList({
+        type: 'Create',
+        name: formData['name'],
+        number: Number(formData['number']),
+        recursiveLevel: [],
+      })
+    );
+
     setCostCodeDataList(
       (prev: CostCodesData) =>
         ({
@@ -34,7 +48,7 @@ export default function AddDivisionForm({
             ...prev.divisions,
             {
               name: formData['name'],
-              number: formData['number'],
+              number: Number(formData['number']),
               subItems: [],
               updated: true,
             },

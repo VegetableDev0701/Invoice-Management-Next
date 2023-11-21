@@ -19,6 +19,7 @@ import MainComponent from '@/components/Budget/MainComponent';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
 
 import { ConvertTreeData } from '@/lib/utility/treeDataHelpers';
+import { updateAllProjectBudgets } from '@/store/projects-data-slice';
 
 const EditCostCodeFormat = () => {
   useSetStatePath();
@@ -137,6 +138,12 @@ const EditCostCodeFormat = () => {
       await sendRequest({
         requestConfig,
       });
+
+      dispatch(
+        updateAllProjectBudgets({
+          companyId: (user as User).user_metadata.companyId,
+        })
+      );
 
       dispatch(
         companyDataActions.changeUpdateTreeStatus({

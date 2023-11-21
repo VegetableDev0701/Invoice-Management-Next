@@ -29,14 +29,21 @@ import { ProjectData, ProjectDataItems } from '@/lib/models/projectDataModel';
 import { ChangeOrderContent } from '@/lib/models/changeOrderModel';
 import { Invoices, ProcessedInvoiceData } from '@/lib/models/invoiceDataModels';
 import {
+  addCostCode,
   costCodeData2NLevel,
   createCostCodeList,
+  editCostCode,
+  removeCostCode,
 } from '@/lib/utility/costCodeHelpers';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
 import { snapshotCopy } from '@/lib/utility/utils';
 import { setTargetValue } from '@/lib/utility/createSummaryDataHelpers';
 import { addUpdatedChangeOrderContent } from './add-change-order';
-import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
+import {
+  CostCodesData,
+  UpdateCostCode,
+} from '@/lib/models/budgetCostCodeModel';
+import { addBudgetFormActions } from './add-budget-slice';
 
 export const fetchProjectData = createAsyncThunk(
   'companyProjects/fetch',
@@ -307,6 +314,53 @@ export const removeLaborFromChangeOrderThunk = createAsyncThunk(
   }
 );
 
+export const updateAllProjectBudgets = createAsyncThunk(
+  'companyProjects/updateAllProjectBudgets',
+  async ({ companyId }: { companyId: string }, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    const updateBudgets = state.addBudgetForm.updateBudget;
+
+    fetch(`/api/${companyId}/projects/update-all-budgets`, {
+      method: 'PATCH',
+      body: JSON.stringify(updateBudgets),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('something went wrong');
+        return res.json();
+      })
+      .then((data) => {
+        thunkAPI.dispatch(
+          uiActions.setNotificationContent({
+            content: data.message,
+            icon: 'success',
+            openNotification: true,
+          })
+        );
+        console.log(
+          'dionY [updateAllProjectBudgets] updateBudgets: ',
+          updateBudgets
+        );
+
+        thunkAPI.dispatch(
+          projectDataActions.updateAllProjectBudgets(updateBudgets)
+        );
+
+        thunkAPI.dispatch(addBudgetFormActions.resetUpdateBudget());
+      })
+      .catch((error) => {
+        thunkAPI.dispatch(
+          uiActions.setNotificationContent({
+            content:
+              'Something went wrong with saving budget updates to all projects.',
+            icon: 'error',
+            openNotification: true,
+          })
+        );
+        console.error(error);
+      });
+  }
+);
+
 const initialDataState: ProjectData = {};
 
 const projectDataSlice = createSlice({
@@ -558,7 +612,6 @@ const projectDataSlice = createSlice({
       }
       state[projectId]['change-orders-summary'] = changeOrdersSummary;
     },
-
     removeSelectedRow(
       state,
       action: PayloadAction<{
@@ -624,7 +677,6 @@ const projectDataSlice = createSlice({
         }) = { ...filteredLabor };
       }
     },
-
     addContractFromSSE(
       state,
       action: PayloadAction<{ newContracts: ContractData; projectId: string }>
@@ -793,7 +845,6 @@ const projectDataSlice = createSlice({
         ...updatedProjects,
       };
     },
-
     updateProjectsClientBillData(
       state,
       action: PayloadAction<{
@@ -849,6 +900,41 @@ const projectDataSlice = createSlice({
           },
         };
       }
+    },
+
+    updateAllProjectBudgets(state, action: PayloadAction<UpdateCostCode[]>) {
+      const actions = action.payload;
+      const projectIds = Object.keys(state);
+
+      const newState: ProjectData = snapshotCopy(state);
+      console.log(
+        'dionY [updateAllProjectBudgets] oldState: ',
+        snapshotCopy(state)
+      );
+
+      projectIds.forEach((projectId) => {
+        if (state[projectId].budget) {
+          const projectBudget = newState[projectId].budget;
+          actions.forEach((v) => {
+            switch (v.type) {
+              case 'Create':
+                addCostCode(projectBudget, v);
+                break;
+              case 'Delete':
+                removeCostCode(projectBudget, v);
+                break;
+              case 'Update':
+                editCostCode(projectBudget, v);
+            }
+          });
+        }
+      });
+
+      console.log(
+        'dionY [updateAllProjectBudgets] oldState: ',
+        snapshotCopy(newState)
+      );
+      state = newState;
     },
   },
   extraReducers: (builder) => {

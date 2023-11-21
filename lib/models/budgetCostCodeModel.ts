@@ -261,7 +261,7 @@ export type CostCodeTreeData = {
   data: TreeData;
 };
 
-export interface UpdateCodeCode {
+export interface UpdateCostCode {
   type: 'Create' | 'Update' | 'Delete';
   number?: number;
   name?: string;
