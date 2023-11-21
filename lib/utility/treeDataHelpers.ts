@@ -44,8 +44,12 @@ export class ConvertTreeData {
     });
   };
 
-  iterateAllItems = (divId: string, subItems: CostCodeItem[]) => {
-    subItems?.forEach((subItem: CostCodeItem) => {
+  iterateAllItems = (
+    divId: string,
+    subItems: CostCodeItem[],
+    level: Array<number>
+  ) => {
+    subItems?.forEach((subItem: CostCodeItem, index: number) => {
       const item = `item${this.itemIndex++}`;
       this.result[divId].children?.push(item);
       this.result[item] = {
@@ -59,6 +63,7 @@ export class ConvertTreeData {
           required: false,
           isCurrency: false,
           inputType: '',
+          recursiveLevel: [],
         },
       };
       this.result[item].index = item;
@@ -74,13 +79,14 @@ export class ConvertTreeData {
         isCurrency,
         inputType,
         isOpened: subItem?.isOpened ?? false,
+        recursiveLevel: [...level, index],
       };
       this.result[item].children = [];
       if (!subItem.subItems?.length) {
         return;
       } else {
         this.result[item].isFolder = true;
-        this.iterateAllItems(item, subItem.subItems);
+        this.iterateAllItems(item, subItem.subItems, [...level, index]);
       }
     });
   };
@@ -94,7 +100,7 @@ export class ConvertTreeData {
       updated: costCodeData.updated,
       status: costCodeData?.status ?? undefined,
     };
-    costCodeData.divisions?.forEach((division) => {
+    costCodeData.divisions?.forEach((division, index) => {
       const divisionItem = `item${this.itemIndex++}`;
 
       this.result.root.children?.push(divisionItem);
@@ -103,6 +109,7 @@ export class ConvertTreeData {
         data: {
           name: '',
           number: 0,
+          recursiveLevel: [],
         },
       };
       this.result[divisionItem].index = divisionItem;
@@ -110,12 +117,13 @@ export class ConvertTreeData {
         name: division.name,
         number: division.number,
         isOpened: division?.isOpened ?? false,
+        recursiveLevel: [index],
       };
       this.result[divisionItem].children = [];
       this.result[divisionItem].isFolder =
         division.subItems && division.subItems?.length > 0;
       division?.subItems &&
-        this.iterateAllItems(divisionItem, division?.subItems);
+        this.iterateAllItems(divisionItem, division?.subItems, [index]);
     });
 
     return this.result;

@@ -249,10 +249,21 @@ export interface InvoiceCurrentActualsChangeOrdersV2 {
 
 export type TreeData = Record<
   TreeItemIndex,
-  TreeItem<Omit<CostCodeItem, 'subItems'> | Omit<CostCodesData, 'divisions'>>
+  TreeItem<
+    (Omit<CostCodeItem, 'subItems'> | Omit<CostCodesData, 'divisions'>) & {
+      recursiveLevel?: Array<number>;
+    }
+  >
 >;
 
 export type CostCodeTreeData = {
   updated: boolean;
   data: TreeData;
 };
+
+export interface UpdateCodeCode {
+  type: 'Create' | 'Update' | 'Delete';
+  number?: number;
+  name?: string;
+  recursiveLevel?: Array<number>;
+}
