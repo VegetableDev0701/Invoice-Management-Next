@@ -38,10 +38,11 @@ export default function InvoiceSlideOverlayImage(props: Props) {
   const dispatch = useDispatch();
 
   const closeFormRef = useRef<HTMLButtonElement>(null);
+
   useKeyPressActionOverlay({
     formOverlayOpen: open,
     ref: closeFormRef,
-    keyName: 'Enter',
+    keyName: 'Esc',
   });
 
   const currentRow = useMemo(() => {

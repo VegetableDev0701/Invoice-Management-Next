@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Loader } from '@googlemaps/js-api-loader';
+
+import { useAppDispatch as useDispatch } from '@/store/hooks';
 
 import { getValidFunc } from '@/lib/validation/formValidation';
 import { FormState } from '@/lib/models/formStateModels';
@@ -31,6 +32,12 @@ const InputAddressAutocomplete = (props: Props) => {
     useState<google.maps.places.Autocomplete | null>(null);
 
   const refs = [addressRef, cityRef, stateRef, zipRef];
+
+  const [mutatedAddress, setMutatedAddress] = useState<string | undefined>('');
+  const [mutatedCity, setMutatedCity] = useState<string | undefined>('');
+  const [mutatedState, setMutatedState] = useState<string | undefined>('');
+  const [mutatedZip, setMutatedZip] = useState<string | undefined>('');
+
   const isError = !showError
     ? !formState[input[0].items[0].id]?.isValid &&
       formState[input[0].items[0].id]?.isTouched
@@ -73,99 +80,81 @@ const InputAddressAutocomplete = (props: Props) => {
       const currentAddress = input[0].items[0].value as string;
       const currentAddressId = input[0].items[0].id;
       addressRef.current.value =
-        currentAddress !== ''
-          ? currentAddress
-          : formState[currentAddressId] &&
-            (formState[currentAddressId].value as string) &&
-            formState[currentAddressId].value !== ''
-          ? (formState[currentAddressId].value as string)
-          : '';
-      if (currentAddress !== '') {
+        currentAddress ||
+        (formState?.[currentAddressId]?.value as string) ||
+        mutatedAddress ||
+        '';
+      if (currentAddress || mutatedAddress) {
         dispatch(
           actions.setFormElement({
-            inputValue: currentAddress,
+            inputValue: currentAddress || mutatedAddress,
             inputKey: input[0].items[0].id,
             isValid: getValidFunc(
               input[0].items[0]?.validFunc || input[0].items[0].id,
               input[0].items[0].required
-            )(currentAddress),
+            )(currentAddress || (mutatedAddress as string)),
           })
         );
       }
     }
+
     if (cityRef.current) {
       const currentCity = input[1].items[0].value as string;
       const currentCityId = input[1].items[0].id;
       cityRef.current.value =
-        currentCity !== ''
-          ? currentCity
-          : formState[currentCityId] &&
-            (formState[currentCityId].value as string) &&
-            formState[currentCityId].value !== ''
-          ? (formState[currentCityId].value as string)
-          : '';
-      if (currentCity !== '') {
+        currentCity || (formState?.[currentCityId]?.value as string) || '';
+      if (currentCity || mutatedCity) {
         dispatch(
           actions.setFormElement({
-            inputValue: currentCity,
+            inputValue: currentCity || mutatedCity,
             inputKey: input[1].items[0].id,
             isValid: getValidFunc(
               input[1].items[0]?.validFunc || input[1].items[0].id,
               input[1].items[0].required
-            )(currentCity),
+            )(currentCity || (mutatedCity as string)),
           })
         );
       }
     }
+
     if (stateRef.current) {
       const currentState = input[1].items[1].value as string;
       const currentStateId = input[1].items[1].id;
       stateRef.current.value =
-        currentState !== ''
-          ? currentState
-          : formState[currentStateId] &&
-            (formState[currentStateId].value as string) &&
-            formState[currentStateId].value !== ''
-          ? (formState[currentStateId].value as string)
-          : '';
-      if (currentState !== '') {
+        currentState || (formState?.[currentStateId]?.value as string) || '';
+      if (currentState || mutatedState) {
         dispatch(
           actions.setFormElement({
-            inputValue: currentState,
+            inputValue: currentState || mutatedState,
             inputKey: input[1].items[1].id,
             isValid: getValidFunc(
               input[1].items[1]?.validFunc || input[1].items[1].id,
               input[1].items[1].required
-            )(currentState),
+            )(currentState || (mutatedState as string)),
           })
         );
       }
     }
+
     if (zipRef.current) {
       const currentZip = input[1].items[2].value as string;
       const currentZipId = input[1].items[2].id;
       zipRef.current.value =
-        currentZip !== ''
-          ? currentZip
-          : formState[currentZipId] &&
-            (formState[currentZipId].value as string) &&
-            formState[currentZipId].value !== ''
-          ? (formState[currentZipId].value as string)
-          : '';
-      if (currentZip !== '') {
+        currentZip || (formState?.[currentZipId]?.value as string) || '';
+      if (currentZip || mutatedZip) {
         dispatch(
           actions.setFormElement({
-            inputValue: currentZip,
+            inputValue: currentZip || mutatedZip,
             inputKey: input[1].items[2].id,
             isValid: getValidFunc(
               input[1].items[2]?.validFunc || input[1].items[2].id,
               input[1].items[2].required
-            )(currentZip),
+            )(currentZip || (mutatedZip as string)),
           })
         );
       }
     }
-  }, []);
+  }, [mutatedAddress, mutatedCity, mutatedState, mutatedZip]);
 
   const dispatch = useDispatch();
 
@@ -181,6 +170,7 @@ const InputAddressAutocomplete = (props: Props) => {
       const southWest = new google.maps.LatLng(42.0, -125.0); // Approximate southwest corner
       const northEast = new google.maps.LatLng(49.0, -111.0); // Approximate northeast corner
       const bounds = new google.maps.LatLngBounds(southWest, northEast);
+
       if (addressRef.current) {
         const autoCompleteInstance = new google.maps.places.Autocomplete(
           addressRef.current,
@@ -205,6 +195,19 @@ const InputAddressAutocomplete = (props: Props) => {
     };
   }, []);
 
+  // check if there are any mutations to the address fields done by a third party like chrome
+  useEffect(() => {
+    setMutatedAddress(addressRef?.current?.value);
+    setMutatedCity(cityRef?.current?.value);
+    setMutatedState(stateRef?.current?.value);
+    setMutatedZip(zipRef?.current?.value);
+  }, [
+    addressRef?.current?.value,
+    cityRef?.current?.value,
+    stateRef?.current?.value,
+    zipRef?.current?.value,
+  ]);
+
   const onPlaceChanged = (autocomplete: google.maps.places.Autocomplete) => {
     const place = autocomplete.getPlace();
     const addressComponents = place.address_components;
@@ -224,7 +227,6 @@ const InputAddressAutocomplete = (props: Props) => {
       const postal_code = addressComponents.find((component) =>
         component.types.includes('postal_code')
       );
-
       if (addressRef.current) {
         addressRef.current.value = `${
           street_number ? street_number.long_name : ''
@@ -286,6 +288,7 @@ const InputAddressAutocomplete = (props: Props) => {
       }
     }
   };
+
   const inputClasses = `font-sans w-full block placeholder:text-base border-2 text-stak-dark-gray pr-3 pl-3 ${
     classes['input-container__input']
   } ${

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   useAppDispatch as useDispatch,
@@ -55,7 +55,14 @@ const InputBaseWithValidation = (props: Props) => {
     classes: addOnClass,
   } = props.props;
 
+  const [mutatedState, setMutatedState] = useState<string | undefined>(
+    undefined
+  );
+
   const dispatch = useDispatch();
+
+  const contractObj = useSelector((state) => state.contract);
+  const inputState = useGetInputState(input.id, form) as FormStateItem;
 
   // make the first input field autofocused
   const inputRef = useRef<HTMLInputElement>(null);
@@ -65,9 +72,6 @@ const InputBaseWithValidation = (props: Props) => {
     }
   }, []);
 
-  const contractObj = useSelector((state) => state.contract);
-  const inputState = useGetInputState(input.id, form) as FormStateItem;
-
   // check for duplicate change order names
   const isNameDuped = useCheckChangeOrderNameDuped({
     projectId,
@@ -75,11 +79,24 @@ const InputBaseWithValidation = (props: Props) => {
     inputState,
   });
 
-  const [inputValue, changeHandler, blurHandler] = useInputChangeHandler(
+  const [inputValueState, changeHandler, blurHandler] = useInputChangeHandler(
     input,
     inputState,
     actions
   );
+
+  let inputValue = inputValueState;
+
+  // check via the ref if the value changes due to a third part like chrome updating
+  // the input field. If so update the state and inputValue with this new item.
+  useEffect(() => {
+    setMutatedState(inputRef?.current?.value);
+  }, [inputRef?.current?.value]);
+  useEffect(() => {
+    if (mutatedState) {
+      inputValue = mutatedState;
+    }
+  }, [mutatedState]);
 
   const contractClickHandler = (e: React.MouseEvent) => {
     e.preventDefault();

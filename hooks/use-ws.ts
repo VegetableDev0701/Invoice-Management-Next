@@ -68,7 +68,7 @@ export default function useListenWS() {
     if (!wsUrl) return;
 
     webSocket = new WebSocket(wsUrl);
-    onWebSocketEvents(webSocket, dispatch, setNewDocs, webSocket);
+    onWebSocketEvents(webSocket, dispatch, setNewDocs);
 
     return () => {
       if (webSocket.readyState === webSocket.OPEN) {
@@ -131,12 +131,12 @@ export default function useListenWS() {
 const onWebSocketEvents = (
   ws: WebSocket,
   dispatch: AppDispatch,
-  setNewDocs: Dispatch<SetStateAction<Invoices | ContractData | null>>,
-  webSocket: WebSocket
+  setNewDocs: Dispatch<SetStateAction<Invoices | ContractData | null>>
 ) => {
   ws.onopen = (event) => {
     console.log('WebSocket is open:', event);
   };
+
   ws.onmessage = (event) => {
     const serverMessage = JSON.parse(event.data);
 
@@ -181,10 +181,10 @@ const onWebSocketEvents = (
             })
           );
           dispatch(uiActions.setLoadingState({ isLoading: false }));
-          webSocket.send(
+          ws.send(
             JSON.stringify({
               event: 'client_status',
-              data: { state: webSocket.readyState },
+              data: { state: ws.readyState },
             })
           );
         }
@@ -219,7 +219,7 @@ const onWebSocketEvents = (
 
       case 'heartbeat':
         if (serverMessage.data === 'ping') {
-          webSocket.send(
+          ws.send(
             JSON.stringify({
               event: 'client_status',
               data: 'pong',
@@ -244,7 +244,7 @@ const onWebSocketEvents = (
       })
     );
     dispatch(uiActions.setLoadingState({ isLoading: false }));
-    webSocket.close();
+    ws.close();
   };
 
   ws.onclose = (event) => {
