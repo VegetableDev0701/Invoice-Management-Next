@@ -109,6 +109,7 @@ export default function SectionHeading(props: Props) {
                 } else {
                   return (
                     <Button
+                      key={i}
                       type="button"
                       buttonText={button.label}
                       className="px-8 py-1 text-xl font-normal bg-stak-dark-green"
