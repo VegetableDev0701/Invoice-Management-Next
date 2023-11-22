@@ -162,19 +162,19 @@ export default function BudgetForm(props: Props) {
     const itemData = item;
     if (isDivision) {
       if (itemData.data.value !== '0.00') {
-        return itemData.data.number.toString().padStart(2, '0') != '00'
-          ? itemData.data.number.toString().padStart(2, '0') +
-              ' - ' +
-              itemData.data.name +
-              ' $' +
-              formatNumber(itemData.data.value)
-          : itemData.data.name + ' $' + formatNumber(itemData.data.value);
+        return (
+          itemData.data.number.toString().padStart(2, '0') +
+          ' - ' +
+          itemData.data.name +
+          ' $' +
+          formatNumber(itemData.data.value)
+        );
       } else {
-        return itemData.data.number.toString().padStart(2, '0') != '00'
-          ? itemData.data.number.toString().padStart(2, '0') +
-              ' - ' +
-              itemData.data.name
-          : itemData.data.name;
+        return (
+          itemData.data.number.toString().padStart(2, '0') +
+          ' - ' +
+          itemData.data.name
+        );
       }
     } else if (isSubDivision) {
       if (itemData.data.name) {
