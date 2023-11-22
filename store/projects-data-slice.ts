@@ -933,11 +933,16 @@ const projectDataSlice = createSlice({
           [projectId: string]: PromiseFulfilledResult<any>;
         }>
       ) => {
-        Object.entries(action.payload).forEach(([_, value]) => {
+        Object.entries(action.payload).forEach(([projectId, value]) => {
           const newData = JSON.parse(value.value);
           if (!newData) return;
 
           newData.budget = costCodeData2NLevel(newData.budget);
+
+          state[projectId] = {
+            status: value.status,
+            ...newData,
+          };
         });
       }
     );
