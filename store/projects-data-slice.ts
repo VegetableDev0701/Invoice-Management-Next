@@ -31,7 +31,6 @@ import { Invoices, ProcessedInvoiceData } from '@/lib/models/invoiceDataModels';
 import {
   addCostCode,
   costCodeData2NLevel,
-  createCostCodeList,
   editCostCode,
   removeCostCode,
 } from '@/lib/utility/costCodeHelpers';
@@ -934,22 +933,11 @@ const projectDataSlice = createSlice({
           [projectId: string]: PromiseFulfilledResult<any>;
         }>
       ) => {
-        Object.entries(action.payload).forEach(([projectId, value]) => {
+        Object.entries(action.payload).forEach(([_, value]) => {
           const newData = JSON.parse(value.value);
           if (!newData) return;
 
           newData.budget = costCodeData2NLevel(newData.budget);
-
-          const { costCodeList, costCodeNameList } = createCostCodeList(
-            newData.budget
-          );
-
-          state[projectId] = {
-            status: value.status,
-            ...newData,
-            costCodeList,
-            costCodeNameList,
-          };
         });
       }
     );
