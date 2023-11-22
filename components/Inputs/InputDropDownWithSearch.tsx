@@ -213,7 +213,7 @@ const DropDownWithSearch = (props: Props) => {
           </Combobox.Label>
           <div className="relative mt-1" onBlur={blurHandler}>
             <Combobox.Input
-              className={`font-sans w-full pr-14 rounded-lg border-2 ${
+              className={`font-sans w-full pr-14 rounded-lg border-[2.5px] ${
                 input.isOnOverlay ? 'rounded-md py-1.5' : 'rounded-lg'
               } ${
                 isError && isInputRequired

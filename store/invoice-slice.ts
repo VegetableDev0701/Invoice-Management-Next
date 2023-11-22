@@ -669,6 +669,12 @@ const invoiceSlice = createSlice({
       state.clickedInvoice = invoice;
       state.isRowClicked = isRowClicked;
       state.invoiceRowNumber = invoiceRowNumber;
+
+      if (isRowClicked) {
+        state.currentInvoiceSnapShot = {} as FormStateV2 & {
+          doc_id: string;
+        };
+      }
     },
     getInvoiceSnapshot(
       state,
