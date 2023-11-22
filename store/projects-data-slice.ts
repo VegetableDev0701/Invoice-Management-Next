@@ -336,10 +336,6 @@ export const updateAllProjectBudgets = createAsyncThunk(
             openNotification: true,
           })
         );
-        console.log(
-          'dionY [updateAllProjectBudgets] updateBudgets: ',
-          updateBudgets
-        );
 
         thunkAPI.dispatch(
           projectDataActions.updateAllProjectBudgets(updateBudgets)
@@ -907,10 +903,6 @@ const projectDataSlice = createSlice({
       const projectIds = Object.keys(state);
 
       const newState: ProjectData = snapshotCopy(state);
-      console.log(
-        'dionY [updateAllProjectBudgets] oldState: ',
-        snapshotCopy(state)
-      );
 
       projectIds.forEach((projectId) => {
         if (state[projectId].budget) {
@@ -930,10 +922,6 @@ const projectDataSlice = createSlice({
         }
       });
 
-      console.log(
-        'dionY [updateAllProjectBudgets] oldState: ',
-        snapshotCopy(newState)
-      );
       state = newState;
     },
   },

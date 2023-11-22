@@ -139,7 +139,7 @@ const EditCostCodeFormat = () => {
         requestConfig,
       });
 
-      dispatch(
+      await dispatch(
         updateAllProjectBudgets({
           companyId: (user as User).user_metadata.companyId,
         })
