@@ -1,13 +1,9 @@
+import { nanoid } from '@/lib/config';
+import { Notification, NotificationContainer } from '@/lib/models/uiModels';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export interface InitialUIState {
   isLoading: boolean;
-}
-
-interface Notification {
-  openNotification?: boolean;
-  content?: string;
-  icon?: 'success' | 'error' | 'trash' | 'save';
 }
 
 export interface ErrorModal {
@@ -23,11 +19,11 @@ interface ProcessingNotification {
 }
 
 export const initialUIState: InitialUIState &
-  Record<'notification', Notification> &
+  Record<'notification', NotificationContainer> &
   Record<'errorModal', ErrorModal> &
   Record<'processingNotification', ProcessingNotification> = {
   isLoading: false,
-  notification: { openNotification: false, content: '', icon: 'success' },
+  notification: { messages: [], defaultDuration: 3000, gap: 30 },
   errorModal: { openModal: false, message: '', title: '', logout: false },
   processingNotification: { openNotification: false, content: '' },
 };
@@ -40,17 +36,32 @@ const uiSlice = createSlice({
       const { isLoading } = action.payload;
       state.isLoading = isLoading;
     },
-    setNotificationContent(state, action: PayloadAction<Notification>) {
-      const { content, icon, openNotification } = action.payload;
-      if (content) {
-        state.notification.content = content;
-      }
-      if (icon) {
-        state.notification.icon = icon;
-      }
-      if (openNotification !== undefined) {
-        state.notification.openNotification = openNotification;
-      }
+    notification(state, action: PayloadAction<Omit<Notification, 'id'>>) {
+      const { content, icon, autoHideDuration } = action.payload;
+      state.notification = {
+        ...state.notification,
+        messages: [
+          ...state.notification.messages,
+          {
+            id: nanoid(),
+            content,
+            icon,
+            autoHideDuration,
+          },
+        ],
+      };
+    },
+    setNotificationContent() {
+      // const { content, icon } = action.payload;
+      // if (content) {
+      //   state.notification.content = content;
+      // }
+      // if (icon) {
+      //   state.notification.icon = icon;
+      // }
+      // if (openNotification !== undefined) {
+      //   state.notification.openNotification = openNotification;
+      // }
     },
     setProcessingNotificationContent(
       state,

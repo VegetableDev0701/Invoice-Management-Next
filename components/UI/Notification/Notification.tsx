@@ -13,14 +13,13 @@ import {
 } from '@heroicons/react/20/solid';
 
 interface Props {
-  openNotification: boolean;
   content: string;
   timeOpenMS?: number;
   icon: 'success' | 'error' | 'trash' | 'save';
 }
 
 export default function Notification(props: Props) {
-  const { openNotification, content, icon, timeOpenMS } = props;
+  const { content, icon, timeOpenMS } = props;
   const [show, setShow] = useState(false);
 
   const dispatch = useDispatch();
@@ -28,17 +27,17 @@ export default function Notification(props: Props) {
   useEffect(() => {
     setShow(openNotification);
     setTimeout(() => {
-      dispatch(uiActions.setNotificationContent({ openNotification: false }));
+      // dispatch(uiActions.setNotificationContent({ openNotification: false }));
       setShow(openNotification);
     }, timeOpenMS || 2500);
-  }, [openNotification]);
+  }, []);
 
   return (
     <>
       {/* Global notification live region, render this permanently at the end of the document */}
       <div
         aria-live="assertive"
-        className="pointer-events-none z-50 fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6 sm:pt-6"
+        className="pointer-events-none inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6 sm:pt-6"
       >
         <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
           {/* Notification panel, dynamically insert this into the live region when it needs to be displayed */}

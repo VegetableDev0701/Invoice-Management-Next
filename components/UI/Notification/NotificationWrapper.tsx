@@ -5,21 +5,19 @@ export default function NotificationWrapper() {
   const notification = useSelector((state) => state.ui.notification);
 
   return (
-    <>
-      {notification.openNotification !== undefined && (
-        <Notification
-          openNotification={notification.openNotification}
-          content={notification.content as string}
-          icon={notification.icon as 'success' | 'error' | 'save' | 'trash'}
-        />
-      )}
-      {notification.openNotification === undefined && (
-        <Notification
-          openNotification={false}
-          content={notification.content as string}
-          icon={notification.icon as 'success' | 'error' | 'save' | 'trash'}
-        />
-      )}
-    </>
+    <div className="z-50 fixed">
+      <div className="flex flex-col gap-5">
+        {notification.messages.map((item, index) => (
+          <Notification
+            key={index}
+            openNotification={true}
+            content={item.content as string}
+            icon={
+              (item.icon || 'success') as 'success' | 'error' | 'save' | 'trash'
+            }
+          />
+        ))}
+      </div>
+    </div>
   );
 }
