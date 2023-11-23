@@ -6,6 +6,7 @@ import {
   ClientBillSummary,
   LaborSummary,
   LaborSummaryItem,
+  ProjectSummary,
 } from '@/lib/models/summaryDataModel';
 import {
   calculateTotals,
@@ -136,7 +137,9 @@ export const createBudgetActuals = createAsyncThunk(
   ) => {
     try {
       const state = getState() as RootState;
-      const projectSummary = state.data.projectsSummary.allProjects[projectId];
+      const projectSummary = (
+        state.data.projectsSummary.allProjects as ProjectSummary
+      )[projectId];
       const budget = state.projects[projectId].budget;
       const budgetTotalsV2 = state.addBudgetForm.budgetV2;
       const allInvoices: Invoices = state.data.invoices.allInvoices;
@@ -575,7 +578,9 @@ export const updateBudgetActuals = createAsyncThunk(
   ) => {
     try {
       const state = getState() as RootState;
-      const projectSummary = state.data.projectsSummary.allProjects[projectId];
+      const projectSummary = (
+        state.data.projectsSummary.allProjects as ProjectSummary
+      )[projectId];
       const budget = state.projects[projectId].budget;
       const budgetTotalsV2 = state.addBudgetForm.budgetV2;
       const changeOrdersSummary =

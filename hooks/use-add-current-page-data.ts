@@ -7,6 +7,7 @@ import {
   isInputElementWithAddressElements,
   isInputElementWithItems,
 } from '@/lib/models/formDataModel';
+import { ProjectSummary, VendorSummary } from '@/lib/models/summaryDataModel';
 import { FormData } from '@/lib/models/types';
 import { snapshotCopy } from '@/lib/utility/utils';
 import { useAppSelector as useSelector } from '@/store/hooks';
@@ -29,10 +30,14 @@ export const useAddCurrentDataToFormData = ({
 }) => {
   let formValues: any;
   const projectData = useSelector(
-    (state) => projectId && state.data.projectsSummary.allProjects[projectId]
+    (state) =>
+      projectId &&
+      (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
   );
   const vendorData = useSelector(
-    (state) => vendorId && state.data.vendorsSummary.allVendors[vendorId]
+    (state) =>
+      vendorId &&
+      (state.data.vendorsSummary.allVendors as VendorSummary)[vendorId]
   );
   if (projectId) {
     formValues = projectData;

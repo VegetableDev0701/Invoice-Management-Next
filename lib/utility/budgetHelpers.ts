@@ -62,7 +62,7 @@ export const createBudgetActualsObject = ({
     // loop through all invoices attached for this current client bill
     projectInvoices.forEach((invoice) => {
       if (!invoice.processedData) return;
-      dates.push(new Date(invoice.processedData.date_received));
+      dates.push(new Date(invoice.processedData.date_received + 'T12:00:00'));
       // init the invoice current actuals object
       invoiceBudgetActuals.invoice[invoice.doc_id] =
         invoiceBudgetActuals.invoice[invoice.doc_id] || {};
@@ -126,7 +126,7 @@ export const createBudgetActualsObject = ({
       invoiceBudgetActuals.laborFee[laborFee.uuid] =
         invoiceBudgetActuals.laborFee[laborFee.uuid] || {};
       laborFee.payPeriod != '' &&
-        dates.push(new Date(laborFee.payPeriod as string));
+        dates.push(new Date((laborFee.payPeriod as string) + +'T12:00:00'));
       handleLineItem({
         lineItems: laborFee.line_items as LaborLineItem,
         vendorName: laborFee.name,

@@ -61,19 +61,23 @@ export function hasAnyExpiredDates(object: VendorSummary, keyName: string) {
   const currentDate = new Date();
   const expiredObjects: Record<string, VendorSummaryItem> = {};
 
-  Object.entries(object[keyName]).forEach(([key, element]) => {
-    const hasExpired = Object.entries(element).some(([key, value]) => {
-      if (key.endsWith('ExpirationDate')) {
-        const date = new Date(value as string);
-        return date < currentDate;
-      }
-      return false;
-    });
+  Object.entries(object[keyName]).forEach(
+    ([key, element]: [string, VendorSummaryItem]) => {
+      const hasExpired = Object.entries(element).some(
+        ([key, value]: [string, string | boolean]) => {
+          if (key.endsWith('ExpirationDate')) {
+            const date = new Date((value as string) + 'T12:00:00');
+            return date < currentDate;
+          }
+          return false;
+        }
+      );
 
-    if (hasExpired) {
-      expiredObjects[key] = element;
+      if (hasExpired) {
+        expiredObjects[key] = element;
+      }
     }
-  });
+  );
 
   return expiredObjects;
 }
@@ -141,7 +145,7 @@ export function formatDate(date: string | undefined) {
   if (!date) {
     return;
   }
-  const dateObj = new Date(date);
+  const dateObj = new Date(date + 'T12:00:00');
   return `${('0' + (dateObj.getMonth() + 1)).slice(-2)}-${(
     '0' + dateObj.getDate()
   ).slice(-2)}-${dateObj.getFullYear()}`;

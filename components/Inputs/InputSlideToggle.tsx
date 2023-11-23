@@ -75,7 +75,7 @@ export default function SlideToggle(props: Props) {
         id={input.id}
         className={classNames(
           enabled ? 'bg-stak-dark-green' : 'bg-stak-light-gray',
-          'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none'
+          'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-[2.5px] border-transparent transition-colors duration-200 ease-in-out focus:outline-none'
         )}
       >
         <span className="sr-only">Use setting</span>

@@ -36,7 +36,7 @@ const InputBaseAddItem = (props: Props) => {
       </label>
       <div className="relative w-full mt-1 rounded-md shadow-sm">
         <input
-          className={`font-sans w-full block placeholder:text-base border-2 rounded-lg text-stak-dark-gray ${
+          className={`font-sans w-full block placeholder:text-base border-[2.5px] rounded-lg text-stak-dark-gray ${
             classes['input-container__input']
           } ${
             isError

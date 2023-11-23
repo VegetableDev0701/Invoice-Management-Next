@@ -131,7 +131,7 @@ const InputBaseWithValidation = (props: Props) => {
           )}
 
           <input
-            className={`font-sans w-full block placeholder:text-base border-2 text-stak-dark-gray ${
+            className={`font-sans w-full block placeholder:text-base border-[2.5px] text-stak-dark-gray ${
               input.isOnOverlay ? 'rounded-md py-1.5' : 'rounded-lg'
             } ${
               isLeftIcon

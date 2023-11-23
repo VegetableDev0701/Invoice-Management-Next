@@ -131,7 +131,7 @@ const InputToggleOnOff = (props: Props) => {
         {inputState && inputState.isAdded && (
           <div className="flex flex-row gap-2">
             <input
-              className={`font-sans w-full block placeholder:text-base border-2 text-gray-700 rounded-md py-1.5' ${
+              className={`font-sans w-full block placeholder:text-base border-[2.5px] text-gray-700 rounded-md py-1.5' ${
                 isLeftIcon
                   ? 'pl-10'
                   : isRightIcon && isError && isRequired

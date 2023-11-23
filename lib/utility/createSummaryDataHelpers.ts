@@ -84,7 +84,7 @@ export const setTargetValue = ({
 };
 
 function addMonths(dateString: string, months: number) {
-  const date = new Date(dateString);
+  const date = new Date(dateString + 'T12:00:00');
   date.setMonth(date.getMonth() + months);
 
   const year = date.getFullYear();
@@ -95,7 +95,7 @@ function addMonths(dateString: string, months: number) {
 }
 
 export const createBillDateTitle = (dateString: string) => {
-  const date = new Date(dateString);
+  const date = new Date(dateString + 'T12:00:00');
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   return `${year}, ${month}`;

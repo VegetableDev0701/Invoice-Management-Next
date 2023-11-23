@@ -8,8 +8,8 @@ export interface CompanyData {
   forms: Forms;
   invoices: { status: string; allInvoices: Invoices };
   vendors: { [vendorId: string]: VendorData };
-  projectsSummary: { status: string; allProjects: ProjectSummary };
-  vendorsSummary: { status: string; allVendors: VendorSummary };
+  projectsSummary: { status: string; allProjects: ProjectSummary | object };
+  vendorsSummary: { status: string; allVendors: VendorSummary | object };
   costCodes: CostCodesData;
   costCodeList: SelectMenuOptions[];
   costCodeNameList: SelectMenuOptions[];

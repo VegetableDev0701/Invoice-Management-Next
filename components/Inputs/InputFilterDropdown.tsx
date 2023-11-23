@@ -67,7 +67,7 @@ const FilterDropdown = (props: Props) => {
               <div className="grow relative mt-1">
                 <Listbox.Button
                   id={input.id}
-                  className={`font-sans w-full border-2 h-8 border-gray-500 rounded-md cursor-default py-0 pl-2 pr-10 text-left focus:border-stak-dark-green focus:shadow-xl focus-visible:border-stak-dark-green focus-visible:outline-stak-dark-green focus-visible:outline-0 sm:text-sm`}
+                  className={`font-sans w-full border-[2.5px] h-8 border-gray-500 rounded-md cursor-default py-0 pl-2 pr-10 text-left focus:border-stak-dark-green focus:shadow-xl focus-visible:border-stak-dark-green focus-visible:outline-stak-dark-green focus-visible:outline-0 sm:text-sm`}
                 >
                   <span className="flex truncate -mb-1 text-xl">
                     {selected.label}

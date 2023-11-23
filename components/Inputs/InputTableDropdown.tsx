@@ -43,10 +43,10 @@ interface Selected {
 const TableDropdown = (props: Props) => {
   const { input, sortBy, invoiceId } = props;
 
-  const projects: ProjectSummary = useSelector(
+  const projects = useSelector(
     (state) => state.data.projectsSummary.allProjects,
     shallowEqual
-  );
+  ) as ProjectSummary;
   const invoiceProject: InvoiceProject = useSelector(
     (state) => state.data.invoices.allInvoices[invoiceId]?.project,
     shallowEqual

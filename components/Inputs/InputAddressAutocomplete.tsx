@@ -289,7 +289,7 @@ const InputAddressAutocomplete = (props: Props) => {
     }
   };
 
-  const inputClasses = `font-sans w-full block placeholder:text-base border-2 text-stak-dark-gray pr-3 pl-3 ${
+  const inputClasses = `font-sans w-full block placeholder:text-base border-[2.5px] text-stak-dark-gray pr-3 pl-3 ${
     classes['input-container__input']
   } ${
     isError && isRequired

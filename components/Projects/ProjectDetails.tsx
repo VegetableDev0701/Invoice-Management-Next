@@ -24,6 +24,7 @@ import Form from '../Forms/InputFormLayout/Form';
 import SideLinksCard from '../UI/FormLayout/SideLinksCard';
 import { updateInvoiceProjectObject } from '@/store/invoice-slice';
 import { updateProjectDataInChangeOrdersThunk } from '@/store/add-change-order';
+import { ProjectSummary } from '@/lib/models/summaryDataModel';
 
 interface Props {
   projectId: string;
@@ -48,7 +49,8 @@ export default function ProjectDetails(props: Props) {
   // Use this data to see if we need to call the thunk to update
   // invoices currently associated with this project
   const projectSummary = useSelector(
-    (state) => state.data.projectsSummary.allProjects[projectId]
+    (state) =>
+      (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
   );
   const currentProjectName = projectSummary.projectName;
   const currentProjectAddress = projectSummary.address;

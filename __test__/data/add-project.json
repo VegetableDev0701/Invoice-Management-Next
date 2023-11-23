@@ -207,20 +207,6 @@
         {
           "items": [
             {
-              "label": "Cost Code Format",
-              "id": "cost-code-format",
-              "inputType": "dropdown",
-              "required": true,
-              "errormessage": "Cost code format is required.",
-              "value": "",
-              "selectMenuOptions": [
-                {
-                  "id": 1,
-                  "label": "Custom"
-                }
-              ]
-            },
-            {
               "label": "Project Type",
               "id": "project-type",
               "inputType": "dropdown",

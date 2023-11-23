@@ -36,7 +36,7 @@
 }
 
 .invalid {
-  border: 2px solid var(--stak-dark-yellow);
+  border: 2.5px solid var(--stak-dark-yellow);
 }
 
 .toggle-buttons {

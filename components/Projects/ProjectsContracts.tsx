@@ -18,7 +18,11 @@ import useHttp from '@/hooks/use-http';
 import useSetNotification from '@/hooks/use-set-nofitication';
 
 import { User } from '@/lib/models/formStateModels';
-import { ContractData, ContractTableRow } from '@/lib/models/summaryDataModel';
+import {
+  ContractData,
+  ContractTableRow,
+  ProjectSummary,
+} from '@/lib/models/summaryDataModel';
 import { formatNumber } from '@/lib/utility/formatter';
 
 import FullScreenLoader from '../UI/Loaders/FullScreenLoader';
@@ -57,7 +61,9 @@ export default function ProjectsContracts(props: Props) {
   const dispatch = useDispatch();
 
   const projectName = useSelector(
-    (state) => state.data.projectsSummary.allProjects[projectId].projectName
+    (state) =>
+      (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
+        .projectName
   );
   const selectedContractId = useSelector(
     (state) => state.contract.clickedContract?.uuid

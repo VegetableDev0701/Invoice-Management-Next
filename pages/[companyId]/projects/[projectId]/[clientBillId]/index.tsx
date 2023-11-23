@@ -16,7 +16,11 @@ import useSetNotification from '@/hooks/use-set-nofitication';
 import { FormStateV2, User } from '@/lib/models/formStateModels';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
 import { ClientBillData } from '@/lib/models/clientBillModel';
-import { ClientBillSummary, LaborSummary } from '@/lib/models/summaryDataModel';
+import {
+  ClientBillSummary,
+  LaborSummary,
+  ProjectSummary,
+} from '@/lib/models/summaryDataModel';
 import { InvoiceItem, Invoices } from '@/lib/models/invoiceDataModels';
 import { snapshotCopy } from '@/lib/utility/utils';
 import { Labor } from '@/lib/models/formDataModel';
@@ -67,11 +71,10 @@ export default function ClientBill() {
         state.projects[projectId]?.['client-bills-summary'] as ClientBillSummary
       )?.[clientBillId]
   );
-
   const projectSummary = useSelector(
-    (state) => state.data.projectsSummary?.allProjects[projectId]
+    (state) =>
+      (state.data.projectsSummary?.allProjects as ProjectSummary)[projectId]
   );
-
   const invoiceObj = useSelector((state) => state.invoice);
 
   const {

@@ -11,6 +11,7 @@ import {
   ProcessedInvoiceData,
 } from '@/lib/models/invoiceDataModels';
 import { isObjectEmpty } from '@/lib/utility/utils';
+import { ProjectSummary } from '@/lib/models/summaryDataModel';
 /**
  * Custom hook for creating invoice rows.
  * Whenever there is processed data, this will use that data to create the invoice rows.
@@ -43,7 +44,8 @@ export default function useCreateInvoiceRows({
   const projectSupervisor: string | undefined = useSelector(
     (state) =>
       projectId &&
-      state.data.projectsSummary.allProjects[projectId].projectSuper
+      (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
+        .projectSuper
   );
 
   function formatTaxAmount(amount: string | undefined) {

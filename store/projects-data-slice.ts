@@ -921,8 +921,7 @@ const projectDataSlice = createSlice({
         }
       });
 
-      state = newState;
-      return state;
+      return newState;
     },
   },
   extraReducers: (builder) => {

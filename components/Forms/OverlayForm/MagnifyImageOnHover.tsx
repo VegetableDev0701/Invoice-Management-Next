@@ -208,7 +208,7 @@ export default function MagnifyImageOnHover(props: Props) {
       />
       <canvas
         ref={magnifierRef}
-        className="absolute pointer-events-none border-2 border-stak-dark-gray"
+        className="absolute pointer-events-none border-[2.5px] border-stak-orange"
       />
     </div>
   );

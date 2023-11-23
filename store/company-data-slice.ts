@@ -17,7 +17,11 @@ import {
   createCostCodeList,
 } from '@/lib/utility/costCodeHelpers';
 import { RootState } from '.';
-import { VendorData } from '@/lib/models/formDataModel';
+import {
+  SelectMenuOptions,
+  VendorData,
+  Vendors,
+} from '@/lib/models/formDataModel';
 import { getChangeOrderIdFromName } from '@/lib/utility/processInvoiceHelpers';
 import {
   CostCodeTreeData,
@@ -46,7 +50,7 @@ import {
   ChangeOrderContent,
   ChangeOrderContentItem,
 } from '@/lib/models/changeOrderModel';
-import { ExtendedCompanyData } from '@/lib/models/companyDataModel';
+import { ExtendedCompanyData, Forms } from '@/lib/models/companyDataModel';
 import { isObjectEmpty, snapshotCopy } from '@/lib/utility/utils';
 
 export const fetchCompanyData = createAsyncThunk(
@@ -744,7 +748,16 @@ export const removeChangeOrderFromInvoiceThunk = createAsyncThunk(
   }
 );
 
-const initialDataState = {} as ExtendedCompanyData;
+const initialDataState = {
+  forms: {} as Forms,
+  invoices: { status: '', allInvoices: {} as Invoices },
+  vendors: {} as Vendors,
+  projectsSummary: { status: '', allProjects: {} },
+  vendorsSummary: { status: '', allVendors: {} },
+  costCodes: {} as CostCodesData,
+  costCodeList: [] as SelectMenuOptions[],
+  costCodeNameList: [] as SelectMenuOptions[],
+} as ExtendedCompanyData;
 
 export interface NewItem {
   number: string;

@@ -99,7 +99,7 @@ const Dropdown = (props: Props) => {
               <div className="grow relative mt-1" onBlur={blurHandler}>
                 <Listbox.Button
                   id={input.id}
-                  className={`font-sans relative w-full border-2 ${
+                  className={`font-sans relative w-full border-[2.5px] ${
                     input.isOnOverlay
                       ? 'rounded-md py-1.5 h-10'
                       : 'rounded-lg h-11'
