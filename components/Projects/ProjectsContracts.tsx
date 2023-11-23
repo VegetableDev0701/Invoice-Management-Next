@@ -42,11 +42,7 @@ const checkBoxButtons = [{ label: 'Delete', buttonPath: '#', disabled: false }];
 export default function ProjectsContracts(props: Props) {
   const { projectId, tableData } = props;
 
-  const { isLoading: isLoading } = usePageData(
-    'data',
-    'forms',
-    'add-contract'
-  );
+  const { isLoading: isLoading } = usePageData('data', 'forms', 'add-contract');
 
   // TODO add functionality to edit a contract (use the process-invoice form)
   // const currentFormData = useAddCurrentDataToFormData({

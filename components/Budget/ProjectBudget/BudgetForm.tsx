@@ -162,19 +162,19 @@ export default function BudgetForm(props: Props) {
     const itemData = item;
     if (isDivision) {
       if (itemData.data.value !== '0.00') {
-        return itemData.data.number.toString().padStart(2, '0') != '00'
-          ? itemData.data.number.toString().padStart(2, '0') +
-              ' - ' +
-              itemData.data.name +
-              ' $' +
-              formatNumber(itemData.data.value)
-          : itemData.data.name + ' $' + formatNumber(itemData.data.value);
+        return (
+          itemData.data.number.toString().padStart(2, '0') +
+          ' - ' +
+          itemData.data.name +
+          ' $' +
+          formatNumber(itemData.data.value)
+        );
       } else {
-        return itemData.data.number.toString().padStart(2, '0') != '00'
-          ? itemData.data.number.toString().padStart(2, '0') +
-              ' - ' +
-              itemData.data.name
-          : itemData.data.name;
+        return (
+          itemData.data.number.toString().padStart(2, '0') +
+          ' - ' +
+          itemData.data.name
+        );
       }
     } else if (isSubDivision) {
       if (itemData.data.name) {
@@ -442,7 +442,7 @@ export default function BudgetForm(props: Props) {
                           <input
                             type="number"
                             key={item.index}
-                            className={`font-sans w-full block placeholder:text-base border-2 pl-10 rounded-md py-1.5 ${inputClasses['input-container__input']}`}
+                            className={`font-sans w-full block placeholder:text-base border-[2.5px] pl-10 rounded-md py-1.5 ${inputClasses['input-container__input']}`}
                             value={
                               valueAddedItems.find((v) => v.index == item.index)
                                 ?.value || ''

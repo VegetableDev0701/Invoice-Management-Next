@@ -9,12 +9,7 @@ import {
   ChartData,
   ChartDataV2,
 } from './chartDataModels';
-import {
-  ChangeOrderData,
-  Labor,
-  ProjectFormData,
-  SelectMenuOptions,
-} from './formDataModel';
+import { ChangeOrderData, Labor, ProjectFormData } from './formDataModel';
 import {
   ChangeOrderSummary,
   ClientBillSummary,
@@ -48,8 +43,6 @@ export interface ProjectDataItems {
   b2a: B2A;
   'client-bills-summary': ClientBillSummary | object;
   'client-bills': ClientBills;
-  costCodeList: SelectMenuOptions[];
-  costCodeNameList: SelectMenuOptions[];
 }
 
 export interface ProjectData {

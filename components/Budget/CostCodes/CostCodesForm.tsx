@@ -35,6 +35,7 @@ import {
   PencilIcon,
 } from '@heroicons/react/20/solid';
 import TreeComponentClasses from './CostCodesForm.module.css';
+import { addBudgetFormActions } from '@/store/add-budget-slice';
 
 export interface Props {
   formData: CostCodesData;
@@ -172,6 +173,17 @@ function CostCodeForm(props: Props) {
     newCodeDataList[addItemIndex].isFolder = true;
     setAddItemIndex('');
     setIsError(false);
+
+    dispatch(
+      addBudgetFormActions.addToUpdateBudgetList({
+        type: 'Create',
+        name: formData.name,
+        number: Number(formData.number),
+        recursiveLevel: [
+          ...(newCodeDataList[addItemIndex].data.recursiveLevel || []),
+        ],
+      })
+    );
     saveData(newCodeDataList);
   };
 
@@ -185,6 +197,17 @@ function CostCodeForm(props: Props) {
   const handleConfirmDelete = () => {
     if (removeItemIndex) {
       const newCodeDataList = { ...costCodeDataList };
+
+      dispatch(
+        addBudgetFormActions.addToUpdateBudgetList({
+          type: 'Delete',
+          recursiveLevel: [
+            ...(newCodeDataList[removeItemIndex.index.toString()].data
+              .recursiveLevel || []),
+          ],
+        })
+      );
+
       convertTreeData.removeCostCodeItem(removeItemIndex.index.toString());
       Object.keys(newCodeDataList).forEach((key) => {
         newCodeDataList[key].children = newCodeDataList[key].children?.filter(
@@ -246,6 +269,18 @@ function CostCodeForm(props: Props) {
       },
     }));
     convertTreeData.sortTreeDataByIndex(newCodeDataList);
+
+    dispatch(
+      addBudgetFormActions.addToUpdateBudgetList({
+        type: 'Update',
+        name: changeData[1].trim(),
+        number: Number(changeData[0].trim()),
+        recursiveLevel: [
+          ...(newCodeDataList[item.index].data.recursiveLevel || []),
+        ],
+      })
+    );
+
     saveData(newCodeDataList);
   };
 
@@ -504,11 +539,7 @@ function CostCodeForm(props: Props) {
           />
         </ControlledTreeEnvironment>
         <ModalConfirm
-          message={`Are you sure to delete "${`${
-            typeof removeItemIndex?.data.number === 'number'
-              ? removeItemIndex?.data.number.toFixed(4)
-              : removeItemIndex?.data.number
-          } - ${removeItemIndex?.data.name}`}"`}
+          message={`Are you sure to delete "${`${removeItemIndex?.data.number} - ${removeItemIndex?.data.name}`}"`}
           title="Delete"
           openModal={openConfirmModal}
           onCloseModal={() => setOpenConfirmModal(false)}

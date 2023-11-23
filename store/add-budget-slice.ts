@@ -15,7 +15,7 @@ import {
   BudgetTotals,
   BudgetTotalsV2,
   CostCodesData,
-  UpdateBudget,
+  UpdateCostCode,
 } from '@/lib/models/budgetCostCodeModel';
 import { createB2AChartDataV2 } from '@/lib/utility/chartHelpers';
 import { projectDataActions } from './projects-data-slice';
@@ -184,7 +184,7 @@ const initialBudgetFormState: {
   totalDivisions: { [key: string]: { value: string; name: string } };
   budget: BudgetTotals;
   budgetV2: BudgetTotalsV2;
-  updateBudget: UpdateBudget;
+  updateBudget: UpdateCostCode[];
 } = {
   isCollapsed: false,
   totalBudget: '',
@@ -192,14 +192,7 @@ const initialBudgetFormState: {
   totalDivisions: {},
   budget: {},
   budgetV2: {},
-  updateBudget: {
-    addCostCodes: null,
-    addSubDivisions: null,
-    addDivisions: null,
-    deleteCostCodes: null,
-    deleteDivisions: null,
-    deleteSubDivisions: null,
-  },
+  updateBudget: [],
 };
 
 const addBudgetFormSlice = createSlice({
@@ -250,14 +243,10 @@ const addBudgetFormSlice = createSlice({
       };
     },
     resetUpdateBudget(state) {
-      state.updateBudget = {
-        addCostCodes: null,
-        addSubDivisions: null,
-        addDivisions: null,
-        deleteCostCodes: null,
-        deleteDivisions: null,
-        deleteSubDivisions: null,
-      };
+      state.updateBudget = [];
+    },
+    addToUpdateBudgetList(state, action: PayloadAction<UpdateCostCode>) {
+      state.updateBudget = [...state.updateBudget, action.payload];
     },
   },
   extraReducers: (builder) => {

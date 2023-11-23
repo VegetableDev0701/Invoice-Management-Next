@@ -67,9 +67,11 @@ export default function ClientBill() {
         state.projects[projectId]?.['client-bills-summary'] as ClientBillSummary
       )?.[clientBillId]
   );
+
   const projectSummary = useSelector(
     (state) => state.data.projectsSummary?.allProjects[projectId]
   );
+
   const invoiceObj = useSelector((state) => state.invoice);
 
   const {
@@ -147,7 +149,6 @@ export default function ClientBill() {
     // check if the needed data exists, ow return
     if (!clientBillData || !invoiceObj.currentInvoiceSnapShot) return;
     if (
-      invoiceObj.currentInvoiceSnapShot?.isUpdated?.value &&
       invoiceObj.currentInvoiceSnapShot.doc_id &&
       clientBillData.invoices[invoiceObj.currentInvoiceSnapShot.doc_id]
     ) {
