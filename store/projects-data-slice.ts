@@ -154,10 +154,9 @@ export const deleteProjectData = createAsyncThunk(
       }
       const data = await response.json();
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content: data.message,
           icon: 'trash',
-          openNotification: true,
         })
       );
     } catch (error: any) {
@@ -188,10 +187,9 @@ export const deleteProjects = createAsyncThunk(
       }
       const data = await response.json();
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content: data.message,
           icon: 'trash',
-          openNotification: true,
         })
       );
     } catch (error: any) {
@@ -226,18 +224,16 @@ export const changeProjectStatus = createAsyncThunk(
       }
       const data = await response.json();
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content: data.message,
           icon: 'success',
-          openNotification: true,
         })
       );
     } catch (error: any) {
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content: 'Something went wrong with updating the project status.',
           icon: 'error',
-          openNotification: true,
         })
       );
       console.error(error);
@@ -329,10 +325,9 @@ export const updateAllProjectBudgets = createAsyncThunk(
       })
       .then((data) => {
         thunkAPI.dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content: data.message,
             icon: 'success',
-            openNotification: true,
           })
         );
 
@@ -344,11 +339,10 @@ export const updateAllProjectBudgets = createAsyncThunk(
       })
       .catch((error) => {
         thunkAPI.dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content:
               'Something went wrong with saving budget updates to all projects.',
             icon: 'error',
-            openNotification: true,
           })
         );
         console.error(error);

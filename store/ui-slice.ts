@@ -42,7 +42,7 @@ const uiSlice = createSlice({
     },
     notify(state, action: PayloadAction<Omit<Notification, 'id'>>) {
       const { content, icon, autoHideDuration } = action.payload;
-      const id = 'id' + Math.random().toString(16).slice(2)
+      const id = 'id' + Math.random().toString(16).slice(2);
       state.notification = {
         ...state.notification,
         messages: [
@@ -50,7 +50,7 @@ const uiSlice = createSlice({
           {
             // id: nanoid(),
             id: id,
-            content : content + id,
+            content: content + id,
             icon:
               icon ||
               (state.notification.defaultIcon as

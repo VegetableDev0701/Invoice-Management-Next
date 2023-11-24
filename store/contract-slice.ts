@@ -102,10 +102,9 @@ export const deleteContracts = createAsyncThunk(
       }
       const data = await response.json();
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content: data.message,
           icon: 'trash',
-          openNotification: true,
         })
       );
     } catch (error) {

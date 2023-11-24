@@ -391,9 +391,8 @@ export const createBudgetActuals = createAsyncThunk(
       if (!result) {
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content: 'Error when trying to create actuals data for chart.',
-            openNotification: true,
             icon: 'error',
           })
         );
@@ -522,9 +521,8 @@ export const createBudgetActuals = createAsyncThunk(
           }
         );
         dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content: 'Succesfully added and saved new client bill.',
-            openNotification: true,
             icon: 'success',
           })
         );
@@ -532,9 +530,8 @@ export const createBudgetActuals = createAsyncThunk(
         console.error(error);
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content: 'Error when trying to save budget to actuals data.',
-            openNotification: true,
             icon: 'error',
           })
         );
@@ -754,9 +751,8 @@ export const updateBudgetActuals = createAsyncThunk(
       if (!newResult || !oldResult) {
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content: 'Error when trying to create actuals data for chart.',
-            openNotification: true,
             icon: 'error',
           })
         );
@@ -864,9 +860,8 @@ export const updateBudgetActuals = createAsyncThunk(
           }
         );
         dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content: 'Succesfully updated budget to actuals data.',
-            openNotification: true,
             icon: 'success',
           })
         );
@@ -874,9 +869,8 @@ export const updateBudgetActuals = createAsyncThunk(
         console.error(error);
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content: 'Error when trying to update budget to actuals data.',
-            openNotification: true,
             icon: 'error',
           })
         );
@@ -905,9 +899,8 @@ export const updateBudgetActuals = createAsyncThunk(
           }
         );
         dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content: 'Succesfully updated client bill.',
-            openNotification: true,
             icon: 'success',
           })
         );
@@ -915,9 +908,8 @@ export const updateBudgetActuals = createAsyncThunk(
         console.error(error);
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content: 'Error when trying to update budget to actuals data.',
-            openNotification: true,
             icon: 'error',
           })
         );

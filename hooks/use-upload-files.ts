@@ -45,7 +45,7 @@ export default function useUploadFilesHandler({
 
   useEffect(() => {
     dispatch(
-      uiActions.setNotificationContent({
+      uiActions.notify({
         icon: 'success',
         content: 'Uploaded all unique files.',
       })
@@ -119,10 +119,9 @@ export default function useUploadFilesHandler({
         if (response.status === 401 || response.status === 403) {
           dispatch(uiActions.setLoadingState({ isLoading: false }));
           dispatch(
-            uiActions.setNotificationContent({
+            uiActions.notify({
               content: `${response.status} - Unauthorized access.`,
               icon: 'error',
-              openNotification: true,
             })
           );
           throw new Error(
@@ -133,10 +132,9 @@ export default function useUploadFilesHandler({
         if (!response.ok) {
           dispatch(uiActions.setLoadingState({ isLoading: false }));
           dispatch(
-            uiActions.setNotificationContent({
+            uiActions.notify({
               content: `${response.status} - Error in file upload.`,
               icon: 'error',
-              openNotification: true,
             })
           );
           throw new Error(
@@ -164,14 +162,13 @@ export default function useUploadFilesHandler({
             setOpenModal(true);
           }
         }
-        dispatch(uiActions.setNotificationContent({ openNotification: true }));
+        dispatch(uiActions.notify({}));
       } catch (error: any) {
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content: `${error}.`,
             icon: 'error',
-            openNotification: true,
           })
         );
         console.error(error);
