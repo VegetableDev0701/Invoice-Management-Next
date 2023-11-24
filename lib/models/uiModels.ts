@@ -21,6 +21,6 @@ export interface Notification {
 
 export interface NotificationContainer {
   messages: Array<Notification>;
-  defaultDuration?: number;
-  gap?: number;
+  defaultDuration: number;
+  defaultIcon: string;
 }
