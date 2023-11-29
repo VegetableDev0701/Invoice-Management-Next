@@ -14,6 +14,7 @@ import {
   CostCodeItemB2AData,
   DivisionDataV2,
 } from '@/lib/models/chartDataModels';
+import { generateTitle } from '@/lib/utility/utils';
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
 
@@ -26,7 +27,6 @@ interface BarChartProps {
   subDivision?: string | null;
   fullData: DivisionDataV2;
   filterZeroElements?: boolean;
-  dropZeroSubDivIndex?: number[] | null;
 }
 
 const BarChart = (props: BarChartProps) => {
@@ -63,7 +63,10 @@ const BarChart = (props: BarChartProps) => {
       }
 
       prefix.push({
-        title: `${levelData.subItems[index].number} - ${levelData.subItems[index].name}`,
+        title: `${generateTitle(
+          levelData.subItems[index].number,
+          levelData.subItems[index].name
+        )}`,
         level: level.slice(0, i + 1),
       });
       levelData = levelData.subItems[index];
@@ -109,7 +112,6 @@ const BarChart = (props: BarChartProps) => {
     const { chartDataResult } = createIndividualChartData({
       title: currentLevelData.name || '',
       division: currentLevelData.number,
-      subDivision: null,
       chartData: currentLevelData.subItems,
       filterZeroElements: filterZeroElements,
     });
@@ -212,7 +214,6 @@ const BarChart = (props: BarChartProps) => {
               },
               title: {
                 display: true,
-                // text: title,
                 text: '',
                 align: 'start',
                 padding: {

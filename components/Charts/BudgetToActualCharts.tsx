@@ -14,6 +14,8 @@ import {
   DivisionDataV2,
 } from '@/lib/models/chartDataModels';
 import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
+import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
+import { generateTitle } from '@/lib/utility/utils';
 
 interface Props {
   formData: CostCodesData;
@@ -53,15 +55,14 @@ export const createIndividualChartData = ({
 }: {
   title: string;
   division: number;
-  subDivision?: number | null;
-  subDivisionName?: string;
   chartData?: CostCodeItemB2AData[];
   filterZeroElements?: boolean;
 }) => {
-  const title = `${division} - ${_title}`;
+  const title = generateTitle(division, _title);
   const fullData = chartData || [];
   const chartDataResult = {
-    labels: chartData?.map((item) => `${item.number} - ${item.name}`) || [],
+    labels:
+      chartData?.map((item) => generateTitle(item.number, item.name)) || [],
     datasets: [
       {
         label: 'Budget',
@@ -79,7 +80,6 @@ export const createIndividualChartData = ({
     chartDataResult,
     fullData,
     title,
-    dropZeroSubDivIndex: [],
   };
 };
 
@@ -99,7 +99,6 @@ export default function BudgetToActualCharts(props: Props) {
         division: string;
         subDivision: string | null;
         fullData: DivisionDataV2;
-        dropZeroSubDivIndex: number[];
         chartData: {
           labels: string[];
           datasets: {
@@ -117,17 +116,24 @@ export default function BudgetToActualCharts(props: Props) {
     (state) => state.projects[projectId]?.b2a?.b2aChartData
   );
 
+  const b2aChartDataChangeOrder = useSelector(
+    (state) => state.projects[projectId]?.b2a?.b2aChartDataChangeOrder
+  );
+
+  const changeOrdersSummary: ChangeOrderSummary = useSelector(
+    (state) => state.projects[projectId]?.['change-orders-summary']
+  ) as ChangeOrderSummary;
+
   useEffect(() => {
     scrollToElement(clickedLink, anchorScrollElement, 'scroll-frame');
   }, [clickedLink, dummyForceRender]);
 
   useEffect(() => {
-    const chartIndicies: {
+    const chartIndices: {
       title: string;
       division: string;
       subDivision: string | null;
       fullData: DivisionDataV2;
-      dropZeroSubDivIndex: number[];
       chartData: {
         labels: string[];
         datasets: {
@@ -138,31 +144,57 @@ export default function BudgetToActualCharts(props: Props) {
       };
     }[] = [];
 
+    if (b2aChartDataChangeOrder) {
+      const data = {
+        name: 'Change Order Plot',
+        number: -1,
+        subItems: Object.keys(b2aChartDataChangeOrder).map((key) => ({
+          name: changeOrdersSummary[key].name,
+          number: -1,
+          value: String(b2aChartDataChangeOrder[key].totalValue),
+          actual: String(b2aChartDataChangeOrder[key].actualValue),
+          isCurrency: true,
+        })),
+      };
+
+      const { chartDataResult, title } = createIndividualChartData({
+        title: data.name,
+        division: data.number,
+        chartData: data.subItems,
+        filterZeroElements,
+      });
+
+      chartIndices.push({
+        title,
+        division: String(data.number),
+        subDivision: null,
+        chartData: chartDataResult,
+        fullData: data,
+      });
+    }
+
     (
       (b2aChartData as ChartDataV2)?.divisions ||
       (formData.divisions as DivisionDataV2[])
     )?.forEach((division) => {
-      const { chartDataResult, title, dropZeroSubDivIndex } =
-        createIndividualChartData({
-          title: division.name || '',
-          division: division.number,
-          subDivision: null,
-          chartData: division.subItems,
-          filterZeroElements: filterZeroElements,
-        });
+      const { chartDataResult, title } = createIndividualChartData({
+        title: division.name || '',
+        division: division.number,
+        chartData: division.subItems,
+        filterZeroElements,
+      });
 
-      chartIndicies.push({
+      chartIndices.push({
         title,
         division: String(division.number),
         subDivision: null,
         chartData: chartDataResult,
         fullData: division,
-        dropZeroSubDivIndex,
       });
     });
 
-    setChartData(chartIndicies);
-  }, [b2aChartData, formData]);
+    setChartData(chartIndices);
+  }, [b2aChartData, b2aChartDataChangeOrder, formData]);
 
   return (
     <Card
@@ -174,14 +206,7 @@ export default function BudgetToActualCharts(props: Props) {
       >
         {chartData &&
           chartData.map(
-            ({
-              chartData,
-              fullData,
-              title,
-              division,
-              subDivision,
-              dropZeroSubDivIndex,
-            }) => {
+            ({ chartData, fullData, title, division, subDivision }) => {
               return (
                 <div
                   key={division}
@@ -198,7 +223,6 @@ export default function BudgetToActualCharts(props: Props) {
                       division={division as string}
                       subDivision={subDivision}
                       filterZeroElements={filterZeroElements}
-                      dropZeroSubDivIndex={dropZeroSubDivIndex}
                     />
                   )}
                   {chartData.datasets[0].data?.every((data) => data === 0) &&

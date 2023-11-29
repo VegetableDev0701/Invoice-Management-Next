@@ -5,6 +5,7 @@ import { Divisions } from '@/lib/models/budgetCostCodeModel';
 import Card from '@/components/UI/Card';
 
 import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
+import { generateTitle } from '@/lib/utility/utils';
 
 interface Props {
   divisions: Divisions[];
@@ -62,11 +63,11 @@ function CostCodeSideLinks(props: Props) {
                     )}_link`}
                     onClick={clickLinkHandler}
                   >
-                    {division.number.toString().padStart(2, '0') != '00'
-                      ? `${division.number.toString().padStart(2, '0')} - ${
-                          division.name
-                        }`
-                      : `${division.name}`}
+                    {generateTitle(
+                      division.number.toString().padStart(2, '0'),
+                      division.name,
+                      (number) => number != '00'
+                    )}
                   </li>
                 </div>
               ))}
