@@ -16,7 +16,7 @@ import {
 import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
 import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
 import { generateTitle } from '@/lib/utility/utils';
-import { SUMMARY_COST_CODES } from '@/lib/globals';
+import { SUMMARY_COST_CODES, SUMMARY_NAMES } from '@/lib/globals';
 
 interface Props {
   formData: CostCodesData;
@@ -137,7 +137,9 @@ export default function BudgetToActualCharts(props: Props) {
         number: -1,
         subItems: [
           ...Object.keys(SUMMARY_COST_CODES).map((key) => ({
-            name: key,
+            name: SUMMARY_NAMES[
+              key as 'profit' | 'boTax' | 'liability' | 'salesTax'
+            ],
             number: -1,
             value: String(
               Object.values(b2aChartDataChangeOrder)
