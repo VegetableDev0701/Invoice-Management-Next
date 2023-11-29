@@ -16,6 +16,7 @@ import {
 import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
 import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
 import { generateTitle } from '@/lib/utility/utils';
+import { SUMMARY_COST_CODES } from '@/lib/globals';
 
 interface Props {
   formData: CostCodesData;
@@ -120,9 +121,53 @@ export default function BudgetToActualCharts(props: Props) {
     (state) => state.projects[projectId]?.b2a?.b2aChartDataChangeOrder
   );
 
+  const [
+    formattedChartDataForChangeOrder,
+    setFormattedChartDataForChangeOrder,
+  ] = useState<DivisionDataV2>();
+
   const changeOrdersSummary: ChangeOrderSummary = useSelector(
     (state) => state.projects[projectId]?.['change-orders-summary']
   ) as ChangeOrderSummary;
+
+  useEffect(() => {
+    if (b2aChartDataChangeOrder) {
+      const data = {
+        name: 'Change Order Plot',
+        number: -1,
+        subItems: [
+          ...Object.keys(SUMMARY_COST_CODES).map((key) => ({
+            name: key,
+            number: -1,
+            value: String(
+              Object.values(b2aChartDataChangeOrder)
+                .map((item) =>
+                  Number(
+                    item.costCodeObj[
+                      SUMMARY_COST_CODES[
+                        key as 'profit' | 'boTax' | 'liability' | 'salesTax'
+                      ]
+                    ]?.totalAmt
+                  )
+                )
+                .reduce((a, b) => a + b)
+            ),
+            actual: '0',
+            isCurrency: true,
+          })),
+          ...Object.keys(b2aChartDataChangeOrder).map((key) => ({
+            name: changeOrdersSummary[key].name,
+            number: -1,
+            value: String(b2aChartDataChangeOrder[key].totalValue),
+            actual: String(b2aChartDataChangeOrder[key].actualValue),
+            isCurrency: true,
+          })),
+        ],
+      };
+
+      setFormattedChartDataForChangeOrder(data);
+    }
+  }, [b2aChartDataChangeOrder]);
 
   useEffect(() => {
     scrollToElement(clickedLink, anchorScrollElement, 'scroll-frame');
@@ -144,21 +189,9 @@ export default function BudgetToActualCharts(props: Props) {
       };
     }[] = [];
 
-    if (b2aChartDataChangeOrder) {
-      const data = {
-        name: 'Change Order Plot',
-        number: -1,
-        subItems: Object.keys(b2aChartDataChangeOrder).map((key) => ({
-          name: changeOrdersSummary[key].name,
-          number: -1,
-          value: String(b2aChartDataChangeOrder[key].totalValue),
-          actual: String(b2aChartDataChangeOrder[key].actualValue),
-          isCurrency: true,
-        })),
-      };
-
+    const addChartIndices = (data: DivisionDataV2) => {
       const { chartDataResult, title } = createIndividualChartData({
-        title: data.name,
+        title: data.name || '',
         division: data.number,
         chartData: data.subItems,
         filterZeroElements,
@@ -171,30 +204,18 @@ export default function BudgetToActualCharts(props: Props) {
         chartData: chartDataResult,
         fullData: data,
       });
-    }
+    };
+
+    formattedChartDataForChangeOrder &&
+      addChartIndices(formattedChartDataForChangeOrder);
 
     (
       (b2aChartData as ChartDataV2)?.divisions ||
       (formData.divisions as DivisionDataV2[])
-    )?.forEach((division) => {
-      const { chartDataResult, title } = createIndividualChartData({
-        title: division.name || '',
-        division: division.number,
-        chartData: division.subItems,
-        filterZeroElements,
-      });
-
-      chartIndices.push({
-        title,
-        division: String(division.number),
-        subDivision: null,
-        chartData: chartDataResult,
-        fullData: division,
-      });
-    });
+    )?.forEach((division) => addChartIndices(division));
 
     setChartData(chartIndices);
-  }, [b2aChartData, b2aChartDataChangeOrder, formData]);
+  }, [b2aChartData, formattedChartDataForChangeOrder, formData]);
 
   return (
     <Card

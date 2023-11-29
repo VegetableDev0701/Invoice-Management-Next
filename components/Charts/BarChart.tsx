@@ -85,7 +85,12 @@ const BarChart = (props: BarChartProps) => {
     const selectedData = currentLevelData.subItems
       ? currentLevelData.subItems[index]
       : undefined;
-    if (!selectedData || selectedData.subItems?.length === 0) {
+
+    if (
+      !selectedData ||
+      !selectedData.subItems ||
+      selectedData.subItems?.length === 0
+    ) {
       console.warn('[getCurrentLevelData]: There is no sub-items');
       return;
     }
