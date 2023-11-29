@@ -171,19 +171,17 @@ export const patchInvoiceUpdates = createAsyncThunk(
         }
       );
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content: data.message,
           icon: 'save',
-          openNotification: true,
         })
       );
     } catch (error) {
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content:
             'Something went wrong with saving projects to invoices. Please try again.',
           icon: 'error',
-          openNotification: true,
         })
       );
       console.error(error);
@@ -557,19 +555,17 @@ export const addProcessedInvoiceData = createAsyncThunk(
       );
 
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content: data.message,
           icon: 'save',
-          openNotification: true,
         })
       );
     } catch (error) {
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content:
             'Something went wrong with saving processed invoice. Please try again.',
           icon: 'error',
-          openNotification: true,
         })
       );
       console.error(error);
@@ -605,10 +601,9 @@ export const approveInvoice = createAsyncThunk(
       );
 
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content: data.message,
           icon: 'save',
-          openNotification: true,
         })
       );
       thunkAPI.dispatch(
@@ -617,11 +612,10 @@ export const approveInvoice = createAsyncThunk(
       thunkAPI.dispatch(invoiceActions.updateInvoiceApproval(isApproved));
     } catch (error) {
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content:
             'Something went wrong with saving processed invoice. Please try again.',
           icon: 'error',
-          openNotification: true,
         })
       );
       console.error(error);
@@ -666,10 +660,9 @@ export const removeInvoiceFromChangeOrderThunk = createAsyncThunk(
       );
 
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content: data.message,
           icon: 'success',
-          openNotification: true,
         })
       );
     } catch (error) {

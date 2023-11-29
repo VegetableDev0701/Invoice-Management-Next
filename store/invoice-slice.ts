@@ -129,10 +129,9 @@ export const deleteInvoices = createAsyncThunk(
       }
       const data = await response.json();
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content: data.message,
           icon: 'trash',
-          openNotification: true,
         })
       );
     } catch (error) {
@@ -531,11 +530,10 @@ export const updateInvoiceData = createAsyncThunk(
       };
     } catch (error) {
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content:
             'Something went wrong with updating invoice data. Please try again.',
           icon: 'error',
-          openNotification: true,
         })
       );
       console.error(error);
@@ -604,19 +602,17 @@ export const updateInvoiceProjectObject = createAsyncThunk(
         }
       );
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content: data.message,
           icon: 'save',
-          openNotification: true,
         })
       );
     } catch (error: any) {
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content:
             'Something went wrong with updating projects info for the invoices. Please try again.',
           icon: 'error',
-          openNotification: true,
         })
       );
     }

@@ -1,13 +1,9 @@
+// import { nanoid } from '@/lib/config';
+import { Notification, NotificationContainer } from '@/lib/models/uiModels';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export interface InitialUIState {
   isLoading: boolean;
-}
-
-interface Notification {
-  openNotification?: boolean;
-  content?: string;
-  icon?: 'success' | 'error' | 'trash' | 'save';
 }
 
 export interface ErrorModal {
@@ -23,11 +19,15 @@ interface ProcessingNotification {
 }
 
 export const initialUIState: InitialUIState &
-  Record<'notification', Notification> &
+  Record<'notification', NotificationContainer> &
   Record<'errorModal', ErrorModal> &
   Record<'processingNotification', ProcessingNotification> = {
   isLoading: false,
-  notification: { openNotification: false, content: '', icon: 'success' },
+  notification: {
+    messages: [],
+    defaultDuration: 3000,
+    defaultIcon: 'success',
+  },
   errorModal: { openModal: false, message: '', title: '', logout: false },
   processingNotification: { openNotification: false, content: '' },
 };
@@ -40,17 +40,39 @@ const uiSlice = createSlice({
       const { isLoading } = action.payload;
       state.isLoading = isLoading;
     },
-    setNotificationContent(state, action: PayloadAction<Notification>) {
-      const { content, icon, openNotification } = action.payload;
-      if (content) {
-        state.notification.content = content;
-      }
-      if (icon) {
-        state.notification.icon = icon;
-      }
-      if (openNotification !== undefined) {
-        state.notification.openNotification = openNotification;
-      }
+    notify(state, action: PayloadAction<Omit<Notification, 'id'>>) {
+      const { content, icon, autoHideDuration } = action.payload;
+      const id = 'id' + Math.random().toString(16).slice(2);
+      state.notification = {
+        ...state.notification,
+        messages: [
+          ...state.notification.messages,
+          {
+            // id: nanoid(),
+            id: id,
+            content: content + id,
+            icon:
+              icon ||
+              (state.notification.defaultIcon as
+                | 'success'
+                | 'error'
+                | 'trash'
+                | 'save'),
+            autoHideDuration:
+              autoHideDuration || state.notification.defaultDuration,
+          },
+        ],
+      };
+    },
+    removeNotification(state, action: PayloadAction<string>) {
+      const id = action.payload;
+      console.log('dionY [removeNotification] id: ', id);
+      state.notification = {
+        ...state.notification,
+        messages: [
+          ...state.notification.messages.filter((msg) => msg.id !== id),
+        ],
+      };
     },
     setProcessingNotificationContent(
       state,

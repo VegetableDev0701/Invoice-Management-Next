@@ -32,10 +32,9 @@ export default function useSetNotification({
     } else if (response) {
       if (response.ok) {
         dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content: (successJSON as ResponseData).message,
             icon: 'success',
-            openNotification: true,
           })
         );
       }
@@ -51,10 +50,9 @@ export default function useSetNotification({
         const message =
           'Something went wrong with the upload, please try again.';
         dispatch(
-          uiActions.setNotificationContent({
+          uiActions.notify({
             content: message,
             icon: 'error',
-            openNotification: true,
           })
         );
       }

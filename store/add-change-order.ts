@@ -65,11 +65,10 @@ export const addUpdatedChangeOrderContent = createAsyncThunk(
       );
     } catch (error) {
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content:
             'Something went wrong with updating change order content. Please try again.',
           icon: 'error',
-          openNotification: true,
         })
       );
       console.error(error);
@@ -166,19 +165,17 @@ export const updateProjectDataInChangeOrdersThunk = createAsyncThunk(
         }
       );
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content: data.message,
           icon: 'save',
-          openNotification: true,
         })
       );
     } catch (error: any) {
       thunkAPI.dispatch(
-        uiActions.setNotificationContent({
+        uiActions.notify({
           content:
             'Something went wrong with updating change order content. Please try again.',
           icon: 'error',
-          openNotification: true,
         })
       );
     }
