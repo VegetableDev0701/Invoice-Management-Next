@@ -62,11 +62,11 @@ function CostCodeSideLinks(props: Props) {
             >
               {(isBudgetToActuals
                 ? [
-                    ...divisions,
                     {
                       name: 'Change Orders',
                       number: -1,
                     },
+                    ...divisions,
                   ]
                 : divisions
               ).map((division, i) => (
@@ -83,7 +83,7 @@ function CostCodeSideLinks(props: Props) {
                     {generateTitle(
                       division.number.toString().padStart(2, '0'),
                       division.name,
-                      (number) => number != '00'
+                      (number) => number != '00' && number != '-1'
                     )}
                   </li>
                 </div>
