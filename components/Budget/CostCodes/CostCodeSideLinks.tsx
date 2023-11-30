@@ -12,11 +12,19 @@ interface Props {
   projectId?: string;
   isBudgetForm?: boolean;
   isB2APlots?: boolean;
+  isBudgetToActuals?: boolean;
   onclicklink: (link: string) => void;
 }
 
 function CostCodeSideLinks(props: Props) {
-  const { divisions, isBudgetForm, isB2APlots, projectId, onclicklink } = props;
+  const {
+    divisions,
+    isBudgetForm,
+    isB2APlots,
+    isBudgetToActuals,
+    projectId,
+    onclicklink,
+  } = props;
 
   const totalBudget = useSelector((state) => state.addBudgetForm.totalBudget);
   const projects = useSelector((state) => state.projects);
@@ -52,7 +60,16 @@ function CostCodeSideLinks(props: Props) {
             <ul
               className={`flex flex-col gap-4 ${classes['content-frame__links']}`}
             >
-              {divisions.map((division, i) => (
+              {(isBudgetToActuals
+                ? [
+                    ...divisions,
+                    {
+                      name: 'Change Orders',
+                      number: -1,
+                    },
+                  ]
+                : divisions
+              ).map((division, i) => (
                 <div
                   key={i}
                   className={`${classes['link-container']} flex flex-1 justify-between items-center`}

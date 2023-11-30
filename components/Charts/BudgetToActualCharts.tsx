@@ -133,13 +133,11 @@ export default function BudgetToActualCharts(props: Props) {
   useEffect(() => {
     if (b2aChartDataChangeOrder) {
       const data = {
-        name: 'Change Order Plot',
+        name: 'Change Orders',
         number: -1,
         subItems: [
           ...Object.keys(SUMMARY_COST_CODES).map((key) => ({
-            name: SUMMARY_NAMES[
-              key as 'profit' | 'boTax' | 'liability' | 'salesTax'
-            ],
+            name: SUMMARY_NAMES[key as 'profit' | 'boTax' | 'liability'],
             number: -1,
             value: String(
               Object.values(b2aChartDataChangeOrder)
@@ -147,7 +145,7 @@ export default function BudgetToActualCharts(props: Props) {
                   Number(
                     item.costCodeObj[
                       SUMMARY_COST_CODES[
-                        key as 'profit' | 'boTax' | 'liability' | 'salesTax'
+                        key as 'profit' | 'boTax' | 'liability'
                       ]
                     ]?.totalAmt
                   )
@@ -157,13 +155,23 @@ export default function BudgetToActualCharts(props: Props) {
             actual: '0',
             isCurrency: true,
           })),
-          ...Object.keys(b2aChartDataChangeOrder).map((key) => ({
-            name: changeOrdersSummary[key].name,
-            number: -1,
-            value: String(b2aChartDataChangeOrder[key].totalValue),
-            actual: String(b2aChartDataChangeOrder[key].actualValue),
-            isCurrency: true,
-          })),
+          ...Object.keys(b2aChartDataChangeOrder)
+            .map((key) => ({
+              name: changeOrdersSummary[key].name,
+              number: -1,
+              value: String(b2aChartDataChangeOrder[key].totalValue),
+              actual: String(b2aChartDataChangeOrder[key].actualValue),
+              isCurrency: true,
+            }))
+            .sort((a, b) => {
+              if (a.name < b.name) {
+                return -1;
+              }
+              if (a.name > b.name) {
+                return 1;
+              }
+              return 0;
+            }),
         ],
       };
 

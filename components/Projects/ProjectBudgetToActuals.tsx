@@ -88,6 +88,7 @@ export default function ProjectBudgetToActuals(props: Props) {
           <CostCodeSideLinks
             divisions={chartData.divisions}
             isB2APlots={true}
+            isBudgetToActuals={true}
             onclicklink={clickLinkHandler}
             projectId={projectId}
           />
