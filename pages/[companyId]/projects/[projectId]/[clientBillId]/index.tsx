@@ -190,7 +190,7 @@ export default function ClientBill() {
               oldCurrentActuals,
               updatedLabor: clientBillData.labor,
               updatedLaborSummary: Object.values(
-                clientBillData['labor-summary']
+                clientBillData['labor-summary'] || {}
               ),
             })
           ).then(() => {

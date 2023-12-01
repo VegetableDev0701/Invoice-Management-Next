@@ -4,7 +4,6 @@ import Notification from './Notification';
 export default function NotificationWrapper() {
   const notification = useSelector((state) => state.ui.notification);
 
-  console.log('dionY [NotificationWrapper] notification: ', notification);
   return (
     <div className="z-50 fixed w-[400px] right-0">
       <div className="flex flex-col">

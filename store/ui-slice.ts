@@ -66,7 +66,6 @@ const uiSlice = createSlice({
     },
     removeNotification(state, action: PayloadAction<string>) {
       const id = action.payload;
-      console.log('dionY [removeNotification] id: ', id);
       state.notification = {
         ...state.notification,
         messages: [
