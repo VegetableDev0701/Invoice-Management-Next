@@ -244,6 +244,7 @@ export default function ClientBill() {
           <ProjectsSectionHeading
             pageTitle={billSummary.billTitle}
             projectId={projectId}
+            clientBillId={clientBillId}
             tabs={tabs}
             buttons={[
               {

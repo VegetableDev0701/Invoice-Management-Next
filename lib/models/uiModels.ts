@@ -12,6 +12,21 @@ export interface Buttons {
   inputClick?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+export interface DropDownItem {
+  label: string;
+  className?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+}
+
+export interface DropDownButtonProp {
+  label: string;
+  className?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  items: DropDownItem[];
+}
+
 export interface Notification {
   id: string;
   content?: string;

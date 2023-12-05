@@ -522,7 +522,7 @@ export const createBudgetActuals = createAsyncThunk(
         );
         dispatch(
           uiActions.notify({
-            content: 'Succesfully added and saved new client bill.',
+            content: 'Successfully added and saved new client bill.',
             icon: 'success',
           })
         );

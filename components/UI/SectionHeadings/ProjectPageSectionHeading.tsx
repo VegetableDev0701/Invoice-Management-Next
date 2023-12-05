@@ -33,6 +33,7 @@ interface Props {
   title?: string;
   buttons?: Buttons[];
   totalInvoices?: number;
+  clientBillId?: string;
   isClientBillPage?: boolean;
   onActiveTab: (activeTabKeyName: string) => void;
   onFilter?: (activeFilter: string) => void;
@@ -46,6 +47,7 @@ export default function ProjectsSectionHeading(props: Props) {
     buttons,
     dropdownFilter,
     totalInvoices,
+    clientBillId,
     isClientBillPage,
     onActiveTab,
     onFilter,
@@ -99,7 +101,11 @@ export default function ProjectsSectionHeading(props: Props) {
     <>
       <div className="flex mx-4 justify-between sm:pb-0">
         <h1 className="font-sans text-4xl text-gray-700">{pageTitle}</h1>
-        {isClientBillPage !== true && <ProjectButtons projectId={projectId} />}
+        <ProjectButtons
+          projectId={projectId}
+          clientBillId={clientBillId}
+          isClientBillPage={isClientBillPage}
+        />
       </div>
       <div className="flex justify-between border-b border-gray-300 pb-5 mx-4 h-20 sm:pb-0">
         <div className="flex items-end mt-4">

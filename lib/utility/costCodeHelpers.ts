@@ -30,21 +30,28 @@ export const iterateData = ({
   data,
   level,
   cb,
+  visitAll = false,
 }: {
   data: Divisions | CostCodeItem | DivisionDataV2 | CostCodeItemB2AData;
   level: Array<number>;
-  cb: (item: CostCodeItem | CostCodeItemB2AData, level: Array<number>) => void;
+  cb: (
+    item: CostCodeItem | CostCodeItemB2AData,
+    level: Array<number>,
+    hasSubItem?: boolean
+  ) => void;
+  visitAll?: boolean;
 }) => {
   if (data?.subItems?.length === 0) return;
+  if (visitAll) cb(data, [...level], true);
   data?.subItems?.forEach((item, index) => {
     if (item.subItems && item.subItems?.length > 0)
-      iterateData({ data: item, level: [...level, index], cb });
+      iterateData({ data: item, level: [...level, index], cb, visitAll });
     else if (
       item?.isCurrency ||
       item?.value ||
       (item as CostCodeItemB2AData)?.actual
     )
-      cb(item, [...level, index]);
+      cb(item, [...level, index], false);
   });
 };
 

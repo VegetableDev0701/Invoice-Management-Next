@@ -104,6 +104,7 @@ export interface ClientBillSummaryItem extends BaseSummary {
   invoiceIds: string[];
   changeOrder?: string;
   totalsByChangeOrder?: { [changeOrderId: string]: number };
+  createdAt: string;
 }
 
 export interface ChangeOrderSummary {
