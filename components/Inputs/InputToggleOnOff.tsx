@@ -15,6 +15,7 @@ import ToggleOffInputIcon from '@/public/icons/ToggleOffInput';
 import ToggleOnInputIcon from '@/public/icons/ToggleOnInput';
 
 import classes from './Input.module.css';
+import { generateTitle } from '@/lib/utility/utils';
 
 export interface Props {
   props: PropsItems;
@@ -119,7 +120,7 @@ const InputToggleOnOff = (props: Props) => {
           }`}
           htmlFor={input.id}
         >
-          {`${+input.id} - ${input.label}`}
+          {`${generateTitle(+input.id, input.label)}`}
         </label>
       </div>
       <div className="relative w-full mt-1">

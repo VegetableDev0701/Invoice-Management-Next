@@ -45,3 +45,11 @@ export function formatDateForInput(dateStr: string) {
 
   return `${year}-${month}-${day}`;
 }
+
+export function generateTitle(
+  number: number | string,
+  name: string | undefined,
+  condition = (number: number | string) => Number(number) >= 0
+) {
+  return condition(number) ? `${number} - ${name}` : name || '';
+}

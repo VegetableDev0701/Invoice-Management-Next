@@ -17,7 +17,7 @@ import { useKeyPressAction } from '@/hooks/use-save-on-key-press';
 
 import scrollToElement from '@/lib/utility/scrollToElement';
 import { formatNameForID } from '@/lib/utility/formatter';
-import { classNames } from '@/lib/utility/utils';
+import { classNames, generateTitle } from '@/lib/utility/utils';
 import { ConvertTreeData } from '@/lib/utility/treeDataHelpers';
 import {
   CostCodeItem,
@@ -539,7 +539,10 @@ function CostCodeForm(props: Props) {
           />
         </ControlledTreeEnvironment>
         <ModalConfirm
-          message={`Are you sure to delete "${`${removeItemIndex?.data.number} - ${removeItemIndex?.data.name}`}"`}
+          message={`Are you sure to delete "${generateTitle(
+            removeItemIndex?.data.number,
+            removeItemIndex?.data.name
+          )}"`}
           title="Delete"
           openModal={openConfirmModal}
           onCloseModal={() => setOpenConfirmModal(false)}

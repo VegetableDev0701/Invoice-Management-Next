@@ -5,17 +5,26 @@ import { Divisions } from '@/lib/models/budgetCostCodeModel';
 import Card from '@/components/UI/Card';
 
 import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
+import { generateTitle } from '@/lib/utility/utils';
 
 interface Props {
   divisions: Divisions[];
   projectId?: string;
   isBudgetForm?: boolean;
   isB2APlots?: boolean;
+  isBudgetToActuals?: boolean;
   onclicklink: (link: string) => void;
 }
 
 function CostCodeSideLinks(props: Props) {
-  const { divisions, isBudgetForm, isB2APlots, projectId, onclicklink } = props;
+  const {
+    divisions,
+    isBudgetForm,
+    isB2APlots,
+    isBudgetToActuals,
+    projectId,
+    onclicklink,
+  } = props;
 
   const totalBudget = useSelector((state) => state.addBudgetForm.totalBudget);
   const projects = useSelector((state) => state.projects);
@@ -51,7 +60,16 @@ function CostCodeSideLinks(props: Props) {
             <ul
               className={`flex flex-col gap-4 ${classes['content-frame__links']}`}
             >
-              {divisions.map((division, i) => (
+              {(isBudgetToActuals
+                ? [
+                    {
+                      name: 'Change Orders',
+                      number: -1,
+                    },
+                    ...divisions,
+                  ]
+                : divisions
+              ).map((division, i) => (
                 <div
                   key={i}
                   className={`${classes['link-container']} flex flex-1 justify-between items-center`}
@@ -62,11 +80,11 @@ function CostCodeSideLinks(props: Props) {
                     )}_link`}
                     onClick={clickLinkHandler}
                   >
-                    {division.number.toString().padStart(2, '0') != '00'
-                      ? `${division.number.toString().padStart(2, '0')} - ${
-                          division.name
-                        }`
-                      : `${division.name}`}
+                    {generateTitle(
+                      division.number.toString().padStart(2, '0'),
+                      division.name,
+                      (number) => number != '00' && number != '-1'
+                    )}
                   </li>
                 </div>
               ))}
