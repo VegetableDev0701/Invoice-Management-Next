@@ -223,7 +223,7 @@ const ProjectButtons = (props: Props) => {
             ? ''
             : (
                 Number(data.actualAmount) -
-                Number(data.budgetAmount) * 100
+                Number(data.budgetAmount)
               ).toFixed(2),
           percent: data.hasSubItem
             ? ''
