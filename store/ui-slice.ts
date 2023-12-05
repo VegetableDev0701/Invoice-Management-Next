@@ -50,7 +50,7 @@ const uiSlice = createSlice({
           {
             // id: nanoid(),
             id: id,
-            content: content + id,
+            content: content,
             icon:
               icon ||
               (state.notification.defaultIcon as
