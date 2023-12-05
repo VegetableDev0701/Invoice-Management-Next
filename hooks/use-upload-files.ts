@@ -44,13 +44,15 @@ export default function useUploadFilesHandler({
   };
 
   useEffect(() => {
-    dispatch(
-      uiActions.notify({
-        icon: 'success',
-        content: 'Uploaded all unique files.',
-      })
-    );
-  }, [duplicateFiles, numberOfFiles]);
+    if (numberOfFiles > 0) {
+      dispatch(
+        uiActions.notify({
+          icon: 'success',
+          content: 'Uploaded all unique files.',
+        })
+      );
+    }
+  }, [numberOfFiles]);
 
   useEffect(() => {
     if (files.length === 0) return;
