@@ -5,6 +5,13 @@ export const SUMMARY_COST_CODES = {
   boTax: '0.1400',
 };
 
+export const SUMMARY_NAMES = {
+  profit: 'Profit',
+  liability: 'Liability',
+  salesTax: 'Sales Tax',
+  boTax: 'BO Tax',
+};
+
 // TODO thes need to live in state so they can be unique for each company.
 
 export const SELECT_MENU_DIVISIONS = [

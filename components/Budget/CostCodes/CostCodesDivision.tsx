@@ -8,6 +8,7 @@ import AddDivisionForm from './AddDivisionForm';
 
 import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
 import { CostCodesData, Divisions } from '@/lib/models/budgetCostCodeModel';
+import { generateTitle } from '@/lib/utility/utils';
 
 interface Props {
   costCodeDataList: CostCodesData;
@@ -67,11 +68,11 @@ function CostCodesDivision(props: Props) {
                       id={`${formatNameForID(division.name)}_link`}
                       onClick={clickLinkHandler}
                     >
-                      {division.number.toString().padStart(2, '0') != '00'
-                        ? `${division.number.toString().padStart(2, '0')} - ${
-                            division.name
-                          }`
-                        : `${division.name}`}
+                      {generateTitle(
+                        division.number.toString().padStart(2, '0'),
+                        division.name,
+                        (number) => number != '00'
+                      )}
                     </li>
                   </div>
                 )
