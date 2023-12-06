@@ -21,6 +21,7 @@ import {
   Divisions,
   InvoiceCurrentActualsChangeOrdersV2,
   InvoiceCurrentActualsV2,
+  ReportData,
 } from '@/lib/models/budgetCostCodeModel';
 import ButtonWithLoader from '../UI/Buttons/ButtonWithLoader';
 import { uiActions } from '@/store/ui-slice';
@@ -40,6 +41,8 @@ interface Props {
 }
 
 const ProjectButtons = (props: Props) => {
+  const reportTaskId = 'Build_Report';
+
   const { projectId, clientBillId, isClientBillPage } = props;
   const dispatch = useDispatch();
   const { user } = useUser();
@@ -101,7 +104,12 @@ const ProjectButtons = (props: Props) => {
 
   const buildB2AReport = async () => {
     if (!clientBillId || !clientBills) return;
-    dispatch(uiActions.setLoadingState({ isLoading: true }));
+    dispatch(
+      uiActions.setTaskLoadingState({
+        taskId: reportTaskId,
+        isLoading: true,
+      })
+    );
     try {
       const clientBillActuals: {
         [clientBillId: string]: {
@@ -139,18 +147,7 @@ const ProjectButtons = (props: Props) => {
         };
       }
 
-      const reportData: {
-        [costCodeId: string]: {
-          title: string;
-          budgetAmount: number | string;
-          actualAmount: number | string;
-          difference: number | string;
-          percent: string;
-
-          costCode?: string | number;
-          hasSubItem?: boolean;
-        };
-      } = {};
+      const reportData: ReportData = {};
 
       const initReportData = (
         item: CostCodeItem | Divisions,
@@ -221,10 +218,9 @@ const ProjectButtons = (props: Props) => {
             : Number(data.actualAmount).toFixed(2),
           difference: data.hasSubItem
             ? ''
-            : (
-                Number(data.actualAmount) -
-                Number(data.budgetAmount)
-              ).toFixed(2),
+            : (Number(data.actualAmount) - Number(data.budgetAmount)).toFixed(
+                2
+              ),
           percent: data.hasSubItem
             ? ''
             : `${(Number(data.budgetAmount) !== 0
@@ -274,7 +270,12 @@ const ProjectButtons = (props: Props) => {
       );
       return false;
     } finally {
-      dispatch(uiActions.setLoadingState({ isLoading: false }));
+      dispatch(
+        uiActions.setTaskLoadingState({
+          taskId: reportTaskId,
+          isLoading: false,
+        })
+      );
     }
   };
 
@@ -282,17 +283,20 @@ const ProjectButtons = (props: Props) => {
     <div className="flex gap-2">
       {isClientBillPage ? (
         <DropDownButton
-          label="Build B2A Report"
-          items={[
-            {
-              label: 'Export as PDF',
-              onClick: buildB2AReportAsPDF,
-            },
-            {
-              label: 'Export as Excel',
-              onClick: buildB2AReportAsExcel,
-            },
-          ]}
+          dropDownButton={{
+            label: 'Build B2A Report',
+            items: [
+              {
+                label: 'Export as PDF',
+                onClick: buildB2AReportAsPDF,
+              },
+              {
+                label: 'Export as Excel',
+                onClick: buildB2AReportAsExcel,
+              },
+            ],
+          }}
+          taskId={reportTaskId}
         />
       ) : (
         <ButtonWithLoader

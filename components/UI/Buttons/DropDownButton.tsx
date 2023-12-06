@@ -4,8 +4,13 @@ import ButtonWithLoader from './ButtonWithLoader';
 import { DropDownButtonProp } from '@/lib/models/uiModels';
 import { classNames } from '@/lib/utility/utils';
 
-const DropDownButton = (props: DropDownButtonProp) => {
-  const { label, className, onClick, items } = props;
+interface Props {
+  dropDownButton: DropDownButtonProp;
+  taskId?: string;
+}
+
+const DropDownButton = ({ dropDownButton, taskId }: Props) => {
+  const { label, className, onClick, items } = dropDownButton;
 
   return (
     <Menu as="div" className="relative inline-block text-left z-50">
@@ -20,6 +25,7 @@ const DropDownButton = (props: DropDownButtonProp) => {
               ),
               onClick,
             }}
+            taskId={taskId}
           />
         </Menu.Button>
       </div>

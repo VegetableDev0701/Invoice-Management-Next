@@ -267,3 +267,17 @@ export interface UpdateCostCode {
   name?: string;
   recursiveLevel?: Array<number>;
 }
+
+export interface ReportDataItem {
+  title: string;
+  budgetAmount: number | string;
+  actualAmount: number | string;
+  difference: number | string;
+  percent: string;
+  costCode?: string | number;
+  hasSubItem?: boolean;
+}
+
+export interface ReportData {
+  [costCodeId: string]: ReportDataItem;
+}
