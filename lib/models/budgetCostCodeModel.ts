@@ -276,6 +276,7 @@ export interface ReportDataItem {
   percent: string;
   costCode?: string | number;
   hasSubItem?: boolean;
+  depth?: number;
 }
 
 export interface ReportData {
