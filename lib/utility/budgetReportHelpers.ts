@@ -1,16 +1,41 @@
 import { SUMMARY_COST_CODES } from '../globals';
 import {
+  BaseReportDataItem,
   CostCodeItem,
   CostCodesData,
   CurrentActualsChangeOrdersV2,
   CurrentActualsV2,
   Divisions,
   ReportData,
+  ReportDataChangeOrder,
   ReportDataItem,
+  ReportDataItemChangeOrder,
 } from '../models/budgetCostCodeModel';
-import { ClientBillSummary } from '../models/summaryDataModel';
+import {
+  ChangeOrderSummary,
+  ClientBillSummary,
+} from '../models/summaryDataModel';
 import { getDataByRecursiveLevel, iterateData } from './costCodeHelpers';
 import { fetchWithRetry } from './ioUtils';
+
+const formatReportDataItem = (data: BaseReportDataItem, isEmpty = false) => {
+  return {
+    title: data.title,
+    budgetAmount: isEmpty ? '' : Number(data.budgetAmount).toFixed(2),
+    actualAmount: isEmpty ? '' : Number(data.actualAmount).toFixed(2),
+    difference: isEmpty
+      ? ''
+      : (Number(data.actualAmount) - Number(data.budgetAmount)).toFixed(2),
+    percent: isEmpty
+      ? ''
+      : `${(Number(data.budgetAmount) !== 0
+          ? (Number(data.actualAmount) / Number(data.budgetAmount)) * 100
+          : Number(data.actualAmount) === 0
+          ? 0
+          : 100
+        ).toFixed(2)}%`,
+  } as BaseReportDataItem;
+};
 
 export const buildB2AReport = async ({
   projectId,
@@ -18,12 +43,14 @@ export const buildB2AReport = async ({
   clientBillId,
   clientBills,
   projectBudget,
+  changeOrderSummary,
 }: {
   projectId: string;
   companyId: string;
   clientBillId: string;
   clientBills: ClientBillSummary;
   projectBudget: CostCodesData;
+  changeOrderSummary: ChangeOrderSummary;
 }) => {
   const clientBillActuals: {
     [clientBillId: string]: {
@@ -60,6 +87,7 @@ export const buildB2AReport = async ({
   }
 
   const reportData: ReportData = {};
+  const reportDataChangeOrder: ReportDataChangeOrder = {};
 
   const initReportData = (
     item: CostCodeItem | Divisions,
@@ -90,7 +118,7 @@ export const buildB2AReport = async ({
     });
 
   // fetch actual amounts from invoices
-  Object.keys(clientBillActuals).forEach((clientBillId: any) => {
+  Object.keys(clientBillActuals).forEach((clientBillId: string) => {
     const billData = clientBillActuals[clientBillId];
 
     // for now, skip tax information
@@ -118,22 +146,37 @@ export const buildB2AReport = async ({
           };
         }
       });
+
+    Object.keys(billData.currentActualsChangeOrders)
+      .filter((key) => key !== 'profitTaxesLiability')
+      .forEach((changeOrderId) => {
+        if (!reportDataChangeOrder[changeOrderId]) {
+          reportDataChangeOrder[changeOrderId] = {
+            title: changeOrderSummary[changeOrderId].name,
+            budgetAmount: Number(changeOrderSummary[changeOrderId].subtotalAmt),
+            actualAmount: 0,
+            difference: '',
+            percent: '',
+            changeOrderId,
+          };
+        }
+
+        Object.values(
+          billData.currentActualsChangeOrders[changeOrderId]
+        ).forEach((data) => {
+          reportDataChangeOrder[changeOrderId] = {
+            ...reportDataChangeOrder[changeOrderId],
+            actualAmount:
+              Number(reportDataChangeOrder[changeOrderId].actualAmount) +
+              Number(data.totalAmt.replaceAll(',', '')),
+          };
+        });
+      });
   });
 
   const finalReportData: ReportDataItem[] = Object.values(reportData)
     .map((data) => ({
-      title: data.title,
-      budgetAmount: data.hasSubItem ? '' : Number(data.budgetAmount).toFixed(2),
-      actualAmount: data.hasSubItem ? '' : Number(data.actualAmount).toFixed(2),
-      difference: data.hasSubItem
-        ? ''
-        : (Number(data.actualAmount) - Number(data.budgetAmount)).toFixed(2),
-      percent: data.hasSubItem
-        ? ''
-        : `${(Number(data.budgetAmount) !== 0
-            ? (Number(data.actualAmount) / Number(data.budgetAmount)) * 100
-            : 0
-          ).toFixed(2)}%`,
+      ...formatReportDataItem(data, data.hasSubItem),
       costCode: data.costCode,
       hasSubItem: data.hasSubItem,
       depth: data.depth,
@@ -142,6 +185,13 @@ export const buildB2AReport = async ({
       if (Number(a.costCode) > Number(b.costCode)) return 1;
       return -1;
     });
+
+  const finalReportDataChangeOrder: ReportDataItemChangeOrder[] = Object.values(
+    reportDataChangeOrder
+  ).map((data) => ({
+    ...formatReportDataItem(data),
+    changeOrderId: data.changeOrderId,
+  }));
 
   return finalReportData;
 };

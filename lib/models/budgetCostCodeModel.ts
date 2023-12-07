@@ -268,12 +268,15 @@ export interface UpdateCostCode {
   recursiveLevel?: Array<number>;
 }
 
-export interface ReportDataItem {
+export interface BaseReportDataItem {
   title: string;
   budgetAmount: number | string;
   actualAmount: number | string;
   difference: number | string;
   percent: string;
+}
+
+export interface ReportDataItem extends BaseReportDataItem {
   costCode?: string | number;
   hasSubItem?: boolean;
   depth?: number;
@@ -281,4 +284,12 @@ export interface ReportDataItem {
 
 export interface ReportData {
   [costCodeId: string]: ReportDataItem;
+}
+
+export interface ReportDataItemChangeOrder extends BaseReportDataItem {
+  changeOrderId: string;
+}
+
+export interface ReportDataChangeOrder {
+  [changeOrderId: string]: ReportDataItemChangeOrder;
 }

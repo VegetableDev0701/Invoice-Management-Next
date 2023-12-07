@@ -21,7 +21,10 @@ import {
 import ButtonWithLoader from '../UI/Buttons/ButtonWithLoader';
 import { uiActions } from '@/store/ui-slice';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
-import { ClientBillSummary } from '@/lib/models/summaryDataModel';
+import {
+  ChangeOrderSummary,
+  ClientBillSummary,
+} from '@/lib/models/summaryDataModel';
 import DropDownButton from '../UI/Buttons/DropDownButton';
 import { buildB2AReport } from '@/lib/utility/budgetReportHelpers';
 
@@ -45,6 +48,10 @@ const ProjectButtons = (props: Props) => {
   const clientBills = useSelector(
     (state) => state.projects[projectId]?.['client-bills-summary']
   ) as ClientBillSummary;
+
+  const changeOrderSummary = useSelector(
+    (state) => state.projects[projectId]?.['change-orders-summary']
+  ) as ChangeOrderSummary;
 
   const buildClientBillHandler = () => {
     const clientBillId = nanoid();
@@ -99,6 +106,7 @@ const ProjectButtons = (props: Props) => {
         clientBills,
         projectId,
         projectBudget,
+        changeOrderSummary,
         companyId: (user as User).user_metadata.companyId,
       });
 
@@ -156,6 +164,7 @@ const ProjectButtons = (props: Props) => {
         clientBills,
         projectId,
         projectBudget,
+        changeOrderSummary,
         companyId: (user as User).user_metadata.companyId,
       });
       const result = await fetchWithRetry(

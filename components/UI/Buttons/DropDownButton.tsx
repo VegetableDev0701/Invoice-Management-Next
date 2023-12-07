@@ -13,7 +13,7 @@ const DropDownButton = ({ dropDownButton, taskId }: Props) => {
   const { label, className, onClick, items } = dropDownButton;
 
   return (
-    <Menu as="div" className="relative inline-block text-left z-50">
+    <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button>
           <ButtonWithLoader
@@ -39,7 +39,7 @@ const DropDownButton = ({ dropDownButton, taskId }: Props) => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 w-44 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-all duration-200">
+        <Menu.Items className="absolute right-0 w-44 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transition-all duration-200 z-50">
           {items &&
             items.map((item, index) => (
               <Menu.Item key={index}>
