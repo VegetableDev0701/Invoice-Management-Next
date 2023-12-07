@@ -24,6 +24,8 @@ import { fetchWithRetry } from '@/lib/utility/ioUtils';
 import {
   ChangeOrderSummary,
   ClientBillSummary,
+  ProjectSummary,
+  ProjectSummaryItem,
 } from '@/lib/models/summaryDataModel';
 import DropDownButton from '../UI/Buttons/DropDownButton';
 import { buildB2AReport } from '@/lib/utility/budgetReportHelpers';
@@ -52,6 +54,11 @@ const ProjectButtons = (props: Props) => {
   const changeOrderSummary = useSelector(
     (state) => state.projects[projectId]?.['change-orders-summary']
   ) as ChangeOrderSummary;
+
+  const projectSummary = useSelector(
+    (state) =>
+      (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
+  ) as ProjectSummaryItem;
 
   const buildClientBillHandler = () => {
     const clientBillId = nanoid();
@@ -108,6 +115,7 @@ const ProjectButtons = (props: Props) => {
         projectBudget,
         changeOrderSummary,
         companyId: (user as User).user_metadata.companyId,
+        projectSummary,
       });
 
       const { renderPDF } = await import('@/components/PDF/B2AReport');
@@ -166,6 +174,7 @@ const ProjectButtons = (props: Props) => {
         projectBudget,
         changeOrderSummary,
         companyId: (user as User).user_metadata.companyId,
+        projectSummary,
       });
       const result = await fetchWithRetry(
         `/api/${

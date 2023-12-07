@@ -1,4 +1,4 @@
-import { SUMMARY_COST_CODES } from '../globals';
+import { SUMMARY_COST_CODES, SUMMARY_NAMES } from '../globals';
 import {
   B2AReport,
   BaseReportDataItem,
@@ -13,7 +13,9 @@ import {
 import {
   ChangeOrderSummary,
   ClientBillSummary,
+  ProjectSummaryItem,
 } from '../models/summaryDataModel';
+import { getBillProfitTaxes } from './budgetHelpers';
 import { getDataByRecursiveLevel, iterateData } from './costCodeHelpers';
 import { fetchWithRetry } from './ioUtils';
 
@@ -86,6 +88,7 @@ export const buildB2AReport = async ({
   clientBills,
   projectBudget,
   changeOrderSummary,
+  projectSummary,
 }: {
   projectId: string;
   companyId: string;
@@ -93,6 +96,7 @@ export const buildB2AReport = async ({
   clientBills: ClientBillSummary;
   projectBudget: CostCodesData;
   changeOrderSummary: ChangeOrderSummary;
+  projectSummary: ProjectSummaryItem;
 }) => {
   const clientBillActuals: ClientBillActuals = {};
 
@@ -128,7 +132,11 @@ export const buildB2AReport = async ({
   });
   const reportDataChangeOrder: ReportDataChangeOrder = {};
 
-  let serviceTotal: BaseReportDataItem = initReportDataItem('TOTAL');
+  let serviceTotal: BaseReportDataItem = initReportDataItem('Total Service');
+  let otherChargesTotal: BaseReportDataItem = initReportDataItem(
+    'Total Other Charges'
+  );
+  let contractTotal: BaseReportDataItem = initReportDataItem('TOTAL CONTRACT');
   let changeOrderTotal: BaseReportDataItem = initReportDataItem(
     'TOTAL CHANGE ORDERS TO DATE'
   );
@@ -188,6 +196,46 @@ export const buildB2AReport = async ({
     });
 
   serviceTotal = formatReportDataItem(serviceTotal);
+
+  const profitTaxesBudget = getBillProfitTaxes({
+    projectSummary,
+    total: serviceTotal.budgetAmount,
+  });
+
+  const profitTaxesActual = getBillProfitTaxes({
+    projectSummary,
+    total: serviceTotal.actualAmount,
+  });
+
+  const otherCharges: BaseReportDataItem[] = [];
+  Object.keys(SUMMARY_COST_CODES).forEach((key) => {
+    otherCharges.push(
+      formatReportDataItem({
+        title:
+          SUMMARY_NAMES[key as 'profit' | 'liability' | 'boTax' | 'salesTax'],
+        budgetAmount:
+          profitTaxesBudget[
+            key as 'profit' | 'liability' | 'boTax' | 'salesTax'
+          ],
+        actualAmount:
+          profitTaxesActual[
+            key as 'profit' | 'liability' | 'boTax' | 'salesTax'
+          ],
+        difference: '',
+        percent: '',
+        depth: 2,
+      })
+    );
+  });
+
+  otherChargesTotal = sumOfArray(changeOrderTotal.title, true, ...otherCharges);
+  contractTotal = sumOfArray(
+    contractTotal.title,
+    true,
+    serviceTotal,
+    otherChargesTotal
+  );
+
   changeOrderTotal = sumOfArray(
     changeOrderTotal.title,
     true,
@@ -196,7 +244,7 @@ export const buildB2AReport = async ({
   grandTotal = sumOfArray(
     grandTotal.title,
     true,
-    serviceTotal,
+    contractTotal,
     changeOrderTotal
   );
 
@@ -204,6 +252,12 @@ export const buildB2AReport = async ({
     ...reportData,
     ...totalReportData,
   })
+    .filter((data) =>
+      data.hasSubItem
+        ? Number(totalReportData[`${data.costCode}Total`].actualAmount) !== 0 ||
+          Number(totalReportData[`${data.costCode}Total`].budgetAmount) !== 0
+        : Number(data.actualAmount) !== 0 || Number(data.budgetAmount) !== 0
+    )
     .sort((a, b) => {
       if (
         +String(a.costCode).split('.')[0].split('T')[0] >
@@ -231,6 +285,9 @@ export const buildB2AReport = async ({
   return {
     service: finalReportData,
     serviceTotal: serviceTotal,
+    otherCharges: otherCharges,
+    otherChargesTotal: otherChargesTotal,
+    contractTotal: contractTotal,
     changeOrder: finalReportDataChangeOrder,
     changeOrderTotal: changeOrderTotal,
     grandTotal: grandTotal,

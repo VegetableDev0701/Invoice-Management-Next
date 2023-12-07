@@ -38,8 +38,16 @@ const TableRow = ({ data }: { data: BaseReportDataItem }) => {
 };
 
 const B2AReport = ({ b2aReport, billTitle }: Props) => {
-  const { service, serviceTotal, changeOrder, changeOrderTotal, grandTotal } =
-    b2aReport;
+  const {
+    service,
+    serviceTotal,
+    otherCharges,
+    otherChargesTotal,
+    contractTotal,
+    changeOrder,
+    changeOrderTotal,
+    grandTotal,
+  } = b2aReport;
   return (
     <Document>
       <Page
@@ -85,6 +93,28 @@ const B2AReport = ({ b2aReport, billTitle }: Props) => {
             <TableRow data={data} key={index} />
           ))}
           <TableRow data={serviceTotal} />
+        </View>
+
+        <View>
+          <Text
+            style={{
+              fontSize: 12,
+            }}
+          >
+            Other Charges
+          </Text>
+          {otherCharges.map((data, index) => (
+            <TableRow data={data} key={index} />
+          ))}
+          <TableRow data={otherChargesTotal} />
+        </View>
+
+        <View
+          style={{
+            marginTop: 5,
+          }}
+        >
+          <TableRow data={contractTotal} />
         </View>
 
         <View

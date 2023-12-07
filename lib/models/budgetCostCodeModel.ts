@@ -298,6 +298,9 @@ export interface ReportDataChangeOrder {
 export interface B2AReport {
   service: BaseReportDataItem[];
   serviceTotal: BaseReportDataItem;
+  otherCharges: BaseReportDataItem[];
+  otherChargesTotal: BaseReportDataItem;
+  contractTotal: BaseReportDataItem;
   changeOrder: BaseReportDataItem[];
   changeOrderTotal: BaseReportDataItem;
   grandTotal: BaseReportDataItem;
