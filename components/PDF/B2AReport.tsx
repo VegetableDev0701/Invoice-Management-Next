@@ -1,13 +1,45 @@
 import React, { createElement } from 'react';
 import { Page, Text, View, Document } from '@react-pdf/renderer';
-import { ReportDataItem } from '@/lib/models/budgetCostCodeModel';
+import {
+  B2AReport,
+  BaseReportDataItem,
+} from '@/lib/models/budgetCostCodeModel';
 
 export interface Props {
   billTitle: string;
-  reportData: ReportDataItem[];
+  b2aReport: B2AReport;
 }
 
-const B2AReport = ({ reportData, billTitle }: Props) => {
+const TableRow = ({ data }: { data: BaseReportDataItem }) => {
+  return (
+    <View
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+        padding: `2px 0 2px ${7 * (data.depth || 0)}px`,
+        gap: 15,
+        fontSize: 12,
+      }}
+    >
+      <Text style={{ flex: '1 1 0' }}>{data.title}</Text>
+      <Text style={{ width: '60px', textAlign: 'right' }}>
+        {data.budgetAmount}
+      </Text>
+      <Text style={{ width: '60px', textAlign: 'right' }}>
+        {data.actualAmount}
+      </Text>
+      <Text style={{ width: '60px', textAlign: 'right' }}>
+        {data.difference}
+      </Text>
+      <Text style={{ width: '50px', textAlign: 'right' }}>{data.percent}</Text>
+    </View>
+  );
+};
+
+const B2AReport = ({ b2aReport, billTitle }: Props) => {
+  const { service, serviceTotal, changeOrder, changeOrderTotal, grandTotal } =
+    b2aReport;
   return (
     <Document>
       <Page
@@ -48,34 +80,34 @@ const B2AReport = ({ reportData, billTitle }: Props) => {
           <Text style={{ width: '60px' }}>Difference</Text>
           <Text style={{ width: '50px' }}>%</Text>
         </View>
-        {reportData.map((data, index) => (
-          <View
-            key={index}
+        <View>
+          {service.map((data, index) => (
+            <TableRow data={data} key={index} />
+          ))}
+          <TableRow data={serviceTotal} />
+        </View>
+
+        <View
+          style={{
+            marginVertical: 10,
+            marginLeft: 5,
+          }}
+        >
+          <Text
             style={{
-              display: 'flex',
-              flexDirection: 'row',
-              width: '100%',
-              textAlign: 'justify',
-              padding: `2px 0 2px ${7 * (data.depth || 0)}px`,
-              gap: 15,
-              fontSize: 12,
+              fontSize: 13,
             }}
           >
-            <Text style={{ flex: '1 1 0' }}>{data.title}</Text>
-            <Text style={{ width: '60px', textAlign: 'right' }}>
-              {data.budgetAmount}
-            </Text>
-            <Text style={{ width: '60px', textAlign: 'right' }}>
-              {data.actualAmount}
-            </Text>
-            <Text style={{ width: '60px', textAlign: 'right' }}>
-              {data.difference}
-            </Text>
-            <Text style={{ width: '50px', textAlign: 'right' }}>
-              {data.percent}
-            </Text>
-          </View>
-        ))}
+            CHANGE ORDERS:
+          </Text>
+          {changeOrder.map((data, index) => (
+            <TableRow data={data} key={index} />
+          ))}
+          <TableRow data={changeOrderTotal} />
+        </View>
+
+        <TableRow data={grandTotal} />
+
         <Text
           style={{
             position: 'absolute',

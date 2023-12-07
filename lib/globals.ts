@@ -9,7 +9,7 @@ export const SUMMARY_NAMES = {
   profit: 'Profit',
   liability: 'Liability',
   salesTax: 'Sales Tax',
-  boTax: 'BO Tax',
+  boTax: 'B&O Tax',
 };
 
 // TODO thes need to live in state so they can be unique for each company.

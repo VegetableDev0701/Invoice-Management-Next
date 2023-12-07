@@ -7,10 +7,11 @@ import Button from './Button';
 interface Props {
   button: Buttons;
   taskId?: string;
+  children?: React.ReactNode;
 }
 
 export default function ButtonWithLoader(props: Props) {
-  const { button, taskId } = props;
+  const { button, taskId, children } = props;
   const isLoading = useSelector((state) =>
     taskId ? state.ui.tasksInProgress[taskId] : state.ui.isLoading
   );
@@ -42,7 +43,9 @@ export default function ButtonWithLoader(props: Props) {
           }
           disabled={button.disabled}
           onClick={button.onClick}
-        />
+        >
+          {children}
+        </Button>
       )}
     </>
   );

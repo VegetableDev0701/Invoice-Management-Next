@@ -1,5 +1,6 @@
 import { SUMMARY_COST_CODES } from '../globals';
 import {
+  B2AReport,
   BaseReportDataItem,
   CostCodeItem,
   CostCodesData,
@@ -8,8 +9,6 @@ import {
   Divisions,
   ReportData,
   ReportDataChangeOrder,
-  ReportDataItem,
-  ReportDataItemChangeOrder,
 } from '../models/budgetCostCodeModel';
 import {
   ChangeOrderSummary,
@@ -18,7 +17,21 @@ import {
 import { getDataByRecursiveLevel, iterateData } from './costCodeHelpers';
 import { fetchWithRetry } from './ioUtils';
 
-const formatReportDataItem = (data: BaseReportDataItem, isEmpty = false) => {
+export const initReportDataItem = (title = '') => {
+  return {
+    title,
+    budgetAmount: 0,
+    actualAmount: 0,
+    difference: '',
+    percent: '',
+    depth: 0,
+  } as BaseReportDataItem;
+};
+
+export const formatReportDataItem = (
+  data: BaseReportDataItem,
+  isEmpty = false
+) => {
   return {
     title: data.title,
     budgetAmount: isEmpty ? '' : Number(data.budgetAmount).toFixed(2),
@@ -34,8 +47,37 @@ const formatReportDataItem = (data: BaseReportDataItem, isEmpty = false) => {
           ? 0
           : 100
         ).toFixed(2)}%`,
+    depth: data.depth,
   } as BaseReportDataItem;
 };
+
+export const sumOfArray = (
+  title: string,
+  format: boolean,
+  ...arr: BaseReportDataItem[]
+) => {
+  const total: BaseReportDataItem = {
+    title,
+    budgetAmount: arr
+      .map((item) => Number(item.budgetAmount))
+      .reduce((a, b) => a + b),
+    actualAmount: arr
+      .map((item) => Number(item.actualAmount))
+      .reduce((a, b) => a + b),
+    difference: '',
+    percent: '',
+    depth: arr[0].depth,
+  };
+
+  return format ? formatReportDataItem(total) : total;
+};
+
+interface ClientBillActuals {
+  [clientBillId: string]: {
+    currentActuals: CurrentActualsV2;
+    currentActualsChangeOrders: CurrentActualsChangeOrdersV2;
+  };
+}
 
 export const buildB2AReport = async ({
   projectId,
@@ -52,12 +94,7 @@ export const buildB2AReport = async ({
   projectBudget: CostCodesData;
   changeOrderSummary: ChangeOrderSummary;
 }) => {
-  const clientBillActuals: {
-    [clientBillId: string]: {
-      currentActuals: CurrentActualsV2;
-      currentActualsChangeOrders: CurrentActualsChangeOrdersV2;
-    };
-  } = {};
+  const clientBillActuals: ClientBillActuals = {};
 
   // fetch current and previous client bill data from backend
   const clientBillIds = Object.keys(clientBills).filter(
@@ -86,12 +123,131 @@ export const buildB2AReport = async ({
     };
   }
 
-  const reportData: ReportData = {};
+  const reportData: ReportData = initReportDataFromProjectBudget({
+    projectBudget,
+  });
   const reportDataChangeOrder: ReportDataChangeOrder = {};
+
+  let serviceTotal: BaseReportDataItem = initReportDataItem('TOTAL');
+  let changeOrderTotal: BaseReportDataItem = initReportDataItem(
+    'TOTAL CHANGE ORDERS TO DATE'
+  );
+  let grandTotal: BaseReportDataItem = initReportDataItem(
+    'GRAND TOTAL PROJECT TO DATE'
+  );
+
+  fetchActualCostsFromInvoices({
+    reportData,
+    reportDataChangeOrder,
+    projectBudget,
+    clientBillActuals,
+    changeOrderSummary,
+  });
+
+  // sum up the total values
+  const totalReportData: ReportData = {};
+
+  Object.values(reportData)
+    .filter((data) => data.hasSubItem === false)
+    .forEach((data) => {
+      data.costCodeLevel?.forEach((costCode) => {
+        if (!reportData[costCode] || !reportData[costCode].hasSubItem) return;
+
+        const totalId = `${costCode}Total`;
+
+        if (!totalReportData[totalId]) {
+          totalReportData[totalId] = {
+            title: `Total ${reportData[costCode].title}`,
+            budgetAmount: 0,
+            actualAmount: 0,
+            difference: '',
+            percent: '',
+            costCode: totalId,
+            depth: reportData[costCode].depth,
+            hasSubItem: false,
+          };
+        }
+
+        totalReportData[totalId] = {
+          ...totalReportData[totalId],
+          ...sumOfArray(
+            totalReportData[totalId].title,
+            false,
+            totalReportData[totalId],
+            data
+          ),
+        };
+
+        serviceTotal = sumOfArray(
+          serviceTotal.title,
+          false,
+          serviceTotal,
+          data
+        );
+      });
+    });
+
+  serviceTotal = formatReportDataItem(serviceTotal);
+  changeOrderTotal = sumOfArray(
+    changeOrderTotal.title,
+    true,
+    ...(Object.values(reportDataChangeOrder) as BaseReportDataItem[])
+  );
+  grandTotal = sumOfArray(
+    grandTotal.title,
+    true,
+    serviceTotal,
+    changeOrderTotal
+  );
+
+  const finalReportData: BaseReportDataItem[] = Object.values({
+    ...reportData,
+    ...totalReportData,
+  })
+    .sort((a, b) => {
+      if (
+        +String(a.costCode).split('.')[0].split('T')[0] >
+        +String(b.costCode).split('.')[0].split('T')[0]
+      )
+        return 1;
+      if (
+        +String(a.costCode).split('.')[0].split('T')[0] <
+        +String(b.costCode).split('.')[0].split('T')[0]
+      )
+        return -1;
+      if (String(a.costCode) > String(b.costCode)) return 1;
+      return -1;
+    })
+    .map((data) => ({
+      ...formatReportDataItem(data, data.hasSubItem),
+    }));
+
+  const finalReportDataChangeOrder: BaseReportDataItem[] = Object.values(
+    reportDataChangeOrder
+  ).map((data) => ({
+    ...formatReportDataItem(data),
+  }));
+
+  return {
+    service: finalReportData,
+    serviceTotal: serviceTotal,
+    changeOrder: finalReportDataChangeOrder,
+    changeOrderTotal: changeOrderTotal,
+    grandTotal: grandTotal,
+  } as B2AReport;
+};
+
+const initReportDataFromProjectBudget = ({
+  projectBudget,
+}: {
+  projectBudget: CostCodesData;
+}) => {
+  const reportData: ReportData = {};
 
   const initReportData = (
     item: CostCodeItem | Divisions,
     level: Array<number>,
+    costCodeLevel = [] as Array<number>,
     hasSubItem = false
   ) => {
     const depth = level.length - 1;
@@ -104,6 +260,7 @@ export const buildB2AReport = async ({
       costCode: item.number,
       hasSubItem,
       depth,
+      costCodeLevel,
     };
   };
 
@@ -113,15 +270,32 @@ export const buildB2AReport = async ({
         data: div,
         level: [index],
         cb: initReportData,
+        costCodeLevel: [div.number],
         visitAll: true,
       });
     });
 
+  return reportData;
+};
+
+const fetchActualCostsFromInvoices = ({
+  reportData,
+  reportDataChangeOrder,
+  projectBudget,
+  clientBillActuals,
+  changeOrderSummary,
+}: {
+  reportData: ReportData;
+  reportDataChangeOrder: ReportDataChangeOrder;
+  projectBudget: CostCodesData;
+  clientBillActuals: ClientBillActuals;
+  changeOrderSummary: ChangeOrderSummary;
+}) => {
   // fetch actual amounts from invoices
   Object.keys(clientBillActuals).forEach((clientBillId: string) => {
     const billData = clientBillActuals[clientBillId];
 
-    // for now, skip tax information
+    // service data
     Object.keys(billData.currentActuals)
       .filter(
         (key) =>
@@ -147,6 +321,7 @@ export const buildB2AReport = async ({
         }
       });
 
+    // change orders
     Object.keys(billData.currentActualsChangeOrders)
       .filter((key) => key !== 'profitTaxesLiability')
       .forEach((changeOrderId) => {
@@ -158,6 +333,7 @@ export const buildB2AReport = async ({
             difference: '',
             percent: '',
             changeOrderId,
+            depth: 3,
           };
         }
 
@@ -173,25 +349,4 @@ export const buildB2AReport = async ({
         });
       });
   });
-
-  const finalReportData: ReportDataItem[] = Object.values(reportData)
-    .map((data) => ({
-      ...formatReportDataItem(data, data.hasSubItem),
-      costCode: data.costCode,
-      hasSubItem: data.hasSubItem,
-      depth: data.depth,
-    }))
-    .sort((a, b) => {
-      if (Number(a.costCode) > Number(b.costCode)) return 1;
-      return -1;
-    });
-
-  const finalReportDataChangeOrder: ReportDataItemChangeOrder[] = Object.values(
-    reportDataChangeOrder
-  ).map((data) => ({
-    ...formatReportDataItem(data),
-    changeOrderId: data.changeOrderId,
-  }));
-
-  return finalReportData;
 };

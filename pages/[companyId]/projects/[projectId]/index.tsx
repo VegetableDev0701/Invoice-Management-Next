@@ -185,7 +185,7 @@ const ProjectHome = () => {
     dispatch(
       overlayActions.setOverlayContent({
         data: {
-          overlayTitle: 'Add Labor',
+          overlayTitle: 'Add Labor/Fees',
           open: true,
           isSave: true,
         },

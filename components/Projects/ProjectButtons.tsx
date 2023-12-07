@@ -101,7 +101,7 @@ const ProjectButtons = (props: Props) => {
       })
     );
     try {
-      const finalReportData = await buildB2AReport({
+      const b2aReport = await buildB2AReport({
         clientBillId,
         clientBills,
         projectId,
@@ -113,7 +113,7 @@ const ProjectButtons = (props: Props) => {
       const { renderPDF } = await import('@/components/PDF/B2AReport');
       const url = window.URL.createObjectURL(
         await renderPDF({
-          reportData: finalReportData,
+          b2aReport: b2aReport,
           billTitle: clientBills[clientBillId].billTitle,
         })
       );
@@ -159,7 +159,7 @@ const ProjectButtons = (props: Props) => {
       })
     );
     try {
-      const finalReportData = await buildB2AReport({
+      const reportData = await buildB2AReport({
         clientBillId,
         clientBills,
         projectId,
@@ -173,7 +173,7 @@ const ProjectButtons = (props: Props) => {
         }/projects/${projectId}/build-b2a-report`,
         {
           method: 'POST',
-          body: JSON.stringify(finalReportData),
+          body: JSON.stringify(reportData),
         }
       );
       dispatch(

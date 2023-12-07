@@ -274,12 +274,13 @@ export interface BaseReportDataItem {
   actualAmount: number | string;
   difference: number | string;
   percent: string;
+  depth: number;
 }
 
 export interface ReportDataItem extends BaseReportDataItem {
   costCode?: string | number;
   hasSubItem?: boolean;
-  depth?: number;
+  costCodeLevel?: Array<number>;
 }
 
 export interface ReportData {
@@ -292,4 +293,12 @@ export interface ReportDataItemChangeOrder extends BaseReportDataItem {
 
 export interface ReportDataChangeOrder {
   [changeOrderId: string]: ReportDataItemChangeOrder;
+}
+
+export interface B2AReport {
+  service: BaseReportDataItem[];
+  serviceTotal: BaseReportDataItem;
+  changeOrder: BaseReportDataItem[];
+  changeOrderTotal: BaseReportDataItem;
+  grandTotal: BaseReportDataItem;
 }
