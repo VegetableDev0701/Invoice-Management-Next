@@ -267,3 +267,41 @@ export interface UpdateCostCode {
   name?: string;
   recursiveLevel?: Array<number>;
 }
+
+export interface BaseReportDataItem {
+  title: string;
+  budgetAmount: number | string;
+  actualAmount: number | string;
+  difference: number | string;
+  percent: string;
+  depth: number;
+}
+
+export interface ReportDataItem extends BaseReportDataItem {
+  costCode?: string | number;
+  hasSubItem?: boolean;
+  costCodeLevel?: Array<number>;
+}
+
+export interface ReportData {
+  [costCodeId: string]: ReportDataItem;
+}
+
+export interface ReportDataItemChangeOrder extends BaseReportDataItem {
+  changeOrderId: string;
+}
+
+export interface ReportDataChangeOrder {
+  [changeOrderId: string]: ReportDataItemChangeOrder;
+}
+
+export interface B2AReport {
+  service: BaseReportDataItem[];
+  serviceTotal: BaseReportDataItem;
+  otherCharges: BaseReportDataItem[];
+  otherChargesTotal: BaseReportDataItem;
+  contractTotal: BaseReportDataItem;
+  changeOrder: BaseReportDataItem[];
+  changeOrderTotal: BaseReportDataItem;
+  grandTotal: BaseReportDataItem;
+}

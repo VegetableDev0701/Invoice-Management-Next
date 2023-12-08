@@ -6,11 +6,15 @@ import Button from './Button';
 
 interface Props {
   button: Buttons;
+  taskId?: string;
+  children?: React.ReactNode;
 }
 
 export default function ButtonWithLoader(props: Props) {
-  const { button } = props;
-  const isLoading = useSelector((state) => state.ui.isLoading);
+  const { button, taskId, children } = props;
+  const isLoading = useSelector((state) =>
+    taskId ? state.ui.tasksInProgress[taskId] : state.ui.isLoading
+  );
   const classes =
     'h-12 py-3 px-10 font-normal text-white bg-stak-dark-green rounded-3xl hover:cursor-no-drop';
   return (
@@ -39,7 +43,9 @@ export default function ButtonWithLoader(props: Props) {
           }
           disabled={button.disabled}
           onClick={button.onClick}
-        />
+        >
+          {children}
+        </Button>
       )}
     </>
   );

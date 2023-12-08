@@ -133,7 +133,7 @@ const ProjectHome = () => {
     }
   }, [data]);
 
-  // intialize the budget form state and calculate totals when going to a project page
+  // initialize the budget form state and calculate totals when going to a project page
   useEffect(() => {
     if (projectId && isProjectsFetched) {
       dispatch(
@@ -154,8 +154,8 @@ const ProjectHome = () => {
   }, [projectId, isProjectsFetched, projectBudget]);
 
   // click handlers
-  // TODO add a invoiceformoverlay for the contract to edit any issues the model has
-  // therefore keept his code even though currently it is not being used
+  // TODO add a invoice formoverlay for the contract to edit any issues the model has
+  // therefore keep this code even though currently it is not being used
   // const contractClickHandler = () => {
   //   dispatch(addContractFormActions.clearFormState());
   //   dispatch(
@@ -185,7 +185,7 @@ const ProjectHome = () => {
     dispatch(
       overlayActions.setOverlayContent({
         data: {
-          overlayTitle: 'Add Labor',
+          overlayTitle: 'Add Labor/Fees',
           open: true,
           isSave: true,
         },

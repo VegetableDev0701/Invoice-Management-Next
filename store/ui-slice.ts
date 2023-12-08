@@ -4,6 +4,9 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export interface InitialUIState {
   isLoading: boolean;
+  tasksInProgress: {
+    [taskId: string]: boolean;
+  };
 }
 
 export interface ErrorModal {
@@ -23,6 +26,7 @@ export const initialUIState: InitialUIState &
   Record<'errorModal', ErrorModal> &
   Record<'processingNotification', ProcessingNotification> = {
   isLoading: false,
+  tasksInProgress: {},
   notification: {
     messages: [],
     defaultDuration: 3000,
@@ -40,6 +44,13 @@ const uiSlice = createSlice({
       const { isLoading } = action.payload;
       state.isLoading = isLoading;
     },
+    setTaskLoadingState(
+      state,
+      action: PayloadAction<{ taskId: string; isLoading: boolean }>
+    ) {
+      const { taskId, isLoading } = action.payload;
+      state.tasksInProgress[taskId] = isLoading;
+    },
     notify(state, action: PayloadAction<Omit<Notification, 'id'>>) {
       const { content, icon, autoHideDuration } = action.payload;
       const id = 'id' + Math.random().toString(16).slice(2);
@@ -50,7 +61,7 @@ const uiSlice = createSlice({
           {
             // id: nanoid(),
             id: id,
-            content: content + id,
+            content: content,
             icon:
               icon ||
               (state.notification.defaultIcon as

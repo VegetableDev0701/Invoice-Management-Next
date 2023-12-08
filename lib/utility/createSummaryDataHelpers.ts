@@ -476,6 +476,7 @@ export const createSingleClientBillSummary = ({
     uuid,
     laborFeeIds,
     invoiceIds,
+    createdAt: new Date().toString(),
     // clientBillObj: {
     //   actuals: invoiceCurrentActuals,
     //   actualsChangeOrders: invoiceCurrentActualsChangeOrders,
