@@ -1,0 +1,316 @@
+{
+  "mainCategories": [
+    {
+      "name": "Vendor Details",
+      "inputElements": [
+        {
+          "items": [
+            {
+              "label": "Vendor Name",
+              "id": "vendor-name",
+              "type": "text",
+              "required": true,
+              "errormessage": "Vendor name is required.",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Primary Contact",
+              "id": "primary-contact",
+              "type": "text",
+              "required": false,
+              "errormessage": "Primary contact is required.",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Work Phone",
+              "id": "work-phone",
+              "type": "text",
+              "isPhoneNumber": true,
+              "required": false,
+              "value": "",
+              "validFunc": "phone"
+            },
+            {
+              "label": "Cell Phone",
+              "id": "cell-phone",
+              "type": "text",
+              "isPhoneNumber": true,
+              "required": false,
+              "value": "",
+              "validFunc": "phone"
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Email",
+              "id": "email",
+              "type": "text",
+              "required": true,
+              "value": "",
+              "validFunc": "email",
+              "errormessage": "Vendor email is required."
+            }
+          ]
+        },
+        {
+          "name": "addressFields",
+          "addressElements": [
+            {
+              "items": [
+                {
+                  "label": "Vendor's Address",
+                  "id": "vendor-address",
+                  "type": "text",
+                  "required": true,
+                  "errormessage": "Project address is required.",
+                  "isAddress": true,
+                  "value": ""
+                }
+              ]
+            },
+            {
+              "items": [
+                {
+                  "label": "City",
+                  "id": "city-vendor",
+                  "type": "text",
+                  "required": true,
+                  "isAddress": true,
+                  "value": ""
+                },
+                {
+                  "label": "State",
+                  "id": "state-vendor",
+                  "type": "text",
+                  "required": true,
+                  "isAddress": true,
+                  "value": ""
+                },
+                {
+                  "label": "Zip Code",
+                  "id": "zip-code-vendor",
+                  "type": "text",
+                  "inputmode": "numeric",
+                  "required": true,
+                  "isAddress": true,
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Vendor Type",
+              "id": "vendor-type",
+              "inputType": "dropdown",
+              "value": "",
+              "required": false,
+              "selectMenuOptions": [
+                {
+                  "id": 1,
+                  "label": "1 - General Conditions"
+                },
+                {
+                  "id": 2,
+                  "label": "2 - Site Work"
+                },
+                {
+                  "id": 3,
+                  "label": "3 - Concrete"
+                },
+                {
+                  "id": 4,
+                  "label": "4 - Masonry"
+                },
+                {
+                  "id": 5,
+                  "label": "5 - Metals"
+                },
+                {
+                  "id": 6,
+                  "label": "6 - Wood and Plastic"
+                },
+                {
+                  "id": 7,
+                  "label": "7 - Thermal and Moisture Protection"
+                },
+                {
+                  "id": 8,
+                  "label": "8 - Windows and Doors"
+                },
+                {
+                  "id": 9,
+                  "label": "9 - Finishes"
+                },
+                {
+                  "id": 10,
+                  "label": "10 - Specialties"
+                },
+                {
+                  "id": 11,
+                  "label": "11 - Equipment"
+                },
+                {
+                  "id": 12,
+                  "label": "12 - Furnishings"
+                },
+                {
+                  "id": 13,
+                  "label": "13 - Special Construction"
+                },
+                {
+                  "id": 14,
+                  "label": "14 - Conveying Systems"
+                },
+                {
+                  "id": 15,
+                  "label": "15 - Mechanical"
+                },
+                {
+                  "id": 16,
+                  "label": "16 - Electrical"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "License and Insurance",
+      "inputElements": [
+        {
+          "items": [
+            {
+              "label": "Business License Number",
+              "id": "business-license-number",
+              "type": "text",
+              "required": true,
+              "errormessage": "Business license number is required.",
+              "value": ""
+            },
+            {
+              "label": "License Expiration Date",
+              "id": "license-expiration-date",
+              "type": "date",
+              "data-testid": "date-input",
+              "required": true,
+              "errormessage": "License expiration date is required.",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Insurance Name",
+              "id": "insurance-name",
+              "type": "text",
+              "required": true,
+              "errormessage": "Insurance name is required.",
+              "value": ""
+            },
+            {
+              "label": "Insurance Expiration Date",
+              "id": "insurance-expiration-date",
+              "type": "date",
+              "data-testid": "date-input",
+              "required": true,
+              "errormessage": "Insurance expiration date is required.",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Insurance Coverage Amount",
+              "id": "insurance-coverage-amount",
+              "type": "text",
+              "isCurrency": true,
+              "required": false,
+              "value": ""
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Labor and Industries License Number",
+              "id": "landi-number",
+              "type": "text",
+              "required": true,
+              "errormessage": "Labor and Industries license number is required.",
+              "value": ""
+            },
+            {
+              "label": "Labor and Industries License Expiration Date",
+              "id": "landi-expiration-date",
+              "type": "date",
+              "data-testid": "date-input",
+              "required": true,
+              "errormessage": "Labor and Industries license expiration is required.",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Worker's Compensation Expiration",
+              "id": "workers-compensation-expiration",
+              "type": "date",
+              "data-testid": "date-input",
+              "value": "",
+              "required": true,
+              "errormessage": "Workers compensation expiration date is required."
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Bond Company Name",
+              "id": "bond-company-name",
+              "type": "text",
+              "value": "",
+              "required": false
+            },
+
+            {
+              "label": "Bond Amount",
+              "id": "bond-amount",
+              "type": "text",
+              "isCurrency": true,
+              "value": "",
+              "required": false
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "W9 on File",
+              "id": "w9-on-file",
+              "inputType": "slideToggle",
+              "required": false,
+              "value": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -15,10 +15,11 @@ import {
   ProjectSummaryItem,
   VendorSummaryItem,
 } from '@/lib/models/summaryDataModel';
+import { InvoiceTableRow } from '@/lib/models/invoiceDataModels';
 
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import Button from '../../UI/Buttons/Button';
-import { InvoiceTableRow } from '@/lib/models/invoiceDataModels';
+import EmptyTableNotification, { TableType } from '../EmptyTableNotification';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -43,10 +44,13 @@ interface Props<
   rows: T[] | null | undefined;
   checkboxButtons?: CheckBoxItems[];
   activeFilter?: string;
+  activeTabKeyName?: string;
   filterKey?: string;
   projectId?: string;
   selectedRowId?: string | undefined | null;
   baseUrl?: string;
+  preSortKey?: keyof H;
+  tableType?: TableType;
   onButtonClick?: (label: string, selected: T[]) => void;
   onRowClick?: (uuid: string) => void;
 }
@@ -59,10 +63,14 @@ export default function CheckboxSortHeadingsTable<
     headings,
     rows,
     activeFilter,
+    activeTabKeyName,
     checkboxButtons,
     filterKey,
     baseUrl,
     selectedRowId,
+    preSortKey,
+    tableType,
+
     onButtonClick,
     onRowClick,
   } = props;
@@ -70,7 +78,9 @@ export default function CheckboxSortHeadingsTable<
   const checkbox = useRef<HTMLInputElement | null>(null);
 
   const [activeHeading, setActiveHeading] = useState<keyof H | null>(null);
-  const [sortKey, setSortKey] = useState<keyof H | null>(null);
+  const [sortKey, setSortKey] = useState<keyof H | null | undefined>(
+    preSortKey
+  );
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
@@ -122,7 +132,7 @@ export default function CheckboxSortHeadingsTable<
         (row) => (row as ExtendT)[filterKey] === activeFilter
       );
     }
-    if (sortKey === null) {
+    if (!sortKey) {
       return filteredData;
     }
     return sortTableData(filteredData, sortKey, sortOrder);
@@ -134,14 +144,30 @@ export default function CheckboxSortHeadingsTable<
   const middleHeadingClasses = 'px-3 py-3.5';
   const lastHeadingClasses = 'py-3.5 pl-3 pr-3 rounded-tr-lg sm:pr-6 lg:pr-6';
 
-  const commonColClasses =
-    'border-b max-w-[17rem] border-gray-200 whitespace-nowrap text-sm text-gray-500';
-  const firstColClasses = 'py-4 pl-4 pr-3 overflow-x-scroll sm:pl-6 lg:pl-8';
+  const commonColClasses = `${
+    tableType === 'projects' ? 'py-4' : 'py-1'
+  } border-b max-w-[17rem] border-gray-200 whitespace-nowrap text-sm text-gray-500`;
+  const firstColClasses = 'pl-4 pr-3 sm:pl-6 lg:pl-8';
   const middleColClasses = 'py-1 px-3';
-  const lastColClasses = 'py-4 pr-4 pl-3 sm:pr-6 lg:pr-6';
+  const lastColClasses = 'pr-4 pl-3 sm:pr-6 lg:pr-6';
+
+  let tableTypeInstance: TableType = undefined;
+  if (tableType === 'vendors') {
+    tableTypeInstance =
+      activeTabKeyName === 'all' ? 'vendors' : 'expiredLicenseVendors';
+  } else if (tableType === 'projects') {
+    tableTypeInstance =
+      activeTabKeyName === 'active' ? 'projects' : 'completedProjects';
+  }
 
   return (
-    <div className="px-4 grow sm:px-6 lg:px-8">
+    <div className="relative px-4 grow sm:px-6 lg:px-8">
+      {((activeFilter === 'No Filter' &&
+        filteredSortedData &&
+        filteredSortedData.length === 0) ||
+        !filteredSortedData) && (
+        <EmptyTableNotification tableType={tableTypeInstance} />
+      )}
       <div className="mt-2 flow-root">
         <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full align-middle">

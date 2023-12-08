@@ -372,12 +372,15 @@ function Projects() {
                     headings={tableHeadings}
                     rows={filteredData}
                     activeFilter={activeFilter}
+                    activeTabKeyName={activeTabKeyName}
                     filterKey="projectSuper"
                     baseUrl={`/${
                       (user as User).user_metadata.companyId
                     }/projects`}
+                    tableType="projects"
                     onButtonClick={buttonClickHandler}
                     checkboxButtons={checkboxButtons}
+                    preSortKey="projectName"
                   />
                 </div>
               </Card>

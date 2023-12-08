@@ -1,0 +1,78 @@
+{
+  "Ht2Fz6jSCvRvt32N": {
+    "payPeriod": "2021-09-10",
+    "currentLabor": true,
+    "uuid": "Ht2Fz6jSCvRvt32N",
+    "line_items": {
+      "line_item_1": {
+        "change_order": null,
+        "cost_code": "1.12",
+        "number_of_hours": "39.75",
+        "amount": "3,975",
+        "work_description": "Project Management"
+      }
+    },
+    "clientBillId": null,
+    "rate": "100",
+    "totalAmt": "3975.00",
+    "rowId": null,
+    "name": "Colin Anderson"
+  },
+  "lokCoJkDffSFr5AN": {
+    "payPeriod": "2021-09-10",
+    "currentLabor": true,
+    "uuid": "lokCoJkDffSFr5AN",
+    "line_items": {
+      "line_item_1": {
+        "change_order": null,
+        "cost_code": "1.51",
+        "number_of_hours": "3",
+        "amount": "120",
+        "work_description": "General Labor"
+      }
+    },
+    "clientBillId": null,
+    "rate": "40",
+    "totalAmt": "120.00",
+    "rowId": null,
+    "name": "HACHI Labor Hours"
+  },
+  "nxRtVGiHRVery9qb": {
+    "payPeriod": "2021-09-10",
+    "currentLabor": true,
+    "uuid": "nxRtVGiHRVery9qb",
+    "line_items": {
+      "line_item_1": {
+        "change_order": null,
+        "cost_code": "1.36",
+        "number_of_hours": "1",
+        "amount": "300",
+        "work_description": "Truck Rental"
+      }
+    },
+    "clientBillId": null,
+    "rate": "300",
+    "totalAmt": "300.00",
+    "rowId": null,
+    "name": "HACHI Truck"
+  },
+  "nMnSdQCHoJMHCbF7": {
+    "payPeriod": "2021-09-10",
+    "currentLabor": true,
+    "uuid": "nMnSdQCHoJMHCbF7",
+    "line_items": {
+      "line_item_1": {
+        "change_order": null,
+        "cost_code": "1.13",
+        "number_of_hours": "4",
+        "amount": "260",
+        "work_description": "Project Assistant"
+      }
+    },
+    "clientBillId": null,
+    "rate": "65",
+    "totalAmt": "260.00",
+    "rowId": null,
+    "name": "Beatriz Quesada"
+  }
+}

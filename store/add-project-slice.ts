@@ -7,6 +7,7 @@ import {
   SetFormElementPayload,
 } from '@/lib/models/formStateModels';
 import { resetAllFormValidation } from '@/lib/utility/formHelpers';
+import { RESET_STATE } from '@/lib/globals';
 
 const initialAddProjectFormState: FormStateV2 = {
   numRecurringFees: { value: 0 },
@@ -39,22 +40,9 @@ const addProjectFormSlice = createSlice({
     resetFormValidation(state) {
       return resetAllFormValidation(state);
     },
-    // removeRecurringFeeState(
-    //   state,
-    //   action: PayloadAction<{ inputKey: string }>
-    // ) {
-    //   const { inputKey } = action.payload;
-    //   delete state[inputKey];
-    // },
-    // incrementRecurringFee(state) {
-    //   (state.numRecurringFees.value as number)++;
-    // },
-    // decrementRecurringFee(state) {
-    //   (state.numRecurringFees.value as number)--;
-    // },
-    // setRecurringFee(state, action: PayloadAction<number>) {
-    //   state.numRecurringFees.value = action.payload;
-    // },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialAddProjectFormState);
   },
 });
 

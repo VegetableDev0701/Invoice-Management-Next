@@ -33,10 +33,6 @@ export interface Projects {
   [key: string]: ProjectFormData;
 }
 
-export interface Vendors {
-  [key: string]: VendorData;
-}
-
 export interface ProjectFormData {
   name: string;
   isActive: boolean;
@@ -46,10 +42,14 @@ export interface ProjectFormData {
   uuid: string;
 }
 
+export interface Vendors {
+  [key: string]: VendorData;
+}
+
 export interface VendorData {
-  name: string;
+  name?: string;
   mainCategories: MainCategories[];
-  vendorId: string;
+  vendorId?: string;
   uuid: string;
 }
 
@@ -106,6 +106,7 @@ export interface SelectMenuOptions {
   label: string;
   project_uuid?: string;
   costCode?: string;
+  uuid?: string;
 }
 
 export interface Items {

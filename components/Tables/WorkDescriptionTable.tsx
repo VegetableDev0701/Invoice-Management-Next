@@ -10,7 +10,11 @@ import { ChangeOrderContentItem } from '@/lib/models/changeOrderModel';
 import { useCreateChangeOrderTable } from '@/lib/utility/changeOrderHelpers';
 
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
-import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
+import {
+  ChangeOrderSummary,
+  ChangeOrderSummaryItem,
+} from '@/lib/models/summaryDataModel';
+import EmptyTableNotification, { TableType } from './EmptyTableNotification';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -24,6 +28,12 @@ interface CheckBoxItems {
 
 interface Props {
   headings: Headings;
+  changeOrderRows:
+    | Omit<
+        ChangeOrderSummaryItem,
+        'address' | 'invoices' | 'clientName' | 'content'
+      >[]
+    | null;
   isChangeOrderTable: boolean;
   tableData: ChangeOrderSummary | null;
   selectedRowId?: string | undefined | null;
@@ -43,6 +53,7 @@ export default function WorkDescriptionTable(props: Props) {
     showExpiration,
     tableData,
     isChangeOrderTable,
+    changeOrderRows,
   } = props;
 
   const [activeHeading, setActiveHeading] = useState<string | null>(null);
@@ -82,14 +93,22 @@ export default function WorkDescriptionTable(props: Props) {
   const lastHeadingClasses = 'py-3.5 pl-3 pr-3 rounded-tr-lg sm:pr-6 lg:pr-6';
 
   const commonColClasses =
-    'border-b max-w-[10rem] overflow-x-scroll border-gray-200 whitespace-nowrap text-sm text-gray-500';
+    'border-b max-w-[10rem] border-gray-200 whitespace-nowrap text-sm text-gray-500';
   const firstColClasses = 'py-2 pl-4 pr-3  sm:pl-6 lg:pl-8';
   const middleColClasses = 'py-1 px-3';
   const lastColClasses = 'py-2 pr-4 pl-3 sm:pr-6 lg:pr-6';
 
+  const tableTypeInstance: TableType =
+    changeOrderRows && changeOrderRows.length > 0 && !selectedRowId
+      ? 'noChangeOrdersSelected'
+      : (changeOrderRows && changeOrderRows.length === 0) || !changeOrderRows
+      ? 'noChangeOrders'
+      : undefined;
+
   return (
     <>
-      <div className="px-4 grow sm:px-6 lg:px-8">
+      <div className="relative px-4 grow sm:px-6 lg:px-8">
+        <EmptyTableNotification tableType={tableTypeInstance} />
         <div className="mt-2 flow-root">
           <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full align-middle">

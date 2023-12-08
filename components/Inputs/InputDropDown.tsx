@@ -90,7 +90,7 @@ const Dropdown = (props: Props) => {
               className={`block font-sans ${
                 input.isOnOverlay
                   ? 'font-semibold text-md'
-                  : 'font-semibold text-lg'
+                  : 'font-semibold text-md'
               } text-stak-dark-gray`}
             >
               {input.label}
@@ -99,15 +99,13 @@ const Dropdown = (props: Props) => {
               <div className="grow relative mt-1" onBlur={blurHandler}>
                 <Listbox.Button
                   id={input.id}
-                  className={`font-sans relative w-full border-[2.5px] ${
-                    input.isOnOverlay
-                      ? 'rounded-md py-1.5 h-10'
-                      : 'rounded-lg h-11'
+                  className={`font-sans relative w-full border-1 rounded-md h-11 border-[1px] shadow-md ${
+                    input.isOnOverlay ? 'py-1.5 h-10' : 'h-11'
                   } ${
                     isError && isInputRequired
                       ? 'border-red-500 text-red-500'
                       : 'border-stak-light-gray'
-                  } rounded-lg cursor-default  pl-3 pr-10 text-left focus:border-stak-dark-green focus:shadow-xl focus-visible:border-stak-dark-green focus-visible:outline-stak-dark-green focus-visible:outline-0 sm:text-sm`}
+                  } cursor-default pl-3 pr-10 text-left focus:border-stak-dark-green focus:shadow-xl focus-visible:border-stak-dark-green focus-visible:outline-stak-dark-green focus-visible:outline-0 sm:text-sm`}
                 >
                   <span className="block truncate -mb-1 text-xl">
                     {selected.label !== 'None' ? selected.label : ''}

@@ -1,3 +1,4 @@
+import { RESET_STATE } from '@/lib/globals';
 import {
   FormState,
   IsTouchedPayload,
@@ -34,6 +35,9 @@ const onboardUserFormSlice = createSlice({
     resetFormValidation(state) {
       return resetAllFormValidation(state);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialOnboardUser);
   },
 });
 

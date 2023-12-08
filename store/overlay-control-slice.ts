@@ -10,6 +10,7 @@ import { FormData } from '@/lib/models/types';
 import { createSectionBox } from '@/lib/utility/processInvoiceHelpers';
 import { ContractEntry } from '@/lib/models/summaryDataModel';
 import { BoundingBox } from '@/lib/models/invoiceDataModels';
+import { RESET_STATE } from '@/lib/globals';
 
 export const getCurrentProjectData = createAsyncThunk(
   'overlay/getCurrentProjectData',
@@ -46,7 +47,7 @@ export const getCurrentVendor = createAsyncThunk(
   async ({ vendorId }: { vendorId: string }, thunkAPI) => {
     try {
       const state = thunkAPI.getState() as RootState;
-      const vendor: VendorData = state.data.vendors[vendorId];
+      const vendor: VendorData = state.data.vendors.allVendors[vendorId];
       thunkAPI.dispatch(
         overlaySlice.actions.setCurrentOverlayData({
           data: {
@@ -74,7 +75,7 @@ export const getCurrentProject = createAsyncThunk(
             currentData: project as ProjectFormData,
             currentId: projectId,
           },
-          stateKey: 'projects',
+          stateKey: 'vendors',
         })
       );
     } catch (error: any) {
@@ -219,6 +220,9 @@ const overlaySlice = createSlice({
     removeCurrentInvoiceEntityBox(state) {
       state['process-invoices'].currentBoundingBox = null;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => overlayIntitialState);
   },
 });
 

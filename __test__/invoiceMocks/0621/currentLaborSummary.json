@@ -1,0 +1,97 @@
+{
+  "thJDrtlpX5zUh0MZ": {
+    "payPeriod": "2021-06-10",
+    "currentLabor": true,
+    "uuid": "thJDrtlpX5zUh0MZ",
+    "line_items": {
+      "line_item_1": {
+        "change_order": null,
+        "cost_code": "1.13",
+        "number_of_hours": "4",
+        "amount": "260",
+        "work_description": "Project Assistant"
+      }
+    },
+    "clientBillId": null,
+    "rate": "65",
+    "totalAmt": "260.00",
+    "rowId": null,
+    "name": "Beatriz Quesada"
+  },
+  "bO57I4tNEC3P9GTu": {
+    "payPeriod": "2021-06-10",
+    "currentLabor": true,
+    "uuid": "bO57I4tNEC3P9GTu",
+    "line_items": {
+      "line_item_1": {
+        "change_order": null,
+        "cost_code": "1.13",
+        "number_of_hours": "6.5",
+        "amount": "422.5",
+        "work_description": "Project Assistant"
+      }
+    },
+    "clientBillId": null,
+    "rate": "65",
+    "totalAmt": "422.50",
+    "rowId": null,
+    "name": "Jared Anderson"
+  },
+  "TijJeelUUPLvCPtz": {
+    "payPeriod": "2021-06-10",
+    "currentLabor": true,
+    "uuid": "TijJeelUUPLvCPtz",
+    "line_items": {
+      "line_item_1": {
+        "change_order": null,
+        "cost_code": "1.51",
+        "number_of_hours": "7",
+        "amount": "280",
+        "work_description": "General Labor"
+      }
+    },
+    "clientBillId": null,
+    "rate": "40",
+    "totalAmt": "280.00",
+    "rowId": null,
+    "name": "HACHI Labor Hours"
+  },
+  "9AFGf06Mjj7zX4KE": {
+    "payPeriod": "2021-06-10",
+    "currentLabor": true,
+    "uuid": "9AFGf06Mjj7zX4KE",
+    "line_items": {
+      "line_item_1": {
+        "change_order": null,
+        "cost_code": "1.36",
+        "number_of_hours": "0.5",
+        "amount": "150",
+        "work_description": "Truck Rental"
+      }
+    },
+    "clientBillId": null,
+    "rate": "300",
+    "totalAmt": "150.00",
+    "rowId": null,
+    "name": "HACHI Truck Rental"
+  },
+  "TGjHpmu3mlyYC0wb": {
+    "payPeriod": "2021-06-10",
+    "currentLabor": true,
+    "uuid": "TGjHpmu3mlyYC0wb",
+    "line_items": {
+      "line_item_1": {
+        "change_order": null,
+        "cost_code": "1.12",
+        "number_of_hours": "12.75",
+        "amount": "1,275",
+        "work_description": "Project Management"
+      }
+    },
+    "clientBillId": null,
+    "rate": "100",
+    "totalAmt": "1275.00",
+    "rowId": null,
+    "name": "Colin Anderson"
+  }
+}

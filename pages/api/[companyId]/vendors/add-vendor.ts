@@ -37,7 +37,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         },
       });
 
-      if (response.statusText !== 'OK') {
+      if (response.statusText !== 'OK' && response.statusText !== 'Created') {
         const errorData = await response.json();
         console.error(errorData);
         res.status(response.status).json({ error: errorData.detail });

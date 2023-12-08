@@ -30,7 +30,7 @@ import { LaborData } from '@/lib/models/formDataModel';
 import {
   ChangeOrderSummary,
   LaborSummary,
-  Rows,
+  LaborTableSummary,
 } from '@/lib/models/summaryDataModel';
 import { formatNumber } from '@/lib/utility/formatter';
 import { nanoid } from '@/lib/config';
@@ -105,7 +105,7 @@ export default function ProjectsLaborFees(props: Props) {
   });
 
   // Normalize labor data for table
-  const laborRows: Rows[] | null = useMemo(() => {
+  const laborRows: LaborTableSummary[] | null = useMemo(() => {
     if (tableData) {
       return Object.entries(tableData).map(([key, row]) => {
         const lineItems = Object.values(row.line_items);
@@ -130,7 +130,7 @@ export default function ProjectsLaborFees(props: Props) {
     }
   }, [tableData]);
 
-  const confirmModalHandler = (selected: Rows[]) => {
+  const confirmModalHandler = (selected: LaborTableSummary[]) => {
     const laborIds = selected.map((labor) => labor.uuid as string);
 
     // TODO
@@ -168,7 +168,7 @@ export default function ProjectsLaborFees(props: Props) {
     dispatch(
       overlayActions.setOverlayContent({
         data: {
-          overlayTitle: 'Update Labor',
+          overlayTitle: 'Update Labor/Fees',
           open: true,
           isSave: false,
           currentId: uuid,
@@ -348,6 +348,7 @@ export default function ProjectsLaborFees(props: Props) {
         checkboxButtons={checkBoxButtons}
         projectId={projectId}
         selectedRowId={overlayContent.currentId}
+        tableType="laborFee"
         onConfirmModal={confirmModalHandler}
         onRowClick={rowClickHandler}
       />

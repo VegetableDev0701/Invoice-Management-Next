@@ -1,16 +1,15 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 import { addUpdatedChangeOrderContent } from './add-change-order';
-import { invoiceActions } from './invoice-slice';
 import { uiActions } from './ui-slice';
 import { projectDataActions } from './projects-data-slice';
 
 import {
   ChangeOrderSummary,
   ProjectSummary,
-  ProjectSummaryItem,
   SummaryProjects,
   VendorSummary,
+  VendorSummaryItem,
 } from '@/lib/models/summaryDataModel';
 import {
   costCodeData2NLevel,
@@ -52,6 +51,7 @@ import {
 } from '@/lib/models/changeOrderModel';
 import { ExtendedCompanyData, Forms } from '@/lib/models/companyDataModel';
 import { isObjectEmpty, snapshotCopy } from '@/lib/utility/utils';
+import { RESET_STATE } from '@/lib/globals';
 
 export const fetchCompanyData = createAsyncThunk(
   'companyDataAsync/fetch',
@@ -67,8 +67,6 @@ export const fetchCompanyData = createAsyncThunk(
         forms: `/api/${companyId}/get-all-forms`,
         costCodes: `/api/${companyId}/get-cost-codes`,
         invoices: `/api/${companyId}/invoices/get-all-invoices`,
-        projectsSummary: `/api/${companyId}/projects/get-projects-summary`,
-        vendorsSummary: `/api/${companyId}/vendors/get-vendors-summary`,
       };
 
       const promises = Object.values(urls).map((url) =>
@@ -211,6 +209,8 @@ export const addProcessedInvoiceData = createAsyncThunk(
       const processInvoiceFormState = state.addProcessInvoiceForm;
       const costCodeList: CostCodeObjType[] = state.data.costCodeList;
       const costCodeNameList: CostCodeObjType[] = state.data.costCodeNameList;
+      const vendorsSummary: VendorSummary | object =
+        state.data.vendorsSummary.allVendors;
       const snapShotLineItems: InvoiceLineItem | undefined = state.data.invoices
         .allInvoices[invoiceId]?.processedData?.line_items
         ? snapshotCopy(
@@ -227,11 +227,26 @@ export const addProcessedInvoiceData = createAsyncThunk(
           ? true
           : false;
 
+      const isUnassignProject =
+        processInvoiceFormState?.['project-name']?.value === 'Unassign';
+
+      const matchedVendorSummary =
+        !isObjectEmpty(vendorsSummary) &&
+        Object.values(vendorsSummary).find((vendor) => {
+          if (processInvoiceFormState?.['vendor-name']?.value) {
+            return (
+              vendor.vendorName ===
+              processInvoiceFormState?.['vendor-name']?.value
+            );
+          }
+        });
+
       // check if the current chosen project in the processed invoice form
       // is the same as the project the invoice is currently associated with
-      const currentProjectName = isProjectNameChanged
-        ? (processInvoiceFormState?.['project-name']?.value as string)
-        : projectName;
+      const currentProjectName =
+        isProjectNameChanged && !isUnassignProject
+          ? (processInvoiceFormState?.['project-name']?.value as string)
+          : projectName;
 
       // grab the project data for the current project associated with the clicked invoice
       const projectData = Object.values(
@@ -246,8 +261,11 @@ export const addProcessedInvoiceData = createAsyncThunk(
         invoice_id:
           (processInvoiceFormState?.['invoice-number']?.value as string) ??
           null,
-        vendor_name:
-          (processInvoiceFormState?.['vendor-name']?.value as string) ?? null,
+        vendor: {
+          name:
+            (processInvoiceFormState?.['vendor-name']?.value as string) ?? null,
+          uuid: matchedVendorSummary?.uuid ?? null,
+        },
         cost_code:
           processInvoiceFormState?.['cost-code']?.value &&
           processInvoiceFormState['cost-code'].value !== 'None' &&
@@ -526,20 +544,27 @@ export const addProcessedInvoiceData = createAsyncThunk(
         ...{ line_items: updatedLineItems },
       };
 
+      const project =
+        processInvoiceFormState?.['project-name']?.value === 'Unassign'
+          ? {
+              address: null,
+              uuid: null,
+              name: null,
+            }
+          : {
+              address: projectData['address'],
+              uuid: projectData['uuid'],
+              name: projectData['projectName'],
+            };
+
       thunkAPI.dispatch(
         companyDataActions.addProcessedInvoiceData({
           isProcessed: state.addProcessInvoiceForm.isUpdated.value as boolean,
           invoiceId,
-          projectData,
+          project,
           processedInvoiceData: processedInvoiceDataUpdated,
         })
       );
-
-      const project = {
-        address: projectData['address'],
-        uuid: projectData['uuid'],
-        name: projectData['projectName'],
-      };
 
       const data = await fetchWithRetry(
         `/api/${companyId}/invoices/update-invoice-data`,
@@ -606,10 +631,10 @@ export const approveInvoice = createAsyncThunk(
           icon: 'save',
         })
       );
-      thunkAPI.dispatch(
-        companyDataActions.approveInvoiceState({ invoiceId, isApproved })
-      );
-      thunkAPI.dispatch(invoiceActions.updateInvoiceApproval(isApproved));
+      // thunkAPI.dispatch(
+      //   companyDataActions.approveInvoiceState({ invoiceId, isApproved })
+      // );
+      // thunkAPI.dispatch(invoiceActions.updateInvoiceApproval(isApproved));
     } catch (error) {
       thunkAPI.dispatch(
         uiActions.notify({
@@ -744,7 +769,7 @@ export const removeChangeOrderFromInvoiceThunk = createAsyncThunk(
 const initialDataState = {
   forms: {} as Forms,
   invoices: { status: '', allInvoices: {} as Invoices },
-  vendors: {} as Vendors,
+  vendors: { status: '', allVendors: {} as Vendors },
   projectsSummary: { status: '', allProjects: {} },
   vendorsSummary: { status: '', allVendors: {} },
   costCodes: {} as CostCodesData,
@@ -846,21 +871,22 @@ export const companyDataSlice = createSlice({
       }>
     ) {
       const { newVendor, vendorId } = action.payload;
-      state.vendors[vendorId] = { ...newVendor };
+      state.vendors.allVendors[vendorId] = { ...newVendor };
+    },
+    addNewVendorsBulk(state, action: PayloadAction<Vendors>) {
+      state.vendors.allVendors = { ...action.payload };
     },
     removeVendorsFromState(state, action: PayloadAction<string[]>) {
       const allVendorsSummary: VendorSummary = {
         ...state.vendorsSummary.allVendors,
       };
-      const allVendors: { [vendorId: string]: VendorData } = {
-        ...state.vendors,
+      const allVendors: Vendors = {
+        ...state.vendors.allVendors,
       };
 
-      const updatedVendors: { [vendorId: string]: VendorData } = Object.keys(
-        allVendors
-      )
+      const updatedVendors: Vendors = Object.keys(allVendors)
         .filter((vendorId) => !action.payload.includes(vendorId))
-        .reduce((obj: { [vendorId: string]: VendorData }, key: string) => {
+        .reduce((obj: Vendors, key: string) => {
           obj[key] = allVendors[key];
           return obj;
         }, {});
@@ -873,7 +899,7 @@ export const companyDataSlice = createSlice({
           obj[key] = allVendorsSummary[key];
           return obj;
         }, {});
-      state.vendors = { ...updatedVendors };
+      state.vendors.allVendors = { ...updatedVendors };
       state.vendorsSummary.allVendors = { ...updatedVendorsSummary };
     },
 
@@ -929,27 +955,42 @@ export const companyDataSlice = createSlice({
       const allInvoices: Invoices = { ...state.invoices.allInvoices };
       state.invoices.allInvoices = { ...allInvoices, ...action.payload };
     },
+    updateProcessedVendor(
+      state,
+      action: PayloadAction<{
+        invoiceId: string;
+        vendor: {
+          name: string | null;
+          uuid: string | null;
+        };
+      }>
+    ) {
+      const { invoiceId, vendor } = action.payload;
+      state.invoices.allInvoices[invoiceId].processedData = {
+        ...(state.invoices.allInvoices[invoiceId]
+          .processedData as ProcessedInvoiceData),
+        ...{ vendor },
+      };
+    },
     addProcessedInvoiceData(
       state,
       action: PayloadAction<{
         isProcessed: boolean;
         invoiceId: string;
-        projectData: ProjectSummaryItem;
+        project: {
+          address: string | null;
+          uuid: string | null;
+          name: string | null;
+        };
         processedInvoiceData: ProcessedInvoiceData;
       }>
     ) {
-      const { isProcessed, invoiceId, projectData, processedInvoiceData } =
+      const { isProcessed, invoiceId, project, processedInvoiceData } =
         action.payload;
 
       state.invoices.allInvoices[invoiceId] = {
         ...state.invoices.allInvoices[invoiceId],
-        ...{
-          project: {
-            address: projectData['address'],
-            uuid: projectData['uuid'],
-            name: projectData['projectName'],
-          },
-        },
+        ...{ project },
         ...{ processedData: processedInvoiceData },
         ...{ processed: isProcessed },
       };
@@ -1023,6 +1064,7 @@ export const companyDataSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(RESET_STATE, (state) => initialDataState)
       .addCase(updateInvoices.fulfilled, (state, action) => {
         state.invoices.allInvoices = {
           ...state.invoices.allInvoices,
@@ -1039,7 +1081,10 @@ export const companyDataSlice = createSlice({
         fetchCompanyData.fulfilled,
         (state, action: PayloadAction<any>) => {
           const baseForms = JSON.parse(action.payload.forms.value);
-          const forms = { status: action.payload.forms.status, ...baseForms };
+          const forms = {
+            status: action.payload.forms.status,
+            ...baseForms,
+          } as Forms;
           state.forms = { ...forms };
 
           const allInvoices: Invoices = JSON.parse(
@@ -1085,34 +1130,48 @@ export const companyDataSlice = createSlice({
             },
           };
 
+          const vendorsPayload: {
+            [id: string]: {
+              'vendor-details': VendorData;
+              'vendor-summary': VendorSummaryItem;
+            };
+          } = JSON.parse(action.payload.vendors.value);
+
+          const vendorsDetailsPayload = Object.fromEntries(
+            Object.entries(vendorsPayload).map(
+              ([key, value]: [
+                string,
+                {
+                  'vendor-details': VendorData;
+                  'vendor-summary': VendorSummaryItem;
+                },
+              ]) => [key, value['vendor-details']]
+            )
+          );
+
+          const vendorsSummaryPayload = Object.fromEntries(
+            Object.entries(vendorsPayload).map(
+              ([key, value]: [
+                string,
+                {
+                  'vendor-details': VendorData;
+                  'vendor-summary': VendorSummaryItem;
+                },
+              ]) => [key, value['vendor-summary']]
+            )
+          );
+
           state.vendors = {
             ...{
-              status: action.payload.vendors.status as string,
-              ...JSON.parse(action.payload.vendors.value),
+              status: action.payload.vendors.status,
+              allVendors: { ...vendorsDetailsPayload } || {},
             },
           };
-
-          const projectsSummaryPayload =
-            action.payload.projectsSummary.value !== 'null'
-              ? JSON.parse(action.payload.projectsSummary.value)
-              : { allProjects: {} };
-
-          state.projectsSummary = {
-            ...{
-              status: action.payload.projectsSummary.status,
-              ...projectsSummaryPayload,
-            },
-          };
-
-          const vendorsSummaryPayload =
-            action.payload.vendorsSummary.value !== 'null'
-              ? JSON.parse(action.payload.vendorsSummary.value)
-              : { allVendors: {} };
 
           state.vendorsSummary = {
             ...{
-              status: action.payload.vendorsSummary.status,
-              ...vendorsSummaryPayload,
+              status: action.payload.vendors.status,
+              allVendors: { ...vendorsSummaryPayload } || {},
             },
           };
 

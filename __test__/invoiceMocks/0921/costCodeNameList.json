@@ -1,0 +1,1126 @@
+[
+  {
+    "id": 0,
+    "label": "None"
+  },
+  {
+    "id": 1,
+    "label": "Project Supervision",
+    "costCode": "1.11"
+  },
+  {
+    "id": 2,
+    "label": "Project Management",
+    "costCode": "1.12"
+  },
+  {
+    "id": 3,
+    "label": "Project Assistant",
+    "costCode": "1.13"
+  },
+  {
+    "id": 4,
+    "label": "Architectural Design",
+    "costCode": "1.21"
+  },
+  {
+    "id": 5,
+    "label": "Engineering",
+    "costCode": "1.22"
+  },
+  {
+    "id": 6,
+    "label": "Interior Design",
+    "costCode": "1.23"
+  },
+  {
+    "id": 7,
+    "label": "Landscape Design",
+    "costCode": "1.24"
+  },
+  {
+    "id": 8,
+    "label": "Surveying",
+    "costCode": "1.25"
+  },
+  {
+    "id": 9,
+    "label": "Blueprints",
+    "costCode": "1.26"
+  },
+  {
+    "id": 10,
+    "label": "Equipment Rental",
+    "costCode": "1.31"
+  },
+  {
+    "id": 11,
+    "label": "Job Shack",
+    "costCode": "1.32"
+  },
+  {
+    "id": 12,
+    "label": "Small Tools",
+    "costCode": "1.33"
+  },
+  {
+    "id": 13,
+    "label": "Temporary Fence Rental",
+    "costCode": "1.34"
+  },
+  {
+    "id": 14,
+    "label": "Temporary Generator",
+    "costCode": "1.35"
+  },
+  {
+    "id": 15,
+    "label": "Truck Rental",
+    "costCode": "1.36"
+  },
+  {
+    "id": 16,
+    "label": "Travel Per Diem",
+    "costCode": "1.37"
+  },
+  {
+    "id": 17,
+    "label": "Final Interior Clean",
+    "costCode": "1.41"
+  },
+  {
+    "id": 18,
+    "label": "Final Exterior Clean",
+    "costCode": "1.415"
+  },
+  {
+    "id": 19,
+    "label": "Window Cleaning",
+    "costCode": "1.42"
+  },
+  {
+    "id": 20,
+    "label": "Duct Cleaning",
+    "costCode": "1.425"
+  },
+  {
+    "id": 21,
+    "label": "General Labor",
+    "costCode": "1.51"
+  },
+  {
+    "id": 22,
+    "label": "Permits",
+    "costCode": "1.6"
+  },
+  {
+    "id": 23,
+    "label": "Site Phone",
+    "costCode": "1.71"
+  },
+  {
+    "id": 24,
+    "label": "Water",
+    "costCode": "1.72"
+  },
+  {
+    "id": 25,
+    "label": "Power and Natural Gas",
+    "costCode": "1.73"
+  },
+  {
+    "id": 26,
+    "label": "Sanican",
+    "costCode": "1.74"
+  },
+  {
+    "id": 27,
+    "label": "Temporary Erosion Control",
+    "costCode": "1.91"
+  },
+  {
+    "id": 28,
+    "label": "Temporary Protection",
+    "costCode": "1.92"
+  },
+  {
+    "id": 29,
+    "label": "Construction Aids and Temporary Control",
+    "costCode": "1.93"
+  },
+  {
+    "id": 30,
+    "label": "Special Inspections",
+    "costCode": "1.94"
+  },
+  {
+    "id": 31,
+    "label": "General Conditions",
+    "costCode": "1.95"
+  },
+  {
+    "id": 32,
+    "label": "Hazardous Material Abatement",
+    "costCode": "2.11"
+  },
+  {
+    "id": 33,
+    "label": "Tank Removal",
+    "costCode": "2.12"
+  },
+  {
+    "id": 34,
+    "label": "Building Demolition",
+    "costCode": "2.13"
+  },
+  {
+    "id": 35,
+    "label": "Mobilization",
+    "costCode": "2.205"
+  },
+  {
+    "id": 36,
+    "label": "Site Clearing",
+    "costCode": "2.21"
+  },
+  {
+    "id": 37,
+    "label": "Excavation",
+    "costCode": "2.22"
+  },
+  {
+    "id": 38,
+    "label": "Backfill",
+    "costCode": "2.23"
+  },
+  {
+    "id": 39,
+    "label": "Compaction",
+    "costCode": "2.24"
+  },
+  {
+    "id": 40,
+    "label": "Final Grade",
+    "costCode": "2.25"
+  },
+  {
+    "id": 41,
+    "label": "Import and Export Fill",
+    "costCode": "2.26"
+  },
+  {
+    "id": 42,
+    "label": "Drilling, Piles, and Soil Nails",
+    "costCode": "2.27"
+  },
+  {
+    "id": 43,
+    "label": "Erosion Control",
+    "costCode": "2.28"
+  },
+  {
+    "id": 44,
+    "label": "Temporary Road",
+    "costCode": "2.29"
+  },
+  {
+    "id": 45,
+    "label": "Dump Fees",
+    "costCode": "2.31"
+  },
+  {
+    "id": 46,
+    "label": "Drain Rock",
+    "costCode": "2.41"
+  },
+  {
+    "id": 47,
+    "label": "Filter Fabric",
+    "costCode": "2.42"
+  },
+  {
+    "id": 48,
+    "label": "Foundation Drains",
+    "costCode": "2.43"
+  },
+  {
+    "id": 49,
+    "label": "Storm Sewer Materials",
+    "costCode": "2.44"
+  },
+  {
+    "id": 50,
+    "label": "Phone/Power/Sewer/Storm",
+    "costCode": "2.51"
+  },
+  {
+    "id": 51,
+    "label": "Sanitary Sewer",
+    "costCode": "2.52"
+  },
+  {
+    "id": 52,
+    "label": "Septic System",
+    "costCode": "2.53"
+  },
+  {
+    "id": 53,
+    "label": "Sewerage and Drainage",
+    "costCode": "2.54"
+  },
+  {
+    "id": 54,
+    "label": "Utility Trenching",
+    "costCode": "2.55"
+  },
+  {
+    "id": 55,
+    "label": "Water Line and Meter",
+    "costCode": "2.56"
+  },
+  {
+    "id": 56,
+    "label": "Fire Department Connection",
+    "costCode": "2.565"
+  },
+  {
+    "id": 57,
+    "label": "Well Construction",
+    "costCode": "2.57"
+  },
+  {
+    "id": 58,
+    "label": "Fences and Gates",
+    "costCode": "2.61"
+  },
+  {
+    "id": 59,
+    "label": "Irrigation Systems",
+    "costCode": "2.62"
+  },
+  {
+    "id": 60,
+    "label": "Trees, Plants and Groundcover",
+    "costCode": "2.63"
+  },
+  {
+    "id": 61,
+    "label": "Pavers",
+    "costCode": "2.71"
+  },
+  {
+    "id": 62,
+    "label": "Rockeries and Retaining Walls",
+    "costCode": "2.72"
+  },
+  {
+    "id": 63,
+    "label": "Foundation Piles",
+    "costCode": "3.105"
+  },
+  {
+    "id": 64,
+    "label": "Foundation Forming",
+    "costCode": "3.11"
+  },
+  {
+    "id": 65,
+    "label": "Foundation Rebar",
+    "costCode": "3.12"
+  },
+  {
+    "id": 66,
+    "label": "Foundation Concrete Pump",
+    "costCode": "3.13"
+  },
+  {
+    "id": 67,
+    "label": "Foundation Concrete",
+    "costCode": "3.14"
+  },
+  {
+    "id": 68,
+    "label": "Foundation Place & Finish Labor",
+    "costCode": "3.15"
+  },
+  {
+    "id": 69,
+    "label": "Garage Slab Grading and Forming",
+    "costCode": "3.21"
+  },
+  {
+    "id": 70,
+    "label": "Garage Slab Rebar",
+    "costCode": "3.22"
+  },
+  {
+    "id": 71,
+    "label": "Garage Slab Concrete Pump",
+    "costCode": "3.23"
+  },
+  {
+    "id": 72,
+    "label": "Garage Slab Concrete",
+    "costCode": "3.24"
+  },
+  {
+    "id": 73,
+    "label": "Garage Slab Place and Finish Labor",
+    "costCode": "3.25"
+  },
+  {
+    "id": 74,
+    "label": "Basement Slab Grading and Forming",
+    "costCode": "3.31"
+  },
+  {
+    "id": 75,
+    "label": "Basement Slab Insulation Board",
+    "costCode": "3.32"
+  },
+  {
+    "id": 76,
+    "label": "Basement Slab Rebar",
+    "costCode": "3.33"
+  },
+  {
+    "id": 77,
+    "label": "Basement Slab Concrete Pump",
+    "costCode": "3.34"
+  },
+  {
+    "id": 78,
+    "label": "Basement Slab Concrete",
+    "costCode": "3.35"
+  },
+  {
+    "id": 79,
+    "label": "Basement Slab Place and Finish Labor",
+    "costCode": "3.36"
+  },
+  {
+    "id": 80,
+    "label": "Steps and Walk Grading and Forming",
+    "costCode": "3.41"
+  },
+  {
+    "id": 81,
+    "label": "Steps and Walks Rebar",
+    "costCode": "3.42"
+  },
+  {
+    "id": 82,
+    "label": "Steps and Walks Concrete Pump",
+    "costCode": "3.43"
+  },
+  {
+    "id": 83,
+    "label": "Steps and Walks Concrete",
+    "costCode": "3.44"
+  },
+  {
+    "id": 84,
+    "label": "Steps and Walks Place and Finish Labor",
+    "costCode": "3.45"
+  },
+  {
+    "id": 85,
+    "label": "Driveway Grading and Forming",
+    "costCode": "3.51"
+  },
+  {
+    "id": 86,
+    "label": "Driveway Rebar",
+    "costCode": "3.52"
+  },
+  {
+    "id": 87,
+    "label": "Driveway Concrete Pump",
+    "costCode": "3.53"
+  },
+  {
+    "id": 88,
+    "label": "Driveway Concrete",
+    "costCode": "3.54"
+  },
+  {
+    "id": 89,
+    "label": "Driveway Place and Finish Labor",
+    "costCode": "3.55"
+  },
+  {
+    "id": 90,
+    "label": "Real Stone",
+    "costCode": "4.11"
+  },
+  {
+    "id": 91,
+    "label": "Simulated Stone",
+    "costCode": "4.12"
+  },
+  {
+    "id": 92,
+    "label": "Unit Masonry",
+    "costCode": "4.13"
+  },
+  {
+    "id": 93,
+    "label": "Chimney",
+    "costCode": "4.21"
+  },
+  {
+    "id": 94,
+    "label": "Hearth and Face",
+    "costCode": "4.22"
+  },
+  {
+    "id": 95,
+    "label": "Masonry Restoration and Cleaning",
+    "costCode": "4.91"
+  },
+  {
+    "id": 96,
+    "label": "Other Masonry",
+    "costCode": "4.92"
+  },
+  {
+    "id": 97,
+    "label": "Sheet Metal Siding",
+    "costCode": "5.41"
+  },
+  {
+    "id": 98,
+    "label": "Miscellaneous Sheet Metal",
+    "costCode": "5.42"
+  },
+  {
+    "id": 99,
+    "label": "Enclosures",
+    "costCode": "5.51"
+  },
+  {
+    "id": 100,
+    "label": "Gratings",
+    "costCode": "5.52"
+  },
+  {
+    "id": 101,
+    "label": "Ladders",
+    "costCode": "5.53"
+  },
+  {
+    "id": 102,
+    "label": "Stairs",
+    "costCode": "5.55"
+  },
+  {
+    "id": 103,
+    "label": "Framing Hardware",
+    "costCode": "5.61"
+  },
+  {
+    "id": 104,
+    "label": "Framing Material",
+    "costCode": "6.11"
+  },
+  {
+    "id": 105,
+    "label": "Wood Trusses",
+    "costCode": "6.12"
+  },
+  {
+    "id": 106,
+    "label": "Framing Labor",
+    "costCode": "6.13"
+  },
+  {
+    "id": 107,
+    "label": "Cabinets",
+    "costCode": "6.21"
+  },
+  {
+    "id": 108,
+    "label": "Cabinets Installation",
+    "costCode": "6.215"
+  },
+  {
+    "id": 109,
+    "label": "Spiral Stairs",
+    "costCode": "6.22"
+  },
+  {
+    "id": 110,
+    "label": "Stairs",
+    "costCode": "6.23"
+  },
+  {
+    "id": 111,
+    "label": "Millwork Labor",
+    "costCode": "6.24"
+  },
+  {
+    "id": 112,
+    "label": "Millwork Material",
+    "costCode": "6.25"
+  },
+  {
+    "id": 113,
+    "label": "Wood Gates",
+    "costCode": "6.24"
+  },
+  {
+    "id": 114,
+    "label": "Enclosed Soffits",
+    "costCode": "6.31"
+  },
+  {
+    "id": 115,
+    "label": "Trelisses and Arbors",
+    "costCode": "6.32"
+  },
+  {
+    "id": 116,
+    "label": "Wood Decks",
+    "costCode": "6.33"
+  },
+  {
+    "id": 117,
+    "label": "Wood Siding",
+    "costCode": "6.35"
+  },
+  {
+    "id": 118,
+    "label": "Plastic Laminate",
+    "costCode": "6.41"
+  },
+  {
+    "id": 119,
+    "label": "Structural Plastics",
+    "costCode": "6.42"
+  },
+  {
+    "id": 120,
+    "label": "Plastic Fabrications",
+    "costCode": "6.43"
+  },
+  {
+    "id": 121,
+    "label": "Batt Insulation",
+    "costCode": "7.11"
+  },
+  {
+    "id": 122,
+    "label": "Blown Insulation",
+    "costCode": "7.12"
+  },
+  {
+    "id": 123,
+    "label": "Rigid Insulation",
+    "costCode": "7.13"
+  },
+  {
+    "id": 124,
+    "label": "Sound Deadening Insualtion",
+    "costCode": "7.14"
+  },
+  {
+    "id": 125,
+    "label": "Fire Proofing",
+    "costCode": "7.15"
+  },
+  {
+    "id": 126,
+    "label": "Membrane Roofing",
+    "costCode": "7.21"
+  },
+  {
+    "id": 127,
+    "label": "PVC Roofing",
+    "costCode": "7.22"
+  },
+  {
+    "id": 128,
+    "label": "Metal Roofing",
+    "costCode": "7.23"
+  },
+  {
+    "id": 129,
+    "label": "Wood Shake and Shingle Roofing",
+    "costCode": "7.24"
+  },
+  {
+    "id": 130,
+    "label": "Slate Roofing",
+    "costCode": "7.25"
+  },
+  {
+    "id": 131,
+    "label": "Composition Roofing",
+    "costCode": "7.26"
+  },
+  {
+    "id": 132,
+    "label": "Tile Roofing",
+    "costCode": "7.27"
+  },
+  {
+    "id": 133,
+    "label": "Gutters and Downspouts",
+    "costCode": "7.31"
+  },
+  {
+    "id": 134,
+    "label": "Skylights",
+    "costCode": "7.32"
+  },
+  {
+    "id": 135,
+    "label": "Caulking and Sealants",
+    "costCode": "7.91"
+  },
+  {
+    "id": 136,
+    "label": "Flashings",
+    "costCode": "7.92"
+  },
+  {
+    "id": 137,
+    "label": "Foundation Waterproofing",
+    "costCode": "7.93"
+  },
+  {
+    "id": 138,
+    "label": "Weatherstripping",
+    "costCode": "7.94"
+  },
+  {
+    "id": 139,
+    "label": "Metal Windows",
+    "costCode": "8.11"
+  },
+  {
+    "id": 140,
+    "label": "Vinyl Windows",
+    "costCode": "8.12"
+  },
+  {
+    "id": 141,
+    "label": "Wood Windows",
+    "costCode": "8.13"
+  },
+  {
+    "id": 142,
+    "label": "Window Installation",
+    "costCode": "8.14"
+  },
+  {
+    "id": 143,
+    "label": "Window and Door Pans",
+    "costCode": "8.15"
+  },
+  {
+    "id": 144,
+    "label": "Decorative Glass",
+    "costCode": "8.21"
+  },
+  {
+    "id": 145,
+    "label": "Door Hardware",
+    "costCode": "8.22"
+  },
+  {
+    "id": 146,
+    "label": "Exterior Doors",
+    "costCode": "8.23"
+  },
+  {
+    "id": 147,
+    "label": "Folding Doors",
+    "costCode": "8.24"
+  },
+  {
+    "id": 148,
+    "label": "Front Door Allowance",
+    "costCode": "8.25"
+  },
+  {
+    "id": 149,
+    "label": "Garage Doors and Openers",
+    "costCode": "8.26"
+  },
+  {
+    "id": 150,
+    "label": "Interior Doors",
+    "costCode": "8.27"
+  },
+  {
+    "id": 151,
+    "label": "Roof Access Doors",
+    "costCode": "8.28"
+  },
+  {
+    "id": 152,
+    "label": "Shower Doors",
+    "costCode": "8.29"
+  },
+  {
+    "id": 153,
+    "label": "Dryvit/Stucco",
+    "costCode": "9.21"
+  },
+  {
+    "id": 154,
+    "label": "Lathe and Plastering",
+    "costCode": "9.22"
+  },
+  {
+    "id": 155,
+    "label": "Exterior Panting",
+    "costCode": "9.31"
+  },
+  {
+    "id": 156,
+    "label": "Interior Painting",
+    "costCode": "9.32"
+  },
+  {
+    "id": 157,
+    "label": "Special Painting",
+    "costCode": "9.33"
+  },
+  {
+    "id": 158,
+    "label": "Cabinet Finishing",
+    "costCode": "9.34"
+  },
+  {
+    "id": 159,
+    "label": "Carpet",
+    "costCode": "9.41"
+  },
+  {
+    "id": 160,
+    "label": "Concrete Flooring",
+    "costCode": "9.42"
+  },
+  {
+    "id": 161,
+    "label": "Marble and Stone Flooring",
+    "costCode": "9.43"
+  },
+  {
+    "id": 162,
+    "label": "Terazzo Flooring",
+    "costCode": "9.44"
+  },
+  {
+    "id": 163,
+    "label": "Tile Flooring",
+    "costCode": "9.45"
+  },
+  {
+    "id": 164,
+    "label": "Vinyl Flooring",
+    "costCode": "9.46"
+  },
+  {
+    "id": 165,
+    "label": "Wood Strip Flooring",
+    "costCode": "9.47"
+  },
+  {
+    "id": 166,
+    "label": "Composite Counters (Corian etc.)",
+    "costCode": "9.51"
+  },
+  {
+    "id": 167,
+    "label": "Laminate Counters",
+    "costCode": "9.52"
+  },
+  {
+    "id": 168,
+    "label": "Slab Countertops",
+    "costCode": "9.53"
+  },
+  {
+    "id": 169,
+    "label": "Ceramic Tile",
+    "costCode": "9.61"
+  },
+  {
+    "id": 170,
+    "label": "Glass Tile",
+    "costCode": "9.62"
+  },
+  {
+    "id": 171,
+    "label": "Marble and Stone Tile",
+    "costCode": "9.63"
+  },
+  {
+    "id": 172,
+    "label": "Mosaic Tile",
+    "costCode": "9.64"
+  },
+  {
+    "id": 173,
+    "label": "Backer Board",
+    "costCode": "9.65"
+  },
+  {
+    "id": 174,
+    "label": "Tile Labor",
+    "costCode": "9.66"
+  },
+  {
+    "id": 175,
+    "label": "Glass Block",
+    "costCode": "9.91"
+  },
+  {
+    "id": 176,
+    "label": "Suspended Ceilings",
+    "costCode": "9.92"
+  },
+  {
+    "id": 177,
+    "label": "Prefab Fireplaces and Stoves",
+    "costCode": "10.11"
+  },
+  {
+    "id": 178,
+    "label": "Fireplace Doors",
+    "costCode": "10.12"
+  },
+  {
+    "id": 179,
+    "label": "Awnings",
+    "costCode": "10.31"
+  },
+  {
+    "id": 180,
+    "label": "Window Shutters",
+    "costCode": "10.32"
+  },
+  {
+    "id": 181,
+    "label": "Bath Hardware",
+    "costCode": "10.41"
+  },
+  {
+    "id": 182,
+    "label": "Mirrors",
+    "costCode": "10.42"
+  },
+  {
+    "id": 183,
+    "label": "Fire Extinguishers",
+    "costCode": "10.91"
+  },
+  {
+    "id": 184,
+    "label": "Louvers and Vents",
+    "costCode": "10.92"
+  },
+  {
+    "id": 185,
+    "label": "Mail Boxes",
+    "costCode": "10.93"
+  },
+  {
+    "id": 186,
+    "label": "Dishwasher",
+    "costCode": "11.11"
+  },
+  {
+    "id": 187,
+    "label": "Washing Machine",
+    "costCode": "11.11"
+  },
+  {
+    "id": 188,
+    "label": "Wine Cooler",
+    "costCode": "11.111"
+  },
+  {
+    "id": 189,
+    "label": "Disposal",
+    "costCode": "11.12"
+  },
+  {
+    "id": 190,
+    "label": "Dryer",
+    "costCode": "11.13"
+  },
+  {
+    "id": 191,
+    "label": "Microwave",
+    "costCode": "11.14"
+  },
+  {
+    "id": 192,
+    "label": "Oven",
+    "costCode": "11.15"
+  },
+  {
+    "id": 193,
+    "label": "Range Hood",
+    "costCode": "11.16"
+  },
+  {
+    "id": 194,
+    "label": "Range/Cook Top",
+    "costCode": "11.17"
+  },
+  {
+    "id": 195,
+    "label": "Refrigerator",
+    "costCode": "11.18"
+  },
+  {
+    "id": 196,
+    "label": "BBQ",
+    "costCode": "11.19"
+  },
+  {
+    "id": 197,
+    "label": "Built in Vacuum System",
+    "costCode": "11.91"
+  },
+  {
+    "id": 198,
+    "label": "Generator",
+    "costCode": "11.92"
+  },
+  {
+    "id": 199,
+    "label": "Ironing Board",
+    "costCode": "11.93"
+  },
+  {
+    "id": 200,
+    "label": "Aquariums",
+    "costCode": "13.11"
+  },
+  {
+    "id": 201,
+    "label": "Hot tubs",
+    "costCode": "13.12"
+  },
+  {
+    "id": 202,
+    "label": "Swimming Pools",
+    "costCode": "13.13"
+  },
+  {
+    "id": 203,
+    "label": "Water Features",
+    "costCode": "13.14"
+  },
+  {
+    "id": 204,
+    "label": "Greenhouse",
+    "costCode": "13.91"
+  },
+  {
+    "id": 205,
+    "label": "Sauna",
+    "costCode": "13.92"
+  },
+  {
+    "id": 206,
+    "label": "Sport Court and Sporting Equipment",
+    "costCode": "13.93"
+  },
+  {
+    "id": 207,
+    "label": "Wine Cellar",
+    "costCode": "13.94"
+  },
+  {
+    "id": 208,
+    "label": "Automated Gate",
+    "costCode": "13.96"
+  },
+  {
+    "id": 209,
+    "label": "Plumbing Groundwork",
+    "costCode": "15.21"
+  },
+  {
+    "id": 210,
+    "label": "Plumbing Rough-in and Finish",
+    "costCode": "15.22"
+  },
+  {
+    "id": 211,
+    "label": "Plumbing Fixtures",
+    "costCode": "15.23"
+  },
+  {
+    "id": 212,
+    "label": "Air Conditioning System",
+    "costCode": "15.31"
+  },
+  {
+    "id": 213,
+    "label": "Fan & Dryer Ducting",
+    "costCode": "15.32"
+  },
+  {
+    "id": 214,
+    "label": "Forced Air Heating",
+    "costCode": "15.33"
+  },
+  {
+    "id": 215,
+    "label": "Gas Piping",
+    "costCode": "15.34"
+  },
+  {
+    "id": 216,
+    "label": "In Floor Hydronic Heating",
+    "costCode": "15.35"
+  },
+  {
+    "id": 217,
+    "label": "Geo-Thermal",
+    "costCode": "15.36"
+  },
+  {
+    "id": 218,
+    "label": "Line Voltage Groundwork",
+    "costCode": "16.11"
+  },
+  {
+    "id": 219,
+    "label": "Line Voltage Rough In and Finish",
+    "costCode": "16.12"
+  },
+  {
+    "id": 220,
+    "label": "Lighting Fixtures",
+    "costCode": "16.13"
+  },
+  {
+    "id": 221,
+    "label": "Audio, Video and Security",
+    "costCode": "16.21"
+  },
+  {
+    "id": 222,
+    "label": "In Floor Heat Mat",
+    "costCode": "16.22"
+  },
+  {
+    "id": 223,
+    "label": "Landscape Lighting",
+    "costCode": "16.23"
+  },
+  {
+    "id": 224,
+    "label": "Low Voltage",
+    "costCode": "16.24"
+  }
+]

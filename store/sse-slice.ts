@@ -1,5 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+import { RESET_STATE } from '@/lib/globals';
+
 interface SSEState {
   isSuccess: boolean;
   sseUrl: string;
@@ -29,6 +31,9 @@ const sseSlice = createSlice({
       const { sseContentType, projectId } = action.payload;
       state.sseContent = { sseContentType, projectId };
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialSSEState);
   },
 });
 

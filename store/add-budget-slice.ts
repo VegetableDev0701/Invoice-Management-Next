@@ -24,6 +24,7 @@ import {
   ChartDataV2,
 } from '@/lib/models/chartDataModels';
 import { isObjectEmpty } from '@/lib/utility/utils';
+import { RESET_STATE } from '@/lib/globals';
 
 type ProjectBudgetTotals = PayloadAction<{
   total: string;
@@ -250,6 +251,7 @@ const addBudgetFormSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialBudgetFormState);
     builder.addCase(initializeBudgetThunk.fulfilled, (state, action) => {
       // state.budget = { ...action.payload } as BudgetTotals;
       state.budgetV2 = { ...action.payload } as BudgetTotalsV2;

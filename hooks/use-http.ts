@@ -13,7 +13,7 @@ export interface ResponseData {
 
 const useHttp = ({ isClearData }: { isClearData: boolean }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Record<string, string> | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [response, setResponse] = useState<Response | null>(null);
   const [successJSON, setSuccessJSON] = useState<ResponseData | string | null>(
     null
@@ -58,7 +58,7 @@ const useHttp = ({ isClearData }: { isClearData: boolean }) => {
       if (!res.ok) {
         const errorData: Record<string, string> = await res.json();
         setResponse(res);
-        setError(JSON.parse(errorData.error));
+        setError(errorData.error);
       }
       if (res.status === 201 || res.ok) {
         const data: ResponseData = await res.json();

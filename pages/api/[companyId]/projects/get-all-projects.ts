@@ -1,5 +1,5 @@
 import { getAPIUrl } from '@/lib/config';
-import { getGoogleToken } from '@/lib/utility/auth';
+// import { getGoogleToken } from '@/lib/utility/auth';
 import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -11,18 +11,22 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       res.status(401).json({ error: 'Not authenticated' });
       return;
     }
-    const googleToken = await getGoogleToken();
-    if (!googleToken) {
-      res.status(401).json({ error: 'Not Authenticated' });
-    }
 
-    const response = await fetch(`${getAPIUrl()}/${companyId}/projects-data`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${googleToken}`,
-        Auth0: `Bearer ${auth0Session.accessToken}`,
-      },
-    });
+    // const googleToken = await getGoogleToken();
+    // if (!googleToken) {
+    //   res.status(401).json({ error: 'Not Authenticated' });
+    // }
+
+    const response = await fetch(
+      `${getAPIUrl()}/${companyId}/get-all-projects-data`,
+      {
+        method: 'GET',
+        headers: {
+          // Authorization: `Bearer ${googleToken}`,
+          Auth0: `Bearer ${auth0Session.accessToken}`,
+        },
+      }
+    );
 
     if (response.statusText !== 'OK') {
       const errorData = await response.json();

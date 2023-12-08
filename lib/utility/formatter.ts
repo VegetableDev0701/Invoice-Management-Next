@@ -68,7 +68,10 @@ export const formatFriendly = (string: string): string => {
  * @param {string} string - The phone number to format.
  * @returns {string} The formatted phone number with parentheses and hyphens.
  */
-export const formatPhoneNumber = (string: string): string => {
+export const formatPhoneNumber = (
+  string: string | undefined
+): string | undefined => {
+  if (!string) return undefined;
   // Format the phone number input with parentheses and hyphens
   let formattedValue = string
     .replace(/\D/g, '') // Remove all non-digits

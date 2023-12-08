@@ -12,6 +12,7 @@ import { MainCategories } from '@/lib/models/formDataModel';
 import Form, {
   Props as FormProps,
 } from '@/components/Forms/InputFormLayout/Form';
+import { getAPIUrl } from '@/lib/config';
 // import RecurringFees, {
 //   Props as RecurringFeesProps,
 // } from '@/components/Forms/InputFormLayout/RecurringFees';
@@ -23,6 +24,9 @@ jest.mock('@heroicons/react/20/solid', () => ({
 }));
 jest.mock('@auth0/nextjs-auth0/client', () => ({
   useUser: jest.fn(),
+}));
+jest.mock('@/lib/config', () => ({
+  getAPIUrl: jest.fn(),
 }));
 
 global.fetch = jest.fn((): any => {
@@ -85,6 +89,7 @@ describe('test if the add project form is completely rendered', () => {
   beforeEach(() => {
     (fetch as jest.Mock).mockClear();
     (useUser as jest.Mock).mockReturnValue({ user: mockUser });
+    (getAPIUrl as jest.Mock).mockReturnValue('fake api url');
   });
   test('render form component', async () => {
     renderWithProviders(

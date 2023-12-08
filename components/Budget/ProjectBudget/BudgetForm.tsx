@@ -366,7 +366,7 @@ export default function BudgetForm(props: Props) {
                           className={classNames(
                             'font-sans',
                             depth === 0
-                              ? 'text-2xl font-semibold'
+                              ? 'text-[1.35rem] font-semibold'
                               : depth === 1
                               ? 'text-xl font-normal'
                               : 'text-lg'
@@ -423,7 +423,9 @@ export default function BudgetForm(props: Props) {
                             )}
                             <p
                               className={
-                                item.data.value === '0.00' ? 'line-through' : ''
+                                item.data.value === '0.00'
+                                  ? 'text-stak-light-gray'
+                                  : ''
                               }
                             >
                               {title}
@@ -442,7 +444,7 @@ export default function BudgetForm(props: Props) {
                           <input
                             type="number"
                             key={item.index}
-                            className={`font-sans w-full block placeholder:text-base border-[2.5px] pl-10 rounded-md py-1.5 ${inputClasses['input-container__input']}`}
+                            className={`font-sans w-full block placeholder:text-base border-1 shadow-md pl-10 rounded-md py-1.5 ${inputClasses['input-container__input']}`}
                             value={
                               valueAddedItems.find((v) => v.index == item.index)
                                 ?.value || ''

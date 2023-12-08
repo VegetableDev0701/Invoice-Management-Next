@@ -45,7 +45,7 @@ export default function useCreateInvoiceRows({
     (state) =>
       projectId &&
       (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
-        .projectSuper
+        ?.projectSuper
   );
 
   function formatTaxAmount(amount: string | undefined) {
@@ -72,7 +72,7 @@ export default function useCreateInvoiceRows({
         .map((row) => {
           return {
             vendor_name:
-              row?.processedData?.vendor_name ??
+              row?.processedData?.vendor?.name ??
               row.predicted_supplier_name?.supplier_name,
             vendor_name_bb: row?.supplier_name?.bounding_box
               ? [
@@ -82,6 +82,9 @@ export default function useCreateInvoiceRows({
                   },
                 ]
               : null,
+            vendor_uuid:
+              row?.processedData?.vendor?.uuid ??
+              row.predicted_supplier_name.uuid,
             invoice_id:
               row?.processedData?.invoice_id ??
               row.invoice_id?.entity_value_raw,

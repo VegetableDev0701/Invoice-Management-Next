@@ -3,6 +3,7 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 
 import { renderWithProviders } from '../utils/test-utils';
 import { User } from '@/lib/models/formStateModels';
+import { getAPIUrl } from '@/lib/config';
 
 import TopBorder from '@/components/layout/TopSideBorder/TopBorder';
 
@@ -15,6 +16,10 @@ jest.mock('@/public/icons/AvatarSVG', () => () => (
 jest.mock('@auth0/nextjs-auth0/client', () => ({
   useUser: jest.fn(),
 }));
+jest.mock('@/lib/config', () => ({
+  getAPIUrl: jest.fn(),
+}));
+
 const mockUser: User = {
   user_metadata: {
     companyId: 'demo',
@@ -27,6 +32,7 @@ const mockUser: User = {
 describe('TopBorder', () => {
   beforeAll(() => {
     (useUser as jest.Mock).mockReturnValue({ user: mockUser });
+    (getAPIUrl as jest.Mock).mockReturnValue('fake api url');
   });
   test('renders the company name', () => {
     renderWithProviders(<TopBorder />);

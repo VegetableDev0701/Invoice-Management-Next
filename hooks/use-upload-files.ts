@@ -21,7 +21,7 @@ export default function useUploadFilesHandler({
   const { user } = useUser();
 
   const [files, setFiles] = useState<File[]>([]);
-  const [numberOfFiles, setNumberOfFiles] = useState(0);
+  const [_numberOfFiles, setNumberOfFiles] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   const [duplicateFiles, setDuplicateFiles] = useState<string[]>([]);
 
@@ -42,17 +42,6 @@ export default function useUploadFilesHandler({
     }
     e.target.value = '';
   };
-
-  useEffect(() => {
-    if (numberOfFiles > 0) {
-      dispatch(
-        uiActions.notify({
-          icon: 'success',
-          content: 'Uploaded all unique files.',
-        })
-      );
-    }
-  }, [numberOfFiles]);
 
   useEffect(() => {
     if (files.length === 0) return;
@@ -152,6 +141,12 @@ export default function useUploadFilesHandler({
               projectId: projectId,
             })
           );
+          dispatch(
+            uiActions.notify({
+              icon: 'success',
+              content: 'Uploaded all unique files.',
+            })
+          );
         }
 
         if (!data.message.endsWith('Duplicate files: None')) {
@@ -164,7 +159,6 @@ export default function useUploadFilesHandler({
             setOpenModal(true);
           }
         }
-        dispatch(uiActions.notify({}));
       } catch (error: any) {
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(

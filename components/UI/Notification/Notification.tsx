@@ -43,18 +43,19 @@ export default function Notification(props: Props) {
   }, []);
 
   useEffect(() => {
-    if (contentElement.current)
+    if (contentElement.current) {
       setHeight(`${contentElement.current.scrollHeight}px`);
+    }
   }, [contentElement]);
 
   return (
-    <div
-      ref={contentElement}
-      style={{ height: height, opacity: opacity }}
-      className="overflow-hidden transition-all duration-[1000ms]"
-    >
-      <div className="flex w-full px-4 py-4">
-        <div className="pointer-events-auto w-full max-w-md overflow-hidden rounded-lg bg-stak-white shadow-lg ring-1 ring-black ring-opacity-5">
+    <div className="flex w-full flex-col items-center space-y-4 sm:items-end">
+      <div
+        ref={contentElement}
+        style={{ height: height, opacity: opacity, borderRadius: '0.5rem' }}
+        className="overflow-hidden transition-all duration-[500ms]"
+      >
+        <div className="pointer-events-auto mx-6 my-[0.1rem] w-[28rem] max-w-md overflow-hidden rounded-lg bg-stak-white shadow-lg ring-1 ring-black ring-opacity-5">
           <div className="p-4">
             <div className="flex items-center">
               <div className="flex-shrink-0">

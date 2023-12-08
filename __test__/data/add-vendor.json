@@ -55,7 +55,7 @@
               "label": "Email",
               "id": "email",
               "type": "text",
-              "required": true,
+              "required": false,
               "value": "",
               "validFunc": "email",
               "errormessage": "Vendor email is required."
@@ -71,7 +71,7 @@
                   "label": "Vendor's Address",
                   "id": "vendor-address",
                   "type": "text",
-                  "required": true,
+                  "required": false,
                   "errormessage": "Project address is required.",
                   "isAddress": true,
                   "value": ""
@@ -84,7 +84,7 @@
                   "label": "City",
                   "id": "city-vendor",
                   "type": "text",
-                  "required": true,
+                  "required": false,
                   "isAddress": true,
                   "value": ""
                 },
@@ -92,7 +92,7 @@
                   "label": "State",
                   "id": "state-vendor",
                   "type": "text",
-                  "required": true,
+                  "required": false,
                   "isAddress": true,
                   "value": ""
                 },
@@ -101,7 +101,7 @@
                   "id": "zip-code-vendor",
                   "type": "text",
                   "inputmode": "numeric",
-                  "required": true,
+                  "required": false,
                   "isAddress": true,
                   "value": ""
                 }
@@ -114,75 +114,9 @@
             {
               "label": "Vendor Type",
               "id": "vendor-type",
-              "inputType": "dropdown",
+              "inputType": "text",
               "value": "",
-              "required": false,
-              "selectMenuOptions": [
-                {
-                  "id": 1,
-                  "label": "1 - General Conditions"
-                },
-                {
-                  "id": 2,
-                  "label": "2 - Site Work"
-                },
-                {
-                  "id": 3,
-                  "label": "3 - Concrete"
-                },
-                {
-                  "id": 4,
-                  "label": "4 - Masonry"
-                },
-                {
-                  "id": 5,
-                  "label": "5 - Metals"
-                },
-                {
-                  "id": 6,
-                  "label": "6 - Wood and Plastic"
-                },
-                {
-                  "id": 7,
-                  "label": "7 - Thermal and Moisture Protection"
-                },
-                {
-                  "id": 8,
-                  "label": "8 - Windows and Doors"
-                },
-                {
-                  "id": 9,
-                  "label": "9 - Finishes"
-                },
-                {
-                  "id": 10,
-                  "label": "10 - Specialties"
-                },
-                {
-                  "id": 11,
-                  "label": "11 - Equipment"
-                },
-                {
-                  "id": 12,
-                  "label": "12 - Furnishings"
-                },
-                {
-                  "id": 13,
-                  "label": "13 - Special Construction"
-                },
-                {
-                  "id": 14,
-                  "label": "14 - Conveying Systems"
-                },
-                {
-                  "id": 15,
-                  "label": "15 - Mechanical"
-                },
-                {
-                  "id": 16,
-                  "label": "16 - Electrical"
-                }
-              ]
+              "required": false
             }
           ]
         }
@@ -197,7 +131,7 @@
               "label": "Business License Number",
               "id": "business-license-number",
               "type": "text",
-              "required": true,
+              "required": false,
               "errormessage": "Business license number is required.",
               "value": ""
             },
@@ -206,7 +140,7 @@
               "id": "license-expiration-date",
               "type": "date",
               "data-testid": "date-input",
-              "required": true,
+              "required": false,
               "errormessage": "License expiration date is required.",
               "value": ""
             }
@@ -215,32 +149,20 @@
         {
           "items": [
             {
-              "label": "Insurance Name",
+              "label": "General Liability/Insurance Company Name",
               "id": "insurance-name",
               "type": "text",
-              "required": true,
+              "required": false,
               "errormessage": "Insurance name is required.",
               "value": ""
             },
             {
-              "label": "Insurance Expiration Date",
+              "label": "General Liability Expiration Date",
               "id": "insurance-expiration-date",
               "type": "date",
               "data-testid": "date-input",
-              "required": true,
-              "errormessage": "Insurance expiration date is required.",
-              "value": ""
-            }
-          ]
-        },
-        {
-          "items": [
-            {
-              "label": "Insurance Coverage Amount",
-              "id": "insurance-coverage-amount",
-              "type": "text",
-              "isCurrency": true,
               "required": false,
+              "errormessage": "Insurance expiration date is required.",
               "value": ""
             }
           ]
@@ -251,7 +173,7 @@
               "label": "Labor and Industries License Number",
               "id": "landi-number",
               "type": "text",
-              "required": true,
+              "required": false,
               "errormessage": "Labor and Industries license number is required.",
               "value": ""
             },
@@ -260,7 +182,7 @@
               "id": "landi-expiration-date",
               "type": "date",
               "data-testid": "date-input",
-              "required": true,
+              "required": false,
               "errormessage": "Labor and Industries license expiration is required.",
               "value": ""
             }
@@ -269,12 +191,20 @@
         {
           "items": [
             {
+              "label": "Tax Number",
+              "id": "tax-number",
+              "type": "text",
+              "value": "",
+              "required": false,
+              "errormessage": "Workers compensation expiration date is required."
+            },
+            {
               "label": "Worker's Compensation Expiration",
               "id": "workers-compensation-expiration",
               "type": "date",
               "data-testid": "date-input",
               "value": "",
-              "required": true,
+              "required": false,
               "errormessage": "Workers compensation expiration date is required."
             }
           ]

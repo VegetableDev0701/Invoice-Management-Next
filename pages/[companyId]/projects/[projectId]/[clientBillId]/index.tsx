@@ -189,9 +189,9 @@ export default function ClientBill() {
               updatedInvoices,
               oldCurrentActuals,
               updatedLabor: clientBillData.labor,
-              updatedLaborSummary: Object.values(
-                clientBillData['labor-summary'] || {}
-              ),
+              updatedLaborSummary: clientBillData?.['labor-summary']
+                ? Object.values(clientBillData['labor-summary'])
+                : null,
             })
           ).then(() => {
             setInit(true);

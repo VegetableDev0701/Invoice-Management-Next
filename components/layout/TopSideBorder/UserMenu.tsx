@@ -55,19 +55,19 @@ export function UserMenu(props: Props) {
           <div className="py-1">
             <Menu.Item>
               {({ active }) => (
-                <div
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'flex flex-row justify-left items-center gap-4 py-2 pl-4 text-md'
-                  )}
+                <Link
+                  href={`/${user.user_metadata.companyId}/account-settings`}
                 >
-                  <Cog8ToothIcon className="h-5 w-5" />
-                  <Link
-                    href={`/${user.user_metadata.companyId}/account-settings`}
+                  <div
+                    className={classNames(
+                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                      'flex flex-row justify-left items-center gap-4 py-2 pl-4 text-md'
+                    )}
                   >
+                    <Cog8ToothIcon className="h-5 w-5" />
                     Account settings
-                  </Link>
-                </div>
+                  </div>
+                </Link>
               )}
             </Menu.Item>
             {/* <Menu.Item>
@@ -100,15 +100,17 @@ export function UserMenu(props: Props) {
           <div className="py-1">
             <Menu.Item>
               {({ active }) => (
-                <div
-                  className={classNames(
-                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                    'flex flex-row justify-left items-center gap-4 py-2 pl-4 text-md'
-                  )}
-                >
-                  <ArrowLeftOnRectangleIcon className="w-5 h-5" />
-                  <a href="/api/auth/logout">Sign out</a>
-                </div>
+                <a href="/api/auth/logout">
+                  <div
+                    className={classNames(
+                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                      'flex flex-row justify-left items-center gap-4 py-2 pl-4 text-md'
+                    )}
+                  >
+                    <ArrowLeftOnRectangleIcon className="w-5 h-5" />
+                    Sign out
+                  </div>
+                </a>
               )}
             </Menu.Item>
           </div>

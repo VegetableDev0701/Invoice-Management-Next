@@ -55,14 +55,17 @@ export default function SlideToggle(props: Props) {
   const topClasses = input.id.includes('billable')
     ? 'flex flex-col items-center my-2 w-[5rem]'
     : 'flex items-center justify-between gap-10 my-2';
-  const labelClasses = input.id.includes('billable')
-    ? 'font-sans font-semibold text-md -mt-1'
-    : 'font-sans font-semibold text-lg';
 
   return (
     <Switch.Group as="div" className={topClasses}>
       <span className="flex flex-grow flex-col">
-        <Switch.Label as="span" className={labelClasses} passive>
+        <Switch.Label
+          as="span"
+          className={`block font-sans font-semibold text-md ${
+            input.id.includes('billable') ? '-mt-1' : ''
+          }`}
+          passive
+        >
           {input.label}
         </Switch.Label>
         {/* <Switch.Description as="span" className="text-sm text-gray-500">
@@ -74,8 +77,8 @@ export default function SlideToggle(props: Props) {
         onChange={setEnabled}
         id={input.id}
         className={classNames(
-          enabled ? 'bg-stak-dark-green' : 'bg-stak-light-gray',
-          'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-[2.5px] border-transparent transition-colors duration-200 ease-in-out focus:outline-none'
+          enabled ? 'bg-stak-dark-green' : 'bg-gray-500',
+          'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none'
         )}
       >
         <span className="sr-only">Use setting</span>
@@ -95,7 +98,7 @@ export default function SlideToggle(props: Props) {
             aria-hidden="true"
           >
             <svg
-              className="h-3 w-3 text-gray-400"
+              className="h-3 w-3 text-stak-dark-gray"
               fill="none"
               viewBox="0 0 12 12"
             >

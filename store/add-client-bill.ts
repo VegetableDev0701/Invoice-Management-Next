@@ -19,7 +19,7 @@ import { projectDataActions } from './projects-data-slice';
 import { companyDataActions } from './company-data-slice';
 import { createSingleClientBillSummary } from '@/lib/utility/createSummaryDataHelpers';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
-import { SUMMARY_COST_CODES } from '@/lib/globals';
+import { RESET_STATE, SUMMARY_COST_CODES } from '@/lib/globals';
 import { snapshotCopy } from '@/lib/utility/utils';
 import {
   addNewChangeOrderValuesToPreviousData,
@@ -120,7 +120,8 @@ export const deleteClientBillDataFromB2A = createAsyncThunk(
 );
 
 type MakeRequired<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
-
+// There are blocks of commented code that is used to save intermediate objects for testing.
+// keep this code until we have run tests on all intermediate invoices that we want.
 export const createBudgetActuals = createAsyncThunk(
   'addClientBill/createBudgetActuals',
   async (
@@ -159,11 +160,24 @@ export const createBudgetActuals = createAsyncThunk(
       ).filter((invoice) => invoice.project.uuid === projectId);
 
       // make sure any labor calculated is `current` (right now 10/11/23, i don't think a labor can be `not current`)
-      const projectLaborFees: LaborSummaryItem[] = Object.values(
-        currentLaborSummary
-      ).filter((laborFee) => laborFee.currentLabor);
+      const projectLaborFees: LaborSummaryItem[] | null = currentLaborSummary
+        ? Object.values(currentLaborSummary).filter(
+            (laborFee) => laborFee.currentLabor
+          )
+        : null;
+
+      // saveToJSONForTesting('projectSummary.json', projectSummary);
+      // saveToJSONForTesting('budgetTotalsV2.json', budgetTotalsV2);
+      // saveToJSONForTesting('currentLaborSummary.json', currentLaborSummary);
+      // saveToJSONForTesting('changeOrdersSummary.json', changeOrdersSummary);
+      // saveToJSONForTesting('costCodeNameList.json', costCodeNameList);
+      // saveToJSONForTesting('projectInvoices.json', projectInvoices);
+      // saveToJSONForTesting('projectLaborFees.json', projectLaborFees);
+
+      // throw new Error('STOP1');
 
       if (
+        projectLaborFees &&
         projectLaborFees.some(
           (laborFee) =>
             Object.values(laborFee.line_items).some(
@@ -247,6 +261,19 @@ export const createBudgetActuals = createAsyncThunk(
         dispatch,
       });
 
+      // saveToJSONForTesting('currentActuals.json', currentActuals);
+      // saveToJSONForTesting(
+      //   'currentActualsChangeOrders.json',
+      //   currentActualsChangeOrders
+      // );
+      // saveToJSONForTesting('invoiceCurrentActuals.json', invoiceCurrentActuals);
+      // saveToJSONForTesting(
+      //   'invoiceCurrentActualsChangeOrders.json',
+      //   invoiceCurrentActualsChangeOrders
+      // );
+
+      // throw new Error('STOP2');
+
       // This should be the grand total of the project. This would be the value we calculate project
       // completion percentage from
       const currentBudgetedTotal: number = state.projects[projectId].b2a
@@ -274,6 +301,7 @@ export const createBudgetActuals = createAsyncThunk(
         projectSummary,
         total: budgetedTotals.total,
       });
+
       const currentBudgetedProfitTaxesObject = createBillProfitTaxesObject({
         profitTaxes: budgetedProfitTaxes,
         projectSummary,
@@ -287,17 +315,18 @@ export const createBudgetActuals = createAsyncThunk(
         summaryCostCodes: SUMMARY_COST_CODES,
         budgetTotals: budgetTotalsV2,
       });
-
       // Same for CHANGE ORDERS, need to keep them separate; for ALL change orders combined
       const changeOrderProfitTaxes = getBillProfitTaxes({
         projectSummary,
         total: changeOrderTotals.total,
       });
+
       const currentChangeOrderProfitTaxesObject = createBillProfitTaxesObject({
         profitTaxes: changeOrderProfitTaxes,
         projectSummary,
         prefix: '',
       });
+
       if (!currentActualsChangeOrders?.['profitTaxesLiability']) {
         currentActualsChangeOrders['profitTaxesLiability'] = {};
       }
@@ -307,6 +336,28 @@ export const createBudgetActuals = createAsyncThunk(
         summaryCostCodes: SUMMARY_COST_CODES,
         budgetTotals: budgetTotalsV2,
       });
+
+      // saveToJSONForTesting('budgetedTotals.json', budgetedTotals);
+      // saveToJSONForTesting('changeOrderTotals.json', changeOrderTotals);
+      // saveToJSONForTesting('budgetedProfitTaxes.json', budgetedProfitTaxes);
+      // saveToJSONForTesting(
+      //   'currentBudgetedProfitTaxesObject.json',
+      //   currentBudgetedProfitTaxesObject
+      // );
+      // saveToJSONForTesting('currentActuals_first_update.json', currentActuals);
+      // saveToJSONForTesting(
+      //   'changeOrderProfitTaxes.json',
+      //   changeOrderProfitTaxes
+      // );
+      // saveToJSONForTesting(
+      //   'currentChangeOrderProfitTaxesObject.json',
+      //   currentChangeOrderProfitTaxesObject
+      // );
+      // saveToJSONForTesting(
+      //   'currentActualsChangeOrders_first_update.json',
+      //   currentActualsChangeOrders
+      // );
+      // throw new Error('STOP3');
 
       // create the profit subtotals taxes for EACH CHANGE ORDER
       // good to have all this separate for each change order in case we want to
@@ -490,6 +541,7 @@ export const createBudgetActuals = createAsyncThunk(
         // ),
         laborFeeIds: [...laborFeeIds], // convert Set back to array
         invoiceIds: [...invoiceIds],
+        changeOrderProfitTaxes,
       });
 
       dispatch(
@@ -568,7 +620,7 @@ export const updateBudgetActuals = createAsyncThunk(
       clientBillId: string;
       updatedInvoices: Invoices;
       updatedLabor: Labor;
-      updatedLaborSummary: LaborSummaryItem[];
+      updatedLaborSummary: LaborSummaryItem[] | null;
       oldCurrentActuals: CurrentActualsV2;
     },
     { getState, dispatch }
@@ -829,6 +881,7 @@ export const updateBudgetActuals = createAsyncThunk(
         numChangeOrders,
         laborFeeIds: [...oldClientBillSummary.laborFeeIds],
         invoiceIds: [...oldClientBillSummary.invoiceIds],
+        changeOrderProfitTaxes,
       });
 
       dispatch(
@@ -1045,6 +1098,9 @@ const addClientBillSlice = createSlice({
   name: 'addClientBill',
   initialState: initialBillState,
   reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialBillState);
+  },
 });
 
 export default addClientBillSlice;

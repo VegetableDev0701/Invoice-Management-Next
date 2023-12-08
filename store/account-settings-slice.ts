@@ -1,3 +1,4 @@
+import { RESET_STATE } from '@/lib/globals';
 import {
   FormStateV2,
   IsTouchedPayload,
@@ -34,6 +35,9 @@ const accountSettingsFormSlice = createSlice({
     resetFormValidation(state) {
       return resetAllFormValidation(state);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialAcccountSettingsState);
   },
 });
 

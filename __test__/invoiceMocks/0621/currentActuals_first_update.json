@@ -1,0 +1,171 @@
+{
+  "1.73": {
+    "totalAmt": "758.81",
+    "changeOrder": null,
+    "recursiveLevel": [1, 6, 2],
+    "costCodeName": "Power and Natural Gas",
+    "qtyAmt": "1",
+    "rateAmt": "758.81",
+    "vendor": "Seattle City Light",
+    "description": "Power and Natural Gas",
+    "group": "Invoices",
+    "invoiceIds": ["7oPJzDmG4Mp24JWW"]
+  },
+  "1.94": {
+    "totalAmt": "18,515.50",
+    "changeOrder": null,
+    "recursiveLevel": [1, 7, 3],
+    "costCodeName": "Special Inspections",
+    "qtyAmt": "1",
+    "rateAmt": "18,515.50",
+    "vendor": "A&F GENCON LLC",
+    "description": "Special Inspections",
+    "group": "Invoices",
+    "invoiceIds": ["8fFMWEnXPpLXe9Yi", "LNpKQgZCrnpuGdsa"]
+  },
+  "1.33": {
+    "totalAmt": "51.27",
+    "changeOrder": null,
+    "recursiveLevel": [1, 2, 2],
+    "costCodeName": "Small Tools",
+    "qtyAmt": "1",
+    "rateAmt": "51.27",
+    "vendor": "Dunn Lumber Co Inc.",
+    "description": "Small Tools",
+    "group": "Invoices",
+    "invoiceIds": [
+      "EZAAZoUMB97VFN22",
+      "Z2cvWScyjWsbJBqN",
+      "ZxA4WE3NbxCpShr3",
+      "ah7AzHe9kPPDhZJH"
+    ]
+  },
+  "6.11": {
+    "totalAmt": "147.08",
+    "changeOrder": null,
+    "recursiveLevel": [6, 0, 0],
+    "costCodeName": "Framing Material",
+    "qtyAmt": "1",
+    "rateAmt": "147.08",
+    "vendor": "Dunn Lumber Co Inc.",
+    "description": "Framing Material",
+    "group": "Invoices",
+    "invoiceIds": ["YVYydXY3k7gEpEKH"]
+  },
+  "1.6": {
+    "totalAmt": "181.15",
+    "changeOrder": null,
+    "recursiveLevel": [1, 5, 0],
+    "costCodeName": "Permits",
+    "qtyAmt": "1",
+    "rateAmt": "181.15",
+    "vendor": "City of Seattle",
+    "description": "Permits",
+    "group": "Invoices",
+    "invoiceIds": ["ftKmonEfQe2wJTeE"]
+  },
+  "1.31": {
+    "totalAmt": "24.00",
+    "changeOrder": null,
+    "recursiveLevel": [1, 2, 0],
+    "costCodeName": "Equipment Rental",
+    "qtyAmt": "1",
+    "rateAmt": "24.00",
+    "vendor": "Aurora A Rents",
+    "description": "Equipment Rental",
+    "group": "Invoices",
+    "invoiceIds": ["kWuzfHtgFo2oJH6y"]
+  },
+  "1.13": {
+    "totalAmt": "682.50",
+    "changeOrder": null,
+    "recursiveLevel": [1, 0, 2],
+    "costCodeName": "Project Assistant",
+    "qtyAmt": "1",
+    "rateAmt": "682.50",
+    "vendor": "Jared Anderson",
+    "description": "Project Assistant",
+    "group": "Invoices",
+    "laborFeeIds": ["thJDrtlpX5zUh0MZ", "bO57I4tNEC3P9GTu"]
+  },
+  "1.51": {
+    "totalAmt": "280.00",
+    "changeOrder": null,
+    "recursiveLevel": [1, 4, 0],
+    "costCodeName": "General Labor",
+    "qtyAmt": "1",
+    "rateAmt": "280.00",
+    "vendor": "HACHI Labor Hours",
+    "description": "General Labor",
+    "group": "Invoices",
+    "laborFeeIds": ["TijJeelUUPLvCPtz"]
+  },
+  "1.36": {
+    "totalAmt": "150.00",
+    "changeOrder": null,
+    "recursiveLevel": [1, 2, 5],
+    "costCodeName": "Truck Rental",
+    "qtyAmt": "1",
+    "rateAmt": "150.00",
+    "vendor": "HACHI Truck Rental",
+    "description": "Truck Rental",
+    "group": "Invoices",
+    "laborFeeIds": ["9AFGf06Mjj7zX4KE"]
+  },
+  "1.12": {
+    "totalAmt": "1,275.00",
+    "changeOrder": null,
+    "recursiveLevel": [1, 0, 1],
+    "costCodeName": "Project Management",
+    "qtyAmt": "1",
+    "rateAmt": "1,275.00",
+    "vendor": "Colin Anderson",
+    "description": "Project Management",
+    "group": "Invoices",
+    "laborFeeIds": ["TGjHpmu3mlyYC0wb"]
+  },
+  "0.1100": {
+    "totalAmt": "2,647.84",
+    "changeOrder": null,
+    "recursiveLevel": [],
+    "costCodeName": "",
+    "qtyAmt": "1",
+    "rateAmt": "12.00",
+    "vendor": "",
+    "description": "Overhead and Profit",
+    "group": "Invoices"
+  },
+  "0.1200": {
+    "totalAmt": "243.67",
+    "changeOrder": null,
+    "recursiveLevel": [],
+    "costCodeName": "",
+    "qtyAmt": "1",
+    "rateAmt": "9.86",
+    "vendor": "",
+    "description": "Builder's Risk and Liability Insurance (Rate per $1,000)",
+    "group": "Invoices"
+  },
+  "0.1400": {
+    "totalAmt": "124.78",
+    "changeOrder": null,
+    "recursiveLevel": [],
+    "costCodeName": "",
+    "qtyAmt": "1",
+    "rateAmt": "0.50",
+    "vendor": "",
+    "description": "Business and Occupation Tax",
+    "group": "Invoices"
+  },
+  "0.1300": {
+    "totalAmt": "2,533.24",
+    "changeOrder": null,
+    "recursiveLevel": [],
+    "costCodeName": "",
+    "qtyAmt": "1",
+    "rateAmt": "10.1",
+    "vendor": "",
+    "description": "Sales Tax",
+    "group": "Invoices"
+  }
+}

@@ -252,11 +252,11 @@ export const buildB2AReport = async ({
     ...reportData,
     ...totalReportData,
   })
-    .filter((data) =>
-      data.hasSubItem
-        ? Number(totalReportData[`${data.costCode}Total`].actualAmount) !== 0 ||
-          Number(totalReportData[`${data.costCode}Total`].budgetAmount) !== 0
-        : Number(data.actualAmount) !== 0 || Number(data.budgetAmount) !== 0
+  .filter((data) =>
+    data.hasSubItem
+      ? Number(totalReportData[`${data.costCode}Total`].actualAmount) !== 0 ||
+        Number(totalReportData[`${data.costCode}Total`].budgetAmount) !== 0
+      : Number(data.actualAmount) !== 0 || Number(data.budgetAmount) !== 0
     )
     .sort((a, b) => {
       if (

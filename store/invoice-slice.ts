@@ -22,6 +22,7 @@ import { isObjectEmpty, snapshotCopy } from '@/lib/utility/utils';
 import {
   ChangeOrderSummary,
   SummaryProjects,
+  VendorSummary,
 } from '@/lib/models/summaryDataModel';
 import { extractLineItems, groupLineItems } from '@/lib/utility/invoiceHelpers';
 import {
@@ -31,6 +32,7 @@ import {
 import { getChangeOrderIdFromName } from '@/lib/utility/processInvoiceHelpers';
 import { formatNumber } from '@/lib/utility/formatter';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
+import { RESET_STATE } from '@/lib/globals';
 
 export const getSignedUrlInvoice = createAsyncThunk(
   'invoiceUpdates/getSignedUrl',
@@ -242,6 +244,8 @@ export const updateInvoiceData = createAsyncThunk(
         .currentInvoiceSnapShot as FormStateV2 & { doc_id: string };
       const costCodeList: CostCodeObjType[] = state.data.costCodeList;
       const costCodeNameList: CostCodeObjType[] = state.data.costCodeNameList;
+      const vendorsSummary: VendorSummary | object =
+        state.data.vendorsSummary.allVendors;
       const snapShotLineItems: InvoiceLineItem | undefined = snapShotInvoice
         ?.processedData?.line_items
         ? snapshotCopy(
@@ -256,13 +260,26 @@ export const updateInvoiceData = createAsyncThunk(
         'change-orders-summary'
       ] as ChangeOrderSummary;
 
+      const matchedVendorSummary =
+        !isObjectEmpty(vendorsSummary) &&
+        Object.values(vendorsSummary).find((vendor) => {
+          if (processInvoiceFormState?.['vendor-name']?.value) {
+            return (
+              vendor.vendorName ===
+              processInvoiceFormState?.['vendor-name']?.value
+            );
+          }
+        });
+
       const processedInvoiceData = {
         invoice_id: processInvoiceFormState?.['invoice-number']?.value
           ? (processInvoiceFormState['invoice-number'].value as string)
           : '',
-        vendor_name: processInvoiceFormState?.['vendor-name']?.value
-          ? (processInvoiceFormState['vendor-name'].value as string)
-          : '',
+        vendor: {
+          name:
+            (processInvoiceFormState?.['vendor-name']?.value as string) ?? null,
+          uuid: matchedVendorSummary?.uuid ?? null,
+        },
         cost_code:
           processInvoiceFormState?.['cost-code']?.value &&
           processInvoiceFormState['cost-code'].value !== 'None' &&
@@ -721,6 +738,7 @@ const invoiceSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialInvoiceState);
     builder.addCase(getSignedUrlInvoice.pending, (state) => {
       state.isLoading = true;
     });

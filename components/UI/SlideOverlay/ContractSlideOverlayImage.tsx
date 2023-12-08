@@ -7,14 +7,16 @@ import {
 } from '@/store/hooks';
 import { contractActions } from '@/store/contract-slice';
 
+import { useKeyPressActionOverlay } from '@/hooks/use-save-on-key-press';
+import { useContractSignedUrl } from '@/hooks/use-get-signed-url';
+
 import { ContractEntry } from '@/lib/models/summaryDataModel';
+import { isObjectEmpty } from '@/lib/utility/utils';
 
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import FullScreenLoader from '../Loaders/FullScreenLoader';
 import CenteredPagination from '../Pagination/CenteredNumbersPagination';
 import MagnifyImageOnHover from '@/components/Forms/OverlayForm/MagnifyImageOnHover';
-import { useKeyPressActionOverlay } from '@/hooks/use-save-on-key-press';
-import { useContractSignedUrl } from '@/hooks/use-get-signed-url';
 
 interface Props {
   rows: ContractEntry[] | null;
@@ -48,28 +50,30 @@ export default function ContractSlideOverlayImage(props: Props) {
 
   useContractSignedUrl(contractObj, projectId);
 
+  const closeOverlay = () => {
+    setOpen(false);
+    if (isOnProcessInvoices) {
+      dispatch(
+        contractActions.setClickedContract({
+          isRowClicked: false,
+        })
+      );
+    } else {
+      dispatch(
+        contractActions.setClickedContract({
+          contract: null,
+          isRowClicked: false,
+        })
+      );
+    }
+  };
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
         as="div"
-        className="relative z-30"
-        onClose={() => {
-          setOpen(false);
-          if (isOnProcessInvoices) {
-            dispatch(
-              contractActions.setClickedContract({
-                isRowClicked: false,
-              })
-            );
-          } else {
-            dispatch(
-              contractActions.setClickedContract({
-                contract: null,
-                isRowClicked: false,
-              })
-            );
-          }
-        }}
+        className={`relative ${isOnProcessInvoices ? 'z-50' : 'z-30'}`}
+        onClose={closeOverlay}
       >
         <div className="fixed inset-0" />
         <div className="fixed inset-0 overflow-hidden">
@@ -105,16 +109,9 @@ export default function ContractSlideOverlayImage(props: Props) {
                             type="button"
                             className="rounded-md bg-white text-gray-400 hover:text-gray-800 focus:outline-none focus:ring-0 focus:ring-offset-0"
                             ref={closeFormRef}
-                            onClick={() => {
-                              setOpen(false);
-                              if (!isOnProcessInvoices) {
-                                dispatch(
-                                  contractActions.setClickedContract({
-                                    contract: null,
-                                    isRowClicked: false,
-                                  })
-                                );
-                              }
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              closeOverlay();
                             }}
                           >
                             <span className="sr-only">Close panel</span>
@@ -130,17 +127,25 @@ export default function ContractSlideOverlayImage(props: Props) {
                       {!contractObj.isLoading &&
                         currentRow &&
                         contractObj.clickedContract &&
-                        Object.keys(contractObj.signedUrls).length > 0 && // check for empty object
-                        Object.keys(
-                          contractObj.signedUrls[
-                            contractObj.clickedContract.uuid
-                          ]
-                        ).length > 0 && (
+                        contractObj.signedUrls &&
+                        !isObjectEmpty(Object.keys(contractObj.signedUrls)) && // check for empty object
+                        contractObj.signedUrls[
+                          contractObj.clickedContract.uuid
+                        ] &&
+                        !isObjectEmpty(
+                          Object.keys(
+                            contractObj.signedUrls?.[
+                              contractObj.clickedContract.uuid
+                            ]
+                          )
+                        ) &&
+                        contractObj.signedUrls[contractObj.clickedContract.uuid]
+                          ?.signedUrls?.[pageIdx] && (
                           <MagnifyImageOnHover
                             src={
                               contractObj.signedUrls[
                                 contractObj.clickedContract.uuid
-                              ]?.signedUrls[pageIdx]
+                              ].signedUrls[pageIdx]
                             }
                             pageIdx={pageIdx}
                             alt={

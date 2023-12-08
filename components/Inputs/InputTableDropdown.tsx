@@ -31,7 +31,7 @@ interface Props {
 
 interface Selected {
   id?: number;
-  label: string;
+  label: string | null;
   project_uuid: string | null;
 }
 

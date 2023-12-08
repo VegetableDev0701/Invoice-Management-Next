@@ -43,6 +43,7 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import Button from '../../UI/Buttons/Button';
 import TableDropdown from '../../Inputs/InputTableDropdown';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
+import EmptyTableNotification from '../EmptyTableNotification';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -66,7 +67,7 @@ interface Props<H> {
   isProjectPage?: boolean;
   dropdown?: ExtendedItems;
   checkboxButtons?: CheckBoxItems[];
-  preSortTo?: keyof H;
+  preSortKey?: keyof H;
 }
 
 const InvoicesTable = <
@@ -81,7 +82,7 @@ const InvoicesTable = <
     dropdown,
     isProjectPage,
     projectId,
-    preSortTo,
+    preSortKey,
   } = props;
   const { user } = useUser();
 
@@ -89,7 +90,7 @@ const InvoicesTable = <
   const [activeHeading, setActiveHeading] = useState<keyof H | undefined>(
     undefined
   );
-  const [sortKey, setSortKey] = useState<keyof H | undefined>(preSortTo);
+  const [sortKey, setSortKey] = useState<keyof H | undefined>(preSortKey);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
@@ -288,7 +289,7 @@ const InvoicesTable = <
 
   const commonColClasses =
     'py-1 border-b max-w-[17rem] border-gray-200 whitespace-nowrap text-sm text-gray-500';
-  const firstColClasses = 'pl-4 pr-3 overflow-x-scroll sm:pl-6 lg:pl-8';
+  const firstColClasses = 'pl-4 pr-3 sm:pl-6 lg:pl-8';
   const middleColClasses = 'px-3';
   const lastColClasses = 'pr-4 pl-3 sm:pr-6 lg:pr-6';
 
@@ -301,7 +302,11 @@ const InvoicesTable = <
         message={modalMessage}
         title="Delete"
       />
-      <div className="px-4 grow sm:px-6 lg:px-8">
+      <div className="relative px-4 grow sm:px-6 lg:px-8">
+        {((filteredSortedData && filteredSortedData.length === 0) ||
+          !filteredSortedData) && (
+          <EmptyTableNotification tableType="invoices" />
+        )}
         <div className="mt-2 flow-root">
           <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full align-middle">
@@ -466,11 +471,14 @@ const InvoicesTable = <
                                     invoice[headingsKey]}
                                   {headingsKey !== 'project' && (
                                     <div className="block h-full w-full">
-                                      {headingsKey.endsWith('Amt')
+                                      {headingsKey.endsWith('Amt') ||
+                                      headingsKey.endsWith('amount')
                                         ? formatNumber(
-                                            invoice[
-                                              headingsKey as keyof Partial<InvoiceTableRow>
-                                            ] as string
+                                            Number(
+                                              invoice[
+                                                headingsKey as keyof Partial<InvoiceTableRow>
+                                              ].replaceAll(',', '')
+                                            ).toFixed(2)
                                           )
                                         : headingsKey.endsWith('Phone')
                                         ? formatPhoneNumber(

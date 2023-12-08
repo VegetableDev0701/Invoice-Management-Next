@@ -271,7 +271,7 @@
               "label": "Client's Phone Number",
               "id": "client-phone-number",
               "type": "text",
-              "required": true,
+              "required": false,
               "errormessage": "Client's phone number is required and must be a valid 10 digit number.",
               "isPhoneNumber": true,
               "validFunc": "phone",
@@ -288,7 +288,7 @@
                   "label": "Client's Address",
                   "id": "client-address",
                   "type": "text",
-                  "required": true,
+                  "required": false,
                   "errormessage": "Project address is required.",
                   "isAddress": true,
                   "value": ""
@@ -301,7 +301,7 @@
                   "label": "City",
                   "id": "city-client",
                   "type": "text",
-                  "required": true,
+                  "required": false,
                   "isAddress": true,
                   "value": ""
                 },
@@ -309,7 +309,7 @@
                   "label": "State",
                   "id": "state-client",
                   "type": "text",
-                  "required": true,
+                  "required": false,
                   "isAddress": true,
                   "value": ""
                 },
@@ -318,7 +318,7 @@
                   "id": "zip-code-client",
                   "type": "text",
                   "inputmode": "numeric",
-                  "required": true,
+                  "required": false,
                   "isAddress": true,
                   "value": ""
                 }
@@ -332,7 +332,7 @@
               "label": "Client's Email",
               "id": "client-email",
               "type": "text",
-              "required": true,
+              "required": false,
               "errormessage": "Client's email is required and must be valid.",
               "validFunc": "email",
               "value": ""

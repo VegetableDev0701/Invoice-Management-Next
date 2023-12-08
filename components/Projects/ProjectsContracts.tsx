@@ -36,7 +36,7 @@ interface Props {
 
 const tableHeadings = {
   name: 'Vendor Name',
-  workDescription: 'Work Description',
+  // workDescription: 'Work Description',
   contractDate: 'Contract Date',
   contractAmt: 'Total Amount ($)',
 };
@@ -173,6 +173,7 @@ export default function ProjectsContracts(props: Props) {
             showExpiration={false}
             selectedRowId={selectedContractId}
             preSortKey={'name'}
+            tableType="contracts"
             onConfirmModal={confirmModalHandler}
             onRowClick={rowClickHandler}
           />

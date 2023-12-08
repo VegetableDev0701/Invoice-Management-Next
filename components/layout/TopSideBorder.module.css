@@ -10,7 +10,7 @@
   width: 100%;
   height: var(--top-border-height);
   padding: 0 1rem 0 0.625rem;
-  background-color: var(--stak-black);
+  background-color: var(--stak-nav-bar);
   z-index: 10;
 }
 
@@ -27,7 +27,7 @@
   left: 0;
   top: 0;
 
-  background-color: var(--stak-black);
+  background-color: var(--stak-nav-bar);
 
   display: flex;
   flex-direction: column;

@@ -40,7 +40,7 @@ export default function OnBoardForm({
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [missingInputs, setMissingInputs] = useState<boolean>(false);
   const modalMessage =
-    'Confirm the information you entered is correct, and welcome to Stak! You must log out and then back out for these changes to take effect.';
+    'Confirm the information you entered is correct, and welcome to Stak! You must log out and then back in for these changes to take effect.';
 
   const dispatch = useAppDispatch();
 

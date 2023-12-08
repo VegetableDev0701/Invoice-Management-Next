@@ -133,9 +133,9 @@ export default function ProjectsSectionHeading(props: Props) {
                     onClick={() => clickHandler(tab.name)}
                     className={classNames(
                       tab.current
-                        ? 'border-stak-dark-green text-black'
+                        ? 'border-stak-dark-green text-gray-900'
                         : 'border-transparent text-gray-600 hover:border-gray-400 hover:text-gray-800 hover:cursor-pointer',
-                      'font-sans font-medium whitespace-nowrap border-b-2 px-1 pb-2 md:text-md min-[1650px]:text-lg z-10'
+                      'font-sans font-medium whitespace-nowrap border-b-2 px-1 pb-2 md:text-md min-[1650px]:text-lg z-10 '
                     )}
                     aria-current={tab.current ? 'page' : undefined}
                   >

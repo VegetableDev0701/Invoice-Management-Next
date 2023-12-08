@@ -46,6 +46,36 @@ export function formatDateForInput(dateStr: string) {
   return `${year}-${month}-${day}`;
 }
 
+export function saveToJSONForTesting(fileName: string, data: any) {
+  try {
+    if (!fileName) {
+      throw new Error('Need a fileName');
+    }
+
+    // Convert the data to a JSON string
+    const jsonData = data
+      ? JSON.stringify(data, null, 2)
+      : JSON.stringify({}, null, 2);
+
+    // Create a Blob with the JSON data
+    const blob = new Blob([jsonData], { type: 'application/json' });
+
+    // Create an anchor element and set the download attribute
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName;
+
+    // Append the anchor to the document and trigger the download
+    document.body.appendChild(a);
+    a.click();
+
+    // Clean up: remove the anchor from the document
+    document.body.removeChild(a);
+  } catch (error: any) {
+    console.error(error);
+  }
+}
+
 export function generateTitle(
   number: number | string,
   name: string | undefined,

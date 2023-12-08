@@ -16,6 +16,7 @@ import { ChangeOrderData } from '@/lib/models/formDataModel';
 import { updateProjectDataInChangeOrders } from '@/lib/utility/changeOrderHelpers';
 import { createSingleChangeOrderSummary } from '@/lib/utility/createSummaryDataHelpers';
 import { projectDataActions } from './projects-data-slice';
+import { RESET_STATE } from '@/lib/globals';
 
 export const addUpdatedChangeOrderContent = createAsyncThunk(
   'addChangeOrder/updateContent',
@@ -211,6 +212,9 @@ const addChangeOrderFormSlice = createSlice({
     resetFormValidation(state) {
       return resetAllFormValidation(state);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialAddChangeOrderFormState);
   },
 });
 

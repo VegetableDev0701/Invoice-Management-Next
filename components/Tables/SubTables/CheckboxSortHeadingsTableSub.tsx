@@ -15,6 +15,7 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import Button from '../../UI/Buttons/Button';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
 import Link from 'next/link';
+import EmptyTableNotification, { TableType } from '../EmptyTableNotification';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -35,6 +36,7 @@ interface Props<T, H extends Partial<T>> {
   showExpiration?: boolean;
   baseUrl?: string;
   preSortKey?: keyof H;
+  tableType?: TableType;
   onConfirmModal?: (selected: T[]) => void;
   onRowClick?: (uuid: string, projectId: string) => void;
 }
@@ -51,6 +53,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
     showExpiration,
     baseUrl,
     preSortKey,
+    tableType,
     onConfirmModal,
     onRowClick,
   } = props;
@@ -131,10 +134,11 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
   const lastHeadingClasses = 'py-3.5 pl-3 pr-3 rounded-tr-lg sm:pr-6 lg:pr-6';
 
   const commonColClasses =
-    'border-b max-w-[10rem] overflow-x-scroll border-gray-200 whitespace-nowrap text-sm text-gray-500';
+    'border-b max-w-[20rem] border-gray-200 whitespace-nowrap text-sm text-gray-500';
   const firstColClasses = 'py-2 pl-4 pr-3  sm:pl-6 lg:pl-8';
   const middleColClasses = 'py-1 px-3';
   const lastColClasses = 'py-2 pr-4 pl-3 sm:pr-6 lg:pr-6';
+
   return (
     <>
       <ModalConfirm
@@ -148,7 +152,11 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
         title="Delete"
       />
 
-      <div className="px-4 grow sm:px-6 lg:px-8">
+      <div className="relative px-4 grow sm:px-6 lg:px-8">
+        {((filteredSortedData && filteredSortedData.length === 0) ||
+          !filteredSortedData) && (
+          <EmptyTableNotification tableType={tableType} />
+        )}
         <div className="mt-2 flow-root">
           <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full align-middle">

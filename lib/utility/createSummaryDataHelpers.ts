@@ -2,6 +2,7 @@ import { SUMMARY_COST_CODES } from '../globals';
 import {
   AggregatedBudgetTotals,
   CurrentActualsV2,
+  ProfitTaxes,
 } from '../models/budgetCostCodeModel';
 import { ChangeOrderContent } from '../models/changeOrderModel';
 import {
@@ -285,6 +286,7 @@ export const createSingleVendorSummary = (
       licenseInsDetails.inputElements
     ) as boolean,
     uuid: uuid,
+    agave_uuid: undefined,
   };
 
   return vendorTableRow;
@@ -405,6 +407,7 @@ export const createSingleClientBillSummary = ({
   numChangeOrders,
   laborFeeIds,
   invoiceIds,
+  changeOrderProfitTaxes,
 }: {
   subTotal: string;
   billTitle: string;
@@ -417,11 +420,16 @@ export const createSingleClientBillSummary = ({
   // totalLaborFeesAmount: number | undefined;
   laborFeeIds: string[];
   invoiceIds: string[];
+  changeOrderProfitTaxes: ProfitTaxes;
 }): ClientBillSummaryItem => {
   const profit = currentActuals[SUMMARY_COST_CODES.profit].totalAmt;
   const liability = currentActuals[SUMMARY_COST_CODES.liability].totalAmt;
   const budgetedSalesTax = currentActuals[SUMMARY_COST_CODES.salesTax].totalAmt;
   const boTax = currentActuals[SUMMARY_COST_CODES.boTax].totalAmt;
+
+  const totalSalesTax =
+    Number(budgetedSalesTax.replaceAll(',', '')) +
+    changeOrderProfitTaxes.salesTax;
 
   // const subTotalOutput = subTotal
   //   ? formatNumber((+subTotal).toFixed(2))
@@ -449,9 +457,7 @@ export const createSingleClientBillSummary = ({
       ? formatNumber((+subTotal.replaceAll(',', '')).toFixed(2))
       : '0.00',
     // profitQty: subTotal ? formatNumber((+subTotal).toFixed(2)) : '0.00',
-    budgetedSalesTax:
-      formatNumber((+budgetedSalesTax.replaceAll(',', '')).toFixed(2)) ||
-      '0.00',
+    salesTax: formatNumber(totalSalesTax.toFixed(2)) || '0.00',
     profit: formatNumber((+profit.replaceAll(',', '')).toFixed(2)) || '0.00',
     insuranceLiability:
       formatNumber((+liability.replaceAll(',', '')).toFixed(2)) || '0.00',

@@ -1,4 +1,5 @@
 // import { nanoid } from '@/lib/config';
+import { RESET_STATE } from '@/lib/globals';
 import { Notification, NotificationContainer } from '@/lib/models/uiModels';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
@@ -114,6 +115,9 @@ const uiSlice = createSlice({
       }
       state.errorModal.logout = logout ?? false;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialUIState);
   },
 });
 

@@ -66,8 +66,12 @@ export function hasAnyExpiredDates(object: VendorSummary, keyName: string) {
       const hasExpired = Object.entries(element).some(
         ([key, value]: [string, string | boolean]) => {
           if (key.endsWith('ExpirationDate')) {
-            const date = new Date((value as string) + 'T12:00:00');
-            return date < currentDate;
+            if (value) {
+              const date = new Date(value as string);
+              return date < currentDate;
+            } else {
+              return false;
+            }
           }
           return false;
         }
@@ -145,7 +149,7 @@ export function formatDate(date: string | undefined) {
   if (!date) {
     return;
   }
-  const dateObj = new Date(date + 'T12:00:00');
+  const dateObj = new Date(date);
   return `${('0' + (dateObj.getMonth() + 1)).slice(-2)}-${(
     '0' + dateObj.getDate()
   ).slice(-2)}-${dateObj.getFullYear()}`;
@@ -191,17 +195,19 @@ export function getProjectNamesForDropdown(
   projects: ProjectSummary
 ): SelectMenuOptions[] {
   let count = 0;
-  const projectSelectMenu = Object.values(projects)
-    .filter((project) => project.isActive)
-    .map((project) => {
-      count++;
-      return {
-        id: count,
-        label: project.projectName as string,
-        project_uuid: project.uuid as string,
-      };
-    });
-  return projectSelectMenu as SelectMenuOptions[];
+  const projectSelectMenu: SelectMenuOptions[] = projects
+    ? Object.values(projects)
+        .filter((project) => project.isActive)
+        .map((project) => {
+          count++;
+          return {
+            id: count,
+            label: project.projectName as string,
+            project_uuid: project.uuid as string,
+          };
+        })
+    : [];
+  return [{ id: 0, label: 'Unassign' }, ...projectSelectMenu];
 }
 
 export function filterData<T>(
@@ -244,6 +250,25 @@ export const getAllChangeOrderNames = ({
     };
   });
   return [{ id: 0, label: 'None' }, ...changeOrdersSelectMenuOptions];
+};
+
+export const getAllVendorNames = ({
+  vendorSummary,
+}: {
+  vendorSummary: VendorSummary;
+}) => {
+  let count = 0;
+  const vendorSelectMenuOptions: SelectMenuOptions[] = vendorSummary
+    ? Object.values(vendorSummary).map((vendor) => {
+        count++;
+        return {
+          id: count,
+          label: vendor.vendorName,
+          uuid: vendor.uuid,
+        };
+      })
+    : [];
+  return vendorSelectMenuOptions;
 };
 
 export const sortTableData = <T, H extends Partial<T>>(

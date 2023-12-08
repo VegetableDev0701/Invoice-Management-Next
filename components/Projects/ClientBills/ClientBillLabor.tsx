@@ -255,13 +255,14 @@ export default function ClientBillLabor(props: Props) {
         projectId={projectId}
         onSubmit={(e) => submitFormHandler(e, addLaborFormStateData)}
       />
-
       <CheckboxSubTable
         headings={tableHeadings}
         rows={laborRows}
         projectId={projectId}
         selectedRowId={overlayContent.currentId}
         onRowClick={rowClickHandler}
+        tableType="laborFee"
+        preSortKey="costCode"
       />
     </>
   );

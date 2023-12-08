@@ -17,7 +17,10 @@ import {
   isInputElementWithAddressElements,
 } from '@/lib/models/formDataModel';
 import { getCurrentInvoiceData } from '@/lib/utility/processInvoiceHelpers';
-import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
+import {
+  ChangeOrderSummary,
+  VendorSummary,
+} from '@/lib/models/summaryDataModel';
 import { BoundingBox, InvoiceTableRow } from '@/lib/models/invoiceDataModels';
 
 import classes from '../InputFormLayout/FormLayout.module.css';
@@ -57,9 +60,12 @@ function ProcessInvoiceForm(props: Props) {
 
   const [tabPressed, setTabPressed] = useState<boolean>(false);
 
-  const changeOrdersSummary: ChangeOrderSummary = useSelector(
+  const changeOrdersSummary = useSelector(
     (state) => state.projects[projectId]?.['change-orders-summary']
   ) as ChangeOrderSummary;
+  const vendorSummary = useSelector(
+    (state) => state.data.vendorsSummary.allVendors
+  ) as VendorSummary;
 
   useEffect(() => {
     onRenderComplete();
@@ -213,6 +219,7 @@ function ProcessInvoiceForm(props: Props) {
                                 form={form}
                                 projectId={projectId}
                                 changeOrdersSummary={changeOrdersSummary}
+                                vendorSummary={vendorSummary}
                                 onMouseEnter={() =>
                                   onMouseEnterHandler(currentData, item.id)
                                 }

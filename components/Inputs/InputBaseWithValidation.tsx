@@ -66,6 +66,7 @@ const InputBaseWithValidation = (props: Props) => {
 
   // make the first input field autofocused
   const inputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (autofocus) {
       inputRef.current?.focus();
@@ -114,12 +115,7 @@ const InputBaseWithValidation = (props: Props) => {
 
   return (
     <div className={`${classes['input-container']} ${addOnClass}`}>
-      <label
-        className={`font-sans ${
-          input.isOnOverlay ? 'font-semibold text-md' : 'font-semibold text-lg'
-        }`}
-        htmlFor={input.id}
-      >
+      <label className="font-sans font-semibold text-md" htmlFor={input.id}>
         {input.label}
       </label>
       <div className="flex items-center gap-4">
@@ -131,8 +127,8 @@ const InputBaseWithValidation = (props: Props) => {
           )}
 
           <input
-            className={`font-sans w-full block placeholder:text-base border-[2.5px] text-stak-dark-gray ${
-              input.isOnOverlay ? 'rounded-md py-1.5' : 'rounded-lg'
+            className={`font-sans w-full block placeholder:text-base border-1 text-stak-dark-gray rounded-md shadow-md ${
+              input.isOnOverlay ? 'py-1.5' : ''
             } ${
               isLeftIcon
                 ? 'pl-10'

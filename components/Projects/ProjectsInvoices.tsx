@@ -77,6 +77,7 @@ export default function ProjectsInvoices(props: Props) {
         checkboxButtons={checkBoxButtons}
         dropdown={tableDropdownItems}
         projectId={projectId}
+        preSortKey="vendor_name"
       />
     </>
   );

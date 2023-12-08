@@ -10,8 +10,8 @@ module.exports = {
     },
     extend: {
       colors: {
-        'stak-black': '#313031',
-        'stak-dark-gray': '#656565',
+        'stak-black': '#202020',
+        'stak-dark-gray': '#333333',
         'stak-light-gray': '#9d9d9d',
         'stak-blue': '#4285f4',
         'stak-yellow': '#d2bf64',

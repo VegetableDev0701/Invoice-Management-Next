@@ -191,8 +191,8 @@ export default function ChangeOrderTables(props: Props) {
 
   return (
     <>
-      <div className="flex gap-5 grow -mt-4 -mb-10 -mx-7 overflow-auto">
-        <div className="relative w-4/12 mt-4 mb-10 ml-7">
+      <div className="flex gap-5 grow -mt-4 -mx-7 overflow-visible">
+        <div className="relative w-[35%] mt-4 ml-7">
           <Card className="h-full max-h-full bg-stak-white overflow-auto">
             <CheckboxSubTable
               headings={changeOrderTableHeadings}
@@ -200,19 +200,20 @@ export default function ChangeOrderTables(props: Props) {
               checkboxButtons={changeOrderTableCheckboxButtons}
               projectId={projectId}
               selectedRowId={overlayContent.currentId}
-              preSortKey={'name'}
+              preSortKey="name"
               onConfirmModal={changeOrderConfirmModalHandler}
               onRowClick={changeOrderRowClickHandler}
             />
           </Card>
         </div>
-        <div className="relative flex-1 w-8/12 mt-4 mr-7 mb-10">
+        <div className="relative flex-1 w-[65%] mt-4 mr-7">
           <Card className="h-full max-h-full bg-stak-white overflow-auto">
             <WorkDescriptionTable
               headings={changeOrderContentHeadings}
               tableData={tableData}
               selectedRowId={clickedChangeOrderId}
               isChangeOrderTable={true}
+              changeOrderRows={changeOrderRows}
             />
           </Card>
         </div>

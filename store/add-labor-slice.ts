@@ -6,6 +6,7 @@ import {
   SetFormElementPayload,
 } from '@/lib/models/formStateModels';
 import { resetAllFormValidation } from '@/lib/utility/formHelpers';
+import { RESET_STATE } from '@/lib/globals';
 
 const initialAddLaborFormState: FormState = {
   numCostCodes: { value: 1 },
@@ -50,6 +51,9 @@ const addLaborFormSlice = createSlice({
     setCostCodes(state, action: PayloadAction<number>) {
       state.numCostCodes.value = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialAddLaborFormState);
   },
 });
 

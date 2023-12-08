@@ -10,6 +10,7 @@ import uiSlice, { initialUIState } from '@/store/ui-slice';
 
 import { FormState, User } from '@/lib/models/formStateModels';
 import { ExtendedCompanyData } from '@/lib/models/companyDataModel';
+import nodeEnvSlice from '@/store/node-env-slice';
 
 const initialAcccountSettingsState: FormState = {};
 const initialAddProjectFormState: FormState = {
@@ -38,6 +39,7 @@ export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
       accountSettingsForm: accountSettingsFormSlice.reducer,
       data: companyDataSlice.reducer,
       ui: uiSlice.reducer,
+      nodeEnv: nodeEnvSlice.reducer,
     },
     preloadedState,
   });

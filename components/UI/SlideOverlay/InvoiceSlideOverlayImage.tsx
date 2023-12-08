@@ -138,7 +138,7 @@ export default function InvoiceSlideOverlayImage(props: Props) {
                         <MagnifyImageOnHover
                           src={
                             invoiceObj.signedUrls[currentRow.doc_id]
-                              ?.signedUrls[pageIdx]
+                              ?.signedUrls?.[pageIdx]
                           }
                           alt={currentRow.vendor_name}
                           pageIdx={pageIdx}

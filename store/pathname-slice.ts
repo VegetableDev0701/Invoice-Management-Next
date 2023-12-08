@@ -1,3 +1,4 @@
+import { RESET_STATE } from '@/lib/globals';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface InitialPathState {
@@ -13,6 +14,9 @@ const currentPathSlice = createSlice({
       const { currentPath } = action.payload;
       state.currentPath = currentPath;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialPathState);
   },
 });
 

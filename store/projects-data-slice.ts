@@ -5,7 +5,6 @@ import { RootState } from '.';
 import { processingActions } from './processing-slice';
 import { sseActions } from './sse-slice';
 
-import { getAllProjectIds } from '@/lib/utility/projectHelpers';
 import {
   ChangeOrderData,
   Labor,
@@ -20,6 +19,7 @@ import {
   ContractSummary,
   LaborSummary,
   ProjectSummary,
+  ProjectSummaryItem,
   SummaryTableRowType,
   getSummary,
 } from '@/lib/models/summaryDataModel';
@@ -43,50 +43,42 @@ import {
   UpdateCostCode,
 } from '@/lib/models/budgetCostCodeModel';
 import { addBudgetFormActions } from './add-budget-slice';
+import { companyDataActions } from './company-data-slice';
+import { RESET_STATE } from '@/lib/globals';
 
 export const fetchProjectData = createAsyncThunk(
   'companyProjects/fetch',
   async ({ companyId }: { companyId: string }, thunkAPI) => {
     try {
-      const state = thunkAPI.getState() as RootState;
-      const allProjects: ProjectSummary = {
-        ...state.data.projectsSummary.allProjects,
-      };
-      const activeProjectIds = getAllProjectIds(allProjects);
-      const urls = activeProjectIds
-        .map((projectId) => {
-          return {
-            [projectId as string]: `/api/${companyId}/projects/${projectId}/get-all-project-data`,
-          };
-        })
-        .reduce((obj, item) => {
-          const key = Object.keys(item)[0];
-          obj[key] = item[key];
-          return obj;
-        }, {});
-
-      const promises = Object.values(urls).map((url) =>
-        fetchWithRetry(url, { method: 'GET' })
+      const url = `/api/${companyId}/projects/get-all-projects`;
+      const data = await fetchWithRetry(url, { method: 'GET' });
+      const returnData = Object.entries(JSON.parse(data)).reduce(
+        (
+          acc: { [projectId: string]: { status: string; value: string } },
+          [key, value]
+        ) => {
+          acc[key] = { status: 'fulfilled', value: JSON.stringify(value) };
+          return acc;
+        },
+        {}
       );
-      const results = await Promise.allSettled(promises);
-      const data = Object.keys(urls).reduce<{
-        [projectId: string]: any;
-      }>((acc, projectId, index) => {
-        if (results[index].status == 'fulfilled') {
-          const fulfilledResult = results[index] as PromiseFulfilledResult<any>;
-          acc[projectId] = fulfilledResult;
-        } else if (results[index].status === 'rejected') {
-          const rejectedResult = results[index] as PromiseRejectedResult;
-          console.error(
-            `Error fetching project data for ${projectId} after all retries:`,
-            rejectedResult.reason
-          );
-          // handle error or set error in your `acc` object
-        }
-        return acc;
-      }, {});
+
+      const projectSummaries: ProjectSummary = Object.fromEntries(
+        Object.entries(JSON.parse(data)).map(
+          ([projectId, value]: [string, any]) => {
+            const projectSummary: ProjectSummaryItem = value['project-summary'];
+            return [projectId, projectSummary];
+          }
+        )
+      );
+
+      thunkAPI.dispatch(
+        companyDataActions.addToProjectsSummaryData(projectSummaries)
+      );
+
       thunkAPI.dispatch(processingActions.setFetchedProjectsStatus(true));
-      return data;
+
+      return returnData;
     } catch (error: any) {
       console.error(error);
       return {
@@ -919,12 +911,13 @@ const projectDataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialDataState);
     builder.addCase(
       fetchProjectData.fulfilled,
       (
         state,
         action: PayloadAction<{
-          [projectId: string]: PromiseFulfilledResult<any>;
+          [projectId: string]: { status: string; value: string };
         }>
       ) => {
         Object.entries(action.payload).forEach(([projectId, value]) => {

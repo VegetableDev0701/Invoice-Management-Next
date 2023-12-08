@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { User } from '@/lib/models/formStateModels';
+import { RESET_STATE } from '@/lib/globals';
 
 const initialUserState = {} as User;
 
@@ -12,6 +13,9 @@ const userSlice = createSlice({
       const user = action.payload;
       return user;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialUserState);
   },
 });
 export default userSlice;

@@ -7,6 +7,7 @@ import {
   SetFormElementPayload,
 } from '@/lib/models/formStateModels';
 import { resetAllFormValidation } from '@/lib/utility/formHelpers';
+import { RESET_STATE } from '@/lib/globals';
 
 const initialProcessInvoiceFormState: FormStateV2 = {
   numLineItems: { value: 0 },
@@ -63,6 +64,9 @@ const addProcessInvoiceFormSlice = createSlice({
     setLineItem(state, action: PayloadAction<number>) {
       state.numLineItems.value = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialProcessInvoiceFormState);
   },
 });
 

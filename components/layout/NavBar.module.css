@@ -2,7 +2,7 @@
   top: var(--top-border-height);
   left: var(--main-border-thickness);
   height: var(--navbar-height);
-  background-color: var(--stak-black);
+  background-color: var(--stak-nav-bar);
   z-index: 5;
 }
 
@@ -26,7 +26,7 @@
   display: flex;
   align-items: center;
 
-  color: var(--stak-black);
+  color: var(--stak-nav-bar);
   color: white;
   font-size: var(--navbar-text-size);
 

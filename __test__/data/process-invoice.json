@@ -20,7 +20,7 @@
             {
               "label": "Vendor Name",
               "id": "vendor-name",
-              "inputType": "text",
+              "inputType": "dropdownWithSearch",
               "value": "",
               "sideButton": true,
               "buttonText": "Contract",
@@ -66,19 +66,6 @@
         {
           "items": [
             {
-              "label": "Cost Code",
-              "id": "cost-code",
-              "type": "text",
-              "inputType": "dropdownWithSearch",
-              "value": "",
-              "required": false,
-              "isOnOverlay": true
-            }
-          ]
-        },
-        {
-          "items": [
-            {
               "label": "Work Description",
               "id": "work-description",
               "type": "text",
@@ -87,6 +74,19 @@
               "errormessage": "Work description is required.",
               "value": "",
               "isCurrency": false,
+              "isOnOverlay": true
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Cost Code",
+              "id": "cost-code",
+              "type": "text",
+              "inputType": "dropdownWithSearch",
+              "value": "",
+              "required": false,
               "isOnOverlay": true
             }
           ]

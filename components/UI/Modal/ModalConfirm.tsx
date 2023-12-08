@@ -12,7 +12,7 @@ interface Props {
   message: string;
   buttonText?: string;
   isLoading?: boolean;
-  error?: Record<string, string> | null;
+  error?: string | null;
   title?: string;
   logout?: boolean;
   onConfirm: (e: React.MouseEvent<HTMLButtonElement>) => void;

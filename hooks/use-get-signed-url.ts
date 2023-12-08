@@ -6,6 +6,7 @@ import { useAppDispatch as useDispatch } from '@/store/hooks';
 import { InvoiceState, getSignedUrlInvoice } from '@/store/invoice-slice';
 
 import { User } from '@/lib/models/formStateModels';
+import { isObjectEmpty } from '@/lib/utility/utils';
 
 export const useInvoiceSignedUrl = (invoiceObj: InvoiceState) => {
   const { user, isLoading: userLoading } = useUser();
@@ -55,7 +56,7 @@ export const useContractSignedUrl = (
       const uuid = contractObj.clickedContract.uuid;
       if (
         !contractObj.signedUrls[uuid] ||
-        Object.keys(contractObj.signedUrls[uuid]).length === 0 ||
+        isObjectEmpty(Object.keys(contractObj.signedUrls[uuid])) ||
         currentUTCTime > +contractObj.signedUrls[uuid].expiration * 1000
       ) {
         dispatch(

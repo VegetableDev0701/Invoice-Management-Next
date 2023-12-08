@@ -42,7 +42,7 @@ export const createBudgetActualsObject = ({
   dispatch,
 }: {
   projectInvoices: MakeRequired<InvoiceItem, 'processedData'>[];
-  projectLaborFees: LaborSummaryItem[];
+  projectLaborFees: LaborSummaryItem[] | null;
   budgetTotals: BudgetTotalsV2;
   changeOrdersSummary: ChangeOrderSummary;
   costCodeNameList: SelectMenuOptions[];
@@ -60,88 +60,90 @@ export const createBudgetActualsObject = ({
     };
 
     // loop through all invoices attached for this current client bill
-    projectInvoices.forEach((invoice) => {
-      if (!invoice.processedData) return;
-      dates.push(new Date(invoice.processedData.date_received + 'T12:00:00'));
-      // init the invoice current actuals object
-      invoiceBudgetActuals.invoice[invoice.doc_id] =
-        invoiceBudgetActuals.invoice[invoice.doc_id] || {};
+    projectInvoices &&
+      projectInvoices.forEach((invoice) => {
+        if (!invoice.processedData) return;
+        dates.push(new Date(invoice.processedData.date_received + 'T12:00:00'));
+        // init the invoice current actuals object
+        invoiceBudgetActuals.invoice[invoice.doc_id] =
+          invoiceBudgetActuals.invoice[invoice.doc_id] || {};
 
-      const lineItems = invoice.processedData.line_items;
-      // check that we have processedData, that there are line items, and the user
-      // did not toggle the line item switch off. This would happen if they started filling i
-      // line items, then decided they didn't want to categorize individual line items
-      // so they just closed the line items as a way to ignore that work.
-      // The user can't choose a cost code for the entire invoice when the line items are opened
-      // and they can't choose a change order for a line item AND the whole invoice, so this
-      // is a bit of redundancy
-      const hasProcessedLineItems =
-        invoice.processedData &&
-        invoice.processedData.line_items_toggle &&
-        invoice.processedData.line_items &&
-        Object.values(lineItems as InvoiceLineItem | object).length > 0;
-      const hasValidLineItems =
-        invoice.processedData.line_items &&
-        (
-          Object.values(
-            lineItems as InvoiceLineItem | object
-          ) as InvoiceLineItemItem[]
-        ).some((item) => !item.cost_code || item.amount !== '');
-      if (hasProcessedLineItems && hasValidLineItems) {
-        handleLineItem({
-          lineItems: lineItems as InvoiceLineItem,
-          vendorName: invoice.processedData.vendor_name,
-          uuid: invoice.doc_id,
-          isCredit: invoice.processedData.is_credit,
-          isInvoice: true,
-          isLaborFee: false,
-          budgetTotals,
-          costCodeNameList,
-          budgetActuals,
-          budgetActualsChangeOrders,
-          invoiceBudgetActuals,
-          invoiceBudgetActualsChangeOrders,
-        });
-      } else if (
-        invoice.processedData.cost_code !== null && // check that it is not null
-        invoice.processedData.total_amount &&
-        invoice.processedData.total_tax_amount
-      ) {
-        handleWholeInvoice({
-          invoice,
-          budgetTotals,
-          costCodeNameList,
-          budgetActuals,
-          budgetActualsChangeOrders,
-          invoiceBudgetActuals,
-          invoiceBudgetActualsChangeOrders,
-        });
-      } else {
-        handleError({ invoice, dispatch });
-      }
-    });
-
-    projectLaborFees.forEach((laborFee) => {
-      // init the invoice budget actuals object for the laborFee
-      invoiceBudgetActuals.laborFee[laborFee.uuid] =
-        invoiceBudgetActuals.laborFee[laborFee.uuid] || {};
-      laborFee.payPeriod != '' &&
-        dates.push(new Date((laborFee.payPeriod as string) + +'T12:00:00'));
-      handleLineItem({
-        lineItems: laborFee.line_items as LaborLineItem,
-        vendorName: laborFee.name,
-        uuid: laborFee.uuid,
-        isCredit: false,
-        isInvoice: false,
-        isLaborFee: true,
-        budgetTotals,
-        costCodeNameList,
-        budgetActuals,
-        budgetActualsChangeOrders,
-        invoiceBudgetActuals,
-        invoiceBudgetActualsChangeOrders,
+        const lineItems = invoice.processedData.line_items;
+        // check that we have processedData, that there are line items, and the user
+        // did not toggle the line item switch off. This would happen if they started filling i
+        // line items, then decided they didn't want to categorize individual line items
+        // so they just closed the line items as a way to ignore that work.
+        // The user can't choose a cost code for the entire invoice when the line items are opened
+        // and they can't choose a change order for a line item AND the whole invoice, so this
+        // is a bit of redundancy
+        const hasProcessedLineItems =
+          invoice.processedData &&
+          invoice.processedData.line_items_toggle &&
+          invoice.processedData.line_items &&
+          Object.values(lineItems as InvoiceLineItem | object).length > 0;
+        const hasValidLineItems =
+          invoice.processedData.line_items &&
+          (
+            Object.values(
+              lineItems as InvoiceLineItem | object
+            ) as InvoiceLineItemItem[]
+          ).some((item) => !item.cost_code || item.amount !== '');
+        if (hasProcessedLineItems && hasValidLineItems) {
+          handleLineItem({
+            lineItems: lineItems as InvoiceLineItem,
+            vendorName: invoice.processedData.vendor.name ?? '',
+            uuid: invoice.doc_id,
+            isCredit: invoice.processedData.is_credit,
+            isInvoice: true,
+            isLaborFee: false,
+            budgetTotals,
+            costCodeNameList,
+            budgetActuals,
+            budgetActualsChangeOrders,
+            invoiceBudgetActuals,
+            invoiceBudgetActualsChangeOrders,
+          });
+        } else if (
+          invoice.processedData.cost_code !== null && // check that it is not null
+          invoice.processedData.total_amount &&
+          invoice.processedData.total_tax_amount
+        ) {
+          handleWholeInvoice({
+            invoice,
+            budgetTotals,
+            costCodeNameList,
+            budgetActuals,
+            budgetActualsChangeOrders,
+            invoiceBudgetActuals,
+            invoiceBudgetActualsChangeOrders,
+          });
+        } else {
+          handleError({ invoice, dispatch });
+        }
       });
-    });
+
+    projectLaborFees &&
+      projectLaborFees.forEach((laborFee) => {
+        // init the invoice budget actuals object for the laborFee
+        invoiceBudgetActuals.laborFee[laborFee.uuid] =
+          invoiceBudgetActuals.laborFee[laborFee.uuid] || {};
+        laborFee.payPeriod != '' &&
+          dates.push(new Date((laborFee.payPeriod as string) + 'T12:00:00'));
+        handleLineItem({
+          lineItems: laborFee.line_items as LaborLineItem,
+          vendorName: laborFee.name,
+          uuid: laborFee.uuid,
+          isCredit: false,
+          isInvoice: false,
+          isLaborFee: true,
+          budgetTotals,
+          costCodeNameList,
+          budgetActuals,
+          budgetActualsChangeOrders,
+          invoiceBudgetActuals,
+          invoiceBudgetActualsChangeOrders,
+        });
+      });
 
     // super clunky but we shouldn't ever have lists of more than 50 - 100, so this shouldn't be that slow
     // TODO reimagine this part
@@ -658,7 +660,7 @@ const handleWholeInvoice = ({
       qtyAmt: '1',
       rateAmt: formatNumber(amount.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(costCode, costCodeNameList),
-      vendor: invoice.processedData.vendor_name,
+      vendor: invoice.processedData.vendor.name ?? '',
       changeOrder: changeOrder.name,
       group: 'Change Orders',
     });
@@ -669,7 +671,7 @@ const handleWholeInvoice = ({
       qtyAmt: '1',
       rateAmt: formatNumber(amountInvoice.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(costCode, costCodeNameList),
-      vendor: invoice.processedData.vendor_name,
+      vendor: invoice.processedData.vendor.name ?? '',
       changeOrder: changeOrder.name,
       group: 'Change Orders',
     });
@@ -720,7 +722,7 @@ const handleWholeInvoice = ({
       qtyAmt: '1',
       rateAmt: formatNumber(amount.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(costCode, costCodeNameList),
-      vendor: invoice.processedData.vendor_name,
+      vendor: invoice.processedData.vendor.name ?? '',
       changeOrder: null,
       group: 'Invoices',
     });
@@ -731,7 +733,7 @@ const handleWholeInvoice = ({
       qtyAmt: '1',
       rateAmt: formatNumber(amountInvoice.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(costCode, costCodeNameList),
-      vendor: invoice.processedData.vendor_name,
+      vendor: invoice.processedData.vendor.name ?? '',
       changeOrder: null,
       group: 'Invoices',
     });
@@ -756,13 +758,13 @@ const handleError = ({
 }) => {
   console.error(
     `Some invoices don't have necessary information: 
-        Vendor: ${invoice.processedData.vendor_name}; ID: ${invoice.processedData.invoice_id}
+        Vendor: ${invoice.processedData.vendor.name}; ID: ${invoice.processedData.invoice_id}
         Amount: ${invoice.processedData.total_amount}`
   );
   dispatch(
     uiActions.setModalContent({
       openModal: true,
-      message: `The invoice (Vendor: ${invoice.processedData.vendor_name}; ID: ${invoice.processedData.invoice_id});
+      message: `The invoice (Vendor: ${invoice.processedData.vendor.name}; ID: ${invoice.processedData.invoice_id});
         Amount: ${invoice.processedData.total_amount} is missing 
         necessary information such as cost code, total, and/or tax. 
         You cannot build a client's bill without all necessary information.`,

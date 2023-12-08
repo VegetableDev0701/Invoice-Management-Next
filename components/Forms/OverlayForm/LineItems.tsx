@@ -161,15 +161,17 @@ function LineItems(props: Props) {
             form={form}
             classes="flex-1"
             input={{
-              label: 'Cost Code',
-              id: `${i + 1}-cost-code`,
+              label: 'Work Description',
+              id: `${i + 1}-work-description`,
               type: 'text',
               inputType: 'dropdownWithSearch',
-              value:
-                lineItemsGPT && lineItemsGPT[i]?.['cost_code']
-                  ? lineItemsGPT[i]['cost_code']
-                  : 'None',
               required: false,
+              errormessage: 'Work description is required.',
+              value:
+                lineItemsGPT && lineItemsGPT[i]?.['work_description']
+                  ? lineItemsGPT[i]['work_description']
+                  : 'None',
+              isCurrency: false,
               isOnOverlay: true,
             }}
             projectId={projectId}
@@ -189,17 +191,15 @@ function LineItems(props: Props) {
             form={form}
             classes="flex-1"
             input={{
-              label: 'Work Description',
-              id: `${i + 1}-work-description`,
+              label: 'Cost Code',
+              id: `${i + 1}-cost-code`,
               type: 'text',
               inputType: 'dropdownWithSearch',
-              required: false,
-              errormessage: 'Work description is required.',
               value:
-                lineItemsGPT && lineItemsGPT[i]?.['work_description']
-                  ? lineItemsGPT[i]['work_description']
+                lineItemsGPT && lineItemsGPT[i]?.['cost_code']
+                  ? lineItemsGPT[i]['cost_code']
                   : 'None',
-              isCurrency: false,
+              required: false,
               isOnOverlay: true,
             }}
             projectId={projectId}

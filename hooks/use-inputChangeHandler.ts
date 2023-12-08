@@ -21,12 +21,12 @@ function useInputChangeHandler(
   useEffect(() => {
     if (input.value) {
       checkInputField(
-        input.value as string,
         input,
         actions,
         setInputValue,
         getValidFunc,
-        dispatch
+        dispatch,
+        input.value as string
       );
     }
   }, []);
@@ -34,12 +34,12 @@ function useInputChangeHandler(
   function changeHandler(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
     checkInputField(
-      value,
       input,
       actions,
       setInputValue,
       getValidFunc,
-      dispatch
+      dispatch,
+      value
     );
   }
 

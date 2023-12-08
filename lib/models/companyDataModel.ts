@@ -7,7 +7,7 @@ import { ProjectSummary, VendorSummary } from './summaryDataModel';
 export interface CompanyData {
   forms: Forms;
   invoices: { status: string; allInvoices: Invoices };
-  vendors: { [vendorId: string]: VendorData };
+  vendors: { status: string; allVendors: { [vendorId: string]: VendorData } };
   projectsSummary: { status: string; allProjects: ProjectSummary | object };
   vendorsSummary: { status: string; allVendors: VendorSummary | object };
   costCodes: CostCodesData;
@@ -21,11 +21,11 @@ export type ExtendedCompanyData = {
 
 export interface Forms {
   status: string;
-  'account-settings': { mainCategories: MainCategories };
-  'add-contact': { mainCategories: MainCategories };
-  'add-labor': { numCostCodes: number; mainCategories: MainCategories };
-  'add-project': { numRecurringFees: number; mainCategories: MainCategories };
-  'add-vendor': { mainCategories: MainCategories };
-  'change-order': { mainCategories: MainCategories };
-  'process-invoice': { mainCategories: MainCategories };
+  'account-settings': { mainCategories: MainCategories[] };
+  'add-contact': { mainCategories: MainCategories[] };
+  'add-labor': { numCostCodes: number; mainCategories: MainCategories[] };
+  'add-project': { numRecurringFees: number; mainCategories: MainCategories[] };
+  'add-vendor': { mainCategories: MainCategories[] };
+  'change-order': { mainCategories: MainCategories[] };
+  'process-invoice': { mainCategories: MainCategories[] };
 }

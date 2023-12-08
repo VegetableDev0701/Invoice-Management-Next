@@ -1,3 +1,4 @@
+import { RESET_STATE } from '@/lib/globals';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ProcessingState {
@@ -25,6 +26,9 @@ const processingSlice = createSlice({
     setFetchedProjectsStatus(state, action: PayloadAction<boolean>) {
       state.allDataFetched = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialState);
   },
 });
 

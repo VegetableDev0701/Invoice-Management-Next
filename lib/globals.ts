@@ -1,3 +1,5 @@
+export const RESET_STATE = 'RESET_STATE';
+
 export const SUMMARY_COST_CODES = {
   profit: '0.1100',
   liability: '0.1200',
@@ -10,6 +12,18 @@ export const SUMMARY_NAMES = {
   liability: 'Liability',
   salesTax: 'Sales Tax',
   boTax: 'B&O Tax',
+};
+
+export const EMPTY_TABLE_TEXT = {
+  contracts: 'No Contracts Have Been Added',
+  invoices: 'No Invoices to Process or Categorize',
+  laborFee: 'No Labor or Fees Added',
+  noChangeOrders: 'No Change Orders Have Been Added',
+  noChangeOrdersSelected: 'Select a Change Order',
+  vendors: 'No Vendors Have Been Added',
+  expiredLicenseVendors: 'No Vendors Have Any Expired License',
+  projects: 'No Projects Have Been Added or are Active',
+  completedProjects: 'No Projects Have Been Completed',
 };
 
 // TODO thes need to live in state so they can be unique for each company.

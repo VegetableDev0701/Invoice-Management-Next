@@ -2,7 +2,10 @@ import { useEffect } from 'react';
 
 import { Items } from '@/lib/models/formDataModel';
 import { Actions } from '@/lib/models/types';
-import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
+import {
+  ChangeOrderSummary,
+  VendorSummary,
+} from '@/lib/models/summaryDataModel';
 
 import InputBaseWithValidation from './InputBaseWithValidation';
 import DropDownWithSearch from './InputDropDownWithSearch';
@@ -17,8 +20,9 @@ interface Props {
   form: string;
   autofocus?: boolean;
   showError?: boolean;
-  icon?: JSX.Element | undefined;
-  changeOrdersSummary?: ChangeOrderSummary | undefined;
+  icon?: JSX.Element;
+  changeOrdersSummary?: ChangeOrderSummary;
+  vendorSummary?: VendorSummary;
   projectId?: string;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;

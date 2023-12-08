@@ -69,6 +69,24 @@ function LaborCostCodes(props: Props) {
             form={form}
             classes="flex-1"
             input={{
+              label: 'Work Description',
+              id: `${i + 1}-work-description`,
+              type: 'text',
+              inputType: 'dropdownWithSearch',
+              required: true,
+              errormessage: 'Work description is required.',
+              value: costCodesObj[`${i + 1}-work-description`],
+              isCurrency: false,
+              isOnOverlay: true,
+            }}
+            projectId={projectId}
+            actions={actions}
+            showError={showError}
+          />
+          <Input
+            form={form}
+            classes="flex-1"
+            input={{
               label: 'Cost Code',
               id: `${i + 1}-cost-code`,
               type: 'text',
@@ -81,24 +99,6 @@ function LaborCostCodes(props: Props) {
             }}
             projectId={projectId}
             icon={<DollarSign width={null} height={null} />}
-            actions={actions}
-            showError={showError}
-          />
-          <Input
-            form={form}
-            classes="flex-1"
-            input={{
-              label: 'Work Description',
-              id: `${i + 1}-work-description`,
-              type: 'text',
-              inputType: 'dropdownWithSearch',
-              required: true,
-              errormessage: 'Work description is required.',
-              value: costCodesObj[`${i + 1}-work-description`],
-              isCurrency: false,
-              isOnOverlay: true,
-            }}
-            projectId={projectId}
             actions={actions}
             showError={showError}
           />

@@ -5,7 +5,11 @@ import {
   useAppDispatch as useDispatch,
   useAppSelector as useSelector,
 } from '@/store/hooks';
-import { addVendorFormActions, deleteVendors } from '@/store/add-vendor-slice';
+import {
+  addVendorFormActions,
+  deleteVendors,
+  getVendorsAgave,
+} from '@/store/add-vendor-slice';
 import {
   getCurrentVendor,
   overlayActions,
@@ -28,6 +32,7 @@ import { VendorData } from '@/lib/models/formDataModel';
 import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
 import { createSingleVendorSummary } from '@/lib/utility/createSummaryDataHelpers';
 import { checkAllFormFields } from '@/lib/validation/formValidation';
+import { nanoid } from '@/lib/config';
 
 import Card from '@/components/UI/Card';
 import FullScreenLoader from '@/components/UI/Loaders/FullScreenLoader';
@@ -35,7 +40,7 @@ import SectionHeading from '@/components/UI/SectionHeadings/SectionHeading';
 import CheckboxSortHeadingsTable from '@/components/Tables/MainTables/CheckboxSortHeadingsTableWithFilter';
 import SlideOverlayForm from '@/components/UI/SlideOverlay/SlideOverlayForm';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
-import { nanoid } from '@/lib/config';
+import ModalErrorWrapper from '@/components/UI/Modal/ErrorModalWrapper';
 
 const tabs = [
   { name: 'All', keyName: 'all', current: true },
@@ -52,8 +57,8 @@ const tableHeadings = {
   address: 'Address',
   city: 'City',
   insuranceExpirationDate: 'Insurance Expiration',
-  landiExpirationDate: 'L&I License Expiration',
-  workersCompExpirationDate: 'Workers Comp Expiration',
+  // landiExpirationDate: 'L&I License Expiration',
+  // workersCompExpirationDate: 'Workers Comp Expiration',
 };
 
 function Vendors() {
@@ -168,6 +173,11 @@ function Vendors() {
     );
   };
 
+  const syncVendorsHandler = async () => {
+    await dispatch(
+      getVendorsAgave({ companyId: (user as User).user_metadata.companyId })
+    );
+  };
   const buttonClickHandler = (label: string, selected: VendorSummaryItem[]) => {
     setSelected(selected);
     if (label === 'Delete') {
@@ -296,10 +306,15 @@ function Vendors() {
             message={modalMessage}
             title="Delete"
           />
+          <ModalErrorWrapper />
           <div className="main-form-tiles">
             <SectionHeading
               tabs={tabs}
               buttons={[
+                {
+                  label: 'Sync Vendors',
+                  onClick: syncVendorsHandler,
+                },
                 {
                   label: 'Add Vendor',
                   onClick: addVendorHandler,
@@ -329,11 +344,14 @@ function Vendors() {
                     headings={tableHeadings}
                     rows={filteredData}
                     activeFilter={activeFilter}
+                    activeTabKeyName={activeTabKeyName}
                     checkboxButtons={[
                       { label: 'Draft Email', buttonPath: '#', disabled: true },
                       { label: 'Delete', buttonPath: '#', disabled: false },
                     ]}
                     filterKey="vendorType"
+                    tableType="vendors"
+                    preSortKey="vendorName"
                     selectedRowId={overlayContent.currentId}
                     onRowClick={rowClickHandler}
                     onButtonClick={buttonClickHandler}

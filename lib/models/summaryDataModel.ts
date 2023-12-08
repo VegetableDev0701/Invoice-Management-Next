@@ -57,16 +57,14 @@ export interface LaborSummary {
   [laborFeeId: string]: LaborSummaryItem;
 }
 
-export interface LaborLineItem {
-  [itemId: string]: LaborLineItemItem;
-}
-
-export interface LaborLineItemItem {
-  cost_code: string;
-  work_description: string;
-  number_of_hours: string;
-  change_order: { name: string; uuid: string } | null;
-  amount: string;
+export interface LaborTableSummary extends BaseSummary {
+  name: string;
+  workDescription: string;
+  costCode: string;
+  hours: string;
+  rate: string;
+  totalAmt: string;
+  rowId: string;
 }
 
 export interface LaborSummaryItem extends BaseSummary {
@@ -78,6 +76,18 @@ export interface LaborSummaryItem extends BaseSummary {
   clientBillId: string | null;
   currentLabor: boolean;
   rowId?: null;
+}
+
+export interface LaborLineItem {
+  [itemId: string]: LaborLineItemItem;
+}
+
+export interface LaborLineItemItem {
+  cost_code: string;
+  work_description: string;
+  number_of_hours: string;
+  change_order: { name: string; uuid: string } | null;
+  amount: string;
 }
 
 export interface ClientBillData {
@@ -93,7 +103,7 @@ export interface ClientBillSummaryItem extends BaseSummary {
   billTitle: string;
   subTotal: string;
   changeOrders: string;
-  budgetedSalesTax: string;
+  salesTax: string;
   profit: string;
   insuranceLiability: string;
   boTax: string;
@@ -176,6 +186,7 @@ export interface VendorSummaryItem extends BaseSummary {
   landiLicNumber: string;
   email: string;
   workersCompExpirationDate: string;
+  agave_uuid?: string;
 }
 
 export interface SummaryProjects {
@@ -193,13 +204,14 @@ export interface ContractEntry {
   uuid: string;
 }
 
-interface ContractSummaryData {
+interface ContractSummaryData extends BaseSummary {
   projectName: string;
   date: string;
   contractAmt: string;
   workDescription: string;
   vendor: string;
-  vendorId?: string; // TODO this needs to be added to the contract interface
+  vendor_match_conf_score: number | null;
+  agave_uuid: string | null;
 }
 
 export interface ContractSummaryItem extends BaseSummary {

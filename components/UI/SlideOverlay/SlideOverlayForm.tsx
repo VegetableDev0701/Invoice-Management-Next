@@ -24,7 +24,7 @@ interface Props {
   projectId?: string;
   overlayStateKey: string;
   responseLoading?: boolean;
-  onSubmit: (
+  onSubmit?: (
     e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>
   ) => void;
 }
@@ -70,7 +70,7 @@ export default function SlideOverlayForm(props: Props) {
       <Transition.Root show={open} as={Fragment}>
         <Dialog
           as="div"
-          className="relative z-30"
+          className="relative z-50"
           onClose={() => {
             // TODO If I want to have the form save when they user closes it,
             // I need to create a new submit function that doesn't have the click
@@ -110,7 +110,7 @@ export default function SlideOverlayForm(props: Props) {
                         <>
                           <div className="px-4 sm:px-6">
                             <div className="flex items-start justify-between">
-                              <Dialog.Title className="text-base font-sans font-semibold leading-6 text-gray-500">
+                              <Dialog.Title className="text-base font-sans font-semibold leading-6 text-stak-black">
                                 <p className="text-3xl">
                                   {overlayContent.overlayTitle}
                                 </p>

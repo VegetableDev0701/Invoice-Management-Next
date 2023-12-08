@@ -142,13 +142,15 @@ const OnBoardNewUser = ({
         } else if ((user as User).email_verified && !hasUserMetadata) {
           setVerifiedEmail(true);
           onBoardNewUser();
+        } else if ((user as User).email_verified && hasUserMetadata) {
+          setReqLoading(false);
         }
       } else {
         dispatch(
           uiActions.setModalContent({
             openModal: true,
             message:
-              'You are not associated with any organization. Please contact support@stak.cc.',
+              'You are not associated with any current organization. If you would like to onboard, please contact support@stak.cc.',
             title: 'Unauthorized',
             logout: true,
           })

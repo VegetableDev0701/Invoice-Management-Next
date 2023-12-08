@@ -8,7 +8,7 @@ interface Props {
   response: Response | null;
   successJSON: ResponseData | string | null;
   isOverlay: boolean;
-  error?: Record<string, string> | null;
+  error?: string | null;
   overlayStateKey?: string;
 }
 
@@ -25,7 +25,7 @@ export default function useSetNotification({
       dispatch(
         uiActions.setModalContent({
           openModal: true,
-          message: error.message,
+          message: error as string,
           title: 'Error',
         })
       );

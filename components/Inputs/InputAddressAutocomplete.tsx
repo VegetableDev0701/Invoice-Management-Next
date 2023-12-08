@@ -289,13 +289,13 @@ const InputAddressAutocomplete = (props: Props) => {
     }
   };
 
-  const inputClasses = `font-sans w-full block placeholder:text-base border-[2.5px] text-stak-dark-gray pr-3 pl-3 ${
+  const inputClasses = `font-sans w-full block placeholder:text-base border-1 text-stak-dark-gray pr-3 pl-3 shadow-md ${
     classes['input-container__input']
   } ${
     isError && isRequired
       ? 'border-red-500 placeholder:text-red-500'
       : 'border-stak-light-gray'
-  } ${input[0].items[0].isOnOverlay ? 'rounded-md py-1.5' : 'rounded-lg'}`;
+  } ${input[0].items[0].isOnOverlay ? 'rounded-md py-1.5' : 'rounded-md'}`;
 
   return (
     <>
@@ -315,7 +315,7 @@ const InputAddressAutocomplete = (props: Props) => {
                     className={`font-sans ${
                       item.isOnOverlay
                         ? 'font-semibold text-md'
-                        : 'font-semibold text-lg'
+                        : 'font-semibold text-md'
                     }`}
                     htmlFor={item.id}
                   >

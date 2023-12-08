@@ -6,9 +6,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --stak-black: #313031;
-  --stak-dark-gray: #656565;
-  --stak-light-gray: #9d9d9d;
+  --stak-nav-bar: #222;
+  --stak-dark-gray: #333333;
+  --stak-light-gray: #929292;
   --stak-blue: #4285f4;
   --stak-blue-hover: #0094ff;
   --stak-bluegreen: #44aacb;

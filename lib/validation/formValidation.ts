@@ -162,14 +162,14 @@ export const checkAllFormFieldsLabor = (
 };
 
 export const checkInputField = (
-  value: string,
   input: Items,
   actions: Actions,
   setInputValue: Dispatch<SetStateAction<any>>,
   getValidFunc: (id: string, required: boolean) => (text: string) => boolean,
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
+  value?: string
 ) => {
-  if (input.isCurrency) {
+  if (input.isCurrency && value) {
     value = formatNumber(value);
     if (!isNaN(Number(value.replace(/,/g, '')))) {
       setInputValue(value);
@@ -184,8 +184,8 @@ export const checkInputField = (
         })
       );
     }
-  } else if (input.isPhoneNumber) {
-    value = formatPhoneNumber(value);
+  } else if (input.isPhoneNumber && value) {
+    value = formatPhoneNumber(value) as string;
     setInputValue(value);
     dispatch(
       actions.setFormElement({
@@ -206,7 +206,7 @@ export const checkInputField = (
         isValid: getValidFunc(
           input.validFunc || input.id,
           input.required
-        )(value),
+        )(value as string),
       })
     );
   }

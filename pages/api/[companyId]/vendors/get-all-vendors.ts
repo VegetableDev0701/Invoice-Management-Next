@@ -1,5 +1,5 @@
 import { getAPIUrl } from '@/lib/config';
-import { getGoogleToken } from '@/lib/utility/auth';
+// import { getGoogleToken } from '@/lib/utility/auth';
 import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 
@@ -11,17 +11,20 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       res.status(401).json({ error: 'Not authenticated' });
       return;
     }
-    const googleToken = await getGoogleToken();
-    if (!googleToken) {
-      res.status(401).json({ error: 'Not Authenticated' });
-    }
+    // const googleToken = await getGoogleToken();
+    // if (!googleToken) {
+    //   res.status(401).json({ error: 'Not Authenticated' });
+    // }
 
-    const response = await fetch(`${getAPIUrl()}/${companyId}/vendors-data`, {
-      headers: {
-        Authorization: `Bearer ${googleToken}`,
-        Auth0: `Bearer ${auth0Session.accessToken}`,
-      },
-    });
+    const response = await fetch(
+      `${getAPIUrl()}/${companyId}/get-all-vendors`,
+      {
+        headers: {
+          // Authorization: `Bearer ${googleToken}`,
+          Auth0: `Bearer ${auth0Session.accessToken}`,
+        },
+      }
+    );
 
     if (response.statusText !== 'OK') {
       const errorData = await response.json();
@@ -30,10 +33,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     const data = await response.json();
-    res.status(response.status || 200).json(data);
+    res.status(200).json(data);
   } catch (error: any) {
     console.error(error);
-    res.status(error.status || 500).json({
+    res.status(500).json({
       code: error.code,
       error: error.message,
     });

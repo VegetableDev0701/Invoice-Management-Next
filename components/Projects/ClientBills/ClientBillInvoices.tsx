@@ -54,6 +54,7 @@ export default function ClientBillInvoices(props: Props) {
         rows={invoiceRows}
         checkboxButtons={checkBoxButtons}
         projectId={projectId}
+        preSortKey="vendor_name"
       />
     </>
   );

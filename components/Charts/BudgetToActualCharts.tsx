@@ -258,7 +258,7 @@ export default function BudgetToActualCharts(props: Props) {
                   )}
                   {chartData.datasets[0].data?.every((data) => data === 0) &&
                     chartData.datasets[1].data?.every((data) => data === 0) && (
-                      <span className="font-sans text-[24px] font-semibold line-through">
+                      <span className="font-sans text-[24px] font-semibold text-stak-light-gray">
                         {title}
                       </span>
                     )}

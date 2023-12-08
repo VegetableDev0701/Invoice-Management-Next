@@ -1,3 +1,4 @@
+import { RESET_STATE } from '@/lib/globals';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface NodeEnv {
@@ -21,6 +22,9 @@ const nodeEnvSlice = createSlice({
     setNodeEnvVariables(state, action: PayloadAction<NodeEnv>) {
       Object.assign(state, action.payload);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => nodeEnvInitialState);
   },
 });
 

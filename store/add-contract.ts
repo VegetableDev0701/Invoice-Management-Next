@@ -6,6 +6,7 @@ import {
   SetFormElementPayload,
 } from '@/lib/models/formStateModels';
 import { resetAllFormValidation } from '@/lib/utility/formHelpers';
+import { RESET_STATE } from '@/lib/globals';
 
 const initialAddContractFormState: FormState = {};
 
@@ -36,6 +37,9 @@ const addContractFormSlice = createSlice({
     resetFormValidation(state) {
       return resetAllFormValidation(state);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialAddContractFormState);
   },
 });
 

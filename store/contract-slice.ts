@@ -4,6 +4,7 @@ import { ContractEntry } from '@/lib/models/summaryDataModel';
 
 import { uiActions } from './ui-slice';
 import { sseActions } from './sse-slice';
+import { RESET_STATE } from '@/lib/globals';
 
 export interface ContractSummaryData {
   vendor: string;
@@ -132,6 +133,7 @@ const contractSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(RESET_STATE, (state) => initialContractState);
     builder.addCase(getSignedUrlContract.pending, (state) => {
       state.isLoading = true;
     });

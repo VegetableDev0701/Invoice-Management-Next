@@ -12,6 +12,7 @@ import Form, {
   Props as FormProps,
 } from '@/components/Forms/InputFormLayout/Form';
 import { User } from '@/lib/models/formStateModels';
+import { getAPIUrl } from '@/lib/config';
 
 jest.mock('@heroicons/react/20/solid', () => ({
   ChevronUpDownIcon: () => (
@@ -43,6 +44,9 @@ jest.mock('@/store/hooks', () => ({
 jest.mock('../../components/Utilities/AgaveLinkComponent.tsx', () => {
   return () => <>AgaveLinkComponent</>;
 });
+jest.mock('@/lib/config', () => ({
+  getAPIUrl: jest.fn(),
+}));
 
 export interface EmptyAddProjectForm {
   mainCategories: MainCategories[];
@@ -79,6 +83,8 @@ const { totalNumInputs: accountSettingsTotalInputs } = createFormStateData(
 describe('test if the account settings form is completely rendered', () => {
   beforeEach(() => {
     (useUser as jest.Mock).mockReturnValue({ user: mockUser });
+
+    (getAPIUrl as jest.Mock).mockReturnValue('fake api url');
   });
   test('test full rendering of all inputs', () => {
     renderWithProviders(

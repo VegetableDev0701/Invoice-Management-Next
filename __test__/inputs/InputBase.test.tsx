@@ -2,12 +2,15 @@ import { screen } from '@testing-library/react';
 
 import { renderWithProviders } from '../utils/test-utils';
 import { Actions } from '@/lib/models/types';
-import { useGetInputState } from '@/lib/utility/formHelpers';
 
 import InputBase, { Props } from '@/components/Inputs/InputBaseWithValidation';
+import { getAPIUrl } from '@/lib/config';
 
 jest.mock('@heroicons/react/20/solid', () => ({
   ExclamationCircleIcon: () => <svg role="img" aria-hidden="true" />,
+}));
+jest.mock('@/lib/config', () => ({
+  getAPIUrl: jest.fn(),
 }));
 
 const props: Props = {
@@ -50,6 +53,9 @@ jest.mock('@/hooks/use-inputChangeHandler', () => {
 });
 
 describe('test this input component`s functions', () => {
+  beforeEach(() => {
+    (getAPIUrl as jest.Mock).mockReturnValue('fake api url');
+  });
   // This test throws an error, something about calling this custom hook...not sure why???
   // test('test if an error is called with getInputState', () => {
   //   console.error = jest.fn();

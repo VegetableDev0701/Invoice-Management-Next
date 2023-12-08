@@ -7,12 +7,21 @@ export interface InvoiceData {
   isLoading: boolean;
 }
 
+export interface PredictedSupplier {
+  supplier_name: string;
+  isGPT: boolean;
+  agave_uuid: string | null;
+  score: string | number | null;
+  vendor_match_conf_score: number | null;
+  uuid: string | null;
+}
+
 export interface InvoiceItem {
   processedData?: ProcessedInvoiceData;
   supplier_name: Entity;
   supplier_id: string | null;
   is_attached_to_bill: boolean;
-  predicted_supplier_name: { supplier_name: string; isGPT: boolean };
+  predicted_supplier_name: PredictedSupplier;
   gcs_uri: string;
   pages: Page[];
   number_of_pages: number;
@@ -90,7 +99,7 @@ export interface ProcessedInvoiceData {
   approver: string;
   total_tax_amount: string;
   line_items: InvoiceLineItem | object | null;
-  vendor_name: string;
+  vendor: { name: string | null; uuid: string | null };
   change_order: { uuid: string; name: string } | null;
   cost_code: string | null;
   line_items_toggle: boolean;
@@ -136,9 +145,9 @@ interface Page {
   width: number;
 }
 export interface InvoiceProject {
-  address: string;
-  uuid: string;
-  name: string;
+  address: string | null;
+  uuid: string | null;
+  name: string | null;
 }
 interface PredictedProject {
   address: string;
