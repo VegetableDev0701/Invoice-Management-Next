@@ -8,7 +8,7 @@ import {
 import { addProjectFormActions } from '@/store/add-project-slice';
 
 import useHttp from '@/hooks/use-http';
-import useSetNotification from '@/hooks/use-set-nofitication';
+import useSetNotification from '@/hooks/use-set-notification';
 
 import { companyDataActions } from '@/store/company-data-slice';
 import { projectDataActions } from '@/store/projects-data-slice';

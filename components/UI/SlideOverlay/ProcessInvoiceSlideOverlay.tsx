@@ -20,7 +20,7 @@ import { addVendorFormActions } from '@/store/add-vendor-slice';
 import { usePageData } from '@/hooks/use-page-data';
 import { useKeyPressActionOverlay } from '@/hooks/use-save-on-key-press';
 import { useInvoiceSignedUrl } from '@/hooks/use-get-signed-url';
-import useSetNotification from '@/hooks/use-set-nofitication';
+import useSetNotification from '@/hooks/use-set-notification';
 import useHttp from '@/hooks/use-http';
 
 import { FormData } from '@/lib/models/types';
@@ -125,15 +125,15 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
   //////
   ///
   // We need to capture a snapshot of the processInvoiceFormState when the user clicks
-  // the invoice table row. But this formState does not get populated immediatly in
-  // the ProcessInvoiceForm, child component. In that componenet it runs through a loop filling in the input
-  // values, and only AFTER this is complete, we want to take that snapshot. Becuase of async
+  // the invoice table row. But this formState does not get populated immediately in
+  // the ProcessInvoiceForm, child component. In that component it runs through a loop filling in the input
+  // values, and only AFTER this is complete, we want to take that snapshot. Because of async
   // characteristics of javascript, this is harder than it seems.
   // First, constantly update the formState in the first useEffect, updating, latestFormState
   // Second, Take the snapshot ONLY when childHasRendered is true, and triggers that second effect.
   // Third, We need to reset childHasRendered each time the user clicks a row.
-  // childHasRendered is a callback function that is passed as a prop to the ProcessInvoiceForm componenet,
-  // and called in a useEffect with [], empty, dependendencies.
+  // childHasRendered is a callback function that is passed as a prop to the ProcessInvoiceForm component,
+  // and called in a useEffect with [], empty, dependencies.
   useEffect(() => {
     setLatestFormState(processInvoiceFormState);
   }, [processInvoiceFormState]);
@@ -175,7 +175,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
 
       if (matchedVendorContract) {
         // if we find a contract matched to the vendor, set that in the contract state
-        // and then dispatch the `isRowClicked` which will opent he slide overlay from
+        // and then dispatch the `isRowClicked` which will open the slide overlay from
         // when the user clicks the edit button found in the Input component (Inputs folder)
         dispatch(
           contractActions.setClickedContract({
@@ -349,7 +349,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
           },
         })
       );
-      // force the currentrow and process invoice form component to render with new data
+      // force the current row and process invoice form component to render with new data
       setRenderRows((prevState) => !prevState);
       setKey((prevState) => prevState + 1);
     }

@@ -10,7 +10,7 @@ import { addBudgetFormActions } from '@/store/add-budget-slice';
 import { useCurrentUser as useUser } from '@/hooks/use-user';
 import useHttp from '@/hooks/use-http';
 import { useSetStatePath } from '@/hooks/use-setpath';
-import useSetNotification from '@/hooks/use-set-nofitication';
+import useSetNotification from '@/hooks/use-set-notification';
 
 import { User } from '@/lib/models/formStateModels';
 

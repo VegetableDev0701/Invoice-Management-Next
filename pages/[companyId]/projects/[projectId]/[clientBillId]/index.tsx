@@ -11,7 +11,7 @@ import { updateInvoiceData } from '@/store/invoice-slice';
 import { updateBudgetActuals } from '@/store/add-client-bill';
 
 import useHttp from '@/hooks/use-http';
-import useSetNotification from '@/hooks/use-set-nofitication';
+import useSetNotification from '@/hooks/use-set-notification';
 
 import { FormStateV2, User } from '@/lib/models/formStateModels';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';

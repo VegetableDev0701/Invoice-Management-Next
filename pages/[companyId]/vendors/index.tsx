@@ -19,7 +19,7 @@ import { companyDataActions } from '@/store/company-data-slice';
 import { usePageData } from '@/hooks/use-page-data';
 import { useSetStatePath } from '@/hooks/use-setpath';
 import useHttp from '@/hooks/use-http';
-import useSetNotification from '@/hooks/use-set-nofitication';
+import useSetNotification from '@/hooks/use-set-notification';
 
 import { FormState, User } from '@/lib/models/formStateModels';
 import { SELECT_MENU_DIVISIONS } from '@/lib/globals';
