@@ -174,7 +174,7 @@ const ProjectButtons = (props: Props) => {
         projectBudget,
         changeOrderSummary,
         companyId: (user as User).user_metadata.companyId,
-        projectSummary
+        projectSummary,
       });
       const result = await fetchWithRetry(
         `/api/${
