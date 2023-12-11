@@ -625,6 +625,7 @@ export const updateBudgetActuals = createAsyncThunk(
     },
     { getState, dispatch }
   ) => {
+    dispatch(uiActions.lockUI());
     try {
       const state = getState() as RootState;
       const projectSummary = (
@@ -767,6 +768,7 @@ export const updateBudgetActuals = createAsyncThunk(
           }
         );
       } catch (error) {
+        dispatch(uiActions.unLockUI());
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         console.error(error);
       }
@@ -801,6 +803,7 @@ export const updateBudgetActuals = createAsyncThunk(
       });
 
       if (!newResult || !oldResult) {
+        dispatch(uiActions.unLockUI());
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
           uiActions.notify({
@@ -920,6 +923,7 @@ export const updateBudgetActuals = createAsyncThunk(
         );
       } catch (error) {
         console.error(error);
+        dispatch(uiActions.unLockUI());
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
           uiActions.notify({
@@ -957,8 +961,10 @@ export const updateBudgetActuals = createAsyncThunk(
             icon: 'success',
           })
         );
+        dispatch(uiActions.unLockUI());
       } catch (error) {
         console.error(error);
+        dispatch(uiActions.unLockUI());
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
           uiActions.notify({

@@ -14,14 +14,11 @@ import '../styles/globals.css';
 import NotificationWrapper from '@/components/UI/Notification/NotificationWrapper';
 import ServerSentEvent from '@/components/Utilities/WebSocketWrapper';
 import OnBoardNewUser from '@/components/Utilities/OnBoardUser/OnBoardNewUser';
-import FullScreenLoader from '@/components/UI/Loaders/FullScreenLoader';
-import { useAppSelector as useSelector } from '@/store/hooks';
 
 const INACTIVITY_TIMEOUT = 4 * 60 * 60 * 1000; // 4 hours
 // const INACTIVITY_TIMEOUT = 5000; // used for testing
 
 const App = ({ Component, pageProps }: AppProps) => {
-  const isLoading = useSelector((state) => state.ui.lockUI);
   return (
     <UserProvider>
       <Provider store={store}>
@@ -41,7 +38,6 @@ const App = ({ Component, pageProps }: AppProps) => {
                   />
                 </Head>
                 <AutoLogoutWrapper timeout={INACTIVITY_TIMEOUT}>
-                  {isLoading && <FullScreenLoader />}
                   <NotificationWrapper />
                   <ServerSentEvent />
                   <Component {...pageProps} />

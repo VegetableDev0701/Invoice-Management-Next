@@ -586,6 +586,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
           icon: 'save',
         })
       );
+      thunkAPI.dispatch(uiActions.unLockUI());
     } catch (error) {
       thunkAPI.dispatch(uiActions.unLockUI());
       thunkAPI.dispatch(
