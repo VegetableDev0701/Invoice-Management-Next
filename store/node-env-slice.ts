@@ -24,7 +24,7 @@ const nodeEnvSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (state) => nodeEnvInitialState);
+    builder.addCase(RESET_STATE, (_state) => nodeEnvInitialState);
   },
 });
 

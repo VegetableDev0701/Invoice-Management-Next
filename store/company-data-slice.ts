@@ -1067,7 +1067,7 @@ export const companyDataSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(RESET_STATE, (state) => initialDataState)
+      .addCase(RESET_STATE, (_state) => initialDataState)
       .addCase(updateInvoices.fulfilled, (state, action) => {
         state.invoices.allInvoices = {
           ...state.invoices.allInvoices,

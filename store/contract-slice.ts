@@ -133,7 +133,7 @@ const contractSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (state) => initialContractState);
+    builder.addCase(RESET_STATE, (_state) => initialContractState);
     builder.addCase(getSignedUrlContract.pending, (state) => {
       state.isLoading = true;
     });

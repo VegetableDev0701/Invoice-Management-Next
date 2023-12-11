@@ -15,7 +15,7 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (state) => initialUserState);
+    builder.addCase(RESET_STATE, (_state) => initialUserState);
   },
 });
 export default userSlice;

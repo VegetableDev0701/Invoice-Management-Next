@@ -39,7 +39,7 @@ const addContractFormSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (state) => initialAddContractFormState);
+    builder.addCase(RESET_STATE, (_state) => initialAddContractFormState);
   },
 });
 
