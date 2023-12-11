@@ -660,7 +660,7 @@ const handleWholeInvoice = ({
       qtyAmt: '1',
       rateAmt: formatNumber(amount.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(costCode, costCodeNameList),
-      vendor: invoice.processedData.vendor.name ?? '',
+      vendor: invoice.processedData.vendor?.name ?? '',
       changeOrder: changeOrder.name,
       group: 'Change Orders',
     });
@@ -671,7 +671,7 @@ const handleWholeInvoice = ({
       qtyAmt: '1',
       rateAmt: formatNumber(amountInvoice.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(costCode, costCodeNameList),
-      vendor: invoice.processedData.vendor.name ?? '',
+      vendor: invoice.processedData.vendor?.name ?? '',
       changeOrder: changeOrder.name,
       group: 'Change Orders',
     });
@@ -722,7 +722,7 @@ const handleWholeInvoice = ({
       qtyAmt: '1',
       rateAmt: formatNumber(amount.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(costCode, costCodeNameList),
-      vendor: invoice.processedData.vendor.name ?? '',
+      vendor: invoice.processedData.vendor?.name ?? '',
       changeOrder: null,
       group: 'Invoices',
     });
@@ -733,7 +733,7 @@ const handleWholeInvoice = ({
       qtyAmt: '1',
       rateAmt: formatNumber(amountInvoice.toFixed(2)),
       description: getCostCodeDescriptionFromNumber(costCode, costCodeNameList),
-      vendor: invoice.processedData.vendor.name ?? '',
+      vendor: invoice.processedData.vendor?.name ?? '',
       changeOrder: null,
       group: 'Invoices',
     });
@@ -758,13 +758,13 @@ const handleError = ({
 }) => {
   console.error(
     `Some invoices don't have necessary information: 
-        Vendor: ${invoice.processedData.vendor.name}; ID: ${invoice.processedData.invoice_id}
+        Vendor: ${invoice.processedData.vendor?.name}; ID: ${invoice.processedData.invoice_id}
         Amount: ${invoice.processedData.total_amount}`
   );
   dispatch(
     uiActions.setModalContent({
       openModal: true,
-      message: `The invoice (Vendor: ${invoice.processedData.vendor.name}; ID: ${invoice.processedData.invoice_id});
+      message: `The invoice (Vendor: ${invoice.processedData.vendor?.name}; ID: ${invoice.processedData.invoice_id});
         Amount: ${invoice.processedData.total_amount} is missing 
         necessary information such as cost code, total, and/or tax. 
         You cannot build a client's bill without all necessary information.`,

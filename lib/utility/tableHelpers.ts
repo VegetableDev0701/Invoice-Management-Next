@@ -263,8 +263,8 @@ export const getAllVendorNames = ({
         count++;
         return {
           id: count,
-          label: vendor.vendorName,
-          uuid: vendor.uuid,
+          label: vendor?.vendorName,
+          uuid: vendor?.uuid,
         };
       })
     : [];
