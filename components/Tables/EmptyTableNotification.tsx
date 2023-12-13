@@ -10,6 +10,7 @@ export type TableType =
   | 'projects'
   | 'expiredLicenseVendors'
   | 'completedProjects'
+  | 'isSyncedQB'
   | undefined;
 
 interface Props {

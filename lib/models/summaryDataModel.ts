@@ -165,28 +165,29 @@ export interface VendorSummary {
 }
 
 export interface VendorSummaryItem extends BaseSummary {
-  insuranceName: string;
-  w9OnFile: boolean;
-  businessLicExpirationDate: string;
-  cellPhone: string;
-  zipCode: string;
   vendorName: string;
-  businessLicNumber: string;
-  insuranceExpirationDate: string;
-  city: string;
-  vendorType: string;
-  landiExpirationDate: string;
-  primaryContact: string;
-  insuranceCoverageAmt: string;
-  bondCompanyName: string;
-  bondAmt: string;
-  workPhone: string;
-  address: string;
-  state: string;
-  landiLicNumber: string;
-  email: string;
-  workersCompExpirationDate: string;
-  agave_uuid?: string;
+  w9OnFile: boolean;
+  insuranceName?: string;
+  businessLicExpirationDate?: string;
+  cellPhone?: string;
+  zipCode?: string;
+  businessLicNumber?: string;
+  insuranceExpirationDate?: string;
+  city?: string;
+  vendorType?: string;
+  landiExpirationDate?: string;
+  primaryContact?: string;
+  insuranceCoverageAmt?: string;
+  bondCompanyName?: string;
+  bondAmt?: string;
+  workPhone?: string;
+  address?: string;
+  state?: string;
+  landiLicNumber?: string;
+  email?: string;
+  workersCompExpirationDate?: string;
+  taxNumber?: string;
+  agave_uuid?: string | null;
 }
 
 export interface SummaryProjects {

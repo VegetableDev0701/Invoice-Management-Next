@@ -24,6 +24,7 @@ interface Props {
   projectId?: string;
   overlayStateKey: string;
   responseLoading?: boolean;
+  onProcessInvoiceForm?: boolean;
   onSubmit?: (
     e: React.MouseEvent<HTMLButtonElement | HTMLDivElement, MouseEvent>
   ) => void;
@@ -40,6 +41,7 @@ export default function SlideOverlayForm(props: Props) {
     projectId,
     overlayStateKey,
     responseLoading,
+    onProcessInvoiceForm,
     onSubmit,
   } = props;
 
@@ -47,6 +49,7 @@ export default function SlideOverlayForm(props: Props) {
 
   const saveLaborButtonRef = useRef<HTMLButtonElement>(null);
   useKeyPressActionOverlay({
+    isActive: overlayContent.open && onProcessInvoiceForm,
     formOverlayOpen: open,
     ref: saveLaborButtonRef,
     keyName: 'Enter',
@@ -58,7 +61,7 @@ export default function SlideOverlayForm(props: Props) {
 
   useEffect(() => {
     setOpen(overlayContent.open as boolean);
-  }, [overlayContent.open]);
+  }, [overlayContent?.open]);
 
   const dispatch = useDispatch();
 
@@ -163,6 +166,7 @@ export default function SlideOverlayForm(props: Props) {
                               buttonText={
                                 overlayContent?.isSave ? 'Save' : 'Update'
                               }
+                              type="button"
                               onClick={onSubmit}
                               ref={saveLaborButtonRef}
                             />

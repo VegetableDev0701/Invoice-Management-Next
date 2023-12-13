@@ -113,6 +113,7 @@ const DropDownWithSearch = (props: Props) => {
   const addVendorClickHandler = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
+
     dispatch(addVendorFormActions.clearFormState());
     dispatch(addVendorFormActions.resetFormValidation());
     dispatch(
@@ -237,7 +238,7 @@ const DropDownWithSearch = (props: Props) => {
       actions.setFormElement({
         inputValue: selected?.label,
         inputKey: input.id,
-        isValid: getValidFunc(input.id, isInputRequired)(selected.label),
+        isValid: getValidFunc(input.id)(selected.label, isInputRequired),
       })
     );
   }, [selected.label, input.id, getValidFunc]);
@@ -247,10 +248,10 @@ const DropDownWithSearch = (props: Props) => {
       actions.setIsTouchedState({
         inputKey: input.id,
         isTouched: true,
-        isValid: getValidFunc(
-          input.id,
+        isValid: getValidFunc(input.id)(
+          (inputState as FormStateItem).value as string,
           input.required
-        )((inputState as FormStateItem).value as string),
+        ),
       })
     );
   };
@@ -282,7 +283,19 @@ const DropDownWithSearch = (props: Props) => {
                     ? 'border-red-500'
                     : 'border-stak-light-gray'
                 } ${classes['input-container__input']}`}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  dispatch(
+                    actions.setIsTouchedState({
+                      inputKey: input.id,
+                      isTouched: true,
+                      isValid: getValidFunc(input.id)(
+                        (inputState as FormStateItem).value as string,
+                        input.required
+                      ),
+                    })
+                  );
+                }}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
                 onFocus={onFocus}
@@ -349,11 +362,13 @@ const DropDownWithSearch = (props: Props) => {
                 <ButtonIcon
                   icon={<AddVendorIcon width={40} height={40} />}
                   className="items-center px-1"
+                  type="button"
                   onClick={addVendorClickHandler}
                 />
                 <ButtonIcon
                   icon={<AddInvoice width={40} height={40} />}
                   className="items-center"
+                  type="button"
                   disabled={
                     (contractObj.clickedContract &&
                       contractObj.clickedContract.summaryData.uuid !==

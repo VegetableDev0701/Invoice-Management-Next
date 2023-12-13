@@ -419,3 +419,96 @@ export function editCostCode(costCodes: CostCodesData, action: UpdateCostCode) {
   result.data.name = name;
   result.data.number = number;
 }
+
+export function covertQBD2CostCode(_data: any) {
+  let data = _data?.Service?.data;
+
+  const levelList: {
+    [agave_uuid: string]: number[];
+  } = {};
+
+  const budget: CostCodesData = {
+    format: '',
+    currency: 'USD',
+    updated: true,
+    divisions: [],
+  };
+
+  if (!Array.isArray(data)) return budget;
+
+  budget.divisions = data
+    .filter(
+      (item: any) =>
+        !item.source_data.data.ParentRef &&
+        item.source_data.data.Sublevel === '0' &&
+        !isNaN(Number(item.name.substring(0, item.name.indexOf(' '))))
+    )
+    .map((item: any, index: number) => {
+      const costCode = item.name.substring(0, item.name.indexOf(' '));
+
+      levelList[item.source_id] = [index];
+
+      return {
+        agave_uuid: item.id,
+        name: item.name.substring(item.name.indexOf(' ') + 1),
+        number: costCode,
+        subItems: [],
+      };
+    });
+
+  data = data.filter((item: any) => item.source_data.data.Sublevel !== '0');
+
+  let currentLevel = 1;
+
+  while (data.length) {
+    data
+      .filter((item: any) => item.source_data.data.Sublevel == currentLevel)
+      .forEach((item: any) => {
+        const costCode = item.name.substring(0, item.name.indexOf(' '));
+
+        const parentId = item.source_data.data.ParentRef.ListID;
+
+        const parentLevel = levelList[parentId];
+        if (!parentLevel) return;
+
+        const result = getDataByRecursiveLevel({
+          fullData: budget.divisions,
+          level: parentLevel,
+        });
+
+        if (!result || !result.data) {
+          return;
+        }
+
+        if (!result.data.subItems) result.data.subItems = [];
+        if ((result.data as CostCodeItem).isCurrency) {
+          (result.data as CostCodeItem).isCurrency = false;
+          (result.data as CostCodeItem).value = '0.00';
+        }
+
+        levelList[item.source_id] = [
+          ...parentLevel,
+          result.data.subItems.length,
+        ];
+
+        result.data.subItems = [
+          ...result.data.subItems,
+          {
+            agave_uuid: item.id,
+            name: item.name.substring(item.name.indexOf(' ') + 1),
+            number: costCode,
+            subItems: [],
+            isCurrency: true,
+            value: '',
+          },
+        ];
+      });
+
+    data = data.filter(
+      (item: any) => item.source_data.data.Sublevel != currentLevel
+    );
+    currentLevel++;
+  }
+
+  return budget;
+}

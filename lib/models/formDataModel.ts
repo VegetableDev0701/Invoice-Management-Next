@@ -119,7 +119,9 @@ export interface Items {
   'data-testid'?: string | null;
   type?: string | null;
   errormessage?: string | null;
+  validMessage?: string | null;
   isCurrency?: boolean | null;
+  isTaxNumber?: boolean | null;
   isPhoneNumber?: boolean | null;
   isAddress?: boolean | null;
   validFunc?: string | null;

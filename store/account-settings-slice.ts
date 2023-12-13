@@ -37,7 +37,7 @@ const accountSettingsFormSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (state) => initialAcccountSettingsState);
+    builder.addCase(RESET_STATE, () => initialAcccountSettingsState);
   },
 });
 

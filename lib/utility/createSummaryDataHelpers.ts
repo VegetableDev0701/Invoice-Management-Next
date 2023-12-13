@@ -202,7 +202,8 @@ export const createSingleProjectSummary = (
 
 export const createSingleVendorSummary = (
   vendor: VendorData,
-  uuid: string
+  uuid: string,
+  agave_uuid: string | null
 ): VendorSummaryItem => {
   const vendorDetails = vendor.mainCategories[0];
   const licenseInsDetails = vendor.mainCategories[1];
@@ -214,79 +215,75 @@ export const createSingleVendorSummary = (
     primaryContact: getTargetValue(
       'primary-contact',
       vendorDetails.inputElements
-    ) as string,
-    workPhone: getTargetValue(
-      'work-phone',
-      vendorDetails.inputElements
-    ) as string,
-    cellPhone: getTargetValue(
-      'cell-phone',
-      vendorDetails.inputElements
-    ) as string,
+    ) as string | undefined,
+    workPhone: getTargetValue('work-phone', vendorDetails.inputElements) as
+      | string
+      | undefined,
+    cellPhone: getTargetValue('cell-phone', vendorDetails.inputElements) as
+      | string
+      | undefined,
     email: getTargetValue('email', vendorDetails.inputElements) as string,
-    address: getTargetValue(
-      'vendor-address',
-      vendorDetails.inputElements
-    ) as string,
+    address: getTargetValue('vendor-address', vendorDetails.inputElements) as
+      | string
+      | undefined,
     city: getTargetValue('city-vendor', vendorDetails.inputElements) as string,
-    state: getTargetValue(
-      'state-vendor',
-      vendorDetails.inputElements
-    ) as string,
-    zipCode: getTargetValue(
-      'zip-code-vendor',
-      vendorDetails.inputElements
-    ) as string,
-    vendorType: getTargetValue(
-      'vendor-type',
-      vendorDetails.inputElements
-    ) as string,
+    state: getTargetValue('state-vendor', vendorDetails.inputElements) as
+      | string
+      | undefined,
+    zipCode: getTargetValue('zip-code-vendor', vendorDetails.inputElements) as
+      | string
+      | undefined,
+    vendorType: getTargetValue('vendor-type', vendorDetails.inputElements) as
+      | string
+      | undefined,
     businessLicNumber: getTargetValue(
       'business-license-number',
       licenseInsDetails.inputElements
-    ) as string,
+    ) as string | undefined,
     businessLicExpirationDate: getTargetValue(
       'license-expiration-date',
       licenseInsDetails.inputElements
-    ) as string,
+    ) as string | undefined,
     insuranceName: getTargetValue(
       'insurance-name',
       licenseInsDetails.inputElements
-    ) as string,
+    ) as string | undefined,
     insuranceExpirationDate: getTargetValue(
       'insurance-expiration-date',
       licenseInsDetails.inputElements
-    ) as string,
+    ) as string | undefined,
     insuranceCoverageAmt: getTargetValue(
       'insurance-coverage-amount',
       licenseInsDetails.inputElements
-    ) as string,
+    ) as string | undefined,
     landiLicNumber: getTargetValue(
       'landi-number',
       licenseInsDetails.inputElements
-    ) as string,
+    ) as string | undefined,
     landiExpirationDate: getTargetValue(
       'landi-expiration-date',
       licenseInsDetails.inputElements
-    ) as string,
+    ) as string | undefined,
     workersCompExpirationDate: getTargetValue(
       'workers-compensation-expiration',
       licenseInsDetails.inputElements
-    ) as string,
+    ) as string | undefined,
     bondCompanyName: getTargetValue(
       'bond-company-name',
       licenseInsDetails.inputElements
-    ) as string,
-    bondAmt: getTargetValue(
-      'bond-amount',
-      licenseInsDetails.inputElements
-    ) as string,
+    ) as string | undefined,
+    bondAmt: getTargetValue('bond-amount', licenseInsDetails.inputElements) as
+      | string
+      | undefined,
     w9OnFile: getTargetValue(
       'w9-on-file',
       licenseInsDetails.inputElements
     ) as boolean,
+    taxNumber: getTargetValue('tax-number', licenseInsDetails.inputElements) as
+      | string
+      | undefined,
     uuid: uuid,
-    agave_uuid: undefined,
+    agave_uuid: agave_uuid ?? null,
   };
 
   return vendorTableRow;

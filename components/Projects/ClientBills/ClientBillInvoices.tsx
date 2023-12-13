@@ -20,6 +20,7 @@ const tableHeadings: InvoiceTableHeadings = {
   total_amount: 'Total Due ($)',
   total_tax_amount: 'Total Tax ($)',
   date_received: 'Date Received',
+  status: 'Status',
 };
 
 const checkBoxButtons = [

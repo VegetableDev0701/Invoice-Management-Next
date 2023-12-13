@@ -3,7 +3,10 @@ import useCreateInvoiceRows from '@/hooks/use-create-invoice-table-data';
 
 import { Items } from '@/lib/models/formDataModel';
 import { ContractData, ProjectSummary } from '@/lib/models/summaryDataModel';
-import { getProjectNamesForDropdown } from '@/lib/utility/tableHelpers';
+import {
+  getProjectNamesForDropdown,
+  sortTableData,
+} from '@/lib/utility/tableHelpers';
 
 import InvoicesTable from '../Tables/Invoices/InvoiceSortHeadingsTable';
 import ProcessInvoiceSlideOverlay from '../UI/SlideOverlay/ProcessInvoiceSlideOverlay';
@@ -11,6 +14,7 @@ import {
   InvoiceData,
   InvoiceTableHeadings,
 } from '@/lib/models/invoiceDataModels';
+import { useEffect } from 'react';
 
 interface ExtendedItems extends Partial<Items> {
   sortBy: 'label' | 'id';
@@ -32,6 +36,7 @@ const tableHeadings: InvoiceTableHeadings = {
   date_received: 'Date Received',
   processed: 'Processed',
   approved: 'Approved',
+  status: 'Status',
 };
 
 const checkBoxButtons = [{ label: 'Delete', buttonPath: '#', disabled: false }];
@@ -57,11 +62,17 @@ export default function ProjectsInvoices(props: Props) {
     forceToTopKey: 'Unassigned',
   };
 
-  const invoiceRows = useCreateInvoiceRows({
+  let invoiceRows = useCreateInvoiceRows({
     pageLoading,
     invoices,
     projectId,
   });
+
+  useEffect(() => {
+    if (invoiceRows) {
+      invoiceRows = sortTableData(invoiceRows, 'vendor_name', 'asc');
+    }
+  }, [invoiceRows]);
 
   return (
     <>

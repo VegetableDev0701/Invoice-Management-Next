@@ -25,7 +25,7 @@ import {
 interface Props {
   pageArray: string[];
   open: boolean;
-  currentRow?: number;
+  currentRowIdx?: number;
   rows: InvoiceTableRow[] | null;
   snapShotFormState?: FormStateV2;
   updateData?: boolean;
@@ -41,7 +41,7 @@ export default function CenteredPagination(props: Props) {
   const {
     pageArray,
     rows,
-    currentRow,
+    currentRowIdx,
     open,
     snapShotFormState,
     updateData = true,
@@ -51,19 +51,6 @@ export default function CenteredPagination(props: Props) {
 
   const forwardButtonRef = useRef<HTMLDivElement>(null);
   const backButtonRef = useRef<HTMLDivElement>(null);
-
-  useKeyPressActionOverlay({
-    formOverlayOpen: open,
-    ref: forwardButtonRef,
-    isMoveForward: true,
-    keyName: 'Enter',
-  });
-  useKeyPressActionOverlay({
-    formOverlayOpen: open,
-    ref: backButtonRef,
-    isMoveBackward: true,
-    keyName: 'Enter',
-  });
 
   const { user } = useUser();
 
@@ -76,24 +63,43 @@ export default function CenteredPagination(props: Props) {
     (state) => state.addProcessInvoiceForm
   );
 
+  const overlayContent = useSelector((state) => state.overlay);
+
+  useKeyPressActionOverlay({
+    isActive:
+      overlayContent['process-invoices'].open && !overlayContent.vendors.open,
+    formOverlayOpen: open,
+    ref: forwardButtonRef,
+    isMoveForward: true,
+    keyName: 'Enter',
+  });
+  useKeyPressActionOverlay({
+    isActive:
+      overlayContent['process-invoices'].open && !overlayContent.vendors.open,
+    formOverlayOpen: open,
+    ref: backButtonRef,
+    isMoveBackward: true,
+    keyName: 'Enter',
+  });
+
   useEffect(() => {
     onChangePage(activePageIdx);
   }, [activePageIdx]);
 
   const decrementRow = () => {
-    if (currentRow !== undefined && rows) {
+    if (currentRowIdx !== undefined && rows) {
       dispatch(
         invoiceActions.setClickedInvoice({
-          invoice: rows[currentRow - 1],
+          invoice: rows[currentRowIdx - 1],
           isRowClicked: true,
-          invoiceRowNumber: currentRow - 1,
+          invoiceRowNumber: currentRowIdx - 1,
         })
       );
       dispatch(
         overlayActions.setOverlayContent({
           data: {
-            currentId: rows[currentRow - 1].doc_id,
-            currentData: allInvoices[rows[currentRow - 1].doc_id],
+            currentId: rows[currentRowIdx - 1].doc_id,
+            currentData: allInvoices[rows[currentRowIdx - 1].doc_id],
           },
           stateKey: 'process-invoices',
         })
@@ -113,8 +119,8 @@ export default function CenteredPagination(props: Props) {
         dispatch(
           addProcessedInvoiceData({
             companyId: (user as User).user_metadata.companyId,
-            invoiceId: rows[currentRow].doc_id,
-            projectName: rows[currentRow].project,
+            invoiceId: rows[currentRowIdx].doc_id,
+            projectName: rows[currentRowIdx].project,
             snapShotFormState,
           })
         );
@@ -122,7 +128,7 @@ export default function CenteredPagination(props: Props) {
       dispatch(
         invoiceActions.getInvoiceSnapshot({
           formState: snapshotCopy(processInvoiceFormState) as FormStateV2,
-          doc_id: rows[currentRow].doc_id,
+          doc_id: rows[currentRowIdx].doc_id,
         })
       );
       dispatch(addProcessInvoiceFormActions.clearFormState());
@@ -130,19 +136,19 @@ export default function CenteredPagination(props: Props) {
   };
 
   const incrementRow = () => {
-    if (currentRow !== undefined && rows) {
+    if (currentRowIdx !== undefined && rows) {
       dispatch(
         invoiceActions.setClickedInvoice({
-          invoice: rows[currentRow + 1],
+          invoice: rows[currentRowIdx + 1],
           isRowClicked: true,
-          invoiceRowNumber: currentRow + 1,
+          invoiceRowNumber: currentRowIdx + 1,
         })
       );
       dispatch(
         overlayActions.setOverlayContent({
           data: {
-            currentId: rows[currentRow + 1].doc_id,
-            currentData: allInvoices[rows[currentRow + 1].doc_id],
+            currentId: rows[currentRowIdx + 1].doc_id,
+            currentData: allInvoices[rows[currentRowIdx + 1].doc_id],
           },
           stateKey: 'process-invoices',
         })
@@ -162,8 +168,8 @@ export default function CenteredPagination(props: Props) {
         dispatch(
           addProcessedInvoiceData({
             companyId: (user as User).user_metadata.companyId,
-            invoiceId: rows[currentRow].doc_id,
-            projectName: rows[currentRow].project,
+            invoiceId: rows[currentRowIdx].doc_id,
+            projectName: rows[currentRowIdx].project,
             snapShotFormState,
           })
         );
@@ -171,7 +177,7 @@ export default function CenteredPagination(props: Props) {
       dispatch(
         invoiceActions.getInvoiceSnapshot({
           formState: snapshotCopy(processInvoiceFormState) as FormStateV2,
-          doc_id: rows[currentRow].doc_id,
+          doc_id: rows[currentRowIdx].doc_id,
         })
       );
       dispatch(addProcessInvoiceFormActions.clearFormState());
@@ -181,9 +187,10 @@ export default function CenteredPagination(props: Props) {
   return (
     <nav className="flex items-center font-sans justify-between border-t border-gray-200 px-4 sm:px-0">
       <div className="-mt-px pl-4 flex w-0 flex-1">
-        {currentRow !== undefined && currentRow > 0 && (
+        {currentRowIdx !== undefined && currentRowIdx > 0 && (
           <div
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               decrementRow();
               dispatch(overlayActions.removeCurrentInvoiceEntityBox());
             }}
@@ -199,7 +206,7 @@ export default function CenteredPagination(props: Props) {
         )}
       </div>
       <div className="hidden md:-mt-px md:flex">
-        {pageArray.map((page, i) => {
+        {pageArray.map((_page, i) => {
           return (
             <div
               key={i}
@@ -214,22 +221,25 @@ export default function CenteredPagination(props: Props) {
         })}
       </div>
       <div className="-mt-px pr-4 flex w-0 flex-1 justify-end">
-        {currentRow !== undefined && rows && currentRow < rows.length - 1 && (
-          <div
-            onClick={() => {
-              incrementRow();
-              dispatch(overlayActions.removeCurrentInvoiceEntityBox());
-            }}
-            ref={forwardButtonRef}
-            className="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 hover:cursor-pointer"
-          >
-            Next
-            <ArrowLongRightIcon
-              className="ml-3 h-5 w-5 text-gray-400"
-              aria-hidden="true"
-            />
-          </div>
-        )}
+        {currentRowIdx !== undefined &&
+          rows &&
+          currentRowIdx < rows.length - 1 && (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                incrementRow();
+                dispatch(overlayActions.removeCurrentInvoiceEntityBox());
+              }}
+              ref={forwardButtonRef}
+              className="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 hover:cursor-pointer"
+            >
+              Next
+              <ArrowLongRightIcon
+                className="ml-3 h-5 w-5 text-gray-400"
+                aria-hidden="true"
+              />
+            </div>
+          )}
       </div>
     </nav>
   );

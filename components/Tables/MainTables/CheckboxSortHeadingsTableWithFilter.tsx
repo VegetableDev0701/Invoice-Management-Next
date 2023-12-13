@@ -1,6 +1,8 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 
+import { useAppSelector as useSelector } from '@/store/hooks';
+
 import {
   formatNameForID,
   formatNumber,
@@ -10,6 +12,7 @@ import {
   checkExpirationDate,
   formatDate,
   sortTableData,
+  yesNoBadge,
 } from '@/lib/utility/tableHelpers';
 import {
   ProjectSummaryItem,
@@ -77,6 +80,8 @@ export default function CheckboxSortHeadingsTable<
 
   const checkbox = useRef<HTMLInputElement | null>(null);
 
+  const tasksInProgress = useSelector((state) => state.ui.tasksInProgress);
+
   const [activeHeading, setActiveHeading] = useState<keyof H | null>(null);
   const [sortKey, setSortKey] = useState<keyof H | null | undefined>(
     preSortKey
@@ -139,22 +144,30 @@ export default function CheckboxSortHeadingsTable<
   }, [rows, activeFilter, sortKey, sortOrder]);
 
   const commonHeadingClasses =
-    'sticky max-w-[17rem] top-0 z-10 border-b border-gray-300 bg-white bg-opacity-80 text-left text-sm uppercase font-bold backdrop-blur backdrop-filter text-stak-dark-green';
+    'sticky max-w-[20rem] top-0 z-10 border-b border-gray-300 bg-white bg-opacity-80 text-left text-sm uppercase font-bold backdrop-blur backdrop-filter text-stak-dark-green';
   const firstHeadingClasses = 'py-3.5 pl-4 pr-3 rounded-tl-lg sm:pl-6 lg:pl-8';
   const middleHeadingClasses = 'px-3 py-3.5';
-  const lastHeadingClasses = 'py-3.5 pl-3 pr-3 rounded-tr-lg sm:pr-6 lg:pr-6';
+  const lastHeadingClasses = `py-3.5 pl-3 pr-3 rounded-tr-lg sm:pr-6 lg:pr-6 ${
+    tableType === 'vendors' ? 'text-left w-1' : ''
+  }`;
 
   const commonColClasses = `${
     tableType === 'projects' ? 'py-4' : 'py-1'
   } border-b max-w-[17rem] border-gray-200 whitespace-nowrap text-sm text-gray-500`;
   const firstColClasses = 'pl-4 pr-3 sm:pl-6 lg:pl-8';
   const middleColClasses = 'py-1 px-3';
-  const lastColClasses = 'pr-4 pl-3 sm:pr-6 lg:pr-6';
+  const lastColClasses = `pr-4 pl-3 sm:pr-6 lg:pr-6 ${
+    tableType === 'vendors' ? 'text-left w-1 pr-10' : ''
+  }`;
 
   let tableTypeInstance: TableType = undefined;
   if (tableType === 'vendors') {
     tableTypeInstance =
-      activeTabKeyName === 'all' ? 'vendors' : 'expiredLicenseVendors';
+      activeTabKeyName === 'all'
+        ? 'vendors'
+        : activeTabKeyName === 'expiredLicense'
+        ? 'expiredLicenseVendors'
+        : 'isSyncedQB';
   } else if (tableType === 'projects') {
     tableTypeInstance =
       activeTabKeyName === 'active' ? 'projects' : 'completedProjects';
@@ -300,7 +313,7 @@ export default function CheckboxSortHeadingsTable<
                                 className={classNames(
                                   j === 0
                                     ? firstColClasses
-                                    : j === filteredSortedData.length - 1
+                                    : j === Object.keys(headings).length - 1
                                     ? lastColClasses
                                     : middleColClasses,
                                   commonColClasses,
@@ -361,6 +374,16 @@ export default function CheckboxSortHeadingsTable<
                                             headingsKey
                                           ] as string
                                         )
+                                      : headingsKey.includes('agave_uuid')
+                                      ? yesNoBadge({
+                                          value: (element as ExtendT)[
+                                            headingsKey
+                                          ],
+                                          positiveText: 'Vendor Synced',
+                                          negativeText: 'Vendor Not Synced',
+                                          isLoading:
+                                            tasksInProgress?.[element.uuid],
+                                        })
                                       : (element as ExtendT)[headingsKey]}
                                   </>
                                 )}

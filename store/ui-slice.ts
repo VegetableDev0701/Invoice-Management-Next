@@ -117,7 +117,7 @@ const uiSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (state) => initialUIState);
+    builder.addCase(RESET_STATE, () => initialUIState);
   },
 });
 

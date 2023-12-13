@@ -3,6 +3,7 @@ import { Buttons } from '@/lib/models/uiModels';
 
 import { FadeLoader } from 'react-spinners';
 import Button from './Button';
+import { classNames } from '@/lib/utility/utils';
 
 interface Props {
   button: Buttons;
@@ -16,7 +17,7 @@ export default function ButtonWithLoader(props: Props) {
     taskId ? state.ui.tasksInProgress[taskId] : state.ui.isLoading
   );
   const classes =
-    'h-12 py-3 px-10 font-normal text-white bg-stak-dark-green rounded-3xl hover:cursor-no-drop';
+    'h-9 py-1 px-8 font-normal text-white bg-stak-dark-green rounded-3xl hover:cursor-no-drop';
   return (
     <>
       {isLoading && (
@@ -24,11 +25,11 @@ export default function ButtonWithLoader(props: Props) {
           <FadeLoader
             color="#fff"
             cssOverride={{
-              scale: '0.7',
+              scale: '0.5',
               width: '60px',
               height: '20px',
-              top: '2px',
-              left: '21px',
+              top: '5px',
+              left: '15px',
             }}
           />
         </div>
@@ -37,10 +38,11 @@ export default function ButtonWithLoader(props: Props) {
         <Button
           type="button"
           buttonText={button.label}
-          className={
+          className={classNames(
             button.className ||
-            '2xl:px-6 md:px-3 py-1 md:text-md 2xl:text-xl font-normal bg-stak-dark-green'
-          }
+              '2xl:px-6 md:px-3 py-1 md:text-md 2xl:text-xl font-normal bg-stak-dark-green',
+            'active:bg-stak-dark-green-hover active:border-none active:cursor-pointer active:shadow-sm'
+          )}
           disabled={button.disabled}
           onClick={button.onClick}
         >

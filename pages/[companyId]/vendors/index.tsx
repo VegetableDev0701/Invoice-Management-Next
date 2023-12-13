@@ -9,6 +9,7 @@ import {
   addVendorFormActions,
   deleteVendors,
   getVendorsAgave,
+  syncVendors,
 } from '@/store/add-vendor-slice';
 import {
   getCurrentVendor,
@@ -19,10 +20,9 @@ import { companyDataActions } from '@/store/company-data-slice';
 import { usePageData } from '@/hooks/use-page-data';
 import { useSetStatePath } from '@/hooks/use-setpath';
 import useHttp from '@/hooks/use-http';
-import useSetNotification from '@/hooks/use-set-nofitication';
+import { useUploadVendorNotification } from '@/hooks/use-set-nofitication';
 
 import { FormState, User } from '@/lib/models/formStateModels';
-import { SELECT_MENU_DIVISIONS } from '@/lib/globals';
 import { hasAnyExpiredDates } from '@/lib/utility/tableHelpers';
 import {
   VendorSummary,
@@ -41,14 +41,16 @@ import CheckboxSortHeadingsTable from '@/components/Tables/MainTables/CheckboxSo
 import SlideOverlayForm from '@/components/UI/SlideOverlay/SlideOverlayForm';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
 import ModalErrorWrapper from '@/components/UI/Modal/ErrorModalWrapper';
+import { uiActions } from '@/store/ui-slice';
 
-const tabs = [
+const sectionTabs = [
   { name: 'All', keyName: 'all', current: true },
   {
     name: 'Expired License',
     keyName: 'expiredLicense',
     current: false,
   },
+  { name: 'Not Synced to Quickbooks', keyName: 'isSync', current: false },
 ];
 
 const tableHeadings = {
@@ -57,6 +59,7 @@ const tableHeadings = {
   address: 'Address',
   city: 'City',
   insuranceExpirationDate: 'Insurance Expiration',
+  agave_uuid: 'Status',
   // landiExpirationDate: 'L&I License Expiration',
   // workersCompExpirationDate: 'Workers Comp Expiration',
 };
@@ -65,6 +68,9 @@ function Vendors() {
   useSetStatePath();
   const { user, isLoading: userLoading } = useUser();
 
+  const syncAllVendorsTaskId = 'sync_all_vendors';
+  const addVendorTaskId = 'add_vendor';
+
   const dispatch = useDispatch();
 
   const {
@@ -72,17 +78,19 @@ function Vendors() {
     isLoading: pageLoading,
   }: { data: VendorSummary; isLoading: boolean } = usePageData(
     'data',
-    'vendorsSummary'
+    'vendorsSummary',
+    'allVendors'
   );
+
   const { data: addVendorFormData } = usePageData(
     'data',
     'forms',
     'add-vendor'
   );
 
-  const [vendors, setVendors] = useState<VendorSummary | undefined | null>(
-    null
-  );
+  const [vendorsSummary, setVendorsSummary] = useState<
+    VendorSummary | undefined | null
+  >(null);
   const [activeTabKeyName, setActiveTabKeyName] = useState<string>('all');
   const [activeFilter, setActiveFilter] = useState<string>('No Filter');
   const [missingInputs, setMissingInputs] = useState<boolean>(false);
@@ -97,41 +105,41 @@ function Vendors() {
 
   useEffect(() => {
     if (!pageLoading) {
-      setVendors(allVendorSummary);
+      setVendorsSummary(allVendorSummary);
     }
   }, [allVendorSummary]);
 
   const filteredData = useMemo(() => {
-    if (!vendors?.allVendors) return null;
+    if (!vendorsSummary) return null;
     let filteredData: VendorSummaryItem[];
-    if (vendors) {
-      const vendorsArray = Object.values(vendors.allVendors);
-      if (activeTabKeyName === 'all') {
-        if (activeFilter !== 'No Filter') {
-          filteredData = vendorsArray.filter(
-            (row) => row.vendorType === activeFilter
-          );
-          return filteredData;
-        } else {
-          filteredData = vendorsArray;
-          return filteredData;
-        }
-      } else if (activeTabKeyName === 'expiredLicense') {
-        const subFilteredData = Object.values(
-          hasAnyExpiredDates(vendors, 'allVendors')
+
+    const vendorsArray: VendorSummaryItem[] = Object.values(vendorsSummary);
+    if (activeTabKeyName === 'all') {
+      if (activeFilter !== 'No Filter') {
+        filteredData = vendorsArray.filter(
+          (row) => row.vendorType === activeFilter
         );
-        if (activeFilter !== 'No Filter') {
-          filteredData = subFilteredData.filter(
-            (row) => row.vendorType === activeFilter
-          );
-          return filteredData;
-        } else {
-          filteredData = subFilteredData;
-          return filteredData;
-        }
+        return filteredData;
+      } else {
+        filteredData = vendorsArray;
+        return filteredData;
       }
+    } else if (activeTabKeyName === 'expiredLicense') {
+      const subFilteredData = Object.values(hasAnyExpiredDates(vendorsSummary));
+      if (activeFilter !== 'No Filter') {
+        filteredData = subFilteredData.filter(
+          (row) => row.vendorType === activeFilter
+        );
+        return filteredData;
+      } else {
+        filteredData = subFilteredData;
+        return filteredData;
+      }
+    } else if (activeTabKeyName === 'isSync') {
+      filteredData = vendorsArray.filter((row) => !row.agave_uuid);
+      return filteredData;
     }
-  }, [vendors, activeFilter, activeTabKeyName]);
+  }, [vendorsSummary, activeFilter, activeTabKeyName]);
 
   const rowClickHandler = (uuid: string) => {
     dispatch(addVendorFormActions.clearFormState());
@@ -175,13 +183,35 @@ function Vendors() {
 
   const syncVendorsHandler = async () => {
     await dispatch(
-      getVendorsAgave({ companyId: (user as User).user_metadata.companyId })
+      getVendorsAgave({
+        companyId: (user as User).user_metadata.companyId,
+        taskId: syncAllVendorsTaskId,
+      })
     );
   };
-  const buttonClickHandler = (label: string, selected: VendorSummaryItem[]) => {
+
+  const buttonClickHandler = async (
+    label: string,
+    selected: VendorSummaryItem[]
+  ) => {
     setSelected(selected);
     if (label === 'Delete') {
       setOpenModal(true);
+      return;
+    }
+    if (label === 'Sync to QB') {
+      // logic check if it already has an agave uuid, if so skip
+      const vendorsToSync = selected.filter((vendor) => !vendor.agave_uuid);
+      await dispatch(
+        syncVendors({
+          companyId: (user as User).user_metadata.companyId,
+          vendors: vendorsToSync,
+        })
+      );
+
+      // send this vendor(s) to the add vendor to qb via agave endpoint
+      // make sure this works for one or many vendors
+      return;
     }
   };
 
@@ -200,11 +230,13 @@ function Vendors() {
     );
   };
 
-  useSetNotification({
+  useUploadVendorNotification({
+    jsonResponse: successJSON as {
+      message: string;
+      agave_uuid?: string;
+      uuid?: string;
+    },
     response,
-    successJSON,
-    isOverlay: true,
-    overlayStateKey: 'vendors',
   });
 
   const submitFormHandler = async (
@@ -213,74 +245,96 @@ function Vendors() {
   ) => {
     e.preventDefault();
 
-    const allValid = checkAllFormFields(
-      addVendorFormData,
-      addVendorFormStateData
-    );
-
-    if (!allValid) {
-      setMissingInputs(true);
-      return;
-    }
-    setMissingInputs(false);
-
     dispatch(
-      overlayActions.setOverlayContent({
-        data: { open: false },
-        stateKey: 'vendors',
+      uiActions.setTaskLoadingState({
+        taskId: addVendorTaskId,
+        isLoading: true,
       })
     );
+    try {
+      const allValid = checkAllFormFields(
+        addVendorFormData,
+        addVendorFormStateData
+      );
 
-    const vendorUUID = overlayContent?.currentId ?? nanoid();
+      if (!allValid) {
+        setMissingInputs(true);
+        return;
+      }
+      if (overlayContent.isNameDuped) {
+        return;
+      }
+      setMissingInputs(false);
 
-    // create the form data to push to the DB
-    const dataToSubmit = createFormDataForSubmit({
-      formData: addVendorFormData,
-      formStateData: formStateData as FormState,
-      isAddProject: false,
-      isAddVendor: true,
-      isAddLabor: false,
-    }) as VendorData;
+      dispatch(
+        overlayActions.setOverlayContent({
+          data: { open: false },
+          stateKey: 'vendors',
+        })
+      );
 
-    dataToSubmit.uuid = vendorUUID;
+      const vendorUUID = overlayContent?.currentId ?? nanoid();
+      const agave_uuid =
+        (vendorsSummary && vendorsSummary[vendorUUID]?.agave_uuid) || null;
 
-    const summaryVendorData = createSingleVendorSummary(
-      dataToSubmit as VendorData,
-      vendorUUID
-    );
+      // create the form data to push to the DB
+      const dataToSubmit = createFormDataForSubmit({
+        formData: addVendorFormData,
+        formStateData: formStateData as FormState,
+        isAddProject: false,
+        isAddVendor: true,
+        isAddLabor: false,
+      }) as VendorData;
 
-    dispatch(
-      companyDataActions.addToVendorsSummaryData({
-        [vendorUUID]: summaryVendorData,
-      })
-    );
+      dataToSubmit.uuid = vendorUUID;
 
-    dispatch(
-      companyDataActions.addNewVendor({
-        newVendor: dataToSubmit,
-        vendorId: vendorUUID,
-      })
-    );
+      const summaryVendorData = createSingleVendorSummary(
+        dataToSubmit as VendorData,
+        vendorUUID,
+        agave_uuid
+      );
 
-    if (!userLoading && user) {
-      const requestConfig = {
-        url: `/api/${
-          (user as User).user_metadata.companyId
-        }/vendors/add-vendor?vendorId=${overlayContent.currentId}`,
-        method: `${overlayContent.isSave ? 'POST' : 'PATCH'}`,
-        body: JSON.stringify({
-          fullData: dataToSubmit,
-          summaryData: summaryVendorData,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
+      dispatch(
+        companyDataActions.addToVendorsSummaryData({
+          [vendorUUID]: summaryVendorData,
+        })
+      );
 
-      await sendRequest({
-        requestConfig,
-        actions: addVendorFormActions,
-      });
+      dispatch(
+        companyDataActions.addNewVendor({
+          newVendor: dataToSubmit,
+          vendorId: vendorUUID,
+        })
+      );
+      if (!userLoading && user) {
+        const requestConfig = {
+          url: `/api/${
+            (user as User).user_metadata.companyId
+          }/vendors/add-vendor?vendorId=${overlayContent.currentId}`,
+          method: `${overlayContent.isSave ? 'POST' : 'PATCH'}`,
+          body: JSON.stringify({
+            fullData: dataToSubmit,
+            summaryData: summaryVendorData,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
+
+        await sendRequest({
+          requestConfig,
+          actions: addVendorFormActions,
+        });
+      }
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      dispatch(
+        uiActions.setTaskLoadingState({
+          taskId: addVendorTaskId,
+          isLoading: false,
+        })
+      );
     }
   };
 
@@ -309,26 +363,31 @@ function Vendors() {
           <ModalErrorWrapper />
           <div className="main-form-tiles">
             <SectionHeading
-              tabs={tabs}
+              tabs={sectionTabs}
               buttons={[
                 {
-                  label: 'Sync Vendors',
+                  label: 'Sync All Vendors',
                   onClick: syncVendorsHandler,
+                  className: 'px-8 py-1 text-xl font-normal bg-stak-dark-green',
+                  taskId: syncAllVendorsTaskId,
                 },
                 {
                   label: 'Add Vendor',
                   onClick: addVendorHandler,
+                  className: 'px-8 py-1 text-xl font-normal bg-stak-dark-green',
+                  taskId: addVendorTaskId,
                 },
               ]}
-              dropdownFilter={{
-                label: 'Vendor Type',
-                value: '',
-                id: 'vendor-type',
-                required: false,
-                'data-testid': 'vendor-type-filter',
-                selectMenuOptions: SELECT_MENU_DIVISIONS,
-                sortBy: 'id',
-              }}
+              // removed the drop down filter but keep the code around just in case we want it again
+              // dropdownFilter={{
+              //   label: 'Vendor Type',
+              //   value: '',
+              //   id: 'vendor-type',
+              //   required: false,
+              //   'data-testid': 'vendor-type-filter',
+              //   selectMenuOptions: SELECT_MENU_DIVISIONS,
+              //   sortBy: 'id',
+              // }}
               onActiveTab={(activeTabKeyName) =>
                 setActiveTabKeyName(activeTabKeyName)
               }
@@ -348,6 +407,7 @@ function Vendors() {
                     checkboxButtons={[
                       { label: 'Draft Email', buttonPath: '#', disabled: true },
                       { label: 'Delete', buttonPath: '#', disabled: false },
+                      { label: 'Sync to QB', buttonPath: '#', disabled: false },
                     ]}
                     filterKey="vendorType"
                     tableType="vendors"

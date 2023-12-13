@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 
@@ -20,14 +20,14 @@ import { addVendorFormActions } from '@/store/add-vendor-slice';
 import { usePageData } from '@/hooks/use-page-data';
 import { useKeyPressActionOverlay } from '@/hooks/use-save-on-key-press';
 import { useInvoiceSignedUrl } from '@/hooks/use-get-signed-url';
-import useSetNotification from '@/hooks/use-set-nofitication';
+import { useUploadVendorNotification } from '@/hooks/use-set-nofitication';
 import useHttp from '@/hooks/use-http';
 
 import { FormData } from '@/lib/models/types';
 import { FormState, FormStateV2, User } from '@/lib/models/formStateModels';
-import { ContractData } from '@/lib/models/summaryDataModel';
+import { ContractData, VendorSummary } from '@/lib/models/summaryDataModel';
 import { Items, VendorData } from '@/lib/models/formDataModel';
-import { snapshotCopy } from '@/lib/utility/utils';
+import { isObjectEmpty, snapshotCopy } from '@/lib/utility/utils';
 import { InvoiceTableRow } from '@/lib/models/invoiceDataModels';
 import { createSingleVendorSummary } from '@/lib/utility/createSummaryDataHelpers';
 import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
@@ -77,7 +77,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
     useState<FormStateV2 | null>(null);
   const [childHasRendered, setChildHasRendered] = useState(false);
   const [missingInputs, setMissingInputs] = useState<boolean>(false);
-  const [renderRows, setRenderRows] = useState<boolean>(false);
+  const [_renderRows, setRenderRows] = useState<boolean>(false);
 
   const processInvoiceFormState = useSelector(
     (state) => state.addProcessInvoiceForm
@@ -105,6 +105,16 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
     'forms',
     'process-invoice'
   );
+  const { data: addVendorFormData } = usePageData(
+    'data',
+    'forms',
+    'add-vendor'
+  );
+  const addVendorFormStateData = useSelector((state) => state.addVendorForm);
+  const vendorsOverlayContent = useSelector((state) => state.overlay.vendors);
+  const vendorsSummary = useSelector(
+    (state) => state.data.vendorsSummary.allVendors
+  );
 
   const closeAndSaveFormRef = useRef<HTMLButtonElement>(null);
 
@@ -114,13 +124,26 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
     keyName: 'Esc',
   });
 
-  const currentRow = useMemo(() => {
-    // can't click an invoice that doesn't exist so -> !
-    return (
-      rows &&
-      rows.find((row) => row.doc_id === invoiceObj?.clickedInvoice?.doc_id)!
-    );
-  }, [invoiceObj.clickedInvoice, renderRows]);
+  const currentRow =
+    rows &&
+    rows.find((row) => row.doc_id === invoiceObj?.clickedInvoice?.doc_id)!;
+
+  // because we auto sort to the vendor name, need to update the "clicked" row number when we change the vendor name
+  // This is a bug introduced when we add a new vendor from this overlay, thus changing the vendor name,
+  // but not updating the new row index number in the resorted list in state.
+  useEffect(() => {
+    if (currentRow && rows) {
+      dispatch(
+        invoiceActions.setClickedInvoice({
+          invoice: currentRow,
+          isRowClicked: true,
+          invoiceRowNumber: rows
+            .map((invoice) => invoice.doc_id)
+            .indexOf(currentRow.doc_id),
+        })
+      );
+    }
+  }, [currentRow]);
 
   //////
   ///
@@ -246,9 +269,9 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
         dispatch(
           addProcessedInvoiceData({
             companyId: (user as User).user_metadata.companyId,
-            invoiceId: (invoiceObj.clickedInvoice as InvoiceTableRow).doc_id,
+            invoiceId: (invoiceObj.clickedInvoice as InvoiceTableRow)?.doc_id,
             projectName: (invoiceObj.clickedInvoice as InvoiceTableRow)
-              .project as string,
+              ?.project as string,
             snapShotFormState: snapShotCurrentFormState as FormStateV2,
           })
         );
@@ -274,19 +297,12 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
     }
   };
 
-  const { data: addVendorFormData } = usePageData(
-    'data',
-    'forms',
-    'add-vendor'
-  );
-  const addVendorFormStateData = useSelector((state) => state.addVendorForm);
-  const overlayContent = useSelector((state) => state.overlay.vendors);
-
   const submitFormHandler = async (
     e: React.FormEvent,
     formStateData?: FormState
   ) => {
     e.preventDefault();
+    e.stopPropagation();
 
     const allValid = checkAllFormFields(
       addVendorFormData,
@@ -306,7 +322,12 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
       })
     );
 
-    const vendorUUID = overlayContent?.currentId ?? nanoid();
+    const vendorUUID = vendorsOverlayContent?.currentId ?? nanoid();
+    const agave_uuid =
+      (vendorsSummary &&
+        !isObjectEmpty(vendorsSummary) &&
+        (vendorsSummary as VendorSummary)[vendorUUID]?.agave_uuid) ||
+      null;
 
     // create the form data to push to the DB
     const dataToSubmit = createFormDataForSubmit({
@@ -321,7 +342,8 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
 
     const summaryVendorData = createSingleVendorSummary(
       dataToSubmit as VendorData,
-      vendorUUID
+      vendorUUID,
+      agave_uuid
     );
 
     dispatch(
@@ -358,8 +380,8 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
       const requestConfig = {
         url: `/api/${
           (user as User).user_metadata.companyId
-        }/vendors/add-vendor?vendorId=${overlayContent.currentId}`,
-        method: `${overlayContent.isSave ? 'POST' : 'PATCH'}`,
+        }/vendors/add-vendor?vendorId=${vendorsOverlayContent.currentId}`,
+        method: `${vendorsOverlayContent.isSave ? 'POST' : 'PATCH'}`,
         body: JSON.stringify({
           fullData: dataToSubmit,
           summaryData: summaryVendorData,
@@ -376,11 +398,13 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
     }
   };
 
-  useSetNotification({
+  useUploadVendorNotification({
+    jsonResponse: successJSON as {
+      message: string;
+      agave_uuid?: string;
+      uuid?: string;
+    },
     response,
-    successJSON,
-    isOverlay: true,
-    overlayStateKey: 'vendors',
   });
 
   return (
@@ -393,9 +417,10 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
             formState={addVendorFormStateData}
             actions={addVendorFormActions}
             showError={missingInputs}
-            overlayContent={overlayContent}
+            overlayContent={vendorsOverlayContent}
             form="addVendor"
             overlayStateKey="vendors"
+            onProcessInvoiceForm={true}
             onSubmit={(e) => submitFormHandler(e, addVendorFormStateData)}
           />
           <ContractSlideOverlayImage
@@ -550,7 +575,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
                           onChangePage={setPageIdx}
                           pageArray={invoiceObj.clickedInvoice.gcs_img_uri}
                           rows={rows}
-                          currentRow={invoiceObj.invoiceRowNumber}
+                          currentRowIdx={invoiceObj.invoiceRowNumber}
                           open={open}
                           snapShotFormState={
                             snapShotCurrentFormState as FormStateV2

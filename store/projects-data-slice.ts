@@ -911,7 +911,7 @@ const projectDataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (state) => initialDataState);
+    builder.addCase(RESET_STATE, () => initialDataState);
     builder.addCase(
       fetchProjectData.fulfilled,
       (

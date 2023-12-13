@@ -37,7 +37,7 @@ const onboardUserFormSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (state) => initialOnboardUser);
+    builder.addCase(RESET_STATE, () => initialOnboardUser);
   },
 });
 

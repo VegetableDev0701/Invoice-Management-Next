@@ -1099,7 +1099,7 @@ const addClientBillSlice = createSlice({
   initialState: initialBillState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (state) => initialBillState);
+    builder.addCase(RESET_STATE, () => initialBillState);
   },
 });
 

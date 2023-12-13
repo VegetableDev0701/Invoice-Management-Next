@@ -130,7 +130,11 @@ function ProcessInvoiceForm(props: Props) {
   return (
     <>
       <div className={classes['scroll-frame']} id="scroll-frame">
-        <form id="form-id" className="flex flex-col flex-grow">
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          id="form-id"
+          className="flex flex-col flex-grow"
+        >
           {formData.mainCategories.map((category, i) => {
             if (
               category.name === 'Line Items' &&

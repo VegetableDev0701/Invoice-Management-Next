@@ -86,7 +86,7 @@ export default function Notification(props: Props) {
               </div>
               <div className="ml-3 w-0 flex-1 pt-0.5">
                 <p className="text-lg font-medium text-stak-dark-gray">
-                  {content}
+                  {typeof content === 'string' ? content : ''}
                 </p>
               </div>
               <div className="ml-4 flex flex-shrink-0">

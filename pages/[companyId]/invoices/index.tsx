@@ -38,6 +38,7 @@ const tableHeadings: InvoiceTableHeadings = {
   date_received: 'Date Received',
   processed: 'Processed',
   approved: 'Approved',
+  status: 'Status',
 };
 
 const checkBoxButtons = [
@@ -171,6 +172,7 @@ function Invoices() {
                     rows={filteredData}
                     checkboxButtons={checkBoxButtons}
                     dropdown={tableDropdownItems}
+                    preSortKey="vendor_name"
                   />
                 </div>
               </Card>

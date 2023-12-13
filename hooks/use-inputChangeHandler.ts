@@ -48,10 +48,10 @@ function useInputChangeHandler(
       actions.setIsTouchedState({
         inputKey: input.id,
         isTouched: true,
-        isValid: getValidFunc(
-          input.validFunc || input.id,
-          input?.required as boolean
-        )(inputValue),
+        isValid: getValidFunc(input.validFunc || input.id)(
+          inputValue,
+          input?.required
+        ),
       })
     );
   }
