@@ -53,7 +53,7 @@ const addLaborFormSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (_state) => initialAddLaborFormState);
+    builder.addCase(RESET_STATE, (state) => initialAddLaborFormState);
   },
 });
 

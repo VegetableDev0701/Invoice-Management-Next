@@ -738,7 +738,7 @@ const invoiceSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (_state) => initialInvoiceState);
+    builder.addCase(RESET_STATE, (state) => initialInvoiceState);
     builder.addCase(getSignedUrlInvoice.pending, (state) => {
       state.isLoading = true;
     });

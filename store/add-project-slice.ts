@@ -42,7 +42,7 @@ const addProjectFormSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (_state) => initialAddProjectFormState);
+    builder.addCase(RESET_STATE, (state) => initialAddProjectFormState);
   },
 });
 

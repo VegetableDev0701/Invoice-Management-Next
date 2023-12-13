@@ -219,7 +219,7 @@ const addVendorFormSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (_state) => initialAddVendorFormState);
+    builder.addCase(RESET_STATE, (state) => initialAddVendorFormState);
   },
 });
 

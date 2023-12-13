@@ -28,7 +28,7 @@ const processingSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (_state) => initialState);
+    builder.addCase(RESET_STATE, (state) => initialState);
   },
 });
 

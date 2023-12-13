@@ -204,7 +204,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
     },
     thunkAPI
   ) => {
-    thunkAPI.dispatch(uiActions.lockUI());
+    // thunkAPI.dispatch(uiActions.lockUI());
     try {
       const state = thunkAPI.getState() as RootState;
       const processInvoiceFormState = state.addProcessInvoiceForm;
@@ -586,9 +586,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
           icon: 'save',
         })
       );
-      thunkAPI.dispatch(uiActions.unLockUI());
     } catch (error) {
-      thunkAPI.dispatch(uiActions.unLockUI());
       thunkAPI.dispatch(
         uiActions.notify({
           content:
@@ -599,6 +597,9 @@ export const addProcessedInvoiceData = createAsyncThunk(
       console.error(error);
       return;
     }
+    // finally {
+    //   thunkAPI.dispatch(uiActions.unLockUI());
+    // }
   }
 );
 
@@ -1067,7 +1068,7 @@ export const companyDataSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(RESET_STATE, (_state) => initialDataState)
+      .addCase(RESET_STATE, (state) => initialDataState)
       .addCase(updateInvoices.fulfilled, (state, action) => {
         state.invoices.allInvoices = {
           ...state.invoices.allInvoices,

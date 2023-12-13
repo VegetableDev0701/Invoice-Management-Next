@@ -222,7 +222,7 @@ const overlaySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (_state) => overlayIntitialState);
+    builder.addCase(RESET_STATE, (state) => overlayIntitialState);
   },
 });
 

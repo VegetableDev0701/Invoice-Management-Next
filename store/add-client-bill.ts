@@ -768,7 +768,6 @@ export const updateBudgetActuals = createAsyncThunk(
           }
         );
       } catch (error) {
-        dispatch(uiActions.unLockUI());
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         console.error(error);
       }
@@ -803,7 +802,6 @@ export const updateBudgetActuals = createAsyncThunk(
       });
 
       if (!newResult || !oldResult) {
-        dispatch(uiActions.unLockUI());
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
           uiActions.notify({
@@ -923,7 +921,6 @@ export const updateBudgetActuals = createAsyncThunk(
         );
       } catch (error) {
         console.error(error);
-        dispatch(uiActions.unLockUI());
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
           uiActions.notify({
@@ -961,10 +958,8 @@ export const updateBudgetActuals = createAsyncThunk(
             icon: 'success',
           })
         );
-        dispatch(uiActions.unLockUI());
       } catch (error) {
         console.error(error);
-        dispatch(uiActions.unLockUI());
         dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
           uiActions.notify({
@@ -979,6 +974,8 @@ export const updateBudgetActuals = createAsyncThunk(
     } catch (error) {
       console.error(error);
       dispatch(uiActions.setLoadingState({ isLoading: false }));
+    } finally {
+      dispatch(uiActions.unLockUI());
     }
   }
 );
@@ -1105,7 +1102,7 @@ const addClientBillSlice = createSlice({
   initialState: initialBillState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (_state) => initialBillState);
+    builder.addCase(RESET_STATE, (state) => initialBillState);
   },
 });
 

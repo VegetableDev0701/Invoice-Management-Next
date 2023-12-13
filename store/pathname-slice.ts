@@ -16,7 +16,7 @@ const currentPathSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (_state) => initialPathState);
+    builder.addCase(RESET_STATE, (state) => initialPathState);
   },
 });
 

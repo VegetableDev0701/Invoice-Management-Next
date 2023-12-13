@@ -251,7 +251,7 @@ const addBudgetFormSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (_state) => initialBudgetFormState);
+    builder.addCase(RESET_STATE, (state) => initialBudgetFormState);
     builder.addCase(initializeBudgetThunk.fulfilled, (state, action) => {
       // state.budget = { ...action.payload } as BudgetTotals;
       state.budgetV2 = { ...action.payload } as BudgetTotalsV2;
