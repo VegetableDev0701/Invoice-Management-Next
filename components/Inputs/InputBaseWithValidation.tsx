@@ -7,7 +7,10 @@ import {
 import { contractActions } from '@/store/contract-slice';
 
 import useInputChangeHandler from '@/hooks/use-inputChangeHandler';
-import { useCheckChangeOrderNameDuped } from '@/hooks/use-utils';
+import {
+  useCheckChangeOrderNameDuped,
+  useCheckVendorNameDuped,
+} from '@/hooks/use-utils';
 
 import { formatNumber } from '@/lib/utility/formatter';
 import { useGetInputState } from '@/lib/utility/formHelpers';
@@ -18,6 +21,7 @@ import { FormStateItem } from '@/lib/models/formStateModels';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid';
 import classes from './Input.module.css';
 import Button from '../UI/Buttons/Button';
+import { getValidFunc } from '@/lib/validation/formValidation';
 
 export interface Props {
   props: PropsItems;
@@ -74,11 +78,13 @@ const InputBaseWithValidation = (props: Props) => {
   }, []);
 
   // check for duplicate change order names
-  const isNameDuped = useCheckChangeOrderNameDuped({
+  const isCONameDuped = useCheckChangeOrderNameDuped({
     projectId,
     input,
     inputState,
   });
+
+  const isVendorNameDuped = useCheckVendorNameDuped({ input, inputState });
 
   const [inputValueState, changeHandler, blurHandler] = useInputChangeHandler(
     input,
@@ -109,6 +115,11 @@ const InputBaseWithValidation = (props: Props) => {
     : !inputState?.isValid;
   const isRequired = input?.required;
 
+  const isValidError =
+    showError && input.value !== ''
+      ? !inputState?.isValid
+      : !inputState?.isValid && inputState?.isTouched;
+
   // currently only showing the currency icon on theleft of the input, but add others here as an || conditional
   const isLeftIcon = input.isCurrency;
   const isRightIcon = !input.isCurrency;
@@ -132,11 +143,14 @@ const InputBaseWithValidation = (props: Props) => {
             } ${
               isLeftIcon
                 ? 'pl-10'
-                : isRightIcon && (isError || isNameDuped) && isRequired
+                : isRightIcon &&
+                  (isError || isCONameDuped || isVendorNameDuped) &&
+                  isRequired
                 ? 'pr-10'
                 : 'px-3'
             } ${classes['input-container__input']} ${
-              (isError || isNameDuped) && isRequired
+              ((isError || isCONameDuped || isVendorNameDuped) && isRequired) ||
+              isValidError
                 ? 'border-red-500 placeholder:text-red-500'
                 : 'border-stak-light-gray'
             }`}
@@ -151,9 +165,23 @@ const InputBaseWithValidation = (props: Props) => {
             id={input.id}
             type={input.type as string}
             data-testid={input['data-testid']}
-            onChange={
-              changeHandler as (e: React.ChangeEvent<HTMLInputElement>) => void
-            }
+            onChange={(e) => {
+              (
+                changeHandler as (
+                  e: React.ChangeEvent<HTMLInputElement>
+                ) => void
+              )(e);
+              dispatch(
+                actions.setIsTouchedState({
+                  inputKey: input.id,
+                  isTouched: true,
+                  isValid: getValidFunc(input.validFunc || input.id)(
+                    e.target.value,
+                    input?.required
+                  ),
+                })
+              );
+            }}
             onBlur={(e) => {
               onBlur && onBlur(e);
               blurHandler && (blurHandler as () => void)();
@@ -164,7 +192,8 @@ const InputBaseWithValidation = (props: Props) => {
             ref={inputRef}
             disabled={input.disabled ?? false}
           />
-          {(isError || isNameDuped) && isRequired && (
+          {(((isError || isCONameDuped || isVendorNameDuped) && isRequired) ||
+            isValidError) && (
             <div
               data-testid="error-icon-div"
               className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3"
@@ -179,7 +208,11 @@ const InputBaseWithValidation = (props: Props) => {
           {isRightIcon && icon && (
             <div
               className={`pointer-events-none absolute inset-y-0 right-0 flex items-center ${
-                (isError || isNameDuped) && isRequired ? 'pr-10' : 'pr-3'
+                ((isError || isCONameDuped || isVendorNameDuped) &&
+                  isRequired) ||
+                isValidError
+                  ? 'pr-10'
+                  : 'pr-3'
               }`}
             >
               {icon}
@@ -203,12 +236,22 @@ const InputBaseWithValidation = (props: Props) => {
           />
         )}
       </div>
-      {(isError || isNameDuped) && isRequired && (
+      {(isError || isCONameDuped || isVendorNameDuped) && isRequired && (
         <p
           className="font-sans mt-2 text-sm text-red-600"
           id={`${input.id}-error-message`}
         >
-          {isNameDuped ? 'This name is already in use.' : input.errormessage}
+          {isCONameDuped || isVendorNameDuped
+            ? 'This name is already in use.'
+            : input.errormessage}
+        </p>
+      )}
+      {isValidError && (
+        <p
+          className="font-sans mt-2 text-sm text-red-600"
+          id={`${input.id}-error-message`}
+        >
+          {input.validMessage}
         </p>
       )}
     </div>

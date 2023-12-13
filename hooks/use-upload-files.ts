@@ -20,6 +20,8 @@ export default function useUploadFilesHandler({
 }) {
   const { user } = useUser();
 
+  const uploadFilesTask = 'upload_files';
+
   const [files, setFiles] = useState<File[]>([]);
   const [_numberOfFiles, setNumberOfFiles] = useState(0);
   const [openModal, setOpenModal] = useState(false);
@@ -47,14 +49,18 @@ export default function useUploadFilesHandler({
     if (files.length === 0) return;
 
     async function sendRequest(formData: FormData) {
-      dispatch(uiActions.setLoadingState({ isLoading: true }));
+      dispatch(
+        uiActions.setTaskLoadingState({
+          isLoading: true,
+          taskId: uploadFilesTask,
+        })
+      );
       dispatch(sseActions.setUploadFileSuccess(false));
       setDuplicateFiles([]);
       try {
         // Get the Auth0 Token to authenticate the endpoint
         const authTokenResponse = await fetch('/api/fetchAuthToken');
         if (!authTokenResponse.ok) {
-          dispatch(uiActions.setLoadingState({ isLoading: false }));
           if (authTokenResponse.status === 401) {
             throw new Error('Not Authenticated.');
           }
@@ -65,7 +71,6 @@ export default function useUploadFilesHandler({
         // Get the google cloud run token to authenticate the api
         const googleTokenResponse = await fetch('/api/fetchGoogleAuthToken');
         if (!googleTokenResponse.ok) {
-          dispatch(uiActions.setLoadingState({ isLoading: false }));
           if (googleTokenResponse.status === 401) {
             throw new Error('Not Authenticated.');
           }
@@ -103,12 +108,10 @@ export default function useUploadFilesHandler({
           );
           setDuplicateFiles(dupFiles);
           setOpenModal(true);
-          dispatch(uiActions.setLoadingState({ isLoading: false }));
           throw new Error('Duplicate file(s) found!');
         }
 
         if (response.status === 401 || response.status === 403) {
-          dispatch(uiActions.setLoadingState({ isLoading: false }));
           dispatch(
             uiActions.notify({
               content: `${response.status} - Unauthorized access.`,
@@ -121,13 +124,6 @@ export default function useUploadFilesHandler({
         }
 
         if (!response.ok) {
-          dispatch(uiActions.setLoadingState({ isLoading: false }));
-          dispatch(
-            uiActions.notify({
-              content: `${response.status} - Error in file upload.`,
-              icon: 'error',
-            })
-          );
           throw new Error(
             `Status: ${response.status} -- Error in file upload.`
           );
@@ -160,14 +156,20 @@ export default function useUploadFilesHandler({
           }
         }
       } catch (error: any) {
-        dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
           uiActions.notify({
-            content: `${error}.`,
+            content: error.message,
             icon: 'error',
           })
         );
         console.error(error);
+      } finally {
+        dispatch(
+          uiActions.setTaskLoadingState({
+            isLoading: false,
+            taskId: uploadFilesTask,
+          })
+        );
       }
     }
 

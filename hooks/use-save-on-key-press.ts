@@ -6,12 +6,14 @@ export const useKeyPressActionOverlay = ({
   keyName,
   isMoveForward,
   isMoveBackward,
+  isActive = true,
   backButton = 4,
   forwardButton = 5,
 }: {
   formOverlayOpen: boolean;
   ref: RefObject<HTMLButtonElement> | RefObject<HTMLDivElement>;
   keyName: string;
+  isActive?: boolean;
   isMoveForward?: boolean;
   isMoveBackward?: boolean;
   backButton?: number;
@@ -19,28 +21,42 @@ export const useKeyPressActionOverlay = ({
 }) => {
   useEffect(() => {
     const keyDownHandler = (e: KeyboardEvent) => {
+      e.stopPropagation();
       if (isMoveForward) {
-        if (e.key === keyName && !e.shiftKey && ref && formOverlayOpen) {
+        if (
+          isActive &&
+          e.key === keyName &&
+          !e.shiftKey &&
+          ref &&
+          formOverlayOpen
+        ) {
           ref.current?.click();
         }
       } else if (isMoveBackward) {
-        if (e.key === keyName && e.shiftKey && ref && formOverlayOpen) {
+        if (
+          isActive &&
+          e.key === keyName &&
+          e.shiftKey &&
+          ref &&
+          formOverlayOpen
+        ) {
           ref.current?.click();
         }
       } else {
-        if (e.key === keyName && ref && formOverlayOpen) {
+        if (isActive && e.key === keyName && ref && formOverlayOpen) {
           ref.current?.click();
         }
       }
     };
 
     const mouseDownHandler = (e: MouseEvent) => {
+      e.stopPropagation();
       // Check if the forward button (mouse button 5) is clicked
-      if (e.button === forwardButton && ref && formOverlayOpen) {
+      if (isActive && e.button === forwardButton && ref && formOverlayOpen) {
         ref.current?.click();
       }
       // Check if the back button (mouse button 4) is clicked
-      else if (e.button === backButton && ref && formOverlayOpen) {
+      else if (isActive && e.button === backButton && ref && formOverlayOpen) {
         ref.current?.click();
       }
     };
@@ -52,7 +68,7 @@ export const useKeyPressActionOverlay = ({
       window.addEventListener('mousedown', mouseDownHandler);
       window.removeEventListener('keydown', keyDownHandler);
     };
-  }, [formOverlayOpen, keyName, ref, forwardButton, backButton]);
+  }, [formOverlayOpen, keyName, ref, forwardButton, backButton, isActive]);
 };
 
 export const useKeyPressAction = ({
@@ -64,6 +80,7 @@ export const useKeyPressAction = ({
 }) => {
   useEffect(() => {
     const keyDownHandler = (e: KeyboardEvent) => {
+      e.stopPropagation();
       // Make sure ref and ref.current are not null
       if (ref && ref.current && e.key === keyName) {
         ref.current.click();

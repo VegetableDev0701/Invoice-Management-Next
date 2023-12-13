@@ -66,7 +66,7 @@ const addProcessInvoiceFormSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (state) => initialProcessInvoiceFormState);
+    builder.addCase(RESET_STATE, () => initialProcessInvoiceFormState);
   },
 });
 

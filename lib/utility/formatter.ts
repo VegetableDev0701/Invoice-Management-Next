@@ -89,3 +89,19 @@ export const formatPhoneNumber = (
 
   return formattedValue;
 };
+
+export const formatTaxNumber = (
+  string: string | undefined
+): string | undefined => {
+  if (!string) return undefined;
+  let formattedValue = string
+    .replace(/\D/g, '') // Remove all non-digits
+    .substring(0, 9); // Limit input to 9 digits
+
+  if (formattedValue.length > 2) {
+    formattedValue =
+      formattedValue.substring(0, 2) + '-' + formattedValue.substring(2);
+  }
+
+  return formattedValue;
+};

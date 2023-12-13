@@ -10,10 +10,11 @@ interface Props {
   projectId?: string;
   buttonLabel: string;
   uploadFileType: string;
+  taskId?: string;
 }
 
 export default function SimpleUploadForm(props: Props) {
-  const { projectId, buttonLabel, uploadFileType } = props;
+  const { projectId, buttonLabel, uploadFileType, taskId } = props;
 
   const { openModal, duplicateFiles, handleFileChange, closeModalHandler } =
     useUploadFilesHandler({
@@ -21,7 +22,9 @@ export default function SimpleUploadForm(props: Props) {
       projectId: projectId ? projectId : undefined,
     });
 
-  const isLoading = useSelector((state) => state.ui.isLoading);
+  const isLoading = useSelector((state) =>
+    taskId ? state.ui.tasksInProgress[taskId] : state.ui.isLoading
+  );
 
   return (
     <>
@@ -36,7 +39,11 @@ export default function SimpleUploadForm(props: Props) {
             htmlFor="files"
             className="flex grow justify-center items-center hover:cursor-pointer"
           >
-            <div className="px-8 py-1 text-xl font-normal text-white bg-stak-dark-green font-sans font-md rounded-3xl hover:bg-stak-dark-green-hover hover:cursor-pointer">
+            <div
+              className={`px-8 py-1 text-xl font-normal text-white bg-stak-dark-green font-sans font-md rounded-3xl
+             hover:bg-stak-dark-green-hover hover:cursor-pointer active:bg-stak-dark-green-hover active:border-none 
+             active:cursor-pointer active:shadow-sm`}
+            >
               {buttonLabel}
             </div>
           </label>
@@ -51,7 +58,10 @@ export default function SimpleUploadForm(props: Props) {
         </form>
       )}
       {isLoading && (
-        <div className="px-8 py-1 text-xl h-9 font-normal text-white bg-stak-dark-green font-sans font-md rounded-3xl hover:bg-stak-dark-green-hover hover:cursor-no-drop">
+        <div
+          className={`px-8 py-1 text-xl h-9 font-normal text-white bg-stak-dark-green font-sans 
+        font-md rounded-3xl hover:bg-stak-dark-green-hover hover:cursor-no-drop`}
+        >
           <FadeLoader
             color="#fff"
             cssOverride={{

@@ -119,8 +119,8 @@ export function createFormDataForSubmit({
                   newFormData.mainCategories[i].inputElements[
                     j
                   ] as InputElementWithAddressItems
-                ).addressElements[jAdd].items[kAdd].value = formStateData[key]
-                  .value as string;
+                ).addressElements[jAdd].items[kAdd].value =
+                  formStateData[key].value;
               }
             }
           });
@@ -146,11 +146,13 @@ export function createFormDataForSubmit({
                   formStateData[key].value as string
                 )?.replace(/\D/g, '');
               } else {
-                (
-                  newFormData.mainCategories[i].inputElements[
-                    j
-                  ] as InputElementWithItems
-                ).items[k].value = formStateData[key]?.value as string;
+                {
+                  (
+                    newFormData.mainCategories[i].inputElements[
+                      j
+                    ] as InputElementWithItems
+                  ).items[k].value = formStateData[key]?.value;
+                }
               }
             }
           }
@@ -158,7 +160,6 @@ export function createFormDataForSubmit({
       }
     });
   });
-
   if (isAddProject || isAddVendor) {
     newFormData['name'] = formatNameForID(
       (newFormData.mainCategories[0].inputElements[0] as InputElementWithItems)

@@ -2,6 +2,7 @@ import { RefObject } from 'react';
 
 export interface Buttons {
   label: string;
+  taskId?: string;
   ref?: RefObject<HTMLButtonElement>;
   isShowingKeyName?: string;
   buttonPath?: string;

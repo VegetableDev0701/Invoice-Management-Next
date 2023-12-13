@@ -1,7 +1,10 @@
 import { Items } from '@/lib/models/formDataModel';
 import { FormStateItem } from '@/lib/models/formStateModels';
-import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
-import { isDuplicated } from '@/lib/utility/utils';
+import {
+  ChangeOrderSummary,
+  VendorSummary,
+} from '@/lib/models/summaryDataModel';
+import { isDuplicated, isObjectEmpty } from '@/lib/utility/utils';
 import {
   useAppDispatch as useDispatch,
   useAppSelector as useSelector,
@@ -52,5 +55,46 @@ export const useCheckChangeOrderNameDuped = ({
   }, [isNameDuped]);
 
   if (!projectId) return;
+  return isNameDuped;
+};
+
+export const useCheckVendorNameDuped = ({
+  input,
+  inputState,
+}: {
+  input?: Items;
+  inputState: FormStateItem;
+}) => {
+  const dispatch = useDispatch();
+
+  const vendorSummary: VendorSummary | object = useSelector(
+    (state) => state.data.vendorsSummary.allVendors
+  );
+  const vendorNames = !isObjectEmpty(vendorSummary)
+    ? Object.values(vendorSummary as VendorSummary).map(
+        (vendor) => vendor.vendorName
+      )
+    : null;
+
+  let isNameDuped = false;
+  // check for duplicate change order names
+  if (input && inputState?.value && inputState.value !== input.value) {
+    isNameDuped =
+      input.id === 'vendor-name' && vendorNames
+        ? isDuplicated(inputState?.value as string, vendorNames)
+        : false;
+  } else {
+    isNameDuped = false;
+  }
+
+  useEffect(() => {
+    dispatch(
+      overlayActions.setOverlayContent({
+        data: { isNameDuped },
+        stateKey: 'vendors',
+      })
+    );
+  }, [isNameDuped]);
+
   return isNameDuped;
 };

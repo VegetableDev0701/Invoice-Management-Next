@@ -1,3 +1,4 @@
+import { FadeLoader } from 'react-spinners';
 import { SelectMenuOptions } from '../models/formDataModel';
 import { InvoiceTableRow } from '../models/invoiceDataModels';
 import {
@@ -57,11 +58,11 @@ export function sortArrayById<T extends HasKey>(array: T[]) {
   });
 }
 
-export function hasAnyExpiredDates(object: VendorSummary, keyName: string) {
+export function hasAnyExpiredDates(object: VendorSummary) {
   const currentDate = new Date();
   const expiredObjects: Record<string, VendorSummaryItem> = {};
 
-  Object.entries(object[keyName]).forEach(
+  Object.entries(object).forEach(
     ([key, element]: [string, VendorSummaryItem]) => {
       const hasExpired = Object.entries(element).some(
         ([key, value]: [string, string | boolean]) => {
@@ -308,4 +309,48 @@ export const sortTableData = <T, H extends Partial<T>>(
           String(a[sortKey as keyof T])
         );
   });
+};
+
+export const yesNoBadge = ({
+  value,
+  positiveText,
+  negativeText,
+  isLoading,
+}: {
+  value: string | null | undefined;
+  positiveText: string;
+  negativeText: string;
+  isLoading?: boolean;
+}) => {
+  if (
+    typeof value === 'string' &&
+    (value.toLowerCase() === 'yes' || value.toLowerCase() !== 'no')
+  ) {
+    return (
+      <span className="inline-flex items-center rounded-full bg-blue-100 px-1.5 py-0.5 text-xs font-medium text-blue-700">
+        {positiveText}
+      </span>
+    );
+  } else if (
+    !value ||
+    (typeof value === 'string' && value.toLowerCase() === 'no')
+  ) {
+    return (
+      <span className="inline-flex items-center rounded-full bg-red-100 px-1.5 py-0.5 text-xs font-medium text-red-700">
+        {!isLoading && negativeText}
+        {isLoading && (
+          <FadeLoader
+            color="#000"
+            cssOverride={{
+              scale: '0.26',
+              width: '60px',
+              height: '15px',
+              top: '-1px',
+              left: '8px',
+            }}
+          />
+        )}
+      </span>
+    );
+  }
 };

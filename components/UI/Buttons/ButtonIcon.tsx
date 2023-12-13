@@ -17,7 +17,8 @@ const ButtonIcon = React.forwardRef<HTMLButtonElement, Props>(
         ${
           props.disabled
             ? 'cursor-not-allowed bg-[var(--stak-dark-green-50)]'
-            : 'bg-stak-dark-green hover:bg-stak-dark-green-hover hover:border-none hover:cursor-pointer hover:shadow-lg active:bg-stak-dark-green-hover active:border-none active:cursor-pointer active:shadow-sm'
+            : `bg-stak-dark-green hover:bg-stak-dark-green-hover hover:border-none hover:cursor-pointer
+            hover:shadow-lg active:bg-stak-dark-green-hover active:border-none active:cursor-pointer active:shadow-sm`
         } 
         font-sans font-md focus:ring-0 focus-visible:outline-0 min-w-fit 
         ${props.className}`}

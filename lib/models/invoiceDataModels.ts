@@ -53,7 +53,7 @@ export interface InvoiceItem {
 export interface InvoiceTableRows {
   [invoiceId: string]: InvoiceTableRow;
 }
-// TODO I don't like this any bullshit typing here...not sure why I need it, but probably needs to be fixed
+// TODO I don't like this any bullshit typing here but every time i try and fix this one area it is way harder than it should be
 export interface InvoiceTableRow {
   [key: string]: any;
   approved: string;
@@ -83,7 +83,9 @@ export interface InvoiceTableRow {
   total_tax_amount_bb: BoundingBox[] | null;
   vendor_name: string;
   vendor_name_bb: BoundingBox[] | null;
+  vendor_uuid: string | null;
 }
+
 // The modified version of the bounding box which actually
 // creates the magnified portion on the image, ll is not required
 export interface BoundingBox {
@@ -178,4 +180,5 @@ export interface InvoiceTableHeadings {
   predicted_project?: string;
   processed?: string;
   approved?: string;
+  status: string;
 }

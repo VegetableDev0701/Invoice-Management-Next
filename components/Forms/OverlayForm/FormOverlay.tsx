@@ -36,8 +36,12 @@ function FormOverlay(props: Props) {
   const { formData, formState, showError, actions, form, projectId } = props;
   return (
     <div className={classes['scroll-frame']} id="scroll-frame">
-      <form id="form-id" className="flex flex-col flex-grow">
-        {formData.mainCategories.map((category, i) => {
+      <form
+        onSubmit={(e) => e.preventDefault()}
+        id="form-id"
+        className="flex flex-col flex-grow"
+      >
+        {formData?.mainCategories.map((category, i) => {
           if (category.name === 'Labor Cost Codes') {
             return;
           }

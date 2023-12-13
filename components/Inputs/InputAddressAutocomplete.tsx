@@ -49,10 +49,10 @@ const InputAddressAutocomplete = (props: Props) => {
       dispatch(
         actions.setIsTouchedState({
           inputKey: input[i].items[j].id,
-          isValid: getValidFunc(
-            input[i].items[j].id,
+          isValid: getValidFunc(input[i].items[j].id)(
+            addressRef.current.value,
             input[i].items[j].required
-          )(addressRef.current.value),
+          ),
           isTouched: true,
         })
       );
@@ -65,10 +65,10 @@ const InputAddressAutocomplete = (props: Props) => {
         actions.setFormElement({
           inputValue: input[i].items[j].value,
           inputKey: input[i].items[j].id,
-          isValid: getValidFunc(
-            input[i].items[j].id,
+          isValid: getValidFunc(input[i].items[j].id)(
+            addressRef.current.value,
             input[i].items[j].required
-          )(addressRef.current.value),
+          ),
         })
       );
     }
@@ -90,9 +90,11 @@ const InputAddressAutocomplete = (props: Props) => {
             inputValue: currentAddress || mutatedAddress,
             inputKey: input[0].items[0].id,
             isValid: getValidFunc(
-              input[0].items[0]?.validFunc || input[0].items[0].id,
+              input[0].items[0]?.validFunc || input[0].items[0].id
+            )(
+              currentAddress || (mutatedAddress as string),
               input[0].items[0].required
-            )(currentAddress || (mutatedAddress as string)),
+            ),
           })
         );
       }
@@ -109,9 +111,11 @@ const InputAddressAutocomplete = (props: Props) => {
             inputValue: currentCity || mutatedCity,
             inputKey: input[1].items[0].id,
             isValid: getValidFunc(
-              input[1].items[0]?.validFunc || input[1].items[0].id,
+              input[1].items[0]?.validFunc || input[1].items[0].id
+            )(
+              currentCity || (mutatedCity as string),
               input[1].items[0].required
-            )(currentCity || (mutatedCity as string)),
+            ),
           })
         );
       }
@@ -128,9 +132,11 @@ const InputAddressAutocomplete = (props: Props) => {
             inputValue: currentState || mutatedState,
             inputKey: input[1].items[1].id,
             isValid: getValidFunc(
-              input[1].items[1]?.validFunc || input[1].items[1].id,
+              input[1].items[1]?.validFunc || input[1].items[1].id
+            )(
+              currentState || (mutatedState as string),
               input[1].items[1].required
-            )(currentState || (mutatedState as string)),
+            ),
           })
         );
       }
@@ -147,9 +153,8 @@ const InputAddressAutocomplete = (props: Props) => {
             inputValue: currentZip || mutatedZip,
             inputKey: input[1].items[2].id,
             isValid: getValidFunc(
-              input[1].items[2]?.validFunc || input[1].items[2].id,
-              input[1].items[2].required
-            )(currentZip || (mutatedZip as string)),
+              input[1].items[2]?.validFunc || input[1].items[2].id
+            )(currentZip || (mutatedZip as string), input[1].items[2].required),
           })
         );
       }
@@ -235,10 +240,10 @@ const InputAddressAutocomplete = (props: Props) => {
           actions.setFormElement({
             inputValue: addressRef.current.value,
             inputKey: input[0].items[0].id,
-            isValid: getValidFunc(
-              input[0].items[0].id,
+            isValid: getValidFunc(input[0].items[0].id)(
+              addressRef.current.value,
               input[0].items[0].required
-            )(addressRef.current.value),
+            ),
           })
         );
       }
@@ -249,10 +254,10 @@ const InputAddressAutocomplete = (props: Props) => {
           actions.setFormElement({
             inputValue: cityRef.current?.value,
             inputKey: input[1].items[0].id,
-            isValid: getValidFunc(
-              input[1].items[0].id,
+            isValid: getValidFunc(input[1].items[0].id)(
+              cityRef.current.value,
               input[1].items[0].required
-            )(cityRef.current.value),
+            ),
           })
         );
       }
@@ -265,10 +270,10 @@ const InputAddressAutocomplete = (props: Props) => {
           actions.setFormElement({
             inputValue: stateRef.current.value,
             inputKey: input[1].items[1].id,
-            isValid: getValidFunc(
-              input[1].items[1].id,
+            isValid: getValidFunc(input[1].items[1].id)(
+              stateRef.current.value,
               input[1].items[1].required
-            )(stateRef.current.value),
+            ),
           })
         );
       }
@@ -279,10 +284,10 @@ const InputAddressAutocomplete = (props: Props) => {
           actions.setFormElement({
             inputValue: zipRef.current.value,
             inputKey: input[1].items[2].id,
-            isValid: getValidFunc(
-              input[1].items[2].id,
+            isValid: getValidFunc(input[1].items[2].id)(
+              zipRef.current.value,
               input[1].items[2].required
-            )(zipRef.current.value),
+            ),
           })
         );
       }

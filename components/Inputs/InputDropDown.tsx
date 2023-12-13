@@ -56,7 +56,7 @@ const Dropdown = (props: Props) => {
         actions.setFormElement({
           inputValue: selected.label,
           inputKey: input.id,
-          isValid: getValidFunc(input.id, isInputRequired)(selected.label),
+          isValid: getValidFunc(input.id)(selected.label, isInputRequired),
         })
       );
     }
@@ -68,10 +68,10 @@ const Dropdown = (props: Props) => {
         actions.setIsTouchedState({
           inputKey: input.id,
           isTouched: true,
-          isValid: getValidFunc(
-            input.id,
+          isValid: getValidFunc(input.id)(
+            inputState?.value as string,
             input.required
-          )(inputState?.value as string),
+          ),
         })
       );
     }

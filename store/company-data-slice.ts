@@ -880,6 +880,16 @@ export const companyDataSlice = createSlice({
     addNewVendorsBulk(state, action: PayloadAction<Vendors>) {
       state.vendors.allVendors = { ...action.payload };
     },
+    addAgaveUUIDToVendorSummary(
+      state,
+      action: PayloadAction<{ agave_uuid: string; vendorId: string }>
+    ) {
+      const { agave_uuid, vendorId } = action.payload;
+      (state.vendorsSummary.allVendors as VendorSummary)[vendorId] = {
+        ...(state.vendorsSummary.allVendors as VendorSummary)[vendorId],
+        agave_uuid: agave_uuid,
+      };
+    },
     removeVendorsFromState(state, action: PayloadAction<string[]>) {
       const allVendorsSummary: VendorSummary = {
         ...state.vendorsSummary.allVendors,
@@ -1068,7 +1078,7 @@ export const companyDataSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(RESET_STATE, (state) => initialDataState)
+      .addCase(RESET_STATE, () => initialDataState)
       .addCase(updateInvoices.fulfilled, (state, action) => {
         state.invoices.allInvoices = {
           ...state.invoices.allInvoices,

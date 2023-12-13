@@ -13,6 +13,7 @@ export interface CostCodesData {
 }
 
 export interface Divisions {
+  agave_uuid?: string;
   name?: string;
   number: number;
   subdivisions?: SubDivisions[];
@@ -28,6 +29,7 @@ export interface SubDivisions {
 }
 
 export interface CostCodeItem {
+  agave_uuid?: string;
   number: number;
   name?: string;
   label?: string;

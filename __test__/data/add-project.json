@@ -62,6 +62,7 @@
               "type": "text",
               "required": true,
               "errormessage": "Project supervisor's phone number is required and must be a valid 10 digit number.",
+              "validMessage": "Phone number must be a valid 10 digit number.",
               "isPhoneNumber": true,
               "validFunc": "phone",
               "value": ""
@@ -273,6 +274,7 @@
               "type": "text",
               "required": false,
               "errormessage": "Client's phone number is required and must be a valid 10 digit number.",
+              "validMessage": "Phone number must be a valid 10 digit number.",
               "isPhoneNumber": true,
               "validFunc": "phone",
               "value": ""
@@ -334,6 +336,7 @@
               "type": "text",
               "required": false,
               "errormessage": "Client's email is required and must be valid.",
+              "validMessage": "Email must be valid.",
               "validFunc": "email",
               "value": ""
             }

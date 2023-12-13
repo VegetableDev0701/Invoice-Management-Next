@@ -134,7 +134,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
   const lastHeadingClasses = 'py-3.5 pl-3 pr-3 rounded-tr-lg sm:pr-6 lg:pr-6';
 
   const commonColClasses =
-    'border-b max-w-[20rem] border-gray-200 whitespace-nowrap text-sm text-gray-500';
+    'border-b max-w-[17rem] border-gray-200 whitespace-nowrap text-sm text-gray-500';
   const firstColClasses = 'py-2 pl-4 pr-3  sm:pl-6 lg:pl-8';
   const middleColClasses = 'py-1 px-3';
   const lastColClasses = 'py-2 pr-4 pl-3 sm:pr-6 lg:pr-6';
@@ -289,7 +289,8 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                                       className={classNames(
                                         j === 0
                                           ? firstColClasses
-                                          : j === filteredSortedData.length - 1
+                                          : j ===
+                                            Object.keys(headings).length - 1
                                           ? lastColClasses
                                           : middleColClasses,
                                         commonColClasses,

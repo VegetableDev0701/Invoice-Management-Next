@@ -33,7 +33,7 @@ const sseSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(RESET_STATE, (state) => initialSSEState);
+    builder.addCase(RESET_STATE, () => initialSSEState);
   },
 });
 

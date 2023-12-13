@@ -7,9 +7,9 @@ import { InvoiceProject } from '@/lib/models/invoiceDataModels';
 import { classNames } from '@/lib/utility/utils';
 import { Buttons } from '@/lib/models/uiModels';
 
-import Button from '../Buttons/Button';
 import FilterDropdown from '@/components/Inputs/InputFilterDropdown';
 import SimpleUploadForm from '@/components/Forms/FileForm/SimpleUploadForm';
+import ButtonWithLoader from '../Buttons/ButtonWithLoader';
 
 interface SectionTabs {
   name: string;
@@ -41,6 +41,8 @@ export default function SectionHeading(props: Props) {
     onFilter,
   } = props;
   const [tabs, setTabs] = useState(props.tabs);
+
+  const uploadFilesTask = 'upload_files';
 
   useEffect(() => {
     const currentTab = tabs.find((tab) => tab.current) as SectionTabs;
@@ -105,17 +107,15 @@ export default function SectionHeading(props: Props) {
                       key={i}
                       uploadFileType="invoice"
                       buttonLabel="Add Invoices"
+                      taskId={uploadFilesTask}
                     />
                   );
                 } else {
                   return (
-                    <Button
+                    <ButtonWithLoader
                       key={i}
-                      type="button"
-                      buttonText={button.label}
-                      className="px-8 py-1 text-xl font-normal bg-stak-dark-green"
-                      disabled={button.disabled}
-                      onClick={button.onClick}
+                      button={button}
+                      taskId={button.taskId}
                     />
                   );
                 }

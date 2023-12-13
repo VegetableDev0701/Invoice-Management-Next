@@ -24,6 +24,7 @@ export const EMPTY_TABLE_TEXT = {
   expiredLicenseVendors: 'No Vendors Have Any Expired License',
   projects: 'No Projects Have Been Added or are Active',
   completedProjects: 'No Projects Have Been Completed',
+  isSyncedQB: 'No Vendors Need Syncing with Quickbooks',
 };
 
 // TODO thes need to live in state so they can be unique for each company.

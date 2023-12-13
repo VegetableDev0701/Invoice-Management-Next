@@ -135,7 +135,7 @@ export default function ClientBillInvoiceSlideOverlayImage(props: Props) {
                         onChangePage={setPageIdx}
                         pageArray={invoiceObj.clickedInvoice.gcs_img_uri}
                         rows={rows}
-                        currentRow={invoiceObj.invoiceRowNumber}
+                        currentRowIdx={invoiceObj.invoiceRowNumber}
                         open={open}
                       />
                     )}

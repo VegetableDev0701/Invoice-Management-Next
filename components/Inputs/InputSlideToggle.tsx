@@ -39,17 +39,6 @@ export default function SlideToggle(props: Props) {
         isValid: true,
       })
     );
-    // Use to tell that the form has been updated when any slide toggle other than
-    // line item toggle is clicked.
-    if (input.id !== 'line-item-toggle' && inputState?.value !== undefined) {
-      dispatch(
-        actions.setIsTouchedState({
-          inputKey: input.id,
-          isTouched: true,
-          isValid: true,
-        })
-      );
-    }
   }, [enabled]);
 
   const topClasses = input.id.includes('billable')
@@ -74,7 +63,23 @@ export default function SlideToggle(props: Props) {
       </span>
       <Switch
         checked={enabled}
-        onChange={setEnabled}
+        onChange={(value) => {
+          setEnabled(value);
+          // Use to tell that the form has been updated when any slide toggle other than
+          // line item toggle is clicked.
+          if (
+            input.id !== 'line-item-toggle' &&
+            inputState?.value !== undefined
+          ) {
+            dispatch(
+              actions.setIsTouchedState({
+                inputKey: input.id,
+                isTouched: true,
+                isValid: true,
+              })
+            );
+          }
+        }}
         id={input.id}
         className={classNames(
           enabled ? 'bg-stak-dark-green' : 'bg-gray-500',

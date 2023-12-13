@@ -36,7 +36,9 @@
               "isPhoneNumber": true,
               "required": false,
               "value": "",
-              "validFunc": "phone"
+              "validFunc": "phone",
+              "errormessage": "Primary contact is required.",
+              "validMessage": "Must input a valid 10 digit phone number."
             },
             {
               "label": "Cell Phone",
@@ -45,7 +47,8 @@
               "isPhoneNumber": true,
               "required": false,
               "value": "",
-              "validFunc": "phone"
+              "validFunc": "phone",
+              "validMessage": "Must input a valid 10 digit phone number."
             }
           ]
         },
@@ -58,7 +61,8 @@
               "required": false,
               "value": "",
               "validFunc": "email",
-              "errormessage": "Vendor email is required."
+              "errormessage": "Vendor email is required.",
+              "validMessage": "Must input a valid email address."
             }
           ]
         },
@@ -196,7 +200,9 @@
               "type": "text",
               "value": "",
               "required": false,
-              "errormessage": "Workers compensation expiration date is required."
+              "validFunc": "tax-number",
+              "isTaxNumber": true,
+              "validMessage": "Please enter a valid tax number ##-#######."
             },
             {
               "label": "Worker's Compensation Expiration",

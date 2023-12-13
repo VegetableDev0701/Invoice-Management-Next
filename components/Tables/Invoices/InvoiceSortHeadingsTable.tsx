@@ -31,7 +31,11 @@ import {
   formatNumber,
   formatPhoneNumber,
 } from '@/lib/utility/formatter';
-import { checkExpirationDate, sortTableData } from '@/lib/utility/tableHelpers';
+import {
+  checkExpirationDate,
+  sortTableData,
+  yesNoBadge,
+} from '@/lib/utility/tableHelpers';
 import { Items } from '@/lib/models/formDataModel';
 import { User } from '@/lib/models/formStateModels';
 import {
@@ -44,6 +48,7 @@ import Button from '../../UI/Buttons/Button';
 import TableDropdown from '../../Inputs/InputTableDropdown';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
 import EmptyTableNotification from '../EmptyTableNotification';
+import { VendorSummary } from '@/lib/models/summaryDataModel';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -70,11 +75,7 @@ interface Props<H> {
   preSortKey?: keyof H;
 }
 
-const InvoicesTable = <
-  H extends Partial<InvoiceTableRow> & InvoiceTableHeadings,
->(
-  props: Props<H>
-) => {
+const InvoicesTable = <H extends InvoiceTableHeadings>(props: Props<H>) => {
   const {
     headings,
     rows,
@@ -106,6 +107,9 @@ const InvoicesTable = <
     (state) => state.invoice.clickedInvoice?.doc_id
   );
   const allInvoices = useSelector((state) => state.data.invoices.allInvoices);
+  const vendorSummary = useSelector(
+    (state) => state.data.vendorsSummary.allVendors
+  );
 
   useEffect(() => {
     // initialize the isRowClicked to false on first render
@@ -233,6 +237,7 @@ const InvoicesTable = <
         data: {
           currentId: invoice.doc_id,
           currentData: allInvoices[invoice.doc_id],
+          open: true,
         },
         stateKey: 'process-invoices',
       })
@@ -285,13 +290,13 @@ const InvoicesTable = <
     'sticky max-w-[17rem] top-0 z-10 border-b border-gray-300 bg-white bg-opacity-80 text-left text-sm uppercase font-bold backdrop-blur backdrop-filter text-stak-dark-green';
   const firstHeadingClasses = 'py-3.5 pl-4 pr-3 rounded-tl-lg sm:pl-6 lg:pl-8';
   const middleHeadingClasses = 'px-3 py-3.5';
-  const lastHeadingClasses = 'py-3.5 pl-3 pr-3 rounded-tr-lg sm:pr-6 lg:pr-6';
+  const lastHeadingClasses = 'py-3.5 pl-3 pr-1 rounded-tr-lg';
 
   const commonColClasses =
     'py-1 border-b max-w-[17rem] border-gray-200 whitespace-nowrap text-sm text-gray-500';
   const firstColClasses = 'pl-4 pr-3 sm:pl-6 lg:pl-8';
   const middleColClasses = 'px-3';
-  const lastColClasses = 'pr-4 pl-3 sm:pr-6 lg:pr-6';
+  const lastColClasses = 'pr-2 pl-3 sm:pr-6 lg:pr-4';
 
   return (
     <>
@@ -370,7 +375,7 @@ const InvoicesTable = <
                               <span
                                 className={classNames(
                                   activeHeading === heading ? '' : 'invisible',
-                                  'ml-2 flex-none rounded bg-gray-100 text-gray-400 group-hover:visible group-focus:visible'
+                                  'flex-none rounded bg-gray-100 text-gray-400 group-hover:visible group-focus:visible'
                                 )}
                               >
                                 {sortOrder === 'desc' ? (
@@ -440,10 +445,13 @@ const InvoicesTable = <
                                   className={classNames(
                                     j === 0
                                       ? firstColClasses
-                                      : rows && j === rows.length - 1
+                                      : j === Object.keys(headings).length - 1
                                       ? lastColClasses
                                       : middleColClasses,
                                     commonColClasses,
+                                    headingsKey === 'project'
+                                      ? 'overflow-visible'
+                                      : 'overflow-hidden',
                                     checkExpirationDate(
                                       headingsKey as string,
                                       invoice
@@ -475,20 +483,34 @@ const InvoicesTable = <
                                       headingsKey.endsWith('amount')
                                         ? formatNumber(
                                             Number(
-                                              invoice[
-                                                headingsKey as keyof Partial<InvoiceTableRow>
-                                              ].replaceAll(',', '')
+                                              (
+                                                invoice[headingsKey] as string
+                                              ).replaceAll(',', '')
                                             ).toFixed(2)
                                           )
                                         : headingsKey.endsWith('Phone')
                                         ? formatPhoneNumber(
-                                            invoice[
-                                              headingsKey as keyof Partial<InvoiceTableRow>
-                                            ] as string
+                                            invoice[headingsKey] as string
                                           )
-                                        : (invoice[
-                                            headingsKey as keyof Partial<InvoiceTableRow>
-                                          ] as string)}
+                                        : headingsKey === 'processed' ||
+                                          headingsKey === 'approved'
+                                        ? yesNoBadge({
+                                            value: invoice[headingsKey],
+                                            positiveText: 'Yes',
+                                            negativeText: 'No',
+                                          })
+                                        : headingsKey === 'status'
+                                        ? yesNoBadge({
+                                            value: invoice['vendor_uuid']
+                                              ? (
+                                                  vendorSummary as VendorSummary
+                                                )?.[invoice['vendor_uuid']]
+                                                  ?.agave_uuid
+                                              : null,
+                                            positiveText: 'Vendor Synced',
+                                            negativeText: 'Vendor Not Synced',
+                                          })
+                                        : invoice[headingsKey]}
                                     </div>
                                   )}
                                 </td>
