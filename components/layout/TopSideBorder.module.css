@@ -1,0 +1,73 @@
+.top {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  height: var(--top-border-height);
+  padding: 0 1rem 0 0.625rem;
+  background-color: var(--stak-nav-bar);
+  z-index: 10;
+}
+
+.top h1 {
+  color: var(--main-border-item-color);
+  font-size: var(--main-border-text-size);
+  font-weight: var(--main-border-text-weight);
+}
+
+.side {
+  position: fixed;
+  width: var(--main-border-thickness);
+  height: 100vh;
+  left: 0;
+  top: 0;
+
+  background-color: var(--stak-nav-bar);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+
+  padding-bottom: 30px;
+  gap: 20px;
+
+  z-index: -1;
+}
+
+.back {
+  margin-left: -5px;
+}
+
+.back:hover {
+  filter: var(--main-border-hover-shadow);
+  cursor: pointer;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 0;
+  padding: 0;
+  transition: filter 0.1s ease-in;
+}
+
+.icon:hover {
+  filter: var(--main-border-hover-shadow);
+  cursor: pointer;
+}
+
+.hover.logo {
+  margin-top: 0.5rem;
+  margin-left: -2px;
+}
+
+.icon svg {
+  flex-shrink: 0;
+}

@@ -1,0 +1,6 @@
+.card {
+  display: flex;
+  border-radius: var(--border-radius-10);
+  box-shadow: var(--tile-shadow);
+  /* background: var(--stak-white); */
+}

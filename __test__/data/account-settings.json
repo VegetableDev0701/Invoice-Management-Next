@@ -1,0 +1,223 @@
+{
+  "mainCategories": [
+    {
+      "name": "Profile",
+      "inputElements": [
+        {
+          "items": [
+            {
+              "label": "Company Name",
+              "id": "company-name-as",
+              "type": "text",
+              "isPhoneNumber": false,
+              "value": "",
+              "required": true,
+              "errormessage": "Your company name name is required.",
+              "disabled": true
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "First Name",
+              "id": "first-name-as",
+              "type": "text",
+              "value": "",
+              "required": false
+            },
+            {
+              "label": "Last Name",
+              "id": "last-name-as",
+              "type": "text",
+              "value": "",
+              "required": false
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Phone Number",
+              "id": "phone-number-as",
+              "type": "text",
+              "isPhoneNumber": true,
+              "validFunc": "phone",
+              "value": "",
+              "required": false
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Email Address",
+              "id": "email-address-as",
+              "type": "text",
+              "validFunc": "email",
+              "value": "",
+              "required": false,
+              "disabled": true
+            }
+          ]
+        },
+        {
+          "name": "addressFields",
+          "addressElements": [
+            {
+              "items": [
+                {
+                  "label": "Business Address",
+                  "id": "business-address-as",
+                  "type": "text",
+                  "required": false,
+                  "errormessage": "Business address is required.",
+                  "isAddress": true,
+                  "value": ""
+                }
+              ]
+            },
+            {
+              "items": [
+                {
+                  "label": "City",
+                  "id": "city-business-as",
+                  "type": "text",
+                  "required": false,
+                  "isAddress": true,
+                  "value": ""
+                },
+                {
+                  "label": "State",
+                  "id": "state-business-as",
+                  "type": "text",
+                  "required": false,
+                  "isAddress": true,
+                  "value": ""
+                },
+                {
+                  "label": "Zip Code",
+                  "id": "zip-code-business-as",
+                  "type": "text",
+                  "inputmode": "numeric",
+                  "required": false,
+                  "isAddress": true,
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Budget",
+      "inputElements": [
+        {
+          "items": [
+            {
+              "label": "Cost Code Format",
+              "id": "cost-code-format-as",
+              "inputType": "dropdown",
+              "value": "Custom",
+              "sideButton": true,
+              "buttonText": "Edit Format",
+              "buttonPath": "account-settings/edit-cost-codes",
+              "required": false,
+              "selectMenuOptions": [
+                {
+                  "id": 1,
+                  "label": "Custom"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Permissions",
+      "inputElements": [
+        {
+          "items": [
+            {
+              "label": "Permissions",
+              "id": "permissions-as",
+              "inputType": "dropdown",
+              "value": "",
+              "required": false,
+              "selectMenuOptions": [
+                {
+                  "id": 1,
+                  "label": "General User"
+                },
+                {
+                  "id": 2,
+                  "label": "Approver"
+                },
+                {
+                  "id": 3,
+                  "label": "Administrator"
+                },
+                {
+                  "id": 4,
+                  "label": "Guest"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Software",
+      "inputElements": [
+        {
+          "items": [
+            {
+              "label": "Accounting Software",
+              "id": "accounting-software-as",
+              "inputType": "dropdown",
+              "value": "",
+              "required": false,
+              "sideButton": true,
+              "buttonText": "Press to Integrate Software",
+              "buttonPath": "agave",
+              "selectMenuOptions": [
+                {
+                  "id": 1,
+                  "label": "QuickBooks Desktop"
+                },
+                {
+                  "id": 2,
+                  "label": "QuickBooks Online"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Project Management Software",
+              "id": "project-management-software-as",
+              "inputType": "dropdown",
+              "value": "",
+              "required": false,
+              "selectMenuOptions": [
+                {
+                  "id": 1,
+                  "label": "BuilderTrend"
+                },
+                {
+                  "id": 2,
+                  "label": "Procore"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

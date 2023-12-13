@@ -1,0 +1,237 @@
+{
+  "1.6": {
+    "totalAmt": "750.00",
+    "changeOrder": null,
+    "recursiveLevel": [
+      1,
+      5,
+      0
+    ],
+    "costCodeName": "Permits",
+    "qtyAmt": "1",
+    "rateAmt": "750.00",
+    "vendor": "CITY OF SEATTLE",
+    "description": "Permits",
+    "group": "Invoices",
+    "invoiceIds": [
+      "7CtKX9PsacuzzFBY"
+    ]
+  },
+  "1.33": {
+    "totalAmt": "16.49",
+    "changeOrder": null,
+    "recursiveLevel": [
+      1,
+      2,
+      2
+    ],
+    "costCodeName": "Small Tools",
+    "qtyAmt": "1",
+    "rateAmt": "16.49",
+    "vendor": "HOME DEPOT",
+    "description": "Small Tools",
+    "group": "Invoices",
+    "invoiceIds": [
+      "8Jmr6cQTo6aCHVfs"
+    ]
+  },
+  "5.61": {
+    "totalAmt": "45.59",
+    "changeOrder": null,
+    "recursiveLevel": [
+      5,
+      5,
+      0
+    ],
+    "costCodeName": "Framing Hardware",
+    "qtyAmt": "1",
+    "rateAmt": "45.59",
+    "vendor": "Dunn Lumber Co Inc.",
+    "description": "Framing Hardware",
+    "group": "Invoices",
+    "invoiceIds": [
+      "FyR9Qq6c6EzZLBzb"
+    ]
+  },
+  "1.91": {
+    "totalAmt": "2,700.00",
+    "changeOrder": null,
+    "recursiveLevel": [
+      1,
+      7,
+      0
+    ],
+    "costCodeName": "Temporary Erosion Control",
+    "qtyAmt": "1",
+    "rateAmt": "2,700.00",
+    "vendor": "Reliable Construction",
+    "description": "Temporary Erosion Control",
+    "group": "Invoices",
+    "invoiceIds": [
+      "MzBPqT6es3p6J8mv"
+    ]
+  },
+  "2.13": {
+    "totalAmt": "18,684.00",
+    "changeOrder": null,
+    "recursiveLevel": [
+      2,
+      0,
+      2
+    ],
+    "costCodeName": "Building Demolition",
+    "qtyAmt": "1",
+    "rateAmt": "18,684.00",
+    "vendor": "Reliable Construction",
+    "description": "Building Demolition",
+    "group": "Invoices",
+    "invoiceIds": [
+      "MzBPqT6es3p6J8mv"
+    ]
+  },
+  "2.26": {
+    "totalAmt": "2,860.00",
+    "changeOrder": null,
+    "recursiveLevel": [
+      2,
+      1,
+      6
+    ],
+    "costCodeName": "Import and Export Fill",
+    "qtyAmt": "1",
+    "rateAmt": "2,860.00",
+    "vendor": "Reliable Construction",
+    "description": "Import and Export Fill",
+    "group": "Invoices",
+    "invoiceIds": [
+      "MzBPqT6es3p6J8mv"
+    ]
+  },
+  "2.29": {
+    "totalAmt": "1,200.00",
+    "changeOrder": null,
+    "recursiveLevel": [
+      2,
+      1,
+      9
+    ],
+    "costCodeName": "Temporary Road",
+    "qtyAmt": "1",
+    "rateAmt": "1,200.00",
+    "vendor": "Reliable Construction",
+    "description": "Temporary Road",
+    "group": "Invoices",
+    "invoiceIds": [
+      "Q9P7D4LPDtsHRBWU"
+    ]
+  },
+  "1.25": {
+    "totalAmt": "750.00",
+    "changeOrder": null,
+    "recursiveLevel": [
+      1,
+      1,
+      4
+    ],
+    "costCodeName": "Surveying",
+    "qtyAmt": "1",
+    "rateAmt": "750.00",
+    "vendor": "Camp Land Surveyors",
+    "description": "Surveying",
+    "group": "Invoices",
+    "invoiceIds": [
+      "VYzW4pAxqUHNnD95"
+    ]
+  },
+  "1.26": {
+    "totalAmt": "271.80",
+    "changeOrder": null,
+    "recursiveLevel": [
+      1,
+      1,
+      5
+    ],
+    "costCodeName": "Blueprints",
+    "qtyAmt": "1",
+    "rateAmt": "271.80",
+    "vendor": "W WIDE FORMAT COMPANY",
+    "description": "Blueprints",
+    "group": "Invoices",
+    "invoiceIds": [
+      "biHtqpsEm6Xaxaos"
+    ]
+  },
+  "6.11": {
+    "totalAmt": "145.78",
+    "changeOrder": null,
+    "recursiveLevel": [
+      6,
+      0,
+      0
+    ],
+    "costCodeName": "Framing Material",
+    "qtyAmt": "1",
+    "rateAmt": "145.78",
+    "vendor": "Plywood Supply, Inc.",
+    "description": "Framing Material",
+    "group": "Invoices",
+    "invoiceIds": [
+      "heE9He7s2vdHYJF9"
+    ]
+  },
+  "1.36": {
+    "totalAmt": "300.00",
+    "changeOrder": null,
+    "recursiveLevel": [
+      1,
+      2,
+      5
+    ],
+    "costCodeName": "Truck Rental",
+    "qtyAmt": "1",
+    "rateAmt": "300.00",
+    "vendor": "HACHI Truck",
+    "description": "Truck Rental",
+    "group": "Invoices",
+    "laborFeeIds": [
+      "boegLy71uPvkjoUG"
+    ]
+  },
+  "1.12": {
+    "totalAmt": "5,527.50",
+    "changeOrder": null,
+    "recursiveLevel": [
+      1,
+      0,
+      1
+    ],
+    "costCodeName": "Project Management",
+    "qtyAmt": "1",
+    "rateAmt": "5,527.50",
+    "vendor": "Colin Anderson",
+    "description": "Project Management",
+    "group": "Invoices",
+    "laborFeeIds": [
+      "QkUxFOAnwAe04mrh",
+      "j0Jo0fNWQ93ph9ly"
+    ]
+  },
+  "1.13": {
+    "totalAmt": "260.00",
+    "changeOrder": null,
+    "recursiveLevel": [
+      1,
+      0,
+      2
+    ],
+    "costCodeName": "Project Assistant",
+    "qtyAmt": "1",
+    "rateAmt": "260.00",
+    "vendor": "Beatriz Quesada",
+    "description": "Project Assistant",
+    "group": "Invoices",
+    "laborFeeIds": [
+      "7H4vPFHMurWLnxqo"
+    ]
+  }
+}

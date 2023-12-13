@@ -1,0 +1,25 @@
+{
+  "S43W0a7jCfWwr4Sd": {
+    "projectName": "Grant Lakehouse",
+    "date": "2021-09-10",
+    "uuid": "S43W0a7jCfWwr4Sd",
+    "clientName": "Michael Grant",
+    "content": {
+      "3FvQQgz5ULmMnC7J": {
+        "rateAmt": "16,281.31",
+        "description": "Excavation",
+        "qtyAmt": "1",
+        "uuid": "3FvQQgz5ULmMnC7J",
+        "costCode": "2.22",
+        "isInvoice": true,
+        "totalAmt": "16,281.31",
+        "isLaborFee": null,
+        "vendor": "Reliable Construction"
+      }
+    },
+    "address": "4215 Northeast 125th Street",
+    "subtotalAmt": "20000",
+    "workDescription": "Lower Back Yard & Additional Foundation",
+    "name": "AWA # 1"
+  }
+}

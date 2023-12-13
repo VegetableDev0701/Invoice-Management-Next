@@ -1,0 +1,68 @@
+{
+  "S43W0a7jCfWwr4Sd": {
+    "2.22": {
+      "totalAmt": "16,281.31",
+      "changeOrder": "AWA # 1",
+      "recursiveLevel": [
+        2,
+        1,
+        2
+      ],
+      "costCodeName": "Excavation",
+      "qtyAmt": "1",
+      "rateAmt": "16,281.31",
+      "vendor": "Reliable Construction",
+      "description": "Excavation",
+      "group": "Change Orders",
+      "invoiceIds": [
+        "3FvQQgz5ULmMnC7J"
+      ]
+    }
+  },
+  "profitTaxesLiability": {
+    "0.1100": {
+      "totalAmt": "1,953.76",
+      "changeOrder": null,
+      "recursiveLevel": [],
+      "costCodeName": "",
+      "qtyAmt": "1",
+      "rateAmt": "12.00",
+      "vendor": "",
+      "description": "Overhead and Profit",
+      "group": "Invoices"
+    },
+    "0.1200": {
+      "totalAmt": "179.80",
+      "changeOrder": null,
+      "recursiveLevel": [],
+      "costCodeName": "",
+      "qtyAmt": "1",
+      "rateAmt": "9.86",
+      "vendor": "",
+      "description": "Builder's Risk and Liability Insurance (Rate per $1,000)",
+      "group": "Invoices"
+    },
+    "0.1400": {
+      "totalAmt": "92.07",
+      "changeOrder": null,
+      "recursiveLevel": [],
+      "costCodeName": "",
+      "qtyAmt": "1",
+      "rateAmt": "0.50",
+      "vendor": "",
+      "description": "Business and Occupation Tax",
+      "group": "Invoices"
+    },
+    "0.1300": {
+      "totalAmt": "1,869.20",
+      "changeOrder": null,
+      "recursiveLevel": [],
+      "costCodeName": "",
+      "qtyAmt": "1",
+      "rateAmt": "10.10",
+      "vendor": "",
+      "description": "Sales Tax",
+      "group": "Invoices"
+    }
+  }
+}

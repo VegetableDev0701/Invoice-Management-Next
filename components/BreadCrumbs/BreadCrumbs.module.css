@@ -1,0 +1,32 @@
+.main {
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  gap: 0.25rem;
+
+  background-color: var(--stak-white);
+  /* border: 1px solid white; */
+  border-radius: var(--border-radius-6);
+  padding: 0.2rem 0.35rem;
+  gap: 0.25rem;
+}
+
+.bread-item {
+  /* color: var(--stak-white); */
+  color: black;
+  font-weight: 500;
+  font-size: 1.1rem;
+  transition: all 0.1s ease;
+}
+
+.bread-item:hover {
+  /* text-shadow: var(--text-shadow-dark); */
+  color: var(--stak-dark-yellow);
+  cursor: pointer;
+}
+
+.bread-item__active {
+  color: var(--stak-dark-green);
+  font-weight: 600;
+  /* color: black; */
+}

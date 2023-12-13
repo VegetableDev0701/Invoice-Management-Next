@@ -1,0 +1,7 @@
+.list-item__control {
+  display: none;
+}
+
+.list-item:hover .list-item__control {
+  display: flex;
+}

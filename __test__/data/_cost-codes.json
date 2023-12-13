@@ -1,0 +1,150 @@
+{
+  "format": "Custom",
+  "currency": "USD",
+  "updated": false,
+  "divisions": [
+    {
+      "name": "General Conditions",
+      "number": 1,
+      "subdivisions": [
+        {
+          "name": "Management",
+          "number": 1.1,
+          "items": [
+            {
+              "name": "Project Supervision",
+              "number": 1.11,
+              "value": ""
+            },
+            { "name": "Project Management", "number": 1.12, "value": "" },
+            { "name": "Project Assistant", "number": 1.13, "value": "" }
+          ]
+        },
+        {
+          "name": "Professional Fees",
+          "number": 1.2,
+          "items": [
+            { "name": "Architectural Design", "number": 1.21, "value": "" },
+            { "name": "Engineering", "number": 1.22, "value": "" },
+            { "name": "Interior Design", "number": 1.23, "value": "" },
+            { "name": "Landscape Design", "number": 1.24, "value": "" },
+            { "name": "Surveying", "number": 1.25, "value": "" },
+            { "name": "Blueprints", "number": 1.26, "value": "" }
+          ]
+        },
+        {
+          "name": "Equipment",
+          "number": 1.3,
+          "items": [
+            { "name": "Equipment Rental", "number": 1.31, "value": "" },
+            { "name": "Job Shack", "number": 1.32, "value": "" },
+            { "name": "Small Tools", "number": 1.33, "value": "" },
+            {
+              "name": "Temporary Fence Rental",
+              "number": 1.34,
+              "value": ""
+            },
+            { "name": "Temporary Generator", "number": 1.35, "value": "" },
+            { "name": "Truck Rental", "number": 1.36, "value": "" },
+            { "name": "Travel Per Diem", "number": 1.37, "value": "" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Site Work",
+      "number": 2,
+      "subdivisions": [
+        {
+          "name": "Demolition",
+          "number": 2.1,
+          "items": [
+            {
+              "name": "Hazardous Material Abatement",
+              "number": 2.11,
+              "value": ""
+            },
+            { "name": "Tank Removal", "number": 2.12, "value": "" },
+            {
+              "name": "Building Demolition",
+              "number": 2.13,
+              "value": ""
+            }
+          ]
+        },
+        {
+          "name": "Earthwork",
+          "number": 2.2,
+
+          "items": [
+            { "name": "Mobilization", "number": 2.205, "value": "" },
+            { "name": "Site Clearing", "number": 2.21, "value": "" },
+            { "name": "Excavation", "number": 2.22, "value": "" },
+            { "name": "Backfill", "number": 2.23, "value": "" },
+            { "name": "Compaction", "number": 2.24, "value": "" },
+            { "name": "Final Grade", "number": 2.25, "value": "" },
+            {
+              "name": "Import and Export Fill",
+              "number": 2.26,
+              "value": ""
+            },
+            {
+              "name": "Drilling, Piles, and Soil Nails",
+              "number": 2.27,
+              "value": ""
+            },
+            { "name": "Erosion Control", "number": 2.28, "value": "" },
+            { "name": "Temporary Road", "number": 2.29, "value": "" }
+          ]
+        },
+        {
+          "name": "Hauling and Waste",
+          "number": 2.3,
+
+          "items": [{ "name": "Dump Fees", "number": 2.31, "value": "" }]
+        },
+        {
+          "name": "Drainage",
+          "number": 2.4,
+
+          "items": [
+            { "name": "Drain Rock", "number": 2.41, "value": "" },
+            { "name": "Filter Fabric", "number": 2.42, "value": "" },
+            { "name": "Foundation Drains", "number": 2.43, "value": "" },
+            {
+              "name": "Storm Sewer Materials",
+              "number": 2.44,
+              "value": ""
+            }
+          ]
+        },
+        {
+          "name": "Utilities",
+          "number": 2.5,
+
+          "items": [
+            {
+              "name": "Fire Department Connection",
+              "number": 2.565,
+              "value": ""
+            }
+          ]
+        }
+      ]
+    },
+    { "name": "Concrete", "number": 3 },
+    { "name": "Masonry", "number": 4 },
+    { "name": "Metals", "number": 5 },
+    { "name": "Wood & Plastic", "number": 6 },
+    { "name": "Thermal & Moisture Protection", "number": 7 },
+    { "name": "Windows & Doors", "number": 8 },
+    { "name": "Finishes", "number": 9 },
+    { "name": "Specialties", "number": 10 },
+    { "name": "Equipment", "number": 11 },
+    { "name": "Furnishings", "number": 12 },
+    { "name": "Special Construction", "number": 13 },
+    { "name": "Conveying Systems", "number": 14 },
+    { "name": "Mechanical", "number": 15 },
+    { "name": "Electrical", "number": 16 }
+  ]
+}

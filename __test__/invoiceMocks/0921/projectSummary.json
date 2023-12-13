@@ -1,0 +1,23 @@
+{
+  "ownerPhone": "8582436633",
+  "contractAmt": "1200000",
+  "uuid": "yyJxtVMGgTtu0YcN",
+  "ownerEmail": "mike.mgrant@gmail.com",
+  "zipCode": "98125",
+  "profitPercent": "12",
+  "city": "Seattle",
+  "projectSuperPhone": "1234567890",
+  "projectSuper": "Colin Anderson",
+  "projectName": "Grant Lakehouse",
+  "projectType": "Custom New Home",
+  "squareFeet": "3200",
+  "isActive": true,
+  "ownerName": "Michael Grant",
+  "estCompletionDate": "2021-10-01",
+  "address": "4215 Northeast 125th Street",
+  "permitNumber": "1234567",
+  "state": "WA",
+  "boTax": "0.5",
+  "insuranceRate": "9.86",
+  "salesTax": "10.1"
+}

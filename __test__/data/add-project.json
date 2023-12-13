@@ -1,0 +1,348 @@
+{
+  "numRecurringFees": 0,
+  "mainCategories": [
+    {
+      "name": "Project Details",
+      "inputElements": [
+        {
+          "items": [
+            {
+              "label": "Project Name",
+              "id": "project-name",
+              "type": "text",
+              "required": true,
+              "errormessage": "Project name is required.",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Project Supervisor",
+              "id": "project-supervisor",
+              "inputType": "dropdownWithSearch",
+              "required": true,
+              "errormessage": "Project supervisor is required.",
+              "value": "",
+              "selectMenuOptions": [
+                {
+                  "id": 1,
+                  "label": "Chris Christopher"
+                },
+                {
+                  "id": 2,
+                  "label": "Albert Albertson"
+                },
+                {
+                  "id": 3,
+                  "label": "Carl Carlson"
+                },
+                {
+                  "id": 4,
+                  "label": "Jacob Peach"
+                },
+                {
+                  "id": 5,
+                  "label": "Turner Hooch"
+                },
+                {
+                  "id": 6,
+                  "label": "Colin Anderson"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Project Supervisor's Phone Number",
+              "id": "project-supervisor-phone-number",
+              "type": "text",
+              "required": true,
+              "errormessage": "Project supervisor's phone number is required and must be a valid 10 digit number.",
+              "validMessage": "Phone number must be a valid 10 digit number.",
+              "isPhoneNumber": true,
+              "validFunc": "phone",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Contract Value",
+              "id": "contract-value",
+              "type": "text",
+              "required": true,
+              "errormessage": "Contract value is required.",
+              "isCurrency": true,
+              "value": ""
+            },
+            {
+              "label": "Estimated Completion in Months",
+              "id": "estimated-completion-months",
+              "type": "number",
+              "required": true,
+              "errormessage": "Estimated number of months to completion is required.",
+              "value": ""
+            },
+            {
+              "label": "Estimated Project Start Date",
+              "id": "estimated-start-date",
+              "type": "date",
+              "data-testid": "date-input",
+              "required": true,
+              "errormessage": "Estimated start date is required.",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "name": "addressFields",
+          "addressElements": [
+            {
+              "items": [
+                {
+                  "label": "Project Address",
+                  "id": "project-address",
+                  "type": "text",
+                  "required": true,
+                  "errormessage": "Project address is required.",
+                  "isAddress": true,
+                  "value": ""
+                }
+              ]
+            },
+            {
+              "items": [
+                {
+                  "label": "City",
+                  "id": "city-project",
+                  "type": "text",
+                  "required": true,
+                  "isAddress": true,
+                  "value": ""
+                },
+                {
+                  "label": "State",
+                  "id": "state-project",
+                  "type": "text",
+                  "required": true,
+                  "isAddress": true,
+                  "value": ""
+                },
+                {
+                  "label": "Zip Code",
+                  "id": "zip-code-project",
+                  "type": "text",
+                  "inputmode": "numeric",
+                  "required": true,
+                  "isAddress": true,
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Overhead and Profit (%)",
+              "id": "overhead-profit",
+              "type": "number",
+              "required": true,
+              "errormessage": "Overhead and profit is required to build the client's invoice.",
+              "value": ""
+            },
+            {
+              "label": "Insurance Rate ($/$1000)",
+              "id": "insurance-rate",
+              "type": "text",
+              "required": true,
+              "errormessage": "Insurance rate is required to build the client's invoice.",
+              "isCurrency": true,
+              "value": ""
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Business and Operation Tax (%)",
+              "id": "bo-tax",
+              "type": "number",
+              "required": true,
+              "errormessage": "Business and operation tax is required to build the client's invoice.",
+              "value": ""
+            },
+            {
+              "label": "Sales Tax (%)",
+              "id": "sales-tax",
+              "type": "number",
+              "required": true,
+              "errormessage": "Sales tax is required to build the client's invoice.",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Permit Number",
+              "id": "permit-number",
+              "type": "text",
+              "value": "",
+              "required": false
+            },
+            {
+              "label": "Square Feet",
+              "id": "square-feet",
+              "type": "text",
+              "value": "",
+              "required": false
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Project Type",
+              "id": "project-type",
+              "inputType": "dropdown",
+              "value": "",
+              "required": false,
+              "selectMenuOptions": [
+                {
+                  "id": 1,
+                  "label": "Custom New Home"
+                },
+                {
+                  "id": 2,
+                  "label": "Remodel"
+                },
+                {
+                  "id": 3,
+                  "label": "Spec Home"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Client Details",
+      "inputElements": [
+        {
+          "items": [
+            {
+              "label": "Client's First Name",
+              "id": "client-first-name",
+              "type": "text",
+              "required": true,
+              "errormessage": "Client's first name is required.",
+              "value": ""
+            },
+            {
+              "label": "Client's Last Name",
+              "id": "client-last-name",
+              "type": "text",
+              "required": true,
+              "errormessage": "Client's last name is required.",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Client's Business Name",
+              "id": "client-business-name",
+              "type": "text",
+              "value": "",
+              "required": false
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Client's Phone Number",
+              "id": "client-phone-number",
+              "type": "text",
+              "required": false,
+              "errormessage": "Client's phone number is required and must be a valid 10 digit number.",
+              "validMessage": "Phone number must be a valid 10 digit number.",
+              "isPhoneNumber": true,
+              "validFunc": "phone",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "name": "addressFields",
+          "addressElements": [
+            {
+              "items": [
+                {
+                  "label": "Client's Address",
+                  "id": "client-address",
+                  "type": "text",
+                  "required": false,
+                  "errormessage": "Project address is required.",
+                  "isAddress": true,
+                  "value": ""
+                }
+              ]
+            },
+            {
+              "items": [
+                {
+                  "label": "City",
+                  "id": "city-client",
+                  "type": "text",
+                  "required": false,
+                  "isAddress": true,
+                  "value": ""
+                },
+                {
+                  "label": "State",
+                  "id": "state-client",
+                  "type": "text",
+                  "required": false,
+                  "isAddress": true,
+                  "value": ""
+                },
+                {
+                  "label": "Zip Code",
+                  "id": "zip-code-client",
+                  "type": "text",
+                  "inputmode": "numeric",
+                  "required": false,
+                  "isAddress": true,
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Client's Email",
+              "id": "client-email",
+              "type": "text",
+              "required": false,
+              "errormessage": "Client's email is required and must be valid.",
+              "validMessage": "Email must be valid.",
+              "validFunc": "email",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

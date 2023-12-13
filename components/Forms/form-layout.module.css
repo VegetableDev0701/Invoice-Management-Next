@@ -1,0 +1,29 @@
+.main-form-tiles {
+  display: flex;
+  flex-direction: column;
+  width: calc(
+    100vw -
+      (var(--main-border-horizontal-margins) * 2 + var(--main-border-thickness))
+  );
+  height: calc(
+    100vh -
+      (
+        var(--main-border-vertical-margins) * 2 + var(--main-border-thickness) *
+          2
+      )
+  );
+
+  background-color: var(--main-bg);
+
+  margin: var(--main-border-vertical-margins)
+    var(--main-border-horizontal-margins);
+
+  gap: 20px;
+}
+
+.content-tiles {
+  display: flex;
+  width: 100%;
+  height: calc(100% - (var(--form-title-card-height) + 20px));
+  gap: 20px;
+}
