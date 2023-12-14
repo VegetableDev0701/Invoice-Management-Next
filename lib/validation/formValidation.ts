@@ -15,7 +15,7 @@ import {
   formatTaxNumber,
 } from '@/lib/utility/formatter';
 import { Actions, FormData } from '@/lib/models/types';
-import { FormState } from '@/lib/models/formStateModels';
+import { FormState, FormStateV2 } from '@/lib/models/formStateModels';
 
 /**
  * Checks if any of the input states has an error by looking for a boolean property in the state objects that includes the string "isValid".
@@ -179,7 +179,7 @@ export const getRequiredInputIds = (formData: FormData) => {
 
 export const checkAllFormFields = (
   formData: FormData,
-  formState: FormState
+  formState: FormStateV2
 ) => {
   return getRequiredInputIds(formData).every(({ id, required }) => {
     if (required) {
