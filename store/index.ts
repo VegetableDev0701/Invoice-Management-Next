@@ -37,6 +37,7 @@ import addClientBillSlice from './add-client-bill';
 import nodeEnvSlice from './node-env-slice';
 import onboardUserFormSlice from './onboard-user-slice';
 import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1';
+import editContractFormSlice from './edit-contract';
 
 const rootReducer = combineReducers({
   path: currentPathSlice.reducer,
@@ -45,6 +46,7 @@ const rootReducer = combineReducers({
   addLaborForm: addLaborFormSlice.reducer,
   addChangeOrderForm: addChangeOrderFormSlice.reducer,
   addContractForm: addContractFormSlice.reducer,
+  editContractForm: editContractFormSlice.reducer,
   addBudgetForm: addBudgetFormSlice.reducer,
   addProcessInvoiceForm: addProcessInvoiceFormSlice.reducer,
   addClientBill: addClientBillSlice.reducer,
