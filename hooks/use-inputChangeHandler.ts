@@ -41,6 +41,19 @@ function useInputChangeHandler(
       dispatch,
       value
     );
+    dispatch(
+      actions.setIsTouchedState({
+        inputKey: input.id,
+        isTouched: true,
+        isValid: getValidFunc(input.validFunc || input.id)(
+          e.target.value,
+          input?.required
+        ),
+      })
+    );
+    if ('setIsUpdatedState' in actions) {
+      dispatch(actions.setIsUpdatedState(true));
+    }
   }
 
   function blurHandler() {

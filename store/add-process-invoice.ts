@@ -38,7 +38,9 @@ const addProcessInvoiceFormSlice = createSlice({
         isValid: isValid,
         isTouched: isTouched,
       };
-      state.isUpdated.value = true;
+    },
+    setIsUpdatedState(state, action: PayloadAction<boolean>) {
+      state.isUpdated.value = action.payload;
     },
     resetFormValidation(state) {
       return resetAllFormValidation(state);

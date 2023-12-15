@@ -3,7 +3,7 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 
 import { usePageData } from '@/hooks/use-page-data';
 import useHttp from '@/hooks/use-http';
-import useSetNotification from '@/hooks/use-set-nofitication';
+import useSetNotification from '@/hooks/use-set-notification';
 
 import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
 import { formatNameForID } from '@/lib/utility/formatter';

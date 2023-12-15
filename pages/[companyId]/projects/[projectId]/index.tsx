@@ -81,9 +81,9 @@ const ProjectHome = () => {
     usePageData('data', 'projectsSummary');
 
   // got an `undefined` error so the optional chaining here protects against that happening
-  const projectBudget = useSelector(
-    (state) => state.projects[projectId]?.budget
-  );
+  // const projectBudget = useSelector(
+  //   (state) => state.projects[projectId]?.budget
+  // );
   const isCollapsed = useSelector((state) => state.addBudgetForm.isCollapsed);
   const isProjectsFetched = useSelector(
     (state) => state.processing.allDataFetched
@@ -151,7 +151,7 @@ const ProjectHome = () => {
         });
       });
     }
-  }, [projectId, isProjectsFetched, projectBudget]);
+  }, [projectId, isProjectsFetched]);
 
   // click handlers
   // TODO add a invoice formoverlay for the contract to edit any issues the model has

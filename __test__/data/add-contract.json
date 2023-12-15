@@ -18,32 +18,6 @@
         {
           "items": [
             {
-              "label": "Project Name",
-              "id": "project-name",
-              "inputType": "dropdownWithSearch",
-              "required": true,
-              "errormessage": "Project is required.",
-              "value": "",
-              "isOnOverlay": true
-            }
-          ]
-        },
-        {
-          "items": [
-            {
-              "label": "Work Description",
-              "id": "work-description",
-              "type": "text",
-              "isCurrency": true,
-              "required": true,
-              "errormessage": "Contract amount is required.",
-              "value": ""
-            }
-          ]
-        },
-        {
-          "items": [
-            {
               "label": "Contract Amount",
               "id": "contract-amount",
               "type": "text",

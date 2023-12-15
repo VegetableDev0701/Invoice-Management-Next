@@ -58,7 +58,7 @@ function ProcessInvoiceForm(props: Props) {
   } = props;
   const dispatch = useDispatch();
 
-  const [tabPressed, setTabPressed] = useState<boolean>(false);
+  const [_tabPressed, setTabPressed] = useState<boolean>(false);
 
   const changeOrdersSummary = useSelector(
     (state) => state.projects[projectId]?.['change-orders-summary']
@@ -135,7 +135,7 @@ function ProcessInvoiceForm(props: Props) {
           id="form-id"
           className="flex flex-col flex-grow"
         >
-          {formData.mainCategories.map((category, i) => {
+          {formData?.mainCategories.map((category, i) => {
             if (
               category.name === 'Line Items' &&
               formState['line-item-toggle']?.value
@@ -233,11 +233,7 @@ function ProcessInvoiceForm(props: Props) {
                                 }
                                 onBlur={onMouseLeaveHandler}
                                 autofocus={
-                                  (i === 0 &&
-                                    j === 0 &&
-                                    p === 0 &&
-                                    tabPressed) ||
-                                  false
+                                  (i === 0 && j === 0 && p === 0) || false
                                 }
                               />
                             );

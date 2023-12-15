@@ -11,7 +11,7 @@ import { contractActions, deleteContracts } from '@/store/contract-slice';
 
 import { usePageData } from '@/hooks/use-page-data';
 import useHttp from '@/hooks/use-http';
-import useSetNotification from '@/hooks/use-set-nofitication';
+import useSetNotification from '@/hooks/use-set-notification';
 
 import { User } from '@/lib/models/formStateModels';
 import {

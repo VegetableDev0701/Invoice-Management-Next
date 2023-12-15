@@ -263,7 +263,7 @@ export const updateInvoiceData = createAsyncThunk(
       const matchedVendorSummary =
         !isObjectEmpty(vendorsSummary) &&
         Object.values(vendorsSummary).find((vendor) => {
-          if (processInvoiceFormState?.['vendor-name']?.value) {
+          if (vendor && processInvoiceFormState?.['vendor-name']?.value) {
             return (
               vendor.vendorName ===
               processInvoiceFormState?.['vendor-name']?.value

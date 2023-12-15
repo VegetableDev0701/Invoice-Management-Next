@@ -39,8 +39,8 @@ export type Actions =
   | AddChangeOrderActions
   | AddContractFormActions
   | EditContractFormActions
-  | AddProcessInvoiceActions
-  | OnboardUserActions;
+  | OnboardUserActions
+  | AddProcessInvoiceActions;
 
 export type FormData =
   | ProjectFormData

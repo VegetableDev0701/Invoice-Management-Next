@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Combobox } from '@headlessui/react';
 
 import {
@@ -73,6 +73,7 @@ const DropDownWithSearch = (props: Props) => {
     changeOrdersSummary,
     vendorSummary,
     onFocus,
+    onBlur,
     onMouseEnter,
     onMouseLeave,
     classes: addOnClass,
@@ -256,6 +257,23 @@ const DropDownWithSearch = (props: Props) => {
     );
   };
 
+  const changeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    dispatch(
+      actions.setIsTouchedState({
+        inputKey: input.id,
+        isTouched: true,
+        isValid: getValidFunc(input.id)(
+          (inputState as FormStateItem).value as string,
+          input.required
+        ),
+      })
+    );
+    if ('setIsUpdatedState' in actions) {
+      dispatch(actions.setIsUpdatedState(true));
+    }
+  };
+
   const isError = !showError
     ? !inputState?.isValid && inputState?.isTouched
     : !inputState?.isValid;
@@ -264,7 +282,17 @@ const DropDownWithSearch = (props: Props) => {
     <div className={`${classes['input-container']} ${addOnClass}`}>
       {!filteredOptions && <FullScreenLoader notFullScreen={true} />}
       {filteredOptions && (
-        <Combobox as="div" value={selected} onChange={setSelected}>
+        <Combobox
+          as="div"
+          value={selected}
+          onChange={(value) => {
+            if ('setIsUpdatedState' in actions) {
+              console.log('item changed');
+              dispatch(actions.setIsUpdatedState(true));
+            }
+            setSelected(value);
+          }}
+        >
           <Combobox.Label
             htmlFor={input.id}
             className={`block font-sans font-semibold ${
@@ -283,22 +311,11 @@ const DropDownWithSearch = (props: Props) => {
                     ? 'border-red-500'
                     : 'border-stak-light-gray'
                 } ${classes['input-container__input']}`}
-                onChange={(event) => {
-                  setQuery(event.target.value);
-                  dispatch(
-                    actions.setIsTouchedState({
-                      inputKey: input.id,
-                      isTouched: true,
-                      isValid: getValidFunc(input.id)(
-                        (inputState as FormStateItem).value as string,
-                        input.required
-                      ),
-                    })
-                  );
-                }}
+                onChange={(event) => changeHandler(event)}
                 onMouseEnter={onMouseEnter}
                 onMouseLeave={onMouseLeave}
                 onFocus={onFocus}
+                onBlur={onBlur}
                 displayValue={(option: { label: string }) => {
                   return option?.label && option.label === 'None'
                     ? ''

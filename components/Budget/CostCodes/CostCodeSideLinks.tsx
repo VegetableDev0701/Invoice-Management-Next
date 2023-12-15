@@ -33,6 +33,9 @@ function CostCodeSideLinks(props: Props) {
     ? projects[projectId].b2a?.currentBudgetedTotal.value
     : 0;
 
+  // TODO the percent complete denominator is not correct. need to change the the
+  // budget amount plus any change order and overages
+  // in any category to get the true percent project completion status
   const percentComplete =
     (currentBudgetedTotal / Number(totalBudget.replaceAll(',', ''))) * 100;
 

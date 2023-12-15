@@ -17,6 +17,7 @@ import {
 } from '../models/summaryDataModel';
 import { getBillProfitTaxes } from './budgetHelpers';
 import { getDataByRecursiveLevel, iterateData } from './costCodeHelpers';
+import { formatNumber } from './formatter';
 import { fetchWithRetry } from './ioUtils';
 
 export const initReportDataItem = (title = '') => {
@@ -30,25 +31,60 @@ export const initReportDataItem = (title = '') => {
   } as BaseReportDataItem;
 };
 
+const calculatePercent = ({
+  actual,
+  budget,
+}: {
+  actual: string | number;
+  budget: string | number;
+}) => {
+  const budgetNum = Number(budget);
+  const actualNum = Number(actual);
+  const diffNum = actualNum - budgetNum;
+  if (budgetNum !== 0) {
+    if (diffNum < 0) {
+      return `${formatNumber(((actualNum / budgetNum) * 100).toFixed(2))}%`;
+    }
+    if (diffNum > 0) {
+      return `${formatNumber(((diffNum / budgetNum) * 100).toFixed(2))}%`;
+    }
+    if (actualNum === 0) {
+      return '0.00%';
+    }
+  } else {
+    return '100.00%';
+  }
+};
+
+const isMarks = (key: string) => {
+  return Object.values(SUMMARY_COST_CODES)
+    .map((cc) => (+cc).toString())
+    .includes(key);
+};
+
 export const formatReportDataItem = (
   data: BaseReportDataItem,
   isEmpty = false
 ) => {
   return {
     title: data.title,
-    budgetAmount: isEmpty ? '' : Number(data.budgetAmount).toFixed(2),
-    actualAmount: isEmpty ? '' : Number(data.actualAmount).toFixed(2),
+    budgetAmount: isEmpty
+      ? ''
+      : formatNumber(Number(data.budgetAmount).toFixed(2)),
+    actualAmount: isEmpty
+      ? ''
+      : formatNumber(Number(data.actualAmount).toFixed(2)),
     difference: isEmpty
       ? ''
-      : (Number(data.actualAmount) - Number(data.budgetAmount)).toFixed(2),
+      : formatNumber(
+          (Number(data.actualAmount) - Number(data.budgetAmount)).toFixed(2)
+        ),
     percent: isEmpty
       ? ''
-      : `${(Number(data.budgetAmount) !== 0
-          ? (Number(data.actualAmount) / Number(data.budgetAmount)) * 100
-          : Number(data.actualAmount) === 0
-          ? 0
-          : 100
-        ).toFixed(2)}%`,
+      : calculatePercent({
+          actual: data.actualAmount,
+          budget: data.budgetAmount,
+        }),
     depth: data.depth,
   } as BaseReportDataItem;
 };
@@ -58,20 +94,38 @@ export const sumOfArray = (
   format: boolean,
   ...arr: BaseReportDataItem[]
 ) => {
-  const total: BaseReportDataItem = {
-    title,
-    budgetAmount: arr
-      .map((item) => Number(item.budgetAmount))
-      .reduce((a, b) => a + b),
-    actualAmount: arr
-      .map((item) => Number(item.actualAmount))
-      .reduce((a, b) => a + b),
-    difference: '',
-    percent: '',
-    depth: arr[0].depth,
-  };
+  const total: BaseReportDataItem =
+    arr.length > 0
+      ? {
+          title,
+          budgetAmount: arr
+            .map((item) => {
+              return typeof item.budgetAmount === 'string'
+                ? Number(item.budgetAmount.replaceAll(',', ''))
+                : item.budgetAmount;
+            })
+            .reduce((a, b) => a + b),
+          actualAmount: arr
+            .map((item) => {
+              return typeof item.actualAmount === 'string'
+                ? Number(item.actualAmount.replaceAll(',', ''))
+                : item.actualAmount;
+            })
+            .reduce((a, b) => a + b),
+          difference: '',
+          percent: '',
+          depth: arr[0].depth,
+        }
+      : {
+          title,
+          budgetAmount: '',
+          actualAmount: '',
+          difference: '',
+          percent: '',
+          depth: 0,
+        };
 
-  return format ? formatReportDataItem(total) : total;
+  return format ? formatReportDataItem(total, arr.length === 0) : total;
 };
 
 interface ClientBillActuals {
@@ -127,9 +181,20 @@ export const buildB2AReport = async ({
     };
   }
 
-  const reportData: ReportData = initReportDataFromProjectBudget({
+  let reportData: ReportData = initReportDataFromProjectBudget({
     projectBudget,
   });
+
+  // remove the marks
+  reportData = Object.entries(reportData)
+    .filter(([key, _]) => !isMarks(key))
+    .reduce((acc, [key, data]) => {
+      if (key !== '0') {
+        acc[key] = data;
+      }
+      return acc;
+    }, {} as ReportData);
+
   const reportDataChangeOrder: ReportDataChangeOrder = {};
 
   let serviceTotal: BaseReportDataItem = initReportDataItem('Total Service');
@@ -154,7 +219,6 @@ export const buildB2AReport = async ({
 
   // sum up the total values
   const totalReportData: ReportData = {};
-
   Object.values(reportData)
     .filter((data) => data.hasSubItem === false)
     .forEach((data) => {
@@ -185,14 +249,8 @@ export const buildB2AReport = async ({
             data
           ),
         };
-
-        serviceTotal = sumOfArray(
-          serviceTotal.title,
-          false,
-          serviceTotal,
-          data
-        );
       });
+      serviceTotal = sumOfArray(serviceTotal.title, false, serviceTotal, data);
     });
 
   serviceTotal = formatReportDataItem(serviceTotal);
@@ -228,7 +286,11 @@ export const buildB2AReport = async ({
     );
   });
 
-  otherChargesTotal = sumOfArray(changeOrderTotal.title, true, ...otherCharges);
+  otherChargesTotal = sumOfArray(
+    otherChargesTotal.title,
+    true,
+    ...otherCharges
+  );
   contractTotal = sumOfArray(
     contractTotal.title,
     true,
@@ -285,12 +347,12 @@ export const buildB2AReport = async ({
   return {
     service: finalReportData,
     serviceTotal: serviceTotal,
-    otherCharges: otherCharges,
-    otherChargesTotal: otherChargesTotal,
-    contractTotal: contractTotal,
+    otherCharges,
+    otherChargesTotal,
+    contractTotal,
     changeOrder: finalReportDataChangeOrder,
-    changeOrderTotal: changeOrderTotal,
-    grandTotal: grandTotal,
+    changeOrderTotal,
+    grandTotal,
   } as B2AReport;
 };
 
