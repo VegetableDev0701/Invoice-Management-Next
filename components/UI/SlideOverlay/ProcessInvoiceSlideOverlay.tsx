@@ -55,6 +55,13 @@ interface Props {
   contractData: ContractData | null;
   dropdown?: ExtendedItems;
   updateData?: boolean;
+  onUpdateData?: ({
+    formState,
+    doc_id,
+  }: {
+    formState: FormStateV2;
+    doc_id: string;
+  }) => void;
   onGetSnapShotFormState?: (data: FormStateV2) => void;
 }
 
@@ -66,6 +73,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
     contractData,
     onGetSnapShotFormState,
     updateData = true,
+    onUpdateData: handleUpdateData,
   } = props;
 
   const { user, isLoading: userLoading } = useUser();
@@ -265,16 +273,17 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
       return;
     } else {
       setOpen(false);
-      if (processInvoiceFormState?.isUpdated.value && updateData) {
-        dispatch(
-          addProcessedInvoiceData({
-            companyId: (user as User).user_metadata.companyId,
-            invoiceId: (invoiceObj.clickedInvoice as InvoiceTableRow)?.doc_id,
-            projectName: (invoiceObj.clickedInvoice as InvoiceTableRow)
-              ?.project as string,
-            snapShotFormState: snapShotCurrentFormState as FormStateV2,
-          })
-        );
+      if (processInvoiceFormState?.isUpdated.value) {
+        updateData &&
+          dispatch(
+            addProcessedInvoiceData({
+              companyId: (user as User).user_metadata.companyId,
+              invoiceId: (invoiceObj.clickedInvoice as InvoiceTableRow)?.doc_id,
+              projectName: (invoiceObj.clickedInvoice as InvoiceTableRow)
+                ?.project as string,
+              snapShotFormState: snapShotCurrentFormState as FormStateV2,
+            })
+          );
       }
       dispatch(
         invoiceActions.setClickedInvoice({
@@ -294,6 +303,16 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
           isRowClicked: false,
         })
       );
+      if (
+        processInvoiceFormState?.isUpdated.value &&
+        !updateData &&
+        handleUpdateData
+      ) {
+        handleUpdateData({
+          formState: snapshotCopy(processInvoiceFormState) as FormStateV2,
+          doc_id: (invoiceObj.clickedInvoice as InvoiceTableRow)?.doc_id,
+        });
+      }
     }
   };
 

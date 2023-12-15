@@ -7,13 +7,12 @@ import {
   useAppSelector as useSelector,
 } from '@/store/hooks';
 import { uiActions } from '@/store/ui-slice';
-import { updateInvoiceData } from '@/store/invoice-slice';
 import { updateBudgetActuals } from '@/store/add-client-bill';
 
 import useHttp from '@/hooks/use-http';
 import useSetNotification from '@/hooks/use-set-notification';
 
-import { FormStateV2, User } from '@/lib/models/formStateModels';
+import { User } from '@/lib/models/formStateModels';
 import { fetchWithRetry } from '@/lib/utility/ioUtils';
 import { ClientBillData } from '@/lib/models/clientBillModel';
 import {
@@ -21,7 +20,7 @@ import {
   LaborSummary,
   ProjectSummary,
 } from '@/lib/models/summaryDataModel';
-import { InvoiceItem, Invoices } from '@/lib/models/invoiceDataModels';
+import { Invoices } from '@/lib/models/invoiceDataModels';
 import { snapshotCopy } from '@/lib/utility/utils';
 import { Labor } from '@/lib/models/formDataModel';
 
@@ -57,8 +56,6 @@ export default function ClientBill() {
   );
   const [error, setIsError] = useState(false);
   const [activeTabKeyName, setActiveTabKeyName] = useState<string>('summary');
-  const [snapShotFormState, setSnapShotFormState] =
-    useState<FormStateV2 | null>(null);
   const [init, setInit] = useState(true);
 
   const dispatch = useDispatch();
@@ -75,7 +72,6 @@ export default function ClientBill() {
     (state) =>
       (state.data.projectsSummary?.allProjects as ProjectSummary)[projectId]
   );
-  const invoiceObj = useSelector((state) => state.invoice);
 
   const {
     response,
@@ -148,59 +144,6 @@ export default function ClientBill() {
     getClientBillData();
   }, [projectId, clientBillId, userLoading, init]);
 
-  useEffect(() => {
-    // check if the needed data exists, ow return
-    if (!clientBillData || !invoiceObj.currentInvoiceSnapShot) return;
-    if (
-      invoiceObj.currentInvoiceSnapShot.doc_id &&
-      clientBillData.invoices[invoiceObj.currentInvoiceSnapShot.doc_id]
-    ) {
-      const oldCurrentActuals = snapshotCopy(
-        clientBillData['current-actuals'].currentActuals
-      );
-
-      const snapShotInvoice = snapshotCopy(
-        clientBillData.invoices[invoiceObj.currentInvoiceSnapShot.doc_id]
-      ) as InvoiceItem;
-
-      dispatch(
-        updateInvoiceData({
-          invoiceId: invoiceObj.currentInvoiceSnapShot.doc_id,
-          companyId: (user as User).user_metadata.companyId,
-          projectName: invoiceObj.currentInvoiceSnapShot['project-name']
-            .value as string,
-          snapShotInvoice,
-          snapShotFormState: snapShotFormState as FormStateV2,
-        })
-      ).then((result) => {
-        if (result.payload) {
-          const updatedInvoices = {
-            ...clientBillData.invoices,
-          };
-
-          updatedInvoices[invoiceObj.currentInvoiceSnapShot!.doc_id] =
-            result.payload as InvoiceItem;
-
-          dispatch(
-            updateBudgetActuals({
-              projectId,
-              companyId: (user as User).user_metadata.companyId,
-              clientBillId,
-              updatedInvoices,
-              oldCurrentActuals,
-              updatedLabor: clientBillData.labor,
-              updatedLaborSummary: clientBillData?.['labor-summary']
-                ? Object.values(clientBillData['labor-summary'])
-                : null,
-            })
-          ).then(() => {
-            setInit(true);
-          });
-        }
-      });
-    }
-  }, [invoiceObj.currentInvoiceSnapShot?.doc_id]);
-
   const handleUpdateClientBill = ({
     updatedInvoices,
     updatedLabor,
@@ -229,10 +172,6 @@ export default function ClientBill() {
     ).then(() => {
       setInit(true);
     });
-  };
-
-  const getSnapShotFormState = (data: FormStateV2) => {
-    setSnapShotFormState(data);
   };
 
   return (
@@ -272,7 +211,7 @@ export default function ClientBill() {
                       projectId={projectId}
                       invoices={clientBillData.invoices}
                       isLoading={isLoading}
-                      onGetSnapShotFormState={getSnapShotFormState}
+                      handleUpdateClientBill={handleUpdateClientBill}
                     />
                   )}
                   {activeTabKeyName === 'labor' && (
