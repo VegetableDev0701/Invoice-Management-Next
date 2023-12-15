@@ -20,7 +20,7 @@ import { companyDataActions } from '@/store/company-data-slice';
 import { usePageData } from '@/hooks/use-page-data';
 import { useSetStatePath } from '@/hooks/use-setpath';
 import useHttp from '@/hooks/use-http';
-import { useUploadVendorNotification } from '@/hooks/use-set-nofitication';
+import { useUploadVendorNotification } from '@/hooks/use-set-notification';
 
 import { FormState, User } from '@/lib/models/formStateModels';
 import { hasAnyExpiredDates } from '@/lib/utility/tableHelpers';

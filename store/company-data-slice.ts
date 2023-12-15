@@ -204,6 +204,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
     },
     thunkAPI
   ) => {
+    // thunkAPI.dispatch(uiActions.lockUI());
     try {
       const state = thunkAPI.getState() as RootState;
       const processInvoiceFormState = state.addProcessInvoiceForm;
@@ -375,7 +376,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
           (value) => value.label === (wholeInvoiceCostCodeValue as string)
         );
 
-        // niether of these should ever happen but just to be sure
+        // neither of these should ever happen but just to be sure
         if (!id) {
           throw new Error(
             `${wholeInvoiceCostCodeValue} was not matched to a cost code id.`
@@ -596,6 +597,9 @@ export const addProcessedInvoiceData = createAsyncThunk(
       console.error(error);
       return;
     }
+    // finally {
+    //   thunkAPI.dispatch(uiActions.unLockUI());
+    // }
   }
 );
 

@@ -37,7 +37,7 @@ import { ProjectFormData } from '@/lib/models/formDataModel';
 import { createSingleProjectSummary } from '@/lib/utility/createSummaryDataHelpers';
 import useHttp from '@/hooks/use-http';
 import { checkAllFormFields } from '@/lib/validation/formValidation';
-import useSetNotification from '@/hooks/use-set-nofitication';
+import useSetNotification from '@/hooks/use-set-notification';
 
 const tabs = [
   { name: 'Active', keyName: 'active', current: true },

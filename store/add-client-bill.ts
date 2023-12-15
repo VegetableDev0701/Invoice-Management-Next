@@ -625,6 +625,7 @@ export const updateBudgetActuals = createAsyncThunk(
     },
     { getState, dispatch }
   ) => {
+    dispatch(uiActions.lockUI());
     try {
       const state = getState() as RootState;
       const projectSummary = (
@@ -973,6 +974,8 @@ export const updateBudgetActuals = createAsyncThunk(
     } catch (error) {
       console.error(error);
       dispatch(uiActions.setLoadingState({ isLoading: false }));
+    } finally {
+      dispatch(uiActions.unLockUI());
     }
   }
 );
