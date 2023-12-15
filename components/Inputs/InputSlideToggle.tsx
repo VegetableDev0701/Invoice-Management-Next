@@ -78,6 +78,9 @@ export default function SlideToggle(props: Props) {
                 isValid: true,
               })
             );
+            if ('setIsUpdatedState' in actions) {
+              dispatch(actions.setIsUpdatedState(true));
+            }
           }
         }}
         id={input.id}

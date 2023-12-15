@@ -21,7 +21,6 @@ import { FormStateItem } from '@/lib/models/formStateModels';
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid';
 import classes from './Input.module.css';
 import Button from '../UI/Buttons/Button';
-import { getValidFunc } from '@/lib/validation/formValidation';
 
 export interface Props {
   props: PropsItems;
@@ -171,16 +170,6 @@ const InputBaseWithValidation = (props: Props) => {
                   e: React.ChangeEvent<HTMLInputElement>
                 ) => void
               )(e);
-              dispatch(
-                actions.setIsTouchedState({
-                  inputKey: input.id,
-                  isTouched: true,
-                  isValid: getValidFunc(input.validFunc || input.id)(
-                    e.target.value,
-                    input?.required
-                  ),
-                })
-              );
             }}
             onBlur={(e) => {
               onBlur && onBlur(e);
