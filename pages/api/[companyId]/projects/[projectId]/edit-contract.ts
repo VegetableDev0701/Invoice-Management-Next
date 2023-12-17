@@ -5,7 +5,7 @@ import { getAPIUrl } from '@/lib/config';
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const companyId = req.query.companyId as string;
   const projectId = req.query.projectId as string;
-  const contractId = req.headers.contractId as string;
+  const contractId = req.headers.contractid as string;
 
   if (req.method === 'POST') {
     try {

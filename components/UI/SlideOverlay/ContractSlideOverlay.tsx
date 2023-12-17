@@ -18,7 +18,7 @@ import { checkAllFormFields } from '@/lib/validation/formValidation';
 import { projectDataActions } from '@/store/projects-data-slice';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import useHttp from '@/hooks/use-http';
-import useSetNotification from '@/hooks/use-set-nofitication';
+import useSetNotification from '@/hooks/use-set-notification';
 
 interface Props {
   projectId: string;
@@ -107,14 +107,10 @@ export default function ContractSlideOverlay(props: Props) {
 
     if (!userLoading && user) {
       let headers = {};
-      if (overlayContent.isSave) {
-        headers = { 'Content-Type': 'application/json' };
-      } else {
-        headers = {
-          contractId: overlayContent.currentId,
-          'Content-Type': 'application/json',
-        };
-      }
+      headers = {
+        contractId: overlayContent.currentId,
+        'Content-Type': 'application/json',
+      };
 
       const requestConfig = {
         url: `/api/${
