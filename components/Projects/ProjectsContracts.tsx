@@ -5,12 +5,8 @@ import {
   useAppDispatch as useDispatch,
   useAppSelector as useSelector,
 } from '@/store/hooks';
-import {
-  getCurrentProjectData,
-  overlayActions,
-} from '@/store/overlay-control-slice';
+import { overlayActions } from '@/store/overlay-control-slice';
 import { projectDataActions } from '@/store/projects-data-slice';
-import { addContractFormActions } from '@/store/add-contract';
 import { contractActions, deleteContracts } from '@/store/contract-slice';
 
 import { usePageData } from '@/hooks/use-page-data';
@@ -27,7 +23,9 @@ import { formatNumber } from '@/lib/utility/formatter';
 
 import FullScreenLoader from '../UI/Loaders/FullScreenLoader';
 import CheckboxSubTable from '../Tables/SubTables/CheckboxSortHeadingsTableSub';
-import ContractSlideOverlayImage from '../UI/SlideOverlay/ContractSlideOverlayImage';
+import { editContractFormActions } from '@/store/edit-contract';
+import { convertContractEntry2FormData } from '@/lib/utility/contractHelper';
+import ContractSlideOverlay from '../UI/SlideOverlay/ContractSlideOverlay';
 
 interface Props {
   projectId: string;
@@ -36,7 +34,6 @@ interface Props {
 
 const tableHeadings = {
   name: 'Vendor Name',
-  // workDescription: 'Work Description',
   contractDate: 'Contract Date',
   contractAmt: 'Total Amount ($)',
 };
@@ -46,13 +43,11 @@ const checkBoxButtons = [{ label: 'Delete', buttonPath: '#', disabled: false }];
 export default function ProjectsContracts(props: Props) {
   const { projectId, tableData } = props;
 
-  const { isLoading: isLoading } = usePageData('data', 'forms', 'add-contract');
-
-  // TODO add functionality to edit a contract (use the process-invoice form)
-  // const currentFormData = useAddCurrentDataToFormData({
-  //   projectId,
-  //   formData: addContractFormData,
-  // });
+  const { data: editContractFormData, isLoading: isLoading } = usePageData(
+    'data',
+    'forms',
+    'edit-contract'
+  );
 
   const { response, successJSON } = useHttp({ isClearData: true });
 
@@ -119,30 +114,27 @@ export default function ProjectsContracts(props: Props) {
     );
   };
 
-  const rowClickHandler = (uuid: string, projectId: string) => {
-    if (tableData && tableData[uuid]?.gcs_img_uri) {
+  const rowClickHandler = (uuid: string) => {
+    if (tableData) {
+      dispatch(editContractFormActions.clearFormState());
       dispatch(
         contractActions.setClickedContract({
-          contract: tableData[uuid],
           isRowClicked: true,
+          contract: tableData[uuid],
         })
       );
-    } else {
-      dispatch(addContractFormActions.clearFormState());
       dispatch(
         overlayActions.setOverlayContent({
           data: {
             overlayTitle: 'Update Contract',
             open: true,
-            isSave: false,
+            isSave: true,
+            currentData: convertContractEntry2FormData({
+              data: tableData[uuid],
+              baseForm: editContractFormData,
+            }),
+            currentId: uuid,
           },
-          stateKey: 'contracts',
-        })
-      );
-      dispatch(
-        getCurrentProjectData({
-          id: uuid,
-          projectId: projectId,
           stateKey: 'contracts',
         })
       );
@@ -161,10 +153,7 @@ export default function ProjectsContracts(props: Props) {
       {isLoading && <FullScreenLoader />}
       {!isLoading && (
         <>
-          <ContractSlideOverlayImage
-            rows={tableData && Object.values(tableData).map((row) => row)}
-            projectId={projectId}
-          />
+          <ContractSlideOverlay projectId={projectId} tableData={tableData} />
           <CheckboxSubTable
             headings={tableHeadings}
             rows={contractRows}

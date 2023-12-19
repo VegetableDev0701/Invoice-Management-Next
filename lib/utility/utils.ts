@@ -35,8 +35,8 @@ export const isObjectEmpty = (object: object) => {
   return JSON.stringify(object) === '{}';
 };
 
-export function formatDateForInput(dateStr: string) {
-  const date = new Date(dateStr + 'T12:00:00');
+export function formatDateForInput(dateStr: string, dateTime = false) {
+  const date = new Date(dateTime ? dateStr : dateStr + 'T12:00:00');
 
   // JavaScript months are 0-indexed, so add 1
   const year = date.getFullYear();
