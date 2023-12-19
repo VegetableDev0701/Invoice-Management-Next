@@ -38,10 +38,10 @@ export const iterateData = ({
   cb: (
     item: CostCodeItem | CostCodeItemB2AData,
     level: Array<number>,
-    costCodeLevel?: Array<number>,
+    costCodeLevel?: Array<string>,
     hasSubItem?: boolean
   ) => void;
-  costCodeLevel?: Array<number>;
+  costCodeLevel?: Array<string>;
   visitAll?: boolean;
 }) => {
   if (data?.subItems?.length === 0) return;
@@ -78,7 +78,7 @@ export function addDivision(
   if (isAddToProject) {
     return {
       newDivisions: [...costCodes.divisions, ...[newDivision]].sort(
-        (a, b) => a.number - b.number
+        (a, b) => Number(a.number) - Number(b.number)
       ),
     };
   } else {
@@ -88,7 +88,7 @@ export function addDivision(
 
 export function deleteDivision(
   costCodes: CostCodesData,
-  divisionNumber: number,
+  divisionNumber: string,
   isDelFromProject?: boolean
 ) {
   const divIndex = costCodes.divisions.findIndex(
@@ -216,7 +216,10 @@ export const costCodeData2NLevel = (oldCostCodeData: any) => {
   )
     return oldCostCodeData as CostCodesData;
 
-  const isValidNumber = (currentNumber: number, parentNumber: number) => {
+  const isValidNumber = (
+    currentNumber: number | string,
+    parentNumber: number | string
+  ) => {
     return String(currentNumber).startsWith(String(parentNumber));
   };
 

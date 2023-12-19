@@ -37,11 +37,11 @@ export interface ChangeOrderChartData {
 }
 export interface DivisionDataV2 {
   name?: string;
-  number: number;
+  number: string;
   subItems?: CostCodeItemB2AData[];
 }
 export interface CostCodeItemB2AData {
-  number: number;
+  number: string;
   name?: string;
   value?: string;
   actual?: string | number;

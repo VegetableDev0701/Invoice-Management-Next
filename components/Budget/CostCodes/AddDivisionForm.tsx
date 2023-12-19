@@ -34,7 +34,7 @@ export default function AddDivisionForm({
       addBudgetFormActions.addToUpdateBudgetList({
         type: 'Create',
         name: formData['name'],
-        number: Number(formData['number']),
+        number: formData['number'],
         recursiveLevel: [],
       })
     );

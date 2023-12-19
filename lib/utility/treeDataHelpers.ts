@@ -56,7 +56,7 @@ export class ConvertTreeData {
         index: '',
         data: {
           name: '',
-          number: 0,
+          number: '0',
           value: '',
           id: '',
           type: '',
@@ -108,7 +108,7 @@ export class ConvertTreeData {
         index: '',
         data: {
           name: '',
-          number: 0,
+          number: '0',
           recursiveLevel: [],
         },
       };
@@ -139,7 +139,7 @@ export class ConvertTreeData {
     itemsArray?.forEach((item, itemIndex) => {
       const {
         name = '',
-        number = 0,
+        number = '0',
         value = '',
         id = '',
         type = '',
@@ -205,7 +205,7 @@ export class ConvertTreeData {
     treeData.root?.children?.forEach((division, divIndex) => {
       const {
         name = '',
-        number = 0,
+        number = '0',
         isOpened,
       } = treeData[division]?.data as Divisions;
       if (isOpened !== undefined) {

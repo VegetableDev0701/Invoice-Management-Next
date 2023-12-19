@@ -55,7 +55,7 @@ export const createIndividualChartData = ({
   chartData,
 }: {
   title: string;
-  division: number;
+  division: string;
   chartData?: CostCodeItemB2AData[];
   filterZeroElements?: boolean;
 }) => {
@@ -134,11 +134,11 @@ export default function BudgetToActualCharts(props: Props) {
     if (b2aChartDataChangeOrder) {
       const data = {
         name: 'Change Orders',
-        number: -1,
+        number: '-1',
         subItems: [
           ...Object.keys(SUMMARY_COST_CODES).map((key) => ({
             name: SUMMARY_NAMES[key as 'profit' | 'boTax' | 'liability'],
-            number: -1,
+            number: '-1',
             value: String(
               Object.values(b2aChartDataChangeOrder)
                 .map((item) =>
@@ -158,7 +158,7 @@ export default function BudgetToActualCharts(props: Props) {
           ...Object.keys(b2aChartDataChangeOrder)
             .map((key) => ({
               name: changeOrdersSummary[key].name,
-              number: -1,
+              number: '-1',
               value: String(b2aChartDataChangeOrder[key].totalValue),
               actual: String(b2aChartDataChangeOrder[key].actualValue),
               isCurrency: true,
