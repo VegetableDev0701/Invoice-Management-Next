@@ -78,7 +78,7 @@ export function addDivision(
   if (isAddToProject) {
     return {
       newDivisions: [...costCodes.divisions, ...[newDivision]].sort(
-        (a, b) => Number(a.number) - Number(b.number)
+        sortFunction
       ),
     };
   } else {

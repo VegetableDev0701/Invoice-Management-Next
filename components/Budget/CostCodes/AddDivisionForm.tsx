@@ -6,6 +6,7 @@ import InputBaseAddDivision from '@/components/Inputs/InputBaseAddDivision';
 import Button from '@/components/UI/Buttons/Button';
 import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
 import { addBudgetFormActions } from '@/store/add-budget-slice';
+import { sortFunction } from '@/lib/utility/costCodeHelpers';
 
 interface Props {
   showForm: () => void;
@@ -48,14 +49,11 @@ export default function AddDivisionForm({
             ...prev.divisions,
             {
               name: formData['name'],
-              number: Number(formData['number']),
+              number: formData['number'],
               subItems: [],
               updated: true,
             },
-          ].sort((a, b) => {
-            if (a.number > b.number) return 1;
-            return -1;
-          }),
+          ].sort(sortFunction),
         }) as CostCodesData
     );
 

@@ -5,6 +5,7 @@ import {
   TreeData,
 } from '../models/budgetCostCodeModel';
 import { TreeItemIndex } from 'react-complex-tree';
+import { sortFunction } from './costCodeHelpers';
 
 export class ConvertTreeData {
   private itemIndex;
@@ -304,15 +305,12 @@ export class ConvertTreeData {
 
   sortTreeDataByIndex = (treeData: TreeData) => {
     Object.keys(treeData)?.forEach((key: string) => {
-      treeData[key].children?.sort((a, b) => {
-        if (
-          ((treeData[a]?.data as Omit<CostCodeItem, 'subItems'>)?.number ?? 0) >
-          ((treeData[b]?.data as Omit<CostCodeItem, 'subItems'>)?.number ?? 0)
-        ) {
-          return 1;
-        }
-        return -1;
-      });
+      treeData[key].children?.sort((a, b) =>
+        sortFunction(
+          treeData[a]?.data as Omit<CostCodeItem, 'subItems'>,
+          treeData[b]?.data as Omit<CostCodeItem, 'subItems'>
+        )
+      );
     });
   };
 }

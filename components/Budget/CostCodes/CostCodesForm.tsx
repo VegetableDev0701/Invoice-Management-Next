@@ -168,15 +168,6 @@ function CostCodeForm(props: Props) {
         newCodeDataList[b].data as Omit<CostCodeItem, 'subItems'>
       )
     );
-    // newCodeDataList[addItemIndex].children?.sort((a, b) => {
-    //   if (
-    //     (newCodeDataList[a].data as Omit<CostCodeItem, 'subItems'>)?.number >
-    //     (newCodeDataList[b].data as Omit<CostCodeItem, 'subItems'>)?.number
-    //   ) {
-    //     return 1;
-    //   }
-    //   return -1;
-    // });
     newCodeDataList[addItemIndex].isFolder = true;
     setAddItemIndex('');
     setIsError(false);
