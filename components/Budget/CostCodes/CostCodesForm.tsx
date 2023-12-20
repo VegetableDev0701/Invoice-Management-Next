@@ -36,6 +36,7 @@ import {
 } from '@heroicons/react/20/solid';
 import TreeComponentClasses from './CostCodesForm.module.css';
 import { addBudgetFormActions } from '@/store/add-budget-slice';
+import { sortFunction } from '@/lib/utility/costCodeHelpers';
 
 export interface Props {
   formData: CostCodesData;
@@ -161,15 +162,21 @@ function CostCodeForm(props: Props) {
       newCodeDataList[addItemIndex].children = [];
 
     newCodeDataList[addItemIndex].children?.push(newItem);
-    newCodeDataList[addItemIndex].children?.sort((a, b) => {
-      if (
-        (newCodeDataList[a].data as Omit<CostCodeItem, 'subItems'>)?.number >
-        (newCodeDataList[b].data as Omit<CostCodeItem, 'subItems'>)?.number
-      ) {
-        return 1;
-      }
-      return -1;
-    });
+    newCodeDataList[addItemIndex].children?.sort((a, b) =>
+      sortFunction(
+        newCodeDataList[a].data as Omit<CostCodeItem, 'subItems'>,
+        newCodeDataList[b].data as Omit<CostCodeItem, 'subItems'>
+      )
+    );
+    // newCodeDataList[addItemIndex].children?.sort((a, b) => {
+    //   if (
+    //     (newCodeDataList[a].data as Omit<CostCodeItem, 'subItems'>)?.number >
+    //     (newCodeDataList[b].data as Omit<CostCodeItem, 'subItems'>)?.number
+    //   ) {
+    //     return 1;
+    //   }
+    //   return -1;
+    // });
     newCodeDataList[addItemIndex].isFolder = true;
     setAddItemIndex('');
     setIsError(false);
@@ -253,7 +260,7 @@ function CostCodeForm(props: Props) {
         data: {
           ...item.data,
           name: changeData[1].trim(),
-          number: Number(changeData[0].trim()),
+          number: changeData[0].trim(),
         },
       },
     };
@@ -264,7 +271,7 @@ function CostCodeForm(props: Props) {
         data: {
           ...item.data,
           name: changeData[1].trim(),
-          number: Number(changeData[0].trim()),
+          number: changeData[0].trim(),
         },
       },
     }));

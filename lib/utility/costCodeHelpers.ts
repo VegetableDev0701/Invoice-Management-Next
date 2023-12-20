@@ -247,7 +247,7 @@ export const costCodeData2NLevel = (oldCostCodeData: any) => {
       subdiv.items.forEach((item: any, ssubIndex: number) => {
         let _number = item?.number;
         if (!isValidNumber(_number, newItem.number)) {
-          _number = +(String(newItem.number) + (ssubIndex + 1));
+          _number = String(newItem.number) + (ssubIndex + 1);
         }
 
         newItem.subItems!.push({
@@ -514,4 +514,15 @@ export function covertQBD2CostCode(_data: any) {
   }
 
   return budget;
+}
+
+export function sortFunction(a: { number: string }, b: { number: string }) {
+  // if a and b are divisions
+  if (a.number.split('.').length === 1 && b.number.split('.').length === 1) {
+    return Number(a.number) - Number(b.number);
+  }
+  if (Number(a.number.split('.')[0]) === Number(b.number.split('.')[0])) {
+    return Number(a.number.split('.')[1]) - Number(b.number.split('.')[1]);
+  }
+  return Number(a.number.split('.')[0]) - Number(b.number.split('.')[0]);
 }
