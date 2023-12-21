@@ -99,7 +99,9 @@ export default function ClientBillLabor(props: Props) {
             costCode: item['cost_code'],
             hours: item['number_of_hours'],
             rate: row['rate'],
-            totalAmt: formatNumber(item['amount']),
+            totalAmt: formatNumber(
+              Number(item['amount'].replaceAll(',', '')).toFixed(2)
+            ),
             uuid: row['uuid'],
             rowId: key + '_' + item_key,
           };
@@ -253,7 +255,17 @@ export default function ClientBillLabor(props: Props) {
         form="addLabor"
         overlayStateKey="labor"
         projectId={projectId}
-        onSubmit={(e) => submitFormHandler(e, addLaborFormStateData)}
+        onSubmit={(e) => {
+          // only update data if it has changed
+          addLaborFormStateData.isUpdated.value
+            ? submitFormHandler(e, addLaborFormStateData)
+            : dispatch(
+                overlayActions.setOverlayContent({
+                  data: { open: false },
+                  stateKey: 'labor',
+                })
+              );
+        }}
       />
       <CheckboxSubTable
         headings={tableHeadings}

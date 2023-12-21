@@ -9,6 +9,7 @@ import {
   checkExpirationDate,
   formatDate,
   sortTableData,
+  yesNoBadge,
 } from '@/lib/utility/tableHelpers';
 
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
@@ -134,7 +135,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
   const lastHeadingClasses = 'py-3.5 pl-3 pr-3 rounded-tr-lg sm:pr-6 lg:pr-6';
 
   const commonColClasses =
-    'border-b max-w-[17rem] border-gray-200 whitespace-nowrap text-sm text-gray-500';
+    'border-b max-w-[17rem] border-gray-200 whitespace-nowrap text-sm text-gray-600';
   const firstColClasses = 'py-2 pl-4 pr-3  sm:pl-6 lg:pl-8';
   const middleColClasses = 'py-1 px-3';
   const lastColClasses = 'py-2 pr-4 pl-3 sm:pr-6 lg:pr-6';
@@ -363,6 +364,12 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                                           ? formatDate(
                                               element[headingsKey] as string
                                             )
+                                          : headingsKey === 'agave_uuid'
+                                          ? yesNoBadge({
+                                              value: element[headingsKey],
+                                              positiveText: 'Vendor Synced',
+                                              negativeText: 'Vendor Not Synced',
+                                            })
                                           : element[headingsKey])}
                                     </td>
                                   );

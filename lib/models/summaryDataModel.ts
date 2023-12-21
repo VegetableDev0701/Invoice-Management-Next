@@ -187,7 +187,7 @@ export interface VendorSummaryItem extends BaseSummary {
   email?: string;
   workersCompExpirationDate?: string;
   taxNumber?: string;
-  agave_uuid?: string | null;
+  agave_uuid: string | null;
 }
 
 export interface SummaryProjects {
@@ -205,14 +205,22 @@ export interface ContractEntry {
   uuid: string;
 }
 
+export interface ContractVendorObject {
+  name: string;
+  agave_uuid: string | null;
+  vendor_match_conf_score: number | null;
+  uuid: string | null;
+}
+
 interface ContractSummaryData extends BaseSummary {
   projectName: string;
   date: string;
   contractAmt: string;
   workDescription: string;
-  vendor: string;
-  vendor_match_conf_score: number | null;
-  agave_uuid: string | null;
+  vendor: ContractVendorObject;
+  // vendor: string;
+  // vendor_match_conf_score: number | null;
+  // agave_uuid: string | null;
 }
 
 export interface ContractSummaryItem extends BaseSummary {

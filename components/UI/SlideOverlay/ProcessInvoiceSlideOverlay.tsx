@@ -53,6 +53,7 @@ interface Props {
   rows: InvoiceTableRow[] | null;
   projectId: string;
   contractData: ContractData | null;
+  isClientBill?: boolean;
   dropdown?: ExtendedItems;
   updateData?: boolean;
   onUpdateData?: ({
@@ -71,6 +72,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
     rows,
     projectId,
     contractData,
+    isClientBill,
     onGetSnapShotFormState,
     updateData = true,
     onUpdateData: handleUpdateData,
@@ -142,10 +144,10 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
   useEffect(() => {
     if (currentRow && rows) {
       dispatch(
-        invoiceActions.setClickedInvoice({
+        invoiceActions.setClicked({
           invoice: currentRow,
           isRowClicked: true,
-          invoiceRowNumber: rows
+          rowNumber: rows
             .map((invoice) => invoice.doc_id)
             .indexOf(currentRow.doc_id),
         })
@@ -209,7 +211,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
         // and then dispatch the `isRowClicked` which will open the slide overlay from
         // when the user clicks the edit button found in the Input component (Inputs folder)
         dispatch(
-          contractActions.setClickedContract({
+          contractActions.setClicked({
             contract: matchedVendorContract,
             isRowClicked: false,
           })
@@ -260,7 +262,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
   const closeOverlay = () => {
     // check if the contract slide overlay is activated over the process invoice one
     if (contractObj.isRowClicked) {
-      contractActions.setClickedContract({
+      contractActions.setClicked({
         isRowClicked: false,
       });
       return;
@@ -286,7 +288,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
           );
       }
       dispatch(
-        invoiceActions.setClickedInvoice({
+        invoiceActions.setClicked({
           invoice: null,
           isRowClicked: false,
         })
@@ -298,7 +300,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
         })
       );
       dispatch(
-        contractActions.setClickedContract({
+        contractActions.setClicked({
           contract: null,
           isRowClicked: false,
         })
@@ -491,34 +493,42 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
                           </Dialog.Title>
                         </div>
                         <div className="flex justify-between w-6/12 pr-4 pl-2">
-                          <Button
-                            buttonText={`${
-                              invoiceObj.clickedInvoice?.approved === 'Yes'
-                                ? 'Remove Approval'
-                                : 'Approve Invoice'
-                            }`}
-                            className="px-4 py-1"
-                            disabled={
-                              (user as User).user_metadata.accountSettings[
-                                'permissions-as'
-                              ].value === 'Administrator' ||
-                              (user as User).user_metadata.accountSettings[
-                                'permissions-as'
-                              ].value === 'Approver'
-                                ? false
-                                : true
-                            }
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              approveInvoiceHandler({
-                                isApproved:
-                                  invoiceObj.clickedInvoice?.approved === 'Yes'
-                                    ? false
-                                    : true,
-                              });
-                            }}
-                          />
+                          {
+                            <Button
+                              buttonText={`${
+                                !isClientBill
+                                  ? invoiceObj.clickedInvoice?.approved ===
+                                    'Yes'
+                                    ? 'Remove Approval'
+                                    : 'Approve Invoice'
+                                  : ''
+                              }`}
+                              className={`px-4 py-1 ${
+                                isClientBill ? 'invisible' : ''
+                              }`}
+                              disabled={
+                                (user as User).user_metadata.accountSettings[
+                                  'permissions-as'
+                                ].value === 'Administrator' ||
+                                (user as User).user_metadata.accountSettings[
+                                  'permissions-as'
+                                ].value === 'Approver'
+                                  ? false
+                                  : true
+                              }
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                approveInvoiceHandler({
+                                  isApproved:
+                                    invoiceObj.clickedInvoice?.approved ===
+                                    'Yes'
+                                      ? false
+                                      : true,
+                                });
+                              }}
+                            />
+                          }
                           {invoiceObj.clickedInvoice?.approved === 'Yes' && (
                             <span className="font-sans text-stak-dark-green text-2xl font-semibold flex items-center">
                               Invoice Approved

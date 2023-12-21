@@ -187,6 +187,7 @@ export default function ProjectsSectionHeading(props: Props) {
                             : 'contract'
                         }
                         buttonLabel={button.label}
+                        taskId="upload_files"
                       />
                     );
                   } else if (

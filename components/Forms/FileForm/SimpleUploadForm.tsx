@@ -59,7 +59,7 @@ export default function SimpleUploadForm(props: Props) {
       )}
       {isLoading && (
         <div
-          className={`px-8 py-1 text-xl h-9 font-normal text-white bg-stak-dark-green font-sans 
+          className={`px-12 py-1 text-xl h-9 font-normal text-white bg-stak-dark-green font-sans 
         font-md rounded-3xl hover:bg-stak-dark-green-hover hover:cursor-no-drop`}
         >
           <FadeLoader

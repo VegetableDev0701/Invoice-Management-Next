@@ -8,7 +8,9 @@ import {
 import { resetAllFormValidation } from '@/lib/utility/formHelpers';
 import { RESET_STATE } from '@/lib/globals';
 
-const initialEditContractFormState: FormStateV2 = {};
+const initialEditContractFormState: FormStateV2 = {
+  isUpdated: { value: false },
+};
 
 const editContractFormSlice = createSlice({
   name: 'editContractForm',
@@ -33,6 +35,9 @@ const editContractFormSlice = createSlice({
         isValid: isValid,
         isTouched: isTouched,
       };
+    },
+    setIsUpdatedState(state, action: PayloadAction<boolean>) {
+      state.isUpdated.value = action.payload;
     },
     resetFormValidation(state) {
       return resetAllFormValidation(state);

@@ -60,14 +60,14 @@ const FilterDropdown = (props: Props) => {
       <Listbox value={selected} onChange={setSelected}>
         {({ open }) => (
           <>
-            <Listbox.Label className="-mt-5 pb-1 left-2 inline-block bg-stak-main-bg px-1 text-base text-left font-sans font-medium text-gray-700">
+            <Listbox.Label className="-mt-5 pb-1 left-2 inline-block bg-stak-main-bg px-1 text-base text-left font-sans font-medium text-gray-800">
               {input.label}
             </Listbox.Label>
             <div className="flex flex-row items-end gap-4 -mt-2">
               <div className="grow relative mt-1">
                 <Listbox.Button
                   id={input.id}
-                  className={`font-sans w-full border-[2.5px] h-8 border-gray-500 rounded-md cursor-default py-0 pl-2 pr-10 text-left focus:border-stak-dark-green focus:shadow-xl focus-visible:border-stak-dark-green focus-visible:outline-stak-dark-green focus-visible:outline-0 sm:text-sm`}
+                  className={`font-sans w-full border-[1px] h-8 border-gray-700 rounded-md cursor-default py-0 pl-2 pr-10 text-left shadow-md focus:border-stak-dark-green focus:shadow-xl focus-visible:border-stak-dark-green focus-visible:outline-stak-dark-green focus-visible:outline-0 sm:text-sm`}
                 >
                   <span className="flex truncate -mb-1 text-xl">
                     {selected.label}

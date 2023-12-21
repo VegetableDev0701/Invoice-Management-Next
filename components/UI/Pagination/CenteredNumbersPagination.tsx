@@ -89,10 +89,10 @@ export default function CenteredPagination(props: Props) {
   const decrementRow = () => {
     if (currentRowIdx !== undefined && rows) {
       dispatch(
-        invoiceActions.setClickedInvoice({
+        invoiceActions.setClicked({
           invoice: rows[currentRowIdx - 1],
           isRowClicked: true,
-          invoiceRowNumber: currentRowIdx - 1,
+          rowNumber: currentRowIdx - 1,
         })
       );
       dispatch(
@@ -105,7 +105,7 @@ export default function CenteredPagination(props: Props) {
         })
       );
       dispatch(
-        contractActions.setClickedContract({
+        contractActions.setClicked({
           contract: null,
           isRowClicked: false,
         })
@@ -138,10 +138,10 @@ export default function CenteredPagination(props: Props) {
   const incrementRow = () => {
     if (currentRowIdx !== undefined && rows) {
       dispatch(
-        invoiceActions.setClickedInvoice({
+        invoiceActions.setClicked({
           invoice: rows[currentRowIdx + 1],
           isRowClicked: true,
-          invoiceRowNumber: currentRowIdx + 1,
+          rowNumber: currentRowIdx + 1,
         })
       );
       dispatch(
@@ -154,7 +154,7 @@ export default function CenteredPagination(props: Props) {
         })
       );
       dispatch(
-        contractActions.setClickedContract({
+        contractActions.setClicked({
           contract: null,
           isRowClicked: false,
         })

@@ -16,6 +16,8 @@ import InputAddressAutocomplete from '@/components/Inputs/InputAddressAutocomple
 import LaborCostCodes from './LaborCostCode';
 
 import classes from '../InputFormLayout/FormLayout.module.css';
+import { useAppSelector as useSelector } from '@/store/hooks';
+import { VendorSummary } from '@/lib/models/summaryDataModel';
 
 interface EmptyAddLaborFormForTesting {
   mainCategories: MainCategories[];
@@ -34,6 +36,11 @@ export interface Props {
 
 function FormOverlay(props: Props) {
   const { formData, formState, showError, actions, form, projectId } = props;
+
+  const vendorSummary = useSelector(
+    (state) => state.data.vendorsSummary.allVendors
+  ) as VendorSummary;
+
   return (
     <div className={classes['scroll-frame']} id="scroll-frame">
       <form
@@ -89,6 +96,7 @@ function FormOverlay(props: Props) {
                           icon={getFormIcon(item)}
                           showError={showError}
                           actions={actions}
+                          vendorSummary={vendorSummary}
                           form={form}
                           autofocus={
                             i === 0 && j === 0 && p === 0 ? true : false
@@ -113,6 +121,7 @@ function FormOverlay(props: Props) {
             projectId={projectId}
           />
         )}
+        <button type="submit" />
       </form>
     </div>
   );

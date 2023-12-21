@@ -292,6 +292,7 @@
       "approver": "Colin Anderson",
       "total_tax_amount": "0.00",
       "line_items": {},
+
       "vendor": { "name": "Washington Asbestos Testing LLC." },
       "cost_code": "1.94",
       "date_received": "2023-11-29",
@@ -909,6 +910,7 @@
       "approver": "Colin Anderson",
       "total_tax_amount": "1.69",
       "line_items": {},
+
       "vendor": { "name": "The Home Depot" },
       "cost_code": "1.33",
       "date_received": "2023-11-29",

@@ -54,13 +54,13 @@ export default function ContractSlideOverlayImage(props: Props) {
     setOpen(false);
     if (isOnProcessInvoices) {
       dispatch(
-        contractActions.setClickedContract({
+        contractActions.setClicked({
           isRowClicked: false,
         })
       );
     } else {
       dispatch(
-        contractActions.setClickedContract({
+        contractActions.setClicked({
           contract: null,
           isRowClicked: false,
         })
@@ -95,7 +95,7 @@ export default function ContractSlideOverlayImage(props: Props) {
                         <Dialog.Title className="text-base font-sans font-semibold leading-6 text-gray-500">
                           <p>{`${
                             contractObj.clickedContract &&
-                            contractObj.clickedContract.summaryData.vendor
+                            contractObj.clickedContract.summaryData.vendor.name
                           }`}</p>
                           <div className="flex items-end gap-4">
                             Project:{' '}
@@ -149,8 +149,8 @@ export default function ContractSlideOverlayImage(props: Props) {
                             }
                             pageIdx={pageIdx}
                             alt={
-                              contractObj.clickedContract.summaryData
-                                .vendor as string
+                              contractObj.clickedContract.summaryData.vendor
+                                .name
                             }
                           />
                         )}

@@ -91,6 +91,11 @@ export const groupLineItems = ({
     } else if (suffix === 'cost_code') {
       groupedLineItems[lineItemKey][suffix] =
         value?.value && value.value === 'None' ? null : (value.value as string);
+    } else if (suffix === 'amount') {
+      groupedLineItems[lineItemKey][suffix] =
+        value?.value && value.value === 'None'
+          ? '0.00'
+          : formatNumber(Number(value.value as string).toFixed(2));
     } else {
       if (isKeyOfLineItemItem(suffix)) {
         // the above function checks for a proper key, hack workaround to TS

@@ -63,7 +63,7 @@ export default function InvoiceSlideOverlayImage(props: Props) {
         onClose={() => {
           setOpen(false);
           dispatch(
-            invoiceActions.setClickedInvoice({
+            invoiceActions.setClicked({
               invoice: null,
               isRowClicked: false,
             })
@@ -117,7 +117,7 @@ export default function InvoiceSlideOverlayImage(props: Props) {
                             onClick={() => {
                               setOpen(false);
                               dispatch(
-                                invoiceActions.setClickedInvoice({
+                                invoiceActions.setClicked({
                                   invoice: null,
                                   isRowClicked: false,
                                 })

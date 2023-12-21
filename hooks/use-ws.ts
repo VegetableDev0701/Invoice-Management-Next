@@ -164,10 +164,16 @@ const onWebSocketEvents = (
         try {
           setNewDocs(serverMessage.data);
         } catch (error) {
-          console.error(error);
           // HACK This code block is in place to catch any remaining invoices
           // that have not been sent. All other processes that reach here
           // will not have data attached to their event
+          console.error(error);
+          dispatch(
+            uiActions.setProcessingNotificationContent({
+              openNotification: true,
+              content: 'Error',
+            })
+          );
         } finally {
           dispatch(
             uiActions.setProcessingNotificationContent({
@@ -227,6 +233,13 @@ const onWebSocketEvents = (
           );
         }
         break;
+
+      case 'websocket_closed':
+        dispatch(
+          uiActions.setProcessingNotificationContent({
+            openNotification: false,
+          })
+        );
     }
   };
 

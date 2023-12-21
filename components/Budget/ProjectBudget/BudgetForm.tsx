@@ -11,30 +11,32 @@ import {
   useAppSelector as useSelector,
   useAppDispatch as useDispatch,
 } from '@/store/hooks';
-import { addBudgetFormActions } from '@/store/add-budget-slice';
+import {
+  addBudgetFormActions,
+  initializeB2AChartDataThunk,
+} from '@/store/add-budget-slice';
 import { projectDataActions } from '@/store/projects-data-slice';
 
 import scrollToElement from '@/lib/utility/scrollToElement';
 import { formatNameForID } from '@/lib/utility/formatter';
 import { formatNumber } from '@/lib/utility/formatter';
-
-import Card from '@/components/UI/Card';
-
 import { classNames } from '@/lib/utility/utils';
-
-import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
-import inputClasses from '@/components/Inputs/Input.module.css';
-import ToggleOffInputIcon from '@/public/icons/ToggleOffInput';
-import ToggleOnInputIcon from '@/public/icons/ToggleOnInput';
-
-import TreeComponentClasses from './BudgetForm.module.css';
 import { ConvertTreeData } from '@/lib/utility/treeDataHelpers';
 import {
   CostCodeItem,
   CostCodesData,
   TreeData,
 } from '@/lib/models/budgetCostCodeModel';
+
+import Card from '@/components/UI/Card';
+import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
+import inputClasses from '@/components/Inputs/Input.module.css';
+import ToggleOffInputIcon from '@/public/icons/ToggleOffInput';
+import ToggleOnInputIcon from '@/public/icons/ToggleOnInput';
+import TreeComponentClasses from './BudgetForm.module.css';
 import DollarSign from '@/public/icons/DollarSign';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { User } from '@/lib/models/formStateModels';
 
 interface Props {
   formData: CostCodesData;
@@ -63,10 +65,13 @@ export default function BudgetForm(props: Props) {
     projectId,
   } = props;
 
+  const { user, isLoading } = useUser();
+
   const isCollapsed = useSelector((state) => state.addBudgetForm.isCollapsed);
   const [expandedItems, setExpandedItems] = useState<TreeItemIndex[]>([]);
   const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
   const [selectedItems, setSelectedItems] = useState<TreeItemIndex[]>([]);
+  const [companyId, setCompanyId] = useState<string>('');
   const [valueAddedItems, setValueAddedItems] = useState<
     Array<{
       index: TreeItemIndex;
@@ -76,6 +81,13 @@ export default function BudgetForm(props: Props) {
   const [costCodeTreeDataList, setCostCodeTreeDataList] =
     useState<TreeData>(initTreeData);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!isLoading) {
+      setCompanyId((user as User).user_metadata.companyId);
+    }
+  }, [isLoading]);
+
   // Since the app is listening for the `Enter` keypress event attached to the
   // `Update Budget` button in the heading, i.e. submitting the form, we want to
   // override the default behavior of forms to "click" the first button it finds
@@ -204,9 +216,18 @@ export default function BudgetForm(props: Props) {
     }
   };
 
+  const reInitB2AData = () => {
+    dispatch(
+      initializeB2AChartDataThunk({
+        projectId,
+        companyId,
+      })
+    );
+  };
+
   const handleAddValue = (treeItemIndex: TreeItemIndex, value: string) => {
     if (valueAddedItems.map((item) => item.index).includes(treeItemIndex)) {
-      handleChangeValue('0.00', treeItemIndex);
+      handleChangeValue(value, treeItemIndex);
       setValueAddedItems((prev) =>
         prev.filter((item) => item.index !== treeItemIndex)
       );
@@ -216,6 +237,7 @@ export default function BudgetForm(props: Props) {
         { index: treeItemIndex, value: Number(value) ? value : '' },
       ]);
     }
+    reInitB2AData();
   };
 
   const handleChangeValue = (value: string, treeItemIndex: TreeItemIndex) => {
@@ -223,12 +245,13 @@ export default function BudgetForm(props: Props) {
       (v) => v.index === treeItemIndex
     );
     if (updatedValueAddedItems) {
-      updatedValueAddedItems.value = value;
+      updatedValueAddedItems.value = formatNumber(value);
       setValueAddedItems([...valueAddedItems]);
     }
 
     const newTreeData = { ...costCodeTreeDataList };
-    (newTreeData[treeItemIndex].data as CostCodeItem).value = value || '0';
+    (newTreeData[treeItemIndex].data as CostCodeItem).value =
+      formatNumber(value) || '0';
     const convertTreeData = new ConvertTreeData();
     convertTreeData.calculateCostCode(newTreeData);
     const total = convertTreeData.getTotalBudget(newTreeData);
@@ -442,16 +465,20 @@ export default function BudgetForm(props: Props) {
                             <DollarSign width={24} height={20} />
                           </div>
                           <input
-                            type="number"
+                            type="text"
                             key={item.index}
                             className={`font-sans w-full block placeholder:text-base border-1 shadow-md pl-10 rounded-md py-1.5 ${inputClasses['input-container__input']}`}
                             value={
-                              valueAddedItems.find((v) => v.index == item.index)
-                                ?.value || ''
+                              formatNumber(
+                                valueAddedItems.find(
+                                  (v) => v.index == item.index
+                                )?.value as string
+                              ) || ''
                             }
                             onChange={(e) => {
                               handleChangeValue(e.target.value, item.index);
                             }}
+                            onBlur={reInitB2AData}
                             onKeyDown={(e) => {
                               if (e.key === 'Enter') {
                                 e.preventDefault();

@@ -669,6 +669,25 @@ const projectDataSlice = createSlice({
         ...state[projectId].contracts,
       };
     },
+    updateContractVendorOnAdd(
+      state,
+      action: PayloadAction<{
+        contractId: string;
+        projectId: string;
+        vendor: {
+          name: string;
+          uuid: string | null;
+          agave_uuid: string | null;
+          vendor_match_conf_score: number | null;
+        };
+      }>
+    ) {
+      const { contractId, vendor, projectId } = action.payload;
+      state[projectId].contracts[contractId].summaryData.vendor = {
+        ...state[projectId].contracts[contractId].summaryData.vendor,
+        ...vendor,
+      };
+    },
     removeInvoiceIdFromChangeOrder(
       state,
       action: PayloadAction<{

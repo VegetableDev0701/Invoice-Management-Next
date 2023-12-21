@@ -286,6 +286,15 @@ export const deleteVendors = createAsyncThunk(
     }: { companyId: string; vendorsToDelete: string[] },
     thunkAPI
   ) => {
+    const state = thunkAPI.getState() as RootState;
+    const vendorSummary = state.data.vendorsSummary.allVendors as VendorSummary;
+
+    thunkAPI.dispatch(
+      uiActions.setProcessingNotificationContent({
+        openNotification: true,
+        content: 'Deleting Vendors',
+      })
+    );
     try {
       const response = await fetch(`/api/${companyId}/vendors/delete-vendors`, {
         method: 'DELETE',
@@ -297,12 +306,77 @@ export const deleteVendors = createAsyncThunk(
       const data = await response.json();
       thunkAPI.dispatch(
         uiActions.notify({
-          content: data.message,
+          content: data.message_stak,
           icon: 'trash',
         })
       );
+      Object.entries(data as Record<string, string>).forEach(
+        ([key, response]) => {
+          if (key.includes('stak')) return;
+          if (key.includes('offline')) {
+            thunkAPI.dispatch(
+              uiActions.setModalContent({
+                openModal: true,
+                title: 'Not Logged Into Quickbooks',
+                message: `No vendors were deleted from Quickbooks. You may need to log in to Quickbooks and open the Web Connector. \n\n
+                  The vendors selected were deleted from Stak, so you need to delete those vendors from within Quickbooks. If you sync the data 
+                  from Quickbooks, those vendors will reappear.`,
+              })
+            );
+            return;
+          }
+          if (key.includes('some')) {
+            const vendorUUID = JSON.parse(
+              response.split(':')[1].trim().replace(/'/g, '"')
+            );
+            const vendorNames = vendorUUID.reduce(
+              (obj: { [vendorId: string]: string }, key: string) => {
+                if (key in vendorSummary) {
+                  obj[key] = vendorSummary[key].vendorName;
+                }
+              },
+              {}
+            );
+            thunkAPI.dispatch(
+              uiActions.setModalContent({
+                openModal: true,
+                title: 'Not Logged In',
+                message: `The following vendors were not deleted from Quickbooks: ${vendorNames}`,
+              })
+            );
+            return;
+          }
+          if (key.includes('error')) {
+            uiActions.setModalContent({
+              openModal: true,
+              title: 'Not Logged In',
+              message: `The server timed out when trying to delete vendors. You may need to log in to Quickbooks and open the Web Connector. `,
+            });
+
+            return;
+          } else {
+            thunkAPI.dispatch(
+              uiActions.notify({
+                content: data.message_agave_success,
+                icon: 'trash',
+              })
+            );
+          }
+        }
+      );
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error);
+      thunkAPI.dispatch(
+        uiActions.notify({
+          content: error.message,
+          icon: 'error',
+        })
+      );
+    } finally {
+      thunkAPI.dispatch(
+        uiActions.setProcessingNotificationContent({
+          openNotification: false,
+        })
+      );
     }
   }
 );

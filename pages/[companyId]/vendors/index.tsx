@@ -16,6 +16,7 @@ import {
   overlayActions,
 } from '@/store/overlay-control-slice';
 import { companyDataActions } from '@/store/company-data-slice';
+import { uiActions } from '@/store/ui-slice';
 
 import { usePageData } from '@/hooks/use-page-data';
 import { useSetStatePath } from '@/hooks/use-setpath';
@@ -41,7 +42,6 @@ import CheckboxSortHeadingsTable from '@/components/Tables/MainTables/CheckboxSo
 import SlideOverlayForm from '@/components/UI/SlideOverlay/SlideOverlayForm';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
 import ModalErrorWrapper from '@/components/UI/Modal/ErrorModalWrapper';
-import { uiActions } from '@/store/ui-slice';
 
 const sectionTabs = [
   { name: 'All', keyName: 'all', current: true },

@@ -16,7 +16,7 @@ import { getValidFunc } from '@/lib/validation/formValidation';
 import { useGetInputState } from '@/lib/utility/formHelpers';
 import { Items, SelectMenuOptions } from '@/lib/models/formDataModel';
 import { Actions } from '@/lib/models/types';
-import { FormStateItem } from '@/lib/models/formStateModels';
+import { FormStateItem, FormStateItemV2 } from '@/lib/models/formStateModels';
 import {
   getAllChangeOrderNames,
   getAllVendorNames,
@@ -64,6 +64,20 @@ interface Selected {
   label: string;
 }
 
+const getValue = ({
+  inputState,
+  input,
+}: {
+  inputState: FormStateItemV2;
+  input: Items;
+}) => {
+  return input?.value
+    ? { label: input.value as string }
+    : inputState?.value
+    ? { label: inputState.value as string }
+    : { label: '' };
+};
+
 const DropDownWithSearch = (props: Props) => {
   const {
     input,
@@ -86,11 +100,7 @@ const DropDownWithSearch = (props: Props) => {
 
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Selected>(
-    input?.value
-      ? { label: input.value as string }
-      : inputState?.value
-      ? { label: inputState.value as string }
-      : { label: '' }
+    getValue({ inputState, input })
   );
 
   const [dropDownChoices, setDropDownChoices] = useState<SelectMenuOptions[]>(
@@ -108,7 +118,7 @@ const DropDownWithSearch = (props: Props) => {
   const contractClickHandler = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    dispatch(contractActions.setClickedContract({ isRowClicked: true }));
+    dispatch(contractActions.setClicked({ isRowClicked: true }));
   };
 
   const addVendorClickHandler = (e: React.MouseEvent) => {
@@ -287,7 +297,6 @@ const DropDownWithSearch = (props: Props) => {
           value={selected}
           onChange={(value) => {
             if ('setIsUpdatedState' in actions) {
-              console.log('item changed');
               dispatch(actions.setIsUpdatedState(true));
             }
             setSelected(value);
@@ -331,7 +340,10 @@ const DropDownWithSearch = (props: Props) => {
               </Combobox.Button>
 
               {filteredOptions.length > 0 && (
-                <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto border-1 border-stak-light-gray rounded-xl bg-white py-1 text-base drop-shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <Combobox.Options
+                  className={`absolute z-10 mt-1 max-h-60 w-full overflow-auto border-1 border-stak-light-gray rounded-xl 
+                bg-white py-1 text-base drop-shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm`}
+                >
                   {filteredOptions.map((option) => (
                     <Combobox.Option
                       key={option.id}
@@ -382,18 +394,20 @@ const DropDownWithSearch = (props: Props) => {
                   type="button"
                   onClick={addVendorClickHandler}
                 />
-                <ButtonIcon
-                  icon={<AddInvoice width={40} height={40} />}
-                  className="items-center"
-                  type="button"
-                  disabled={
-                    (contractObj.clickedContract &&
-                      contractObj.clickedContract.summaryData.uuid !==
-                        vendorUUID?.uuid) ??
-                    true
-                  }
-                  onClick={contractClickHandler}
-                />
+                {form !== 'editContract' && (
+                  <ButtonIcon
+                    icon={<AddInvoice width={40} height={40} />}
+                    className="items-center"
+                    type="button"
+                    disabled={
+                      (contractObj.clickedContract &&
+                        contractObj.clickedContract.summaryData.vendor.uuid !==
+                          vendorUUID?.uuid) ??
+                      true
+                    }
+                    onClick={contractClickHandler}
+                  />
+                )}
               </>
             )}
           </div>

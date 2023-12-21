@@ -70,7 +70,7 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
   const areThereChangeOrders =
     groupedRows &&
     groupedRows?.changeOrders &&
-    Object.keys(groupedRows.changeOrders).length > 1
+    Object.keys(groupedRows.changeOrders).length > 1 // the object will always have a subtotal key but no others if there are no change orders
       ? true
       : false;
 
@@ -81,15 +81,23 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
   const lastHeadingClasses = 'py-3.5 pl-3 pr-3 rounded-tr-lg sm:pr-6 lg:pr-6';
 
   const commonColClasses =
-    'border-b max-w-[10rem] border-gray-200 whitespace-nowrap text-sm text-gray-500';
-  const firstColClasses = 'py-2 pl-4 pr-3  sm:pl-6 lg:pl-8';
+    'border-b max-w-[10rem] border-gray-200 whitespace-nowrap text-sm text-gray-600';
+  const firstColClasses = 'py-1 pl-4 pr-3  sm:pl-6 lg:pl-8';
   const middleColClasses = 'py-1 px-3';
-  const lastColClasses = 'py-2 pr-4 pl-3 sm:pr-6 lg:pr-6';
+  const lastColClasses = 'py-1 pr-4 pl-3 sm:pr-6 lg:pr-6';
+
   const subTotalColor = (element: any) => {
     if (element.description?.toLowerCase() === 'subtotal') {
-      return 'bg-violet-200';
-    } else if (element.description?.toLowerCase().includes('subtotal')) {
-      return 'bg-orange-100';
+      return 'bg-stak-orange/30 font-semibold h-10 text-lg';
+    }
+    if (element.description?.toLowerCase().includes('subtotal')) {
+      return 'bg-orange-100 font-semibold h-12';
+    }
+    if (element.description?.toLowerCase() === 'sales tax') {
+      return 'bg-stak-orange/30 font-semibold h-10';
+    }
+    if (element.description?.toLowerCase() === 'total') {
+      return 'bg-blue-500/30 font-semibold h-10';
     }
     return '';
   };
@@ -164,7 +172,7 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
                                   <th
                                     colSpan={Object.keys(headings).length}
                                     scope="colgroup"
-                                    className="bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+                                    className="bg-gray-50 py-2 pl-4 pr-3 text-left text-md font-semibold text-gray-900 sm:pl-3"
                                   >
                                     {group}
                                   </th>
@@ -277,6 +285,50 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
                             );
                           }
                         )}
+                      {Object.values(groupedRows.total).map((value: any, i) => {
+                        return (
+                          <Fragment key={`${i}${i}`}>
+                            {value.map((element: any, j: number) => {
+                              return (
+                                <tr
+                                  key={`${i}_${j}`}
+                                  className={classNames(
+                                    'hover:bg-slate-100 font-semibold',
+                                    subTotalColor(element)
+                                  )}
+                                >
+                                  {Object.keys(headings).map(
+                                    (headingsKey, j) => {
+                                      {
+                                        return (
+                                          <td
+                                            key={`${headingsKey}_${i}_${j}`}
+                                            className={classNames(
+                                              j === 0
+                                                ? firstColClasses
+                                                : j === value.length - 1
+                                                ? lastColClasses
+                                                : middleColClasses,
+                                              commonColClasses
+                                            )}
+                                          >
+                                            {headingsKey.endsWith('Amt') &&
+                                            headingsKey !== 'rateAmt'
+                                              ? formatNumber(
+                                                  element[headingsKey]
+                                                )
+                                              : element[headingsKey]}
+                                          </td>
+                                        );
+                                      }
+                                    }
+                                  )}
+                                </tr>
+                              );
+                            })}
+                          </Fragment>
+                        );
+                      })}
                     </tbody>
                   )}
                 </table>

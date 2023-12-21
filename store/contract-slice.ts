@@ -1,13 +1,16 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { ContractEntry } from '@/lib/models/summaryDataModel';
+import {
+  ContractEntry,
+  ContractVendorObject,
+} from '@/lib/models/summaryDataModel';
 
 import { uiActions } from './ui-slice';
 import { sseActions } from './sse-slice';
 import { RESET_STATE } from '@/lib/globals';
 
 export interface ContractSummaryData {
-  vendor: string;
+  vendor: ContractVendorObject;
   contractAmt: string;
   date: string;
   workDescription: string;
@@ -18,6 +21,7 @@ export interface ContractState {
   signedUrls: {
     [contractId: string]: { signedUrls: string[]; expiration: number };
   };
+  rowNumber?: number;
   clickedContract: ContractEntry | null;
   isRowClicked: boolean;
   anyContractUpdated: boolean;
@@ -26,6 +30,7 @@ export interface ContractState {
 const initialContractState: ContractState = {
   isLoading: false,
   isRowClicked: false,
+  rowNumber: undefined,
   clickedContract: null,
   signedUrls: {},
   anyContractUpdated: false,
@@ -108,8 +113,13 @@ export const deleteContracts = createAsyncThunk(
           icon: 'trash',
         })
       );
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+    } catch (error: any) {
+      thunkAPI.dispatch(
+        uiActions.notify({
+          content: error.message,
+          icon: 'error',
+        })
+      );
     }
   }
 );
@@ -118,18 +128,20 @@ const contractSlice = createSlice({
   name: 'contractUpdates',
   initialState: initialContractState,
   reducers: {
-    setClickedContract(
+    setClicked(
       state,
       action: PayloadAction<{
         contract?: ContractEntry | null;
         isRowClicked: boolean;
+        rowNumber?: number;
       }>
     ) {
-      const { contract, isRowClicked } = action.payload;
+      const { contract, isRowClicked, rowNumber } = action.payload;
       if (contract !== undefined) {
         state.clickedContract = contract;
       }
       state.isRowClicked = isRowClicked;
+      state.rowNumber = rowNumber;
     },
   },
   extraReducers: (builder) => {

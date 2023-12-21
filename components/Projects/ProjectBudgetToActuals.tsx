@@ -8,9 +8,10 @@ import { formatNameForID } from '@/lib/utility/formatter';
 import FullScreenLoader from '@/components/UI/Loaders/FullScreenLoader';
 import CostCodeSideLinks from '@/components/Budget/CostCodes/CostCodeSideLinks';
 import BudgetToActualCharts from '@/components/Charts/BudgetToActualCharts';
-import { useAppSelector } from '@/store/hooks';
+import { useAppSelector as useSelector } from '@/store/hooks';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { User } from '@/lib/models/formStateModels';
+import { isObjectEmpty } from '@/lib/utility/utils';
 
 interface Props {
   projectId: string;
@@ -27,7 +28,11 @@ export default function ProjectBudgetToActuals(props: Props) {
   const [clickedLinkId, setClickedLinkId] = useState('');
 
   const [blankFormData, setBlankFormData] = useState<CostCodesData | null>(
-    useAppSelector((state) => state.data.costCodes)
+    useSelector((state) => state.data.costCodes)
+  );
+
+  const b2aChartDataChangeOrder = useSelector(
+    (state) => state.projects[projectId]?.b2a?.b2aChartDataChangeOrder
   );
 
   useEffect(() => {
@@ -71,9 +76,18 @@ export default function ProjectBudgetToActuals(props: Props) {
     chartData = null;
   }
 
-  const anchorScrollElement = !currentBudgetLoading
-    ? formatNameForID(currentProjectFormData.divisions[0].name || '')
-    : '';
+  // Makes sure that when we scroll we scroll to the top. Have to have this conditional since
+  // change orders may not exist for a project.
+  let anchorScrollElement = '';
+  if (!currentBudgetLoading) {
+    if (b2aChartDataChangeOrder && !isObjectEmpty(b2aChartDataChangeOrder)) {
+      anchorScrollElement = 'change-orders';
+    } else {
+      anchorScrollElement = formatNameForID(
+        currentProjectFormData.divisions[0].name || ''
+      );
+    }
+  }
 
   const clickLinkHandler = (linkId: string) => {
     setState((prevState) => !prevState);

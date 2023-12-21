@@ -28,7 +28,7 @@ export const useCreateClientBillWorkDescription = ({
   changeOrderSummary: ChangeOrderSummary;
   currentActualsChangeOrders: CurrentActualsChangeOrdersV2;
 }) => {
-  const profitTaxesOrders = ['profit', 'boTax', 'liability'];
+  const profitTaxesOrders = ['profit', 'boTax', 'liability', 'salesTax'];
   const groupedRowCategories = ['Labor and Fees', 'Invoices', 'Change Orders'];
   const clientBillWorkDescription: {
     [group: string]: Record<string, WorkDescriptionContentItem[]>;
@@ -36,7 +36,7 @@ export const useCreateClientBillWorkDescription = ({
     const workDescriptionRows: {
       [group: string]: WorkDescriptionContentItem[];
     } = {};
-    let changeOrderDescriptions: {
+    let changeOrderDescriptionRows: {
       [changeOrderId: string]: WorkDescriptionContentItem[];
     } = {};
     if (tableData) {
@@ -89,7 +89,7 @@ export const useCreateClientBillWorkDescription = ({
                 totalAmt: '',
                 costCode: '',
               });
-              changeOrderDescriptions[changeOrderId] = currentGroupRows;
+              changeOrderDescriptionRows[changeOrderId] = currentGroupRows;
 
               Object.values(invoiceObj).forEach((currentActual) => {
                 Object.entries(currentActual).forEach(
@@ -145,7 +145,7 @@ export const useCreateClientBillWorkDescription = ({
               });
 
               currentGroupRows.push(...profitTaxesObject);
-              changeOrderDescriptions[changeOrderId] = currentGroupRows;
+              changeOrderDescriptionRows[changeOrderId] = currentGroupRows;
             }
           );
 
@@ -154,18 +154,19 @@ export const useCreateClientBillWorkDescription = ({
             [changeOrderId: string]: WorkDescriptionContentItem[];
           } = {};
           const sortedChangeOrderIds = Object.keys(
-            changeOrderDescriptions
+            changeOrderDescriptionRows
           ).sort((a, b) => {
             // Get the description of each change order and then compare
-            return changeOrderDescriptions[a][0].description.localeCompare(
-              changeOrderDescriptions[b][0].description
+            return changeOrderDescriptionRows[a][0].description.localeCompare(
+              changeOrderDescriptionRows[b][0].description
             );
           });
           sortedChangeOrderIds.forEach((key) => {
-            sortedChangeOrderDescriptions[key] = changeOrderDescriptions[key];
+            sortedChangeOrderDescriptions[key] =
+              changeOrderDescriptionRows[key];
           });
 
-          changeOrderDescriptions = sortedChangeOrderDescriptions;
+          changeOrderDescriptionRows = sortedChangeOrderDescriptions;
         }
       });
 
@@ -212,12 +213,32 @@ export const useCreateClientBillWorkDescription = ({
           costCode: '',
         });
         // TODO Add in the sales tax for the project and the total invoice amount
-        changeOrderDescriptions['Subtotal'] = currentGroupRowsChangeOrders;
+        changeOrderDescriptionRows['Subtotal'] = currentGroupRowsChangeOrders;
       }
+
+      const finalTotalRows = [
+        {
+          qtyAmt: '',
+          description: 'Sales Tax',
+          rateAmt: '',
+          vendor: '',
+          totalAmt: clientBillSummary.salesTax,
+          costCode: '',
+        },
+        {
+          qtyAmt: '',
+          description: 'Total',
+          rateAmt: '',
+          vendor: '',
+          totalAmt: clientBillSummary.total,
+          costCode: '',
+        },
+      ];
 
       return {
         budgeted: workDescriptionRows,
-        changeOrders: changeOrderDescriptions,
+        changeOrders: changeOrderDescriptionRows,
+        total: { total: finalTotalRows },
       };
     } else {
       return null;

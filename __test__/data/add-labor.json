@@ -33,21 +33,13 @@
         {
           "items": [
             {
-              "label": "Rate ($/(hour/Qty.))",
+              "label": "Rate ($/(hour or Qty.))",
               "id": "rate-per-hour",
               "type": "text",
               "inputmode": "numeric",
               "isCurrency": true,
               "required": true,
               "errormessage": "Rate per hour/qty. is required.",
-              "value": "",
-              "isOnOverlay": true
-            },
-            {
-              "label": "Pay Period",
-              "id": "pay-period",
-              "type": "date",
-              "required": false,
               "value": "",
               "isOnOverlay": true
             }

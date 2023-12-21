@@ -8,6 +8,7 @@ import {
 import { overlayActions } from '@/store/overlay-control-slice';
 import { projectDataActions } from '@/store/projects-data-slice';
 import { contractActions, deleteContracts } from '@/store/contract-slice';
+import { editContractFormActions } from '@/store/edit-contract';
 
 import { usePageData } from '@/hooks/use-page-data';
 import useHttp from '@/hooks/use-http';
@@ -20,11 +21,10 @@ import {
   ProjectSummary,
 } from '@/lib/models/summaryDataModel';
 import { formatNumber } from '@/lib/utility/formatter';
+import { convertContractEntry2FormData } from '@/lib/utility/contractHelper';
 
 import FullScreenLoader from '../UI/Loaders/FullScreenLoader';
 import CheckboxSubTable from '../Tables/SubTables/CheckboxSortHeadingsTableSub';
-import { editContractFormActions } from '@/store/edit-contract';
-import { convertContractEntry2FormData } from '@/lib/utility/contractHelper';
 import ContractSlideOverlay from '../UI/SlideOverlay/ContractSlideOverlay';
 
 interface Props {
@@ -36,6 +36,7 @@ const tableHeadings = {
   name: 'Vendor Name',
   contractDate: 'Contract Date',
   contractAmt: 'Total Amount ($)',
+  agave_uuid: 'Status',
 };
 
 const checkBoxButtons = [{ label: 'Delete', buttonPath: '#', disabled: false }];
@@ -58,7 +59,7 @@ export default function ProjectsContracts(props: Props) {
   const projectName = useSelector(
     (state) =>
       (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
-        .projectName
+        ?.projectName
   );
   const selectedContractId = useSelector(
     (state) => state.contract.clickedContract?.uuid
@@ -67,7 +68,7 @@ export default function ProjectsContracts(props: Props) {
   useEffect(() => {
     // initialize the is row clicked to false on first render
     dispatch(
-      contractActions.setClickedContract({
+      contractActions.setClicked({
         contract: null,
         isRowClicked: false,
       })
@@ -80,7 +81,8 @@ export default function ProjectsContracts(props: Props) {
     if (tableData) {
       return Object.entries(tableData).map(([key, row]) => {
         return {
-          name: row['summaryData']['vendor'],
+          name: row['summaryData']['vendor']['name'],
+          agave_uuid: row['summaryData']['vendor']['agave_uuid'],
           projectName: projectName as string,
           workDescription: row['summaryData']['workDescription'],
           contractAmt: formatNumber(
@@ -118,7 +120,7 @@ export default function ProjectsContracts(props: Props) {
     if (tableData) {
       dispatch(editContractFormActions.clearFormState());
       dispatch(
-        contractActions.setClickedContract({
+        contractActions.setClicked({
           isRowClicked: true,
           contract: tableData[uuid],
         })
@@ -153,7 +155,11 @@ export default function ProjectsContracts(props: Props) {
       {isLoading && <FullScreenLoader />}
       {!isLoading && (
         <>
-          <ContractSlideOverlay projectId={projectId} tableData={tableData} />
+          <ContractSlideOverlay
+            projectId={projectId}
+            tableData={tableData}
+            rows={contractRows}
+          />
           <CheckboxSubTable
             headings={tableHeadings}
             rows={contractRows}

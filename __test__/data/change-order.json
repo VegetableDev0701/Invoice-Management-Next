@@ -37,7 +37,7 @@
               "id": "subtotal",
               "type": "text",
               "isCurrency": true,
-              "required": true,
+              "required": false,
               "errormessage": "Subtotal is required.",
               "value": "",
               "isOnOverlay": true

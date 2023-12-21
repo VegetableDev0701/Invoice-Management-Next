@@ -4,6 +4,8 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 
 import { User } from '@/lib/models/formStateModels';
 import Button from '../UI/Buttons/Button';
+import { useAppDispatch as useDispatch } from '@/store/hooks';
+import { uiActions } from '@/store/ui-slice';
 
 interface Props {
   softwareName: string;
@@ -15,29 +17,49 @@ const AgaveLinkComponent = ({ softwareName, className }: Props) => {
   const [linkToken, setLinkToken] = useState<string | null>(null);
   const { user, isLoading } = useUser();
 
+  const dispatch = useDispatch();
+
   const reference_id =
     !isLoading && `${(user as User).user_metadata.companyId}:qbd`;
 
   const onSuccess = useCallback((publicToken: string) => {
     const sendPublicToken = async () => {
-      const response = await fetch(
-        `/api/${
-          (user as User).user_metadata.companyId
-        }/post-agave-public-token`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            public_token: publicToken,
-            software: softwareName,
-          }),
-        }
+      dispatch(
+        uiActions.setProcessingNotificationContent({
+          content: 'Loading Quickbooks Data',
+          openNotification: true,
+        })
       );
-      if (response.status !== 200) {
-        throw new Error(
-          `${response.status} - ${response.statusText} - Something went wrong with exchanging public token.`
+      try {
+        const response = await fetch(
+          `/api/${
+            (user as User).user_metadata.companyId
+          }/post-agave-public-token`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              public_token: publicToken,
+              software: softwareName,
+            }),
+          }
+        );
+        if (response.status !== 200) {
+          throw new Error(
+            `${response.status} - ${response.statusText} - Something went wrong with exchanging public token.`
+          );
+        }
+        const data = await response.json();
+        dispatch(uiActions.notify({ content: data.message, icon: 'success' }));
+      } catch (error: any) {
+        dispatch(uiActions.notify({ content: error.message, icon: 'error' }));
+      } finally {
+        dispatch(
+          uiActions.setProcessingNotificationContent({
+            openNotification: false,
+          })
         );
       }
     };

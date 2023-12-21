@@ -153,7 +153,7 @@ export default function CheckboxSortHeadingsTable<
 
   const commonColClasses = `${
     tableType === 'projects' ? 'py-4' : 'py-1'
-  } border-b max-w-[17rem] border-gray-200 whitespace-nowrap text-sm text-gray-500`;
+  } border-b max-w-[17rem] border-gray-200 whitespace-nowrap text-sm text-gray-600`;
   const firstColClasses = 'pl-4 pr-3 sm:pl-6 lg:pl-8';
   const middleColClasses = 'py-1 px-3';
   const lastColClasses = `pr-4 pl-3 sm:pr-6 lg:pr-6 ${

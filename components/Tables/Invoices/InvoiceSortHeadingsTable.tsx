@@ -113,9 +113,7 @@ const InvoicesTable = <H extends InvoiceTableHeadings>(props: Props<H>) => {
 
   useEffect(() => {
     // initialize the isRowClicked to false on first render
-    dispatch(
-      invoiceActions.setClickedInvoice({ invoice: null, isRowClicked: false })
-    );
+    dispatch(invoiceActions.setClicked({ invoice: null, isRowClicked: false }));
   }, []);
 
   useLayoutEffect(() => {
@@ -226,10 +224,10 @@ const InvoicesTable = <H extends InvoiceTableHeadings>(props: Props<H>) => {
       .map((invoice) => invoice.doc_id)
       .indexOf(invoice.doc_id);
     dispatch(
-      invoiceActions.setClickedInvoice({
-        invoice,
+      invoiceActions.setClicked({
+        invoice: invoice,
         isRowClicked: true,
-        invoiceRowNumber,
+        rowNumber: invoiceRowNumber,
       })
     );
     dispatch(
@@ -293,7 +291,7 @@ const InvoicesTable = <H extends InvoiceTableHeadings>(props: Props<H>) => {
   const lastHeadingClasses = 'py-3.5 pl-3 pr-1 rounded-tr-lg';
 
   const commonColClasses =
-    'py-1 border-b max-w-[17rem] border-gray-200 whitespace-nowrap text-sm text-gray-500';
+    'py-1 border-b max-w-[17rem] border-gray-200 whitespace-nowrap text-sm text-gray-600';
   const firstColClasses = 'pl-4 pr-3 sm:pl-6 lg:pl-8';
   const middleColClasses = 'px-3';
   const lastColClasses = 'pr-2 pl-3 sm:pr-6 lg:pr-4';

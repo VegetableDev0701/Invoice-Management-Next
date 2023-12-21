@@ -63,27 +63,6 @@ export const getCurrentVendor = createAsyncThunk(
   }
 );
 
-export const getCurrentProject = createAsyncThunk(
-  'overlay/getCurrentProject',
-  async ({ projectId }: { projectId: string }, thunkAPI) => {
-    try {
-      const state = thunkAPI.getState() as RootState;
-      const project = state.projects[projectId]['project-details'];
-      thunkAPI.dispatch(
-        overlaySlice.actions.setCurrentOverlayData({
-          data: {
-            currentData: project as ProjectFormData,
-            currentId: projectId,
-          },
-          stateKey: 'vendors',
-        })
-      );
-    } catch (error: any) {
-      console.error(error);
-    }
-  }
-);
-
 interface OverlayGroup {
   [key: string]: OverlayContent;
 }

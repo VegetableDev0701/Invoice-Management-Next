@@ -670,18 +670,18 @@ const invoiceSlice = createSlice({
   name: 'invoiceUpdates',
   initialState: initialInvoiceState,
   reducers: {
-    setClickedInvoice(
+    setClicked(
       state,
       action: PayloadAction<{
         invoice: InvoiceTableRow | null;
         isRowClicked: boolean;
-        invoiceRowNumber?: number;
+        rowNumber?: number;
       }>
     ) {
-      const { invoice, isRowClicked, invoiceRowNumber } = action.payload;
+      const { invoice, isRowClicked, rowNumber } = action.payload;
       state.clickedInvoice = invoice;
       state.isRowClicked = isRowClicked;
-      state.invoiceRowNumber = invoiceRowNumber;
+      state.invoiceRowNumber = rowNumber;
 
       if (isRowClicked) {
         state.currentInvoiceSnapShot = {} as FormStateV2 & {

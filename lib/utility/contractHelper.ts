@@ -5,6 +5,7 @@ import {
   MainCategories,
 } from '../models/formDataModel';
 import { formatDateForInput, snapshotCopy } from './utils';
+
 export const convertContractEntry2FormData = ({
   data,
   baseForm,
@@ -22,7 +23,7 @@ export const convertContractEntry2FormData = ({
 
   (
     result.mainCategories[0].inputElements[0] as InputElementWithItems
-  ).items[0].value = vendor;
+  ).items[0].value = vendor.name;
   (
     result.mainCategories[0].inputElements[1] as InputElementWithItems
   ).items[0].value = contractAmt;

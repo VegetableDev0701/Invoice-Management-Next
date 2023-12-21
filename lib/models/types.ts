@@ -12,7 +12,6 @@ import { addVendorFormActions } from '@/store/add-vendor-slice';
 import { accountSettingsFormActions } from '@/store/account-settings-slice';
 import { addLaborFormActions } from '@/store/add-labor-slice';
 import { addChangeOrderFormActions } from '@/store/add-change-order';
-import { addContractFormActions } from '@/store/add-contract';
 import { editContractFormActions } from '@/store/edit-contract';
 import { addProcessInvoiceFormActions } from '@/store/add-process-invoice';
 import { invoiceActions } from '@/store/invoice-slice';
@@ -25,7 +24,6 @@ type AddVendorActions = typeof addVendorFormActions;
 type AccountSettingsActions = typeof accountSettingsFormActions;
 export type AddLaborActions = typeof addLaborFormActions;
 type AddChangeOrderActions = typeof addChangeOrderFormActions;
-type AddContractFormActions = typeof addContractFormActions;
 export type EditContractFormActions = typeof editContractFormActions;
 export type AddProcessInvoiceActions = typeof addProcessInvoiceFormActions;
 export type InvoiceActions = typeof invoiceActions;
@@ -37,7 +35,6 @@ export type Actions =
   | AccountSettingsActions
   | AddLaborActions
   | AddChangeOrderActions
-  | AddContractFormActions
   | EditContractFormActions
   | OnboardUserActions
   | AddProcessInvoiceActions;

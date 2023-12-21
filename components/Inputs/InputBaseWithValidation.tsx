@@ -16,11 +16,12 @@ import { formatNumber } from '@/lib/utility/formatter';
 import { useGetInputState } from '@/lib/utility/formHelpers';
 import { Items } from '@/lib/models/formDataModel';
 import { Actions } from '@/lib/models/types';
-import { FormStateItem } from '@/lib/models/formStateModels';
+import { FormStateItemV2 } from '@/lib/models/formStateModels';
 
 import { ExclamationCircleIcon } from '@heroicons/react/20/solid';
 import classes from './Input.module.css';
 import Button from '../UI/Buttons/Button';
+import { ContractVendorObject } from '@/lib/models/summaryDataModel';
 
 export interface Props {
   props: PropsItems;
@@ -65,7 +66,7 @@ const InputBaseWithValidation = (props: Props) => {
   const dispatch = useDispatch();
 
   const contractObj = useSelector((state) => state.contract);
-  const inputState = useGetInputState(input.id, form) as FormStateItem;
+  const inputState = useGetInputState(input.id, form) as FormStateItemV2;
 
   // make the first input field autofocused
   const inputRef = useRef<HTMLInputElement>(null);
@@ -106,7 +107,7 @@ const InputBaseWithValidation = (props: Props) => {
 
   const contractClickHandler = (e: React.MouseEvent) => {
     e.preventDefault();
-    dispatch(contractActions.setClickedContract({ isRowClicked: true }));
+    dispatch(contractActions.setClicked({ isRowClicked: true }));
   };
 
   const isError = !showError
@@ -122,6 +123,19 @@ const InputBaseWithValidation = (props: Props) => {
   // currently only showing the currency icon on theleft of the input, but add others here as an || conditional
   const isLeftIcon = input.isCurrency;
   const isRightIcon = !input.isCurrency;
+
+  const getValue = (inputState: FormStateItemV2, id: string) => {
+    if (id === 'vendor-name' && form === 'editContract') {
+      return (inputState?.value as unknown as ContractVendorObject)?.name;
+    } else {
+      return inputState?.value !== undefined
+        ? (inputState.value as string)
+        : (input.value as string) ||
+            ((input.isCurrency
+              ? formatNumber(inputValue as string)
+              : inputValue) as string);
+    }
+  };
 
   return (
     <div className={`${classes['input-container']} ${addOnClass}`}>
@@ -153,14 +167,7 @@ const InputBaseWithValidation = (props: Props) => {
                 ? 'border-red-500 placeholder:text-red-500'
                 : 'border-stak-light-gray'
             }`}
-            value={
-              inputState?.value !== undefined
-                ? (inputState.value as string)
-                : (input.value as string) ||
-                  ((input.isCurrency
-                    ? formatNumber(inputValue as string)
-                    : inputValue) as string)
-            }
+            value={getValue(inputState, input.id)}
             id={input.id}
             type={input.type as string}
             data-testid={input['data-testid']}

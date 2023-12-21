@@ -8,10 +8,13 @@
             {
               "label": "Vendor Name",
               "id": "vendor-name",
-              "type": "text",
-              "required": true,
-              "errormessage": "Vendor name is required.",
-              "value": ""
+              "inputType": "dropdownWithSearch",
+              "value": "",
+              "sideButton": true,
+              "buttonText": "Contract",
+              "required": false,
+              "isOnOverlay": true,
+              "type": "text"
             }
           ]
         },
@@ -22,7 +25,7 @@
               "id": "contract-amount",
               "type": "text",
               "isCurrency": true,
-              "required": true,
+              "required": false,
               "errormessage": "Contract amount is required.",
               "value": ""
             },

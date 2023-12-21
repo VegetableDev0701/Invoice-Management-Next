@@ -29,7 +29,6 @@ import overlaySlice from './overlay-control-slice';
 import addLaborFormSlice from './add-labor-slice';
 import projectDataSlice from './projects-data-slice';
 import addChangeOrderFormSlice from './add-change-order';
-import addContractFormSlice from './add-contract';
 import contractSlice from './contract-slice';
 import addBudgetFormSlice from './add-budget-slice';
 import addProcessInvoiceFormSlice from './add-process-invoice';
@@ -45,7 +44,6 @@ const rootReducer = combineReducers({
   addVendorForm: addVendorFormSlice.reducer,
   addLaborForm: addLaborFormSlice.reducer,
   addChangeOrderForm: addChangeOrderFormSlice.reducer,
-  addContractForm: addContractFormSlice.reducer,
   editContractForm: editContractFormSlice.reducer,
   addBudgetForm: addBudgetFormSlice.reducer,
   addProcessInvoiceForm: addProcessInvoiceFormSlice.reducer,

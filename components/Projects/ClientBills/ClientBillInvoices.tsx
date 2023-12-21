@@ -108,6 +108,7 @@ export default function ClientBillInvoices(props: Props) {
         updateData={false}
         onGetSnapShotFormState={getSnapShotFormState}
         onUpdateData={handleUpdateData}
+        isClientBill={true}
       />
       <InvoicesTable
         isProjectPage={true}

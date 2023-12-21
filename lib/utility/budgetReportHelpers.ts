@@ -46,7 +46,7 @@ const calculatePercent = ({
       return `${formatNumber(((actualNum / budgetNum) * 100).toFixed(2))}%`;
     }
     if (diffNum > 0) {
-      return `${formatNumber(((diffNum / budgetNum) * 100).toFixed(2))}%`;
+      return `${formatNumber(((diffNum / budgetNum + 1) * 100).toFixed(2))}%`;
     }
     if (actualNum === 0) {
       return '0.00%';

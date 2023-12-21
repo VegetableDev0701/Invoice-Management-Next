@@ -10,6 +10,7 @@ import { RESET_STATE } from '@/lib/globals';
 
 const initialAddLaborFormState: FormState = {
   numCostCodes: { value: 1 },
+  isUpdated: { value: false },
 };
 
 const addLaborFormSlice = createSlice({
@@ -35,6 +36,9 @@ const addLaborFormSlice = createSlice({
         isValid: isValid,
         isTouched: isTouched,
       };
+    },
+    setIsUpdatedState(state, action: PayloadAction<boolean>) {
+      state.isUpdated.value = action.payload;
     },
     resetFormValidation(state) {
       return resetAllFormValidation(state);
