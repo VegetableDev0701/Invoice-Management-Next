@@ -20,7 +20,7 @@ function CostCodesDivision(props: Props) {
   const { costCodeDataList, setCostCodeDataList, onclicklink } = props;
   const [showAddDivision, setShowAddDivision] = useState(false);
   const [divisions, setDivisions] =
-    useState<{ name: string; number: number }[]>();
+    useState<{ name: string; number: string }[]>();
 
   const clickLinkHandler = (e: React.MouseEvent<HTMLLIElement>) => {
     onclicklink((e.target as HTMLElement).id.split('_')[0]);
@@ -59,7 +59,7 @@ function CostCodesDivision(props: Props) {
               className={`flex flex-col gap-4 ${classes['content-frame__links']}`}
             >
               {divisions?.map(
-                (division: { name: string; number: number }, i: number) => (
+                (division: { name: string; number: string }, i: number) => (
                   <div
                     key={i}
                     className={`flex flex-1 justify-between items-center`}

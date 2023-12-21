@@ -366,7 +366,7 @@ const initReportDataFromProjectBudget = ({
   const initReportData = (
     item: CostCodeItem | Divisions,
     level: Array<number>,
-    costCodeLevel = [] as Array<number>,
+    costCodeLevel = [] as Array<string>,
     hasSubItem = false
   ) => {
     const depth = level.length - 1;

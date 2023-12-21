@@ -38,10 +38,10 @@ export const iterateData = ({
   cb: (
     item: CostCodeItem | CostCodeItemB2AData,
     level: Array<number>,
-    costCodeLevel?: Array<number>,
+    costCodeLevel?: Array<string>,
     hasSubItem?: boolean
   ) => void;
-  costCodeLevel?: Array<number>;
+  costCodeLevel?: Array<string>;
   visitAll?: boolean;
 }) => {
   if (data?.subItems?.length === 0) return;
@@ -78,7 +78,7 @@ export function addDivision(
   if (isAddToProject) {
     return {
       newDivisions: [...costCodes.divisions, ...[newDivision]].sort(
-        (a, b) => a.number - b.number
+        sortFunction
       ),
     };
   } else {
@@ -88,7 +88,7 @@ export function addDivision(
 
 export function deleteDivision(
   costCodes: CostCodesData,
-  divisionNumber: number,
+  divisionNumber: string,
   isDelFromProject?: boolean
 ) {
   const divIndex = costCodes.divisions.findIndex(
@@ -216,7 +216,10 @@ export const costCodeData2NLevel = (oldCostCodeData: any) => {
   )
     return oldCostCodeData as CostCodesData;
 
-  const isValidNumber = (currentNumber: number, parentNumber: number) => {
+  const isValidNumber = (
+    currentNumber: number | string,
+    parentNumber: number | string
+  ) => {
     return String(currentNumber).startsWith(String(parentNumber));
   };
 
@@ -244,7 +247,7 @@ export const costCodeData2NLevel = (oldCostCodeData: any) => {
       subdiv.items.forEach((item: any, ssubIndex: number) => {
         let _number = item?.number;
         if (!isValidNumber(_number, newItem.number)) {
-          _number = +(String(newItem.number) + (ssubIndex + 1));
+          _number = String(newItem.number) + (ssubIndex + 1);
         }
 
         newItem.subItems!.push({
@@ -511,4 +514,15 @@ export function covertQBD2CostCode(_data: any) {
   }
 
   return budget;
+}
+
+export function sortFunction(a: { number: string }, b: { number: string }) {
+  // if a and b are divisions
+  if (a.number.split('.').length === 1 && b.number.split('.').length === 1) {
+    return Number(a.number) - Number(b.number);
+  }
+  if (Number(a.number.split('.')[0]) === Number(b.number.split('.')[0])) {
+    return Number(a.number.split('.')[1]) - Number(b.number.split('.')[1]);
+  }
+  return Number(a.number.split('.')[0]) - Number(b.number.split('.')[0]);
 }

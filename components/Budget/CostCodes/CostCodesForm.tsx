@@ -36,6 +36,7 @@ import {
 } from '@heroicons/react/20/solid';
 import TreeComponentClasses from './CostCodesForm.module.css';
 import { addBudgetFormActions } from '@/store/add-budget-slice';
+import { sortFunction } from '@/lib/utility/costCodeHelpers';
 
 export interface Props {
   formData: CostCodesData;
@@ -50,7 +51,7 @@ const initTreeData = {
     index: 'root',
     data: {
       name: '',
-      number: 0,
+      number: '0',
     },
   },
 };
@@ -137,7 +138,7 @@ function CostCodeForm(props: Props) {
         index: newItem,
         data: {
           name: formData.name,
-          number: Number(formData.number),
+          number: formData.number,
         },
         children: [],
       };
@@ -147,7 +148,7 @@ function CostCodeForm(props: Props) {
         data: {
           name: formData.name,
           value: formData.name,
-          number: Number(formData.number),
+          number: formData.number,
           id: formData.number,
           type: 'text',
           required: false,
@@ -161,15 +162,12 @@ function CostCodeForm(props: Props) {
       newCodeDataList[addItemIndex].children = [];
 
     newCodeDataList[addItemIndex].children?.push(newItem);
-    newCodeDataList[addItemIndex].children?.sort((a, b) => {
-      if (
-        (newCodeDataList[a].data as Omit<CostCodeItem, 'subItems'>)?.number >
-        (newCodeDataList[b].data as Omit<CostCodeItem, 'subItems'>)?.number
-      ) {
-        return 1;
-      }
-      return -1;
-    });
+    newCodeDataList[addItemIndex].children?.sort((a, b) =>
+      sortFunction(
+        newCodeDataList[a].data as Omit<CostCodeItem, 'subItems'>,
+        newCodeDataList[b].data as Omit<CostCodeItem, 'subItems'>
+      )
+    );
     newCodeDataList[addItemIndex].isFolder = true;
     setAddItemIndex('');
     setIsError(false);
@@ -178,7 +176,7 @@ function CostCodeForm(props: Props) {
       addBudgetFormActions.addToUpdateBudgetList({
         type: 'Create',
         name: formData.name,
-        number: Number(formData.number),
+        number: formData.number,
         recursiveLevel: [
           ...(newCodeDataList[addItemIndex].data.recursiveLevel || []),
         ],
@@ -253,7 +251,7 @@ function CostCodeForm(props: Props) {
         data: {
           ...item.data,
           name: changeData[1].trim(),
-          number: Number(changeData[0].trim()),
+          number: changeData[0].trim(),
         },
       },
     };
@@ -264,7 +262,7 @@ function CostCodeForm(props: Props) {
         data: {
           ...item.data,
           name: changeData[1].trim(),
-          number: Number(changeData[0].trim()),
+          number: changeData[0].trim(),
         },
       },
     }));
@@ -274,7 +272,7 @@ function CostCodeForm(props: Props) {
       addBudgetFormActions.addToUpdateBudgetList({
         type: 'Update',
         name: changeData[1].trim(),
-        number: Number(changeData[0].trim()),
+        number: changeData[0].trim(),
         recursiveLevel: [
           ...(newCodeDataList[item.index].data.recursiveLevel || []),
         ],

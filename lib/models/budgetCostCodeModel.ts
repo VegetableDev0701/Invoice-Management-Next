@@ -15,7 +15,7 @@ export interface CostCodesData {
 export interface Divisions {
   agave_uuid?: string;
   name?: string;
-  number: number;
+  number: string;
   subdivisions?: SubDivisions[];
   subItems?: CostCodeItem[];
   isOpened?: boolean;
@@ -30,7 +30,7 @@ export interface SubDivisions {
 
 export interface CostCodeItem {
   agave_uuid?: string;
-  number: number;
+  number: string;
   name?: string;
   label?: string;
   value?: string;
@@ -265,7 +265,7 @@ export type CostCodeTreeData = {
 
 export interface UpdateCostCode {
   type: 'Create' | 'Update' | 'Delete';
-  number?: number;
+  number?: string;
   name?: string;
   recursiveLevel?: Array<number>;
 }
@@ -282,7 +282,7 @@ export interface BaseReportDataItem {
 export interface ReportDataItem extends BaseReportDataItem {
   costCode?: string | number;
   hasSubItem?: boolean;
-  costCodeLevel?: Array<number>;
+  costCodeLevel?: Array<string>;
 }
 
 export interface ReportData {

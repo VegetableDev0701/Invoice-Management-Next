@@ -49,7 +49,7 @@ const initTreeData = {
     index: 'root',
     data: {
       name: '',
-      number: 0,
+      number: '0',
     },
   },
 };
