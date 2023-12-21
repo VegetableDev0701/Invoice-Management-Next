@@ -276,7 +276,7 @@ const ProjectHome = () => {
                 onClick: updateProjectHandler,
               },
               {
-                label: 'Update',
+                label: 'Update Budget',
                 isShowingKeyName: 'budget',
                 onClick: updateBudgetHandler,
               },
