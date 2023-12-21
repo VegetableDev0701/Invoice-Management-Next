@@ -286,11 +286,6 @@ const ProjectHome = () => {
                 onClick: collapseBudgetHandler,
               },
               {
-                label: `${isCollapsed ? 'Expand' : 'Collapse'}`,
-                isShowingKeyName: 'budget',
-                onClick: collapseBudgetHandler,
-              },
-              {
                 label: `${isShowingAll ? 'Show' : 'Hide'}`,
                 isShowingKeyName: 'budget',
                 onClick: showingAllBudgetHandler,

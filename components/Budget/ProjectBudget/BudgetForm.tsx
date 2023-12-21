@@ -68,6 +68,7 @@ export default function BudgetForm(props: Props) {
   const { user, isLoading } = useUser();
 
   const isCollapsed = useSelector((state) => state.addBudgetForm.isCollapsed);
+  const isShowingAll = useSelector((state) => state.addBudgetForm.isShowingAll);
   const [expandedItems, setExpandedItems] = useState<TreeItemIndex[]>([]);
   const [focusedItem, setFocusedItem] = useState<TreeItemIndex>();
   const [selectedItems, setSelectedItems] = useState<TreeItemIndex[]>([]);
@@ -87,6 +88,20 @@ export default function BudgetForm(props: Props) {
       setCompanyId((user as User).user_metadata.companyId);
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    if (costCodeTreeDataList) {
+      const newTreeData = { ...costCodeTreeDataList };
+      Object.keys(newTreeData).forEach((key) => {
+        if (key !== 'root') {
+          (newTreeData[key].data as Omit<CostCodeItem, 'subItems'>).isOpened =
+            !isCollapsed;
+        }
+      });
+
+      setCostCodeTreeDataList(newTreeData);
+    }
+  }, [isCollapsed]);
 
   // Since the app is listening for the `Enter` keypress event attached to the
   // `Update Budget` button in the heading, i.e. submitting the form, we want to
@@ -318,7 +333,7 @@ export default function BudgetForm(props: Props) {
                 : 'button';
               const type = context.isRenaming ? undefined : 'button';
               if (
-                isCollapsed &&
+                isShowingAll &&
                 Number(item.data.value) === 0 &&
                 !valueAddedItems.map((v) => v.index).includes(item.index)
               )
