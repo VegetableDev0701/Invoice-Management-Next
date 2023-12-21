@@ -178,6 +178,7 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
 
 const initialBudgetFormState: {
   isCollapsed: boolean;
+  isShowingAll: boolean;
   totalBudget: string;
   totalSubDivisions: {
     [key: string]: { value: string; division: number; name: string };
@@ -188,6 +189,7 @@ const initialBudgetFormState: {
   updateBudget: UpdateCostCode[];
 } = {
   isCollapsed: false,
+  isShowingAll: true,
   totalBudget: '',
   totalSubDivisions: {},
   totalDivisions: {},
@@ -242,6 +244,9 @@ const addBudgetFormSlice = createSlice({
       state.budget = {
         ...setCollapsed({ budget, isCollapsed: action.payload }),
       };
+    },
+    setIsShowingAll(state, action: PayloadAction<boolean>) {
+      state.isShowingAll = action.payload;
     },
     resetUpdateBudget(state) {
       state.updateBudget = [];

@@ -85,6 +85,7 @@ const ProjectHome = () => {
   //   (state) => state.projects[projectId]?.budget
   // );
   const isCollapsed = useSelector((state) => state.addBudgetForm.isCollapsed);
+  const isShowingAll = useSelector((state) => state.addBudgetForm.isShowingAll);
   const isProjectsFetched = useSelector(
     (state) => state.processing.allDataFetched
   );
@@ -237,6 +238,10 @@ const ProjectHome = () => {
   const collapseBudgetHandler = () => {
     dispatch(addBudgetFormActions.setCollapse(!isCollapsed));
   };
+
+  const showingAllBudgetHandler = () => {
+    dispatch(addBudgetFormActions.setIsShowingAll(!isShowingAll));
+  };
   return (
     <>
       <ModalErrorWrapper />
@@ -271,14 +276,24 @@ const ProjectHome = () => {
                 onClick: updateProjectHandler,
               },
               {
-                label: 'Update Budget',
+                label: 'Update',
                 isShowingKeyName: 'budget',
                 onClick: updateBudgetHandler,
               },
               {
-                label: `${isCollapsed ? 'Expand' : 'Collapse'} Budget`,
+                label: `${isCollapsed ? 'Expand' : 'Collapse'}`,
                 isShowingKeyName: 'budget',
                 onClick: collapseBudgetHandler,
+              },
+              {
+                label: `${isCollapsed ? 'Expand' : 'Collapse'}`,
+                isShowingKeyName: 'budget',
+                onClick: collapseBudgetHandler,
+              },
+              {
+                label: `${isShowingAll ? 'Show' : 'Hide'}`,
+                isShowingKeyName: 'budget',
+                onClick: showingAllBudgetHandler,
               },
             ]}
             onActiveTab={setActiveTabKeyName}
