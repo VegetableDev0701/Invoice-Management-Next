@@ -6,10 +6,7 @@ import {
 } from '@/lib/models/formStateModels';
 import { resetAllFormValidation } from '@/lib/utility/formHelpers';
 import { RootState } from '.';
-import {
-  createInitBudgetState,
-  setCollapsed,
-} from '@/lib/utility/costCodeHelpers';
+import { createInitBudgetState } from '@/lib/utility/costCodeHelpers';
 import { calculateTotals } from '@/lib/utility/budgetHelpers';
 import {
   BudgetTotals,
@@ -178,6 +175,7 @@ export const initializeB2AChartDataThunk = createAsyncThunk(
 
 const initialBudgetFormState: {
   isCollapsed: boolean;
+  isShowingAll: boolean;
   totalBudget: string;
   totalSubDivisions: {
     [key: string]: { value: string; division: number; name: string };
@@ -188,6 +186,7 @@ const initialBudgetFormState: {
   updateBudget: UpdateCostCode[];
 } = {
   isCollapsed: false,
+  isShowingAll: true,
   totalBudget: '',
   totalSubDivisions: {},
   totalDivisions: {},
@@ -238,10 +237,14 @@ const addBudgetFormSlice = createSlice({
     },
     setCollapse(state, action: PayloadAction<boolean>) {
       state.isCollapsed = action.payload;
-      const budget = { ...state.budget };
-      state.budget = {
-        ...setCollapsed({ budget, isCollapsed: action.payload }),
-      };
+      // TODO seems don't need isShowing property
+      // const budget = { ...state.budget };
+      // state.budget = {
+      //   ...setCollapsed({ budget, isCollapsed: action.payload }),
+      // };
+    },
+    setIsShowingAll(state, action: PayloadAction<boolean>) {
+      state.isShowingAll = action.payload;
     },
     resetUpdateBudget(state) {
       state.updateBudget = [];

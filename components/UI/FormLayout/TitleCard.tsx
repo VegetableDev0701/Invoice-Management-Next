@@ -9,7 +9,8 @@ import Card from '../Card';
 import Button from '../Buttons/Button';
 
 import classes from '../../Forms/InputFormLayout/FormLayout.module.css';
-import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
+import { CostCodeItem, CostCodesData } from '@/lib/models/budgetCostCodeModel';
+import { iterateData } from '@/lib/utility/costCodeHelpers';
 
 interface Props {
   pageTitle: string;
@@ -74,9 +75,17 @@ const TitleCard = (props: Props) => {
               const newTreeData: CostCodesData = JSON.parse(
                 JSON.stringify(costCodeDataList)
               );
+
               newTreeData.divisions.forEach((div, index) => {
-                newTreeData.divisions[index] = { ...div, isOpened: false };
-                newTreeData.divisions[index].isOpened = !isExpanded;
+                iterateData({
+                  data: div,
+                  level: [index],
+                  cb: function (item: CostCodeItem) {
+                    item.isOpened = !isExpanded;
+                  },
+                  costCodeLevel: [div.number],
+                  visitAll: true,
+                });
               });
               setCostCodeDataList(newTreeData);
               const newTree = JSON.parse(JSON.stringify(treeData.data));

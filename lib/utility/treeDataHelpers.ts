@@ -256,7 +256,8 @@ export class ConvertTreeData {
         cost.sum = cost.total;
       } else {
         cost.sum = parseFloat(
-          (treeData[child].data as CostCodeItem)?.value ?? '0.0'
+          (treeData[child].data as CostCodeItem)?.value?.replaceAll(',', '') ??
+            '0.0'
         );
         cost.total += cost.sum;
         (treeData[child].data as CostCodeItem).value = Number.isNaN(cost.sum)
