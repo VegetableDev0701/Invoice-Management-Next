@@ -158,6 +158,7 @@ const ProjectButtons = (props: Props) => {
   };
 
   const handleBuildB2AReport = async (clientBillIds: string[]) => {
+    setOpenConfirmModal(false);
     if (!clientBillId || !clientBillIds || !clientBillIds.length) return;
     dispatch(
       uiActions.setTaskLoadingState({
