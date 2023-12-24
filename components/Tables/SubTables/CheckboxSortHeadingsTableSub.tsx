@@ -40,6 +40,7 @@ interface Props<T, H extends Partial<T>> {
   tableType?: TableType;
   onConfirmModal?: (selected: T[]) => void;
   onRowClick?: (uuid: string, projectId: string) => void;
+  onSelectItems?: (selected: T[]) => void;
 }
 
 export default function CheckboxSubTable<T, H extends Partial<T>>(
@@ -57,6 +58,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
     tableType,
     onConfirmModal,
     onRowClick,
+    onSelectItems,
   } = props;
 
   const checkbox = useRef<HTMLInputElement | null>(null);
@@ -84,6 +86,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
   function toggleAll() {
     if (!rows) return;
     setSelected(checked || indeterminate ? [] : rows);
+    onSelectItems && onSelectItems(checked || indeterminate ? [] : rows);
     setChecked(!checked && !indeterminate);
     setIndeterminate(false);
   }
@@ -272,13 +275,13 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                                 className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-stak-dark-green focus:ring-0 focus:ring-offset-0"
                                 value={element.uuid as string}
                                 checked={selected.includes(element)}
-                                onChange={(e) =>
-                                  setSelected(
-                                    e.target.checked
-                                      ? [...selected, element]
-                                      : selected.filter((el) => el !== element)
-                                  )
-                                }
+                                onChange={(e) => {
+                                  const v = e.target.checked
+                                    ? [...selected, element]
+                                    : selected.filter((el) => el !== element);
+                                  setSelected(v);
+                                  onSelectItems && onSelectItems(v);
+                                }}
                               />
                             </td>
                             {Object.keys(headings).map((headingsKey, j) => {
