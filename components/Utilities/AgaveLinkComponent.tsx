@@ -6,6 +6,12 @@ import { User } from '@/lib/models/formStateModels';
 import Button from '../UI/Buttons/Button';
 import { useAppDispatch as useDispatch } from '@/store/hooks';
 import { uiActions } from '@/store/ui-slice';
+import { companyDataActions } from '@/store/company-data-slice';
+import { updateVendorDocs } from '@/lib/utility/vendorHelpers';
+import { Customers, Employees } from '@/lib/models/companyDataModel';
+import { VendorSummary } from '@/lib/models/summaryDataModel';
+import { UpdateDocData } from '@/lib/models/vendorModel';
+import { CostCodesData } from '@/lib/models/budgetCostCodeModel';
 
 interface Props {
   softwareName: string;
@@ -51,8 +57,53 @@ const AgaveLinkComponent = ({ softwareName, className }: Props) => {
             `${response.status} - ${response.statusText} - Something went wrong with exchanging public token.`
           );
         }
-        const data = await response.json();
-        dispatch(uiActions.notify({ content: data.message, icon: 'success' }));
+        // TODO create a type for the return data
+        const data = (await response.json()) as {
+          message: string;
+          employees: { [uuid: string]: Employees };
+          customers: { [uuid: string]: Customers };
+          agave_response_data: VendorSummary;
+          update_doc_data: UpdateDocData;
+          items: CostCodesData;
+        };
+
+        let successText = 'Account token and ';
+        // 1. dispatch employees data
+        if (data.employees) {
+          successText = successText + 'employee, ';
+          dispatch(
+            companyDataActions.addEmployeeData({
+              isUpdate: false,
+              data: data.employees,
+            })
+          );
+        }
+        // 2. dispatch customer data
+        if (data.customers) {
+          successText = successText + 'customers, ';
+          dispatch(
+            companyDataActions.addCustomerData({
+              isUpdate: false,
+              data: data.customers,
+            })
+          );
+        }
+        // 3. dispatch vendor summary data
+        if (data.agave_response_data) {
+          successText = successText + 'vendors, ';
+          dispatch(
+            companyDataActions.addToVendorsSummaryData(data.agave_response_data)
+          );
+        }
+        // 4 update any vendor docs
+        updateVendorDocs({ dispatch, data: data.update_doc_data });
+        // 5. load the init cost codes
+        if (data.items) {
+          successText = successText + 'cost codes ';
+          dispatch(companyDataActions.addInitCostCodes(data.items));
+        }
+        successText = successText + 'saved successfully.';
+        dispatch(uiActions.notify({ content: successText, icon: 'success' }));
       } catch (error: any) {
         dispatch(uiActions.notify({ content: error.message, icon: 'error' }));
       } finally {

@@ -36,7 +36,7 @@ const tableHeadings = {
   name: 'Vendor Name',
   contractDate: 'Contract Date',
   contractAmt: 'Total Amount ($)',
-  agave_uuid: 'Status',
+  vendorId: 'Status',
 };
 
 const checkBoxButtons = [{ label: 'Delete', buttonPath: '#', disabled: false }];
@@ -64,6 +64,9 @@ export default function ProjectsContracts(props: Props) {
   const selectedContractId = useSelector(
     (state) => state.contract.clickedContract?.uuid
   );
+  const vendorSummary = useSelector(
+    (state) => state.data.vendorsSummary.allVendors
+  );
 
   useEffect(() => {
     // initialize the is row clicked to false on first render
@@ -82,7 +85,7 @@ export default function ProjectsContracts(props: Props) {
       return Object.entries(tableData).map(([key, row]) => {
         return {
           name: row['summaryData']['vendor']['name'],
-          agave_uuid: row['summaryData']['vendor']['agave_uuid'],
+          vendorId: row['summaryData']['vendor']['uuid'],
           projectName: projectName as string,
           workDescription: row['summaryData']['workDescription'],
           contractAmt: formatNumber(
@@ -169,6 +172,7 @@ export default function ProjectsContracts(props: Props) {
             selectedRowId={selectedContractId}
             preSortKey={'name'}
             tableType="contracts"
+            vendorSummary={vendorSummary}
             onConfirmModal={confirmModalHandler}
             onRowClick={rowClickHandler}
           />

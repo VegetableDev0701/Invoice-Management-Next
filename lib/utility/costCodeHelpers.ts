@@ -117,13 +117,17 @@ export function createCostCodeList(costCodes: CostCodesData) {
     item: CostCodeItem | CostCodeItemB2AData,
     _: Array<number>
   ) => {
-    costCodeList.push({ id: count, label: String(item.number) });
-    costCodeNameList.push({
-      id: count,
-      label: (item as CostCodeItem).label || item.name || '',
-      costCode: String(item.number),
-    });
-    count++;
+    // account for the marks codes (insurance, profit, etc. that may not have a number)
+    // and we shouldn't need this in this list anyway.
+    if (item.number) {
+      costCodeList.push({ id: count, label: String(item.number) });
+      costCodeNameList.push({
+        id: count,
+        label: (item as CostCodeItem).label || item.name || '',
+        costCode: String(item.number),
+      });
+      count++;
+    }
   };
 
   costCodes.divisions.forEach((div, index) => {
@@ -423,98 +427,98 @@ export function editCostCode(costCodes: CostCodesData, action: UpdateCostCode) {
   result.data.number = number;
 }
 
-export function covertQBD2CostCode(_data: any) {
-  let data = _data?.Service?.data;
+// export function covertQBD2CostCode(_data: any) {
+//   let data = _data?.Service?.data;
 
-  const levelList: {
-    [agave_uuid: string]: number[];
-  } = {};
+//   const levelList: {
+//     [agave_uuid: string]: number[];
+//   } = {};
 
-  const budget: CostCodesData = {
-    format: '',
-    currency: 'USD',
-    updated: true,
-    divisions: [],
-  };
+//   const budget: CostCodesData = {
+//     format: '',
+//     currency: 'USD',
+//     updated: true,
+//     divisions: [],
+//   };
 
-  if (!Array.isArray(data)) return budget;
+//   if (!Array.isArray(data)) return budget;
 
-  budget.divisions = data
-    .filter(
-      (item: any) =>
-        !item.source_data.data.ParentRef &&
-        item.source_data.data.Sublevel === '0' &&
-        !isNaN(Number(item.name.substring(0, item.name.indexOf(' '))))
-    )
-    .map((item: any, index: number) => {
-      const costCode = item.name.substring(0, item.name.indexOf(' '));
+//   budget.divisions = data
+//     .filter(
+//       (item: any) =>
+//         !item.source_data.data.ParentRef &&
+//         item.source_data.data.Sublevel === '0' &&
+//         !isNaN(Number(item.name.substring(0, item.name.indexOf(' '))))
+//     )
+//     .map((item: any, index: number) => {
+//       const costCode = item.name.substring(0, item.name.indexOf(' '));
 
-      levelList[item.source_id] = [index];
+//       levelList[item.source_id] = [index];
 
-      return {
-        agave_uuid: item.id,
-        name: item.name.substring(item.name.indexOf(' ') + 1),
-        number: costCode,
-        subItems: [],
-      };
-    });
+//       return {
+//         agave_uuid: item.id,
+//         name: item.name.substring(item.name.indexOf(' ') + 1),
+//         number: costCode,
+//         subItems: [],
+//       };
+//     });
 
-  data = data.filter((item: any) => item.source_data.data.Sublevel !== '0');
+//   data = data.filter((item: any) => item.source_data.data.Sublevel !== '0');
 
-  let currentLevel = 1;
+//   let currentLevel = 1;
 
-  while (data.length) {
-    data
-      .filter((item: any) => item.source_data.data.Sublevel == currentLevel)
-      .forEach((item: any) => {
-        const costCode = item.name.substring(0, item.name.indexOf(' '));
+//   while (data.length) {
+//     data
+//       .filter((item: any) => item.source_data.data.Sublevel == currentLevel)
+//       .forEach((item: any) => {
+//         const costCode = item.name.substring(0, item.name.indexOf(' '));
 
-        const parentId = item.source_data.data.ParentRef.ListID;
+//         const parentId = item.source_data.data.ParentRef.ListID;
 
-        const parentLevel = levelList[parentId];
-        if (!parentLevel) return;
+//         const parentLevel = levelList[parentId];
+//         if (!parentLevel) return;
 
-        const result = getDataByRecursiveLevel({
-          fullData: budget.divisions,
-          level: parentLevel,
-        });
+//         const result = getDataByRecursiveLevel({
+//           fullData: budget.divisions,
+//           level: parentLevel,
+//         });
 
-        if (!result || !result.data) {
-          return;
-        }
+//         if (!result || !result.data) {
+//           return;
+//         }
 
-        if (!result.data.subItems) result.data.subItems = [];
-        if ((result.data as CostCodeItem).isCurrency) {
-          (result.data as CostCodeItem).isCurrency = false;
-          (result.data as CostCodeItem).value = '0.00';
-        }
+//         if (!result.data.subItems) result.data.subItems = [];
+//         if ((result.data as CostCodeItem).isCurrency) {
+//           (result.data as CostCodeItem).isCurrency = false;
+//           (result.data as CostCodeItem).value = '0.00';
+//         }
 
-        levelList[item.source_id] = [
-          ...parentLevel,
-          result.data.subItems.length,
-        ];
+//         levelList[item.source_id] = [
+//           ...parentLevel,
+//           result.data.subItems.length,
+//         ];
 
-        result.data.subItems = [
-          ...result.data.subItems,
-          {
-            agave_uuid: item.id,
-            name: item.name.substring(item.name.indexOf(' ') + 1),
-            number: costCode,
-            subItems: [],
-            isCurrency: true,
-            value: '',
-          },
-        ];
-      });
+//         result.data.subItems = [
+//           ...result.data.subItems,
+//           {
+//             agave_uuid: item.id,
+//             name: item.name.substring(item.name.indexOf(' ') + 1),
+//             number: costCode,
+//             subItems: [],
+//             isCurrency: true,
+//             value: '',
+//           },
+//         ];
+//       });
 
-    data = data.filter(
-      (item: any) => item.source_data.data.Sublevel != currentLevel
-    );
-    currentLevel++;
-  }
+//     data = data.filter(
+//       (item: any) => item.source_data.data.Sublevel != currentLevel
+//     );
+//     currentLevel++;
+//   }
 
-  return budget;
-}
+//   return budget;
+// }
 
 export function sortFunction(a: { number: string }, b: { number: string }) {
   // if a and b are divisions

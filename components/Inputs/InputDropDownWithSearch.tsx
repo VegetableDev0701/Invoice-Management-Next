@@ -19,14 +19,10 @@ import { Actions } from '@/lib/models/types';
 import { FormStateItem, FormStateItemV2 } from '@/lib/models/formStateModels';
 import {
   getAllChangeOrderNames,
-  getAllVendorNames,
   getProjectNamesForDropdown,
 } from '@/lib/utility/tableHelpers';
 import { sortArrayByObjKey } from '@/lib/utility/tableHelpers';
-import {
-  ChangeOrderSummary,
-  VendorSummary,
-} from '@/lib/models/summaryDataModel';
+import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
 
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import FullScreenLoader from '../UI/Loaders/FullScreenLoader';
@@ -41,10 +37,6 @@ function classNames(...classes: string[]) {
 }
 
 interface Props {
-  props: PropsItems;
-}
-
-interface PropsItems {
   classes: string;
   input: Items;
   actions: Actions;
@@ -53,7 +45,7 @@ interface PropsItems {
   icon?: JSX.Element;
   projectId?: string;
   changeOrdersSummary?: ChangeOrderSummary;
-  vendorSummary?: VendorSummary;
+  vendorDropDownData?: SelectMenuOptions[];
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onMouseEnter?: (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => void;
@@ -85,13 +77,13 @@ const DropDownWithSearch = (props: Props) => {
     actions,
     form,
     changeOrdersSummary,
-    vendorSummary,
+    vendorDropDownData,
     onFocus,
     onBlur,
     onMouseEnter,
     onMouseLeave,
     classes: addOnClass,
-  } = props.props;
+  } = props;
 
   const dispatch = useDispatch();
   const inputState = useGetInputState(input.id, form);
@@ -234,10 +226,8 @@ const DropDownWithSearch = (props: Props) => {
         setDropDownChoices([{ id: 1, label: 'None' }]);
       }
     } else if (input.id.includes('vendor-name')) {
-      if (vendorSummary) {
-        setDropDownChoices(
-          sortArrayByObjKey(getAllVendorNames({ vendorSummary }), 'label', '')
-        );
+      if (vendorDropDownData && vendorDropDownData.length > 0) {
+        setDropDownChoices(sortArrayByObjKey(vendorDropDownData, 'label', ''));
       } else {
         setDropDownChoices([{ id: 1, label: 'None' }]);
       }

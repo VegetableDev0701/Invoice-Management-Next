@@ -1,4 +1,5 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 
 import {
   formatNameForID,
@@ -11,11 +12,11 @@ import {
   sortTableData,
   yesNoBadge,
 } from '@/lib/utility/tableHelpers';
+import { VendorSummary } from '@/lib/models/summaryDataModel';
 
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid';
 import Button from '../../UI/Buttons/Button';
 import ModalConfirm from '@/components/UI/Modal/ModalConfirm';
-import Link from 'next/link';
 import EmptyTableNotification, { TableType } from '../EmptyTableNotification';
 
 function classNames(...classes: string[]) {
@@ -38,6 +39,7 @@ interface Props<T, H extends Partial<T>> {
   baseUrl?: string;
   preSortKey?: keyof H;
   tableType?: TableType;
+  vendorSummary?: VendorSummary | object;
   onConfirmModal?: (selected: T[]) => void;
   onRowClick?: (uuid: string, projectId: string) => void;
   onSelectItems?: (selected: T[]) => void;
@@ -56,6 +58,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
     baseUrl,
     preSortKey,
     tableType,
+    vendorSummary,
     onConfirmModal,
     onRowClick,
     onSelectItems,
@@ -367,9 +370,14 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                                           ? formatDate(
                                               element[headingsKey] as string
                                             )
-                                          : headingsKey === 'agave_uuid'
+                                          : headingsKey === 'vendorId'
                                           ? yesNoBadge({
-                                              value: element[headingsKey],
+                                              value: element[headingsKey]
+                                                ? (
+                                                    vendorSummary as VendorSummary
+                                                  )?.[element[headingsKey]]
+                                                    ?.agave_uuid
+                                                : null,
                                               positiveText: 'Vendor Synced',
                                               negativeText: 'Vendor Not Synced',
                                             })

@@ -3,6 +3,12 @@ import { getAPIUrl } from '@/lib/config';
 import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 import { NextApiRequest, NextApiResponse } from 'next';
 
+export const config = {
+  api: {
+    responseLimit: '8mb',
+  },
+};
+
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const companyId = req.query.companyId as string;
   try {

@@ -235,7 +235,9 @@ function CostCodeForm(props: Props) {
       );
     } else if (isSubDivision) {
       if (itemData.data.name) {
-        return itemData.data.number.toString() + ' - ' + itemData.data.name;
+        return itemData.data.number
+          ? itemData.data.number.toString() + ' - ' + itemData.data.name
+          : itemData.data.name;
       }
     }
     return itemData.data.number + ' - ' + itemData.data.name;

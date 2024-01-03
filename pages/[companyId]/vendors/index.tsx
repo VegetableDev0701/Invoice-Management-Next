@@ -1,3 +1,4 @@
+import React from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -88,7 +89,7 @@ function Vendors() {
     'add-vendor'
   );
 
-  const [vendorsSummary, setVendorsSummary] = useState<
+  const [vendorSummary, setVendorSummary] = useState<
     VendorSummary | undefined | null
   >(null);
   const [activeTabKeyName, setActiveTabKeyName] = useState<string>('all');
@@ -105,15 +106,15 @@ function Vendors() {
 
   useEffect(() => {
     if (!pageLoading) {
-      setVendorsSummary(allVendorSummary);
+      setVendorSummary(allVendorSummary);
     }
   }, [allVendorSummary]);
 
   const filteredData = useMemo(() => {
-    if (!vendorsSummary) return null;
+    if (!vendorSummary) return null;
     let filteredData: VendorSummaryItem[];
 
-    const vendorsArray: VendorSummaryItem[] = Object.values(vendorsSummary);
+    const vendorsArray: VendorSummaryItem[] = Object.values(vendorSummary);
     if (activeTabKeyName === 'all') {
       if (activeFilter !== 'No Filter') {
         filteredData = vendorsArray.filter(
@@ -125,7 +126,7 @@ function Vendors() {
         return filteredData;
       }
     } else if (activeTabKeyName === 'expiredLicense') {
-      const subFilteredData = Object.values(hasAnyExpiredDates(vendorsSummary));
+      const subFilteredData = Object.values(hasAnyExpiredDates(vendorSummary));
       if (activeFilter !== 'No Filter') {
         filteredData = subFilteredData.filter(
           (row) => row.vendorType === activeFilter
@@ -139,7 +140,7 @@ function Vendors() {
       filteredData = vendorsArray.filter((row) => !row.agave_uuid);
       return filteredData;
     }
-  }, [vendorsSummary, activeFilter, activeTabKeyName]);
+  }, [vendorSummary, activeFilter, activeTabKeyName]);
 
   const rowClickHandler = (uuid: string) => {
     dispatch(addVendorFormActions.clearFormState());
@@ -154,6 +155,7 @@ function Vendors() {
         stateKey: 'vendors',
       })
     );
+
     dispatch(getCurrentVendor({ vendorId: uuid }));
   };
 
@@ -275,7 +277,7 @@ function Vendors() {
 
       const vendorUUID = overlayContent?.currentId ?? nanoid();
       const agave_uuid =
-        (vendorsSummary && vendorsSummary[vendorUUID]?.agave_uuid) || null;
+        (vendorSummary && vendorSummary[vendorUUID]?.agave_uuid) || null;
 
       // create the form data to push to the DB
       const dataToSubmit = createFormDataForSubmit({
@@ -300,12 +302,6 @@ function Vendors() {
         })
       );
 
-      dispatch(
-        companyDataActions.addNewVendor({
-          newVendor: dataToSubmit,
-          vendorId: vendorUUID,
-        })
-      );
       if (!userLoading && user) {
         const requestConfig = {
           url: `/api/${
@@ -364,6 +360,7 @@ function Vendors() {
           <div className="main-form-tiles">
             <SectionHeading
               tabs={sectionTabs}
+              totalNum={vendorSummary ? Object.keys(vendorSummary).length : 0}
               buttons={[
                 {
                   label: 'Sync All Vendors',
@@ -426,4 +423,4 @@ function Vendors() {
   );
 }
 
-export default Vendors;
+export default React.memo(Vendors);

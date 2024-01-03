@@ -13,6 +13,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import FormOverlay from '@/components/Forms/OverlayForm/FormOverlay';
 import Button from '../Buttons/Button';
 import FullScreenLoader from '../Loaders/FullScreenLoader';
+import { SelectMenuOptions } from '@/lib/models/formDataModel';
 
 interface Props {
   formData: FormData;
@@ -21,6 +22,7 @@ interface Props {
   showError: boolean;
   overlayContent: OverlayContent;
   form: string;
+  vendorDropDownData?: SelectMenuOptions[];
   projectId?: string;
   overlayStateKey: string;
   responseLoading?: boolean;
@@ -38,6 +40,7 @@ export default function SlideOverlayForm(props: Props) {
     showError,
     overlayContent,
     form,
+    vendorDropDownData,
     projectId,
     overlayStateKey,
     responseLoading,
@@ -157,6 +160,7 @@ export default function SlideOverlayForm(props: Props) {
                                 showError={showError}
                                 projectId={projectId as string}
                                 form={form}
+                                vendorDropDownData={vendorDropDownData}
                               />
                             )}
                           </div>

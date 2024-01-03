@@ -203,7 +203,7 @@ export default function ProjectDetails(props: Props) {
         showError={missingInputs}
         anchorScrollElement={anchorScrollElement}
         actions={addProjectFormActions}
-        form={'addProject'}
+        form="addProject"
         extraClasses="flex-1"
       />
     </div>

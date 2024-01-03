@@ -4,13 +4,13 @@ import {
   ChangeOrderData,
   LaborData,
   ProjectFormData,
-  VendorData,
 } from '@/lib/models/formDataModel';
 import { FormData } from '@/lib/models/types';
 import { createSectionBox } from '@/lib/utility/processInvoiceHelpers';
-import { ContractEntry } from '@/lib/models/summaryDataModel';
+import { ContractEntry, VendorSummary } from '@/lib/models/summaryDataModel';
 import { BoundingBox } from '@/lib/models/invoiceDataModels';
 import { RESET_STATE } from '@/lib/globals';
+import { createVendorFormDataFromSummaryData } from '@/lib/utility/submitFormHelpers';
 
 export const getCurrentProjectData = createAsyncThunk(
   'overlay/getCurrentProjectData',
@@ -47,7 +47,14 @@ export const getCurrentVendor = createAsyncThunk(
   async ({ vendorId }: { vendorId: string }, thunkAPI) => {
     try {
       const state = thunkAPI.getState() as RootState;
-      const vendor: VendorData = state.data.vendors.allVendors[vendorId];
+      const blankAddVendorForm = state.data.forms['add-vendor'];
+      const vendorSummary = (
+        state.data.vendorsSummary.allVendors as VendorSummary
+      )[vendorId];
+      const vendor = createVendorFormDataFromSummaryData({
+        blankFormData: blankAddVendorForm,
+        summaryData: vendorSummary,
+      });
       thunkAPI.dispatch(
         overlaySlice.actions.setCurrentOverlayData({
           data: {

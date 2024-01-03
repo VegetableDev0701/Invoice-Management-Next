@@ -454,7 +454,7 @@ export const createSingleClientBillSummary = ({
       ? formatNumber((+subTotal.replaceAll(',', '')).toFixed(2))
       : '0.00',
     // profitQty: subTotal ? formatNumber((+subTotal).toFixed(2)) : '0.00',
-    salesTax: formatNumber(totalSalesTax.toFixed(2)) || '0.00',
+    budgetedSalesTax: formatNumber(totalSalesTax.toFixed(2)) || '0.00',
     profit: formatNumber((+profit.replaceAll(',', '')).toFixed(2)) || '0.00',
     insuranceLiability:
       formatNumber((+liability.replaceAll(',', '')).toFixed(2)) || '0.00',

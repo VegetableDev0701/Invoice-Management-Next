@@ -113,6 +113,7 @@ export interface Items {
   label: string;
   value: string | number | boolean | null | object | undefined;
   id: string;
+  summaryName?: string;
   required: boolean;
   disabled?: boolean;
   number?: number;

@@ -1,3 +1,8 @@
+import { AnyAction, ThunkDispatch } from '@reduxjs/toolkit';
+
+import { projectDataActions } from '@/store/projects-data-slice';
+import { companyDataActions } from '@/store/company-data-slice';
+
 import {
   AddressItems,
   InputElement,
@@ -9,75 +14,79 @@ import {
   isInputElementWithAddressElements,
   isInputElementWithItems,
 } from '../models/formDataModel';
-import { AgaveVendorFormStateV2 } from '../models/vendorModel';
-import { formatPhoneNumber } from './formatter';
+import {
+  AgaveVendorFormStateV2,
+  UpdateContractVendor,
+  UpdateDocData,
+  UpdateInvoiceVendor,
+} from '../models/vendorModel';
+import { isObjectEmpty } from './utils';
 
-interface CustomFields {
-  OwnerId: string;
-  DataExtName: string;
-  DataExtType: string;
-  DataExtValue: string;
-}
+// interface CustomFields {
+//   OwnerId: string;
+//   DataExtName: string;
+//   DataExtType: string;
+//   DataExtValue: string;
+// }
 
-function getCustomField(data: CustomFields[], customName: string) {
-  return data
-    ? data.find((item) => item.DataExtName === customName)?.['DataExtValue']
-    : undefined;
-}
+// function getCustomField(data: CustomFields[], customName: string) {
+//   return data
+//     ? data.find((item) => item.DataExtName === customName)?.['DataExtValue']
+//     : undefined;
+// }
 
-export function createVendorFormStateData({
-  agaveVendorData,
-}: {
-  agaveVendorData: any;
-}) {
-  const sourceDataCustomFields: CustomFields[] =
-    agaveVendorData.source_data.data?.DataExtRet;
+// export function createVendorFormStateData({
+//   vendorSummary,
+// }: {
+//   vendorSummary: any;
+// }) {
+//   const sourceDataCustomFields: CustomFields[] =
+//     vendorSummary.source_data.data?.DataExtRet;
 
-  const vendorAgaveFormState = {} as AgaveVendorFormStateV2;
+//   const vendorAgaveFormState = {} as AgaveVendorFormStateV2;
 
-  // qbd custom fields
-  vendorAgaveFormState['w9-on-file'] = {
-    value: getCustomField(sourceDataCustomFields, 'W-9 on File'),
-  };
-  vendorAgaveFormState['primary-contact'] = {
-    value: getCustomField(sourceDataCustomFields, 'Primary Contact'),
-  };
-  vendorAgaveFormState['business-license-number'] = {
-    value: getCustomField(sourceDataCustomFields, 'Master Bus License'),
-  };
-  vendorAgaveFormState['landi-number'] = {
-    value: getCustomField(sourceDataCustomFields, 'LNI Registration No.'),
-  };
-  vendorAgaveFormState['insurance-expiration-date'] = {
-    value: getCustomField(sourceDataCustomFields, 'Gen Liability Expires'),
-  };
+//   // qbd custom fields
+//   vendorAgaveFormState['w9-on-file'] = {
+//     value: getCustomField(sourceDataCustomFields, 'W-9 on File'),
+//   };
+//   vendorAgaveFormState['primary-contact'] = {
+//     value: getCustomField(sourceDataCustomFields, 'Primary Contact'),
+//   };
+//   vendorAgaveFormState['business-license-number'] = {
+//     value: getCustomField(sourceDataCustomFields, 'Master Bus License'),
+//   };
+//   vendorAgaveFormState['landi-number'] = {
+//     value: getCustomField(sourceDataCustomFields, 'LNI Registration No.'),
+//   };
+//   vendorAgaveFormState['insurance-expiration-date'] = {
+//     value: getCustomField(sourceDataCustomFields, 'Gen Liability Expires'),
+//   };
 
-  // agave standard fields
-  vendorAgaveFormState['vendor-name'] = { value: agaveVendorData.name };
-  vendorAgaveFormState['vendor-address'] = {
-    value: agaveVendorData.address?.street_1,
-  };
-  vendorAgaveFormState['city-vendor'] = {
-    value: agaveVendorData.address?.city,
-  };
-  vendorAgaveFormState['state-vendor'] = {
-    value: agaveVendorData.address?.state,
-  };
-  vendorAgaveFormState['zip-code-vendor'] = {
-    value: agaveVendorData.address?.postal_code,
-  };
-  vendorAgaveFormState['email'] = { value: agaveVendorData.email };
-  vendorAgaveFormState['work-phone'] = agaveVendorData.phone
-    ? { value: formatPhoneNumber(agaveVendorData.phone) }
-    : { value: undefined };
-  vendorAgaveFormState['tax-number'] = { value: agaveVendorData.tax_number };
-  vendorAgaveFormState['vendor-type'] = { value: agaveVendorData.type };
-  vendorAgaveFormState['is-active'] = {
-    value: agaveVendorData.source_data.data.IsActive,
-  };
+//   // agave standard fields
+//   vendorAgaveFormState['vendor-name'] = { value: agaveVendorData.name };
+//   vendorAgaveFormState['vendor-address'] = {
+//     value: agaveVendorData.address?.street_1,
+//   };
+//   vendorFormState['city-vendor'] = {
+//     value: vendorSummary.address?.city,
+//   };
+//   vendorFormState['state-vendor'] = {
+//     value: vendorSummary.address?.state,
+//   };
+//   vendorFormState['zip-code-vendor'] = {
+//     value: vendorSummary.address?.postal_code,
+//   };
+//   vendorFormState['email'] = { value: vendorSummary.email };
+//   vendorFormState['work-phone'] = vendorSummary.phone
+//     ? { value: formatPhoneNumber(vendorSummary.phone) }
+//     : { value: undefined };
+//   vendorFormState['tax-number'] = { value: vendorSummary.tax_number };
+//   vendorFormState['vendor-type'] = { value: vendorSummary.type };
+//   vendorFormState['is-active'] = {
+//     value: vendorSummary.source_data.data.IsActive,
+//   };
 
-  return vendorAgaveFormState;
-}
+// }
 
 export function createVendorFormData({
   formData,
@@ -139,4 +148,29 @@ export function createVendorFormData({
   });
 
   return newFormData;
+}
+
+export async function updateVendorDocs({
+  dispatch,
+  data,
+}: {
+  dispatch: ThunkDispatch<unknown, unknown, AnyAction>;
+  data: UpdateDocData;
+}) {
+  if (data) {
+    if (!isObjectEmpty(data.invoice)) {
+      dispatch(
+        companyDataActions.updateMultipleInvoiceVendors(
+          data.invoice as UpdateInvoiceVendor
+        )
+      );
+    }
+    if (!isObjectEmpty(data.contract)) {
+      dispatch(
+        projectDataActions.updateMultipleContractVendors(
+          data.contract as UpdateContractVendor
+        )
+      );
+    }
+  }
 }

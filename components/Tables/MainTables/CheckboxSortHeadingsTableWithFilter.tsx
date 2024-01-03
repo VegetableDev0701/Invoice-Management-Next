@@ -73,7 +73,6 @@ export default function CheckboxSortHeadingsTable<
     selectedRowId,
     preSortKey,
     tableType,
-
     onButtonClick,
     onRowClick,
   } = props;

@@ -6,6 +6,7 @@
 
 # testing
 /coverage
+/__test__/data/test_data
 
 # next.js
 /.next/

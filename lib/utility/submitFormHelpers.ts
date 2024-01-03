@@ -15,6 +15,7 @@ import { FormData } from '@/lib/models/types';
 import { formatNameForID } from '@/lib/utility/formatter';
 
 import { NewUserData } from '@/components/Utilities/OnBoardUser/OnBoardNewUser';
+import { VendorSummaryItem } from '../models/summaryDataModel';
 
 export function createAuth0UserData(
   formStateData: FormStateV2,
@@ -83,6 +84,74 @@ export function getAddressFormData(formData: FormData): string {
   });
 
   return address;
+}
+
+export function createVendorFormDataFromSummaryData({
+  blankFormData,
+  summaryData,
+}: {
+  blankFormData: FormData;
+  summaryData: VendorSummaryItem;
+}) {
+  const newFormData: FormData = JSON.parse(JSON.stringify(blankFormData || {}));
+  newFormData.mainCategories?.forEach((category: MainCategories, i: number) => {
+    category.inputElements.forEach((el: InputElement, j: number) => {
+      if (isInputElementWithAddressElements(el)) {
+        el.addressElements.forEach((addEl: AddressItems, jAdd: number) => {
+          addEl.items.forEach((addItem: Items, kAdd: number) => {
+            for (const key in summaryData) {
+              if (key === addItem.summaryName) {
+                (
+                  newFormData.mainCategories[i].inputElements[
+                    j
+                  ] as InputElementWithAddressItems
+                ).addressElements[jAdd].items[kAdd].value =
+                  summaryData[key as keyof VendorSummaryItem];
+              }
+            }
+          });
+        });
+      } else if (isInputElementWithItems(el)) {
+        el.items.forEach((item, k) => {
+          for (const key in summaryData) {
+            if (key === item.summaryName) {
+              if (item?.isCurrency) {
+                (
+                  newFormData.mainCategories[i].inputElements[
+                    j
+                  ] as InputElementWithItems
+                ).items[k].value = (
+                  summaryData[key as keyof VendorSummaryItem] as string
+                )?.replace(/[^0-9.]/g, '');
+              } else if (item?.isPhoneNumber) {
+                (
+                  newFormData.mainCategories[i].inputElements[
+                    j
+                  ] as InputElementWithItems
+                ).items[k].value = (
+                  summaryData[key as keyof VendorSummaryItem] as string
+                )?.replace(/\D/g, '');
+              } else {
+                {
+                  (
+                    newFormData.mainCategories[i].inputElements[
+                      j
+                    ] as InputElementWithItems
+                  ).items[k].value =
+                    summaryData[key as keyof VendorSummaryItem];
+                }
+              }
+            }
+          }
+        });
+      }
+    });
+  });
+  newFormData['name'] = formatNameForID(
+    (newFormData.mainCategories[0].inputElements[0] as InputElementWithItems)
+      .items[0].value as string
+  );
+  return newFormData;
 }
 
 /**

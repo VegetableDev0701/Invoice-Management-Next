@@ -120,18 +120,10 @@ function Form(props: Props) {
               </div>
             );
           })}
-          {/* Reccuring fees now is completed in the Labor/Fees of each project */}
-          {/* {anchorScrollElement === 'project-details' && (
-            <RecurringFees
-              form={form}
-              actions={actions as AddProjectActions}
-              formData={formData as ProjectFormData}
-            />
-          )} */}
         </form>
       </div>
     </Card>
   );
 }
 
-export default React.memo(Form);
+export default Form;

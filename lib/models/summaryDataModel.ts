@@ -101,20 +101,20 @@ export interface ClientBillSummary {
 
 export interface ClientBillSummaryItem extends BaseSummary {
   billTitle: string;
-  subTotal: string;
-  changeOrders: string;
-  salesTax: string;
-  profit: string;
-  insuranceLiability: string;
+  budgetedSalesTax: string;
   boTax: string;
-  total: string;
-  numInvoices: number;
-  numChangeOrders: number;
-  laborFeeIds: string[];
-  invoiceIds: string[];
+  changeOrders: string;
   changeOrder?: string;
-  totalsByChangeOrder?: { [changeOrderId: string]: number };
   createdAt: string;
+  insuranceLiability: string;
+  invoiceIds: string[];
+  total: string;
+  laborFeeIds: string[];
+  numChangeOrders: number;
+  numInvoices: number;
+  profit: string;
+  subTotal: string;
+  totalsByChangeOrder?: { [changeOrderId: string]: number };
 }
 
 export interface ChangeOrderSummary {
@@ -165,29 +165,29 @@ export interface VendorSummary {
 }
 
 export interface VendorSummaryItem extends BaseSummary {
-  vendorName: string;
-  w9OnFile: boolean;
-  insuranceName?: string;
-  businessLicExpirationDate?: string;
-  cellPhone?: string;
-  zipCode?: string;
-  businessLicNumber?: string;
-  insuranceExpirationDate?: string;
-  city?: string;
-  vendorType?: string;
-  landiExpirationDate?: string;
-  primaryContact?: string;
-  insuranceCoverageAmt?: string;
-  bondCompanyName?: string;
-  bondAmt?: string;
-  workPhone?: string;
   address?: string;
-  state?: string;
-  landiLicNumber?: string;
-  email?: string;
-  workersCompExpirationDate?: string;
-  taxNumber?: string;
   agave_uuid: string | null;
+  bondAmt?: string;
+  bondCompanyName?: string;
+  businessLicExpirationDate?: string;
+  businessLicNumber?: string;
+  cellPhone?: string;
+  city?: string;
+  email?: string;
+  insuranceCoverageAmt?: string;
+  insuranceExpirationDate?: string;
+  insuranceName?: string;
+  landiExpirationDate?: string;
+  landiLicNumber?: string;
+  primaryContact?: string;
+  state?: string;
+  taxNumber?: string;
+  vendorName: string;
+  vendorType?: string;
+  w9OnFile: boolean;
+  workersCompExpirationDate?: string;
+  workPhone?: string;
+  zipCode?: string;
 }
 
 export interface SummaryProjects {
@@ -212,7 +212,7 @@ export interface ContractVendorObject {
   uuid: string | null;
 }
 
-interface ContractSummaryData extends BaseSummary {
+interface ContractSummaryData {
   projectName: string;
   date: string;
   contractAmt: string;

@@ -45,6 +45,7 @@ import {
 import { addBudgetFormActions } from './add-budget-slice';
 import { companyDataActions } from './company-data-slice';
 import { RESET_STATE } from '@/lib/globals';
+import { ContractSummaryData } from './contract-slice';
 
 export const fetchProjectData = createAsyncThunk(
   'companyProjects/fetch',
@@ -669,6 +670,7 @@ const projectDataSlice = createSlice({
         ...state[projectId].contracts,
       };
     },
+    // update a single contract vendor object
     updateContractVendorOnAdd(
       state,
       action: PayloadAction<{
@@ -687,6 +689,26 @@ const projectDataSlice = createSlice({
         ...state[projectId].contracts[contractId].summaryData.vendor,
         ...vendor,
       };
+    },
+    // update multiple contract vendor objects, can be across multiple projects
+    updateMultipleContractVendors(
+      state,
+      action: PayloadAction<{
+        [contractId: string]: {
+          project_id: string;
+          summaryData: ContractSummaryData;
+        };
+      }>
+    ) {
+      const allProjects: ProjectData = snapshotCopy(state);
+      Object.entries(action.payload).forEach(([contractId, updateData]) => {
+        allProjects[updateData.project_id].contracts[contractId].summaryData = {
+          ...allProjects[updateData.project_id].contracts[contractId]
+            .summaryData,
+          ...updateData.summaryData,
+        };
+      });
+      return allProjects;
     },
     removeInvoiceIdFromChangeOrder(
       state,
