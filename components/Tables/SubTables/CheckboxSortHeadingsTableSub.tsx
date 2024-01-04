@@ -40,6 +40,7 @@ interface Props<T, H extends Partial<T>> {
   preSortKey?: keyof H;
   tableType?: TableType;
   vendorSummary?: VendorSummary | object;
+  isSortable?: boolean;
   onConfirmModal?: (selected: T[]) => void;
   onRowClick?: (uuid: string, projectId: string) => void;
   onSelectItems?: (selected: T[]) => void;
@@ -59,6 +60,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
     preSortKey,
     tableType,
     vendorSummary,
+    isSortable = true,
     onConfirmModal,
     onRowClick,
     onSelectItems,
@@ -217,28 +219,39 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                             )}
                           >
                             <div
-                              onClick={() => handleHeadingClick(heading)}
-                              className="group inline-flex hover:cursor-pointer"
+                              onClick={() =>
+                                isSortable && handleHeadingClick(heading)
+                              }
+                              className={classNames(
+                                isSortable
+                                  ? 'group hover:cursor-pointer'
+                                  : 'cursor-default',
+                                ' inline-flex '
+                              )}
                             >
                               {heading}
-                              <span
-                                className={classNames(
-                                  activeHeading === heading ? '' : 'invisible',
-                                  'ml-2 flex-none rounded bg-gray-100 text-gray-400 group-hover:visible group-focus:visible'
-                                )}
-                              >
-                                {sortOrder === 'desc' ? (
-                                  <ChevronDownIcon
-                                    className="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                ) : (
-                                  <ChevronUpIcon
-                                    className="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                )}
-                              </span>
+                              {isSortable && (
+                                <span
+                                  className={classNames(
+                                    activeHeading === heading
+                                      ? ''
+                                      : 'invisible',
+                                    'ml-2 flex-none rounded bg-gray-100 text-gray-400 group-hover:visible group-focus:visible'
+                                  )}
+                                >
+                                  {sortOrder === 'desc' ? (
+                                    <ChevronDownIcon
+                                      className="h-5 w-5"
+                                      aria-hidden="true"
+                                    />
+                                  ) : (
+                                    <ChevronUpIcon
+                                      className="h-5 w-5"
+                                      aria-hidden="true"
+                                    />
+                                  )}
+                                </span>
+                              )}
                             </div>
                           </th>
                         );

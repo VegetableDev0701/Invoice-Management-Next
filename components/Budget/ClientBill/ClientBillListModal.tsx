@@ -19,12 +19,8 @@ interface Props {
 const tableHeadings = {
   billTitle: 'Billing Period',
   createdAt: 'Date',
-  changeOrder: 'Change Orders',
   subTotal: 'Subtotal',
-  insuranceLiability: 'Insurance Liability',
-  boTax: 'BO Tax',
-  salesTax: 'Sales Tax',
-  profit: 'Profit',
+  changeOrder: 'Change Orders',
   total: 'Total Due',
 };
 
@@ -104,22 +100,23 @@ function Modal(props: Props) {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:p-6 w-[80%] max-w-[1200px] min-h-[500px] flex flex-col justify-between items-center h-full ">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:p-6 w-[80%] max-w-[800px] min-h-[500px] flex flex-col justify-between items-center h-full ">
                 <Dialog.Title
                   as="div"
                   className="text-2xl font-semibold leading-6 text-gray-900 mb-5"
                 >
-                  Build B2A Report
+                  Build Budget to Actuals Report
                 </Dialog.Title>
                 <CheckboxSubTable
                   headings={tableHeadings}
                   rows={clientBillRows}
                   projectId={projectId}
                   selectedRowId={null}
+                  isSortable={false}
                   onSelectItems={handleSelectBills}
                 />
 
-                <div className="mt-5 flex flex-col sm:flex-row gap-3 text-lg">
+                <div className="mt-5 flex flex-col sm:flex-row-reverse gap-3 text-lg">
                   <button
                     type="button"
                     className={classNames(
