@@ -212,7 +212,14 @@ export interface ContractVendorObject {
   uuid: string | null;
 }
 
-interface ContractSummaryData {
+export interface ContractVendorObject {
+  name: string;
+  agave_uuid: string | null;
+  vendor_match_conf_score: number | null;
+  uuid: string | null;
+}
+
+interface ContractSummaryData extends BaseSummary {
   projectName: string;
   date: string;
   contractAmt: string;

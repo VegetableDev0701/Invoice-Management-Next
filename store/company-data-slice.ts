@@ -208,6 +208,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
     thunkAPI
   ) => {
     // thunkAPI.dispatch(uiActions.lockUI());
+    // thunkAPI.dispatch(uiActions.lockUI());
     try {
       const state = thunkAPI.getState() as RootState;
       const processInvoiceFormState = state.addProcessInvoiceForm;
