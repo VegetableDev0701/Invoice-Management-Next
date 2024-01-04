@@ -161,7 +161,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
         title="Delete"
       />
 
-      <div className="relative px-4 grow sm:px-6 lg:px-8">
+      <div className="relative w-full px-4 grow sm:px-6 lg:px-8">
         {((filteredSortedData && filteredSortedData.length === 0) ||
           !filteredSortedData) && (
           <EmptyTableNotification tableType={tableType} />
