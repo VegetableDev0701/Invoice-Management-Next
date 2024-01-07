@@ -224,7 +224,7 @@ const ProjectButtons = (props: Props) => {
 
   return (
     <div className="flex gap-2">
-      {isClientBillPage ? (
+      {isClientBillPage && clientBillId ? (
         <>
           <DropDownButton
             dropDownButton={{
@@ -243,6 +243,7 @@ const ProjectButtons = (props: Props) => {
             taskId={reportTaskId}
           />
           <ClientBillListModal
+            clientBillId={clientBillId}
             projectId={projectId}
             openModal={openConfirmModal}
             onCloseModal={() => setOpenConfirmModal(false)}

@@ -1,4 +1,11 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Link from 'next/link';
 
 import {
@@ -34,6 +41,7 @@ interface Props<T, H extends Partial<T>> {
   headings: H;
   projectId: string;
   selectedRowId?: string | undefined | null;
+  selectedItems?: T[];
   checkboxButtons?: CheckBoxItems[];
   showExpiration?: boolean;
   baseUrl?: string;
@@ -55,6 +63,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
     checkboxButtons,
     projectId,
     selectedRowId,
+    selectedItems,
     showExpiration,
     baseUrl,
     preSortKey,
@@ -73,7 +82,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
-  const [selected, setSelected] = useState<T[]>([]);
+  const [selected, setSelected] = useState<T[]>(selectedItems || []);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const modalMessage = 'Please confirm that you want to delete.';
 
@@ -87,6 +96,10 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
       checkbox.current.indeterminate = isIndeterminate;
     }
   }, [selected]);
+
+  useEffect(() => {
+    selectedItems && setSelected(selectedItems);
+  }, [selectedItems]);
 
   function toggleAll() {
     if (!rows) return;
