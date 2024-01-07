@@ -179,7 +179,12 @@ const ProjectButtons = (props: Props) => {
       if (reportType === 'pdf')
         await saveAsPDF({
           b2aReport,
-          title: clientBills[clientBillId].billTitle,
+          title:
+            clientBillIds.length > 1
+              ? `${clientBills[clientBillIds[0]].billTitle} - ${
+                  clientBills[clientBillIds[clientBillIds.length - 1]].billTitle
+                }`
+              : clientBills[clientBillIds[0]].billTitle,
         });
       else if (reportType === 'excel') {
         await saveAsExcel({

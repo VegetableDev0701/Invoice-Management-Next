@@ -303,7 +303,15 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                                 type="checkbox"
                                 className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-stak-dark-green focus:ring-0 focus:ring-offset-0"
                                 value={element.uuid as string}
-                                checked={selected.includes(element)}
+                                checked={
+                                  element?.id || element?.uuid
+                                    ? selected.findIndex(
+                                        (item) =>
+                                          (item as any)?.id === element.id ||
+                                          (item as any)?.uuid === element.uuid
+                                      ) !== -1
+                                    : selected.includes(element)
+                                }
                                 onChange={(e) => {
                                   const v = e.target.checked
                                     ? [...selected, element]
