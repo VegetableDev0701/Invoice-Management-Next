@@ -274,10 +274,10 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                   </thead>
                   {filteredSortedData && (
                     <tbody>
-                      {filteredSortedData.map((element: any, i) => {
+                      {filteredSortedData.map((element: any, index) => {
                         return (
                           <tr
-                            key={`${element.uuid as string}_${i}`}
+                            key={`${element.uuid as string}_${index}`}
                             className={`active:bg-slate-300 hover:cursor-pointer ${
                               selected.includes(element) ? 'bg-slate-50' : ''
                             } ${
@@ -314,14 +314,74 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                                     : selected.includes(element)
                                 }
                                 onClick={(e) => {
-                                  let v;
+                                  let v: T[] = [];
                                   if (e.shiftKey) {
+                                    const minIndex = Math.min(lastIndex, index) + 1;
+                                    const maxIndex = Math.max(lastIndex, index);
                                     const tmpAry = filteredSortedData.slice(
-                                      Math.min(lastIndex, i + 1),
-                                      Math.max(lastIndex, i + 1)
+                                      minIndex,
+                                      maxIndex
                                     );
-                                    v = [...selected, ...tmpAry];
-                                    setSelected(v);
+                                    const allSelectFlag: boolean = tmpAry.every(
+                                      (el) => {
+                                        return (
+                                          selected.findIndex(
+                                            (ele) => el == ele
+                                          ) == -1
+                                        );
+                                      }
+                                    );
+                                    let temp = [];
+                                    for (
+                                      let idx = 0;
+                                      idx < tmpAry.length;
+                                      idx++
+                                    ) {
+                                      const el = tmpAry[idx];
+                                      if (allSelectFlag) {
+                                        const isChecked = selected.findIndex(
+                                          (ele) => ele == el
+                                        );
+                                        if (isChecked === -1) {
+                                          temp.push(el);
+                                        }
+                                      }
+                                    }
+                                    const isMaxSel =
+                                      selected.findIndex(
+                                        (ele) =>
+                                          ele == filteredSortedData[lastIndex]
+                                      ) == -1;
+                                    const isMinSel =
+                                      selected.findIndex(
+                                        (ele) => ele == filteredSortedData[index]
+                                      ) == -1;
+                                    if (allSelectFlag) {
+                                      if (isMaxSel)
+                                        temp.push(
+                                          filteredSortedData[lastIndex]
+                                        );
+                                      if (isMinSel)
+                                        temp.push(filteredSortedData[index]);
+                                      setSelected([...selected, ...temp]);
+                                    } else {
+                                      temp = selected.filter((el) => {
+                                        return (
+                                          tmpAry.findIndex(
+                                            (ele) => el == ele
+                                          ) == -1
+                                        );
+                                      });
+                                      temp = temp.filter(
+                                        (el) =>
+                                          el != filteredSortedData[lastIndex]
+                                      );
+                                      temp = temp.filter(
+                                        (el) => el != filteredSortedData[index]
+                                      );
+                                      v = [...temp];
+                                      setSelected(v);
+                                    }
                                   } else {
                                     const isChecked = selected.findIndex(
                                       (el) => el == element
@@ -332,7 +392,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                                     setSelected(v);
                                   }
                                   onSelectItems && onSelectItems(v);
-                                  setLastIndex(i);
+                                  setLastIndex(index);
                                 }}
                               />
                             </td>

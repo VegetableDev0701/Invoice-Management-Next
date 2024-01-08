@@ -299,11 +299,69 @@ export default function CheckboxSortHeadingsTable<
                               checked={selected.includes(element)}
                               onClick={(e) => {
                                 if (e.shiftKey) {
+                                  const minIndex =
+                                    Math.min(lastIndex, index) + 1;
+                                  const maxIndex = Math.max(lastIndex, index);
                                   const tmpAry = filteredSortedData.slice(
-                                    Math.min(lastIndex, index + 1),
-                                    Math.max(lastIndex, index + 1)
+                                    minIndex,
+                                    maxIndex
                                   );
-                                  setSelected([...selected, ...tmpAry]);
+                                  const allSelectFlag: boolean = tmpAry.every(
+                                    (el) => {
+                                      return (
+                                        selected.findIndex(
+                                          (ele) => el == ele
+                                        ) == -1
+                                      );
+                                    }
+                                  );
+                                  let temp: T[] = [];
+                                  for (
+                                    let idx = 0;
+                                    idx < tmpAry.length;
+                                    idx++
+                                  ) {
+                                    const el = tmpAry[idx];
+                                    if (allSelectFlag) {
+                                      const isChecked = selected.findIndex(
+                                        (ele) => ele == el
+                                      );
+                                      if (isChecked === -1) {
+                                        temp.push(el);
+                                      }
+                                    }
+                                  }
+                                  const isMaxSel =
+                                    selected.findIndex(
+                                      (ele) =>
+                                        ele == filteredSortedData[lastIndex]
+                                    ) == -1;
+                                  const isMinSel =
+                                    selected.findIndex(
+                                      (ele) => ele == filteredSortedData[index]
+                                    ) == -1;
+                                  if (allSelectFlag) {
+                                    if (isMaxSel)
+                                      temp.push(filteredSortedData[lastIndex]);
+                                    if (isMinSel)
+                                      temp.push(filteredSortedData[index]);
+                                    setSelected([...selected, ...temp]);
+                                  } else {
+                                    temp = selected.filter((el) => {
+                                      return (
+                                        tmpAry.findIndex((ele) => el == ele) ==
+                                        -1
+                                      );
+                                    });
+                                    temp = temp.filter(
+                                      (el) =>
+                                        el != filteredSortedData[lastIndex]
+                                    );
+                                    temp = temp.filter(
+                                      (el) => el != filteredSortedData[index]
+                                    );
+                                    setSelected([...temp]);
+                                  }
                                 } else {
                                   const isChecked = selected.findIndex(
                                     (el) => el == element
