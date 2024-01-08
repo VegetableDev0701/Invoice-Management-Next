@@ -235,7 +235,7 @@ export const getChangeOrderNameFromId = (
   }
 };
 
-export const getAllChangeOrderNames = ({
+export const getChangeOrderNamesForDropDown = ({
   changeOrdersSummary,
 }: {
   changeOrdersSummary: ChangeOrderSummary;
@@ -247,13 +247,13 @@ export const getAllChangeOrderNames = ({
     count++;
     return {
       id: count,
-      label: changeOrder.name as string,
+      label: `${changeOrder.name as string} - ${changeOrder.workDescription}`,
     };
   });
   return [{ id: 0, label: 'None' }, ...changeOrdersSelectMenuOptions];
 };
 
-export const getAllVendorNames = ({
+export const getVendorNamesForDropDown = ({
   vendorSummary,
 }: {
   vendorSummary: VendorSummary;

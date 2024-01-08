@@ -150,7 +150,7 @@ export default function BudgetToActualCharts(props: Props) {
                     ]?.totalAmt
                   )
                 )
-                .reduce((a, b) => a + b)
+                .reduce((a, b) => a + b, 0)
             ),
             actual: '0',
             isCurrency: true,

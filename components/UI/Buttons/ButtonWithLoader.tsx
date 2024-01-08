@@ -21,7 +21,7 @@ export default function ButtonWithLoader(props: Props) {
   return (
     <>
       {isLoading && (
-        <div className={classes}>
+        <div className={classNames(classes)}>
           <FadeLoader
             color="#fff"
             cssOverride={{

@@ -510,13 +510,16 @@ export const addProcessedInvoiceData = createAsyncThunk(
         const changeOrder = Object.values(changeOrdersSummary).find(
           (changeOrder) => {
             return (
-              changeOrder.name === processInvoiceFormState['change-order'].value
+              changeOrder.name ===
+              (processInvoiceFormState['change-order'].value as string)
+                .split('-')[0]
+                .trim()
             );
           }
         )!;
         changeOrderObj = {
-          uuid: changeOrder.uuid as string,
-          name: changeOrder.name as string,
+          uuid: changeOrder.uuid,
+          name: `${changeOrder.name} - ${changeOrder.workDescription}`,
         };
         // make all line items change orders null
         updatedLineItems = Object.fromEntries(

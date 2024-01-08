@@ -6,6 +6,7 @@ import { formatNumber } from './formatter';
 import {
   ChangeOrderSummary,
   LaborLineItem,
+  LaborLineItemItem,
   LaborSummaryItem,
   ProjectSummaryItem,
 } from '../models/summaryDataModel';
@@ -48,7 +49,8 @@ export const createBudgetActualsObject = ({
   costCodeNameList: SelectMenuOptions[];
   dispatch: ThunkDispatch<unknown, unknown, AnyAction>;
 }) => {
-  const dates: Date[] = [];
+  const dateReceived: Date[] = [];
+  const invoiceDates: Date[] = [];
   try {
     const budgetActuals: CurrentActualsV2 = {};
     const budgetActualsChangeOrders: CurrentActualsChangeOrdersV2 = {};
@@ -63,7 +65,12 @@ export const createBudgetActualsObject = ({
     projectInvoices &&
       projectInvoices.forEach((invoice) => {
         if (!invoice.processedData) return;
-        dates.push(new Date(invoice.processedData.date_received + 'T12:00:00'));
+        dateReceived.push(
+          new Date(invoice.processedData.date_received + 'T12:00:00')
+        );
+        invoiceDates.push(
+          new Date(invoice.processedData.invoice_date + 'T12:00:00')
+        );
         // init the invoice current actuals object
         invoiceBudgetActuals.invoice[invoice.doc_id] =
           invoiceBudgetActuals.invoice[invoice.doc_id] || {};
@@ -128,7 +135,9 @@ export const createBudgetActualsObject = ({
         invoiceBudgetActuals.laborFee[laborFee.uuid] =
           invoiceBudgetActuals.laborFee[laborFee.uuid] || {};
         laborFee.payPeriod != '' &&
-          dates.push(new Date((laborFee.payPeriod as string) + 'T12:00:00'));
+          dateReceived.push(
+            new Date((laborFee.payPeriod as string) + 'T12:00:00')
+          );
         handleLineItem({
           lineItems: laborFee.line_items as LaborLineItem,
           vendorName: laborFee.name,
@@ -147,7 +156,18 @@ export const createBudgetActualsObject = ({
 
     // super clunky but we shouldn't ever have lists of more than 50 - 100, so this shouldn't be that slow
     // TODO reimagine this part
-    const maxDate = new Date(Math.max(...dates.map((date) => date.getTime())));
+    const maxDate = new Date(
+      Math.max(
+        ...invoiceDates.map((date) => {
+          if (!isNaN(date.getTime())) {
+            return date.getTime();
+          } else {
+            return -Infinity;
+          }
+        })
+      )
+    );
+
     const maxMonth = String(maxDate.getMonth() + 1).padStart(2, '0');
     const maxMonthName = maxDate.toLocaleString('default', {
       month: 'long',
@@ -225,7 +245,7 @@ export const calculateTotals = ({
         if (changeOrderId !== 'profitTaxesLiability') {
           changeOrderTotals[changeOrderId] = Object.values(changeOrder)
             .map((costCodeObj) => {
-              return +costCodeObj.totalAmt.replaceAll(',', '');
+              return Number(costCodeObj.totalAmt.replaceAll(',', ''));
             })
             .reduce((acc, curr) => {
               return acc + curr;
@@ -351,232 +371,245 @@ const handleLineItem = ({
   invoiceBudgetActualsChangeOrders: InvoiceCurrentActualsChangeOrdersV2;
 }) => {
   // loop through all line items for the current invoice
-  Object.values(lineItems).forEach((item) => {
-    // grab cost code, if a change order and amount for this line item
-    const costCode = item.cost_code as string; // in order to run this function, cost_code was checked
-    const changeOrder = item.change_order;
+  Object.values(lineItems).forEach(
+    (item: InvoiceLineItemItem | LaborLineItemItem) => {
+      // grab cost code, if a change order and amount for this line item
+      const costCode = item.cost_code as string; // in order to run this function, cost_code was checked
+      const changeOrder = item.change_order;
 
-    let amount = +item.amount?.replaceAll(',', '');
-    let amountInvoice = +item.amount?.replaceAll(',', '');
+      const rate = (
+        Number(item.amount.replaceAll(',', '')) / Number(item.number_of_hours)
+      ).toFixed(2);
+      let amount = Number(item.amount?.replaceAll(',', ''));
+      let amountInvoice = Number(item.amount?.replaceAll(',', ''));
 
-    if (
-      Object.keys(budgetTotals).findIndex(
-        (v) => v == costCode || v == (+costCode).toFixed(4)
-      ) === -1
-    )
-      return;
-    if (changeOrder) {
-      // check if a change order exists with the current item costCode
-      // check to make sure the costCode was filled was also filled
-      // CHANGE ORDER
-      let invoiceIds: string[] = [];
-      let laborFeeIds: string[] = [];
-      if (isInvoice) {
-        invoiceIds = (
-          budgetActualsChangeOrders as CurrentActualsChangeOrdersV2
-        )[changeOrder.uuid]?.[costCode]?.invoiceIds
-          ? ((budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
-              changeOrder.uuid
-            ][costCode].invoiceIds as string[])
-          : [];
-      }
-      if (isLaborFee) {
-        laborFeeIds = (
-          budgetActualsChangeOrders as CurrentActualsChangeOrdersV2
-        )[changeOrder.uuid]?.[costCode]?.laborFeeIds
-          ? ((budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
-              changeOrder.uuid
-            ][costCode].laborFeeIds as string[])
-          : [];
-      }
+      if (
+        Object.keys(budgetTotals).findIndex(
+          (v) => v == costCode || v == (+costCode).toFixed(4)
+        ) === -1
+      )
+        return;
+      if (changeOrder) {
+        // check if a change order exists with the current item costCode
+        // check to make sure the costCode was filled was also filled
+        // CHANGE ORDER
+        let invoiceIds: string[] = [];
+        let laborFeeIds: string[] = [];
+        if (isInvoice) {
+          invoiceIds = (
+            budgetActualsChangeOrders as CurrentActualsChangeOrdersV2
+          )[changeOrder.uuid]?.[costCode]?.invoiceIds
+            ? ((budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
+                changeOrder.uuid
+              ][costCode].invoiceIds as string[])
+            : [];
+        }
+        if (isLaborFee) {
+          laborFeeIds = (
+            budgetActualsChangeOrders as CurrentActualsChangeOrdersV2
+          )[changeOrder.uuid]?.[costCode]?.laborFeeIds
+            ? ((budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
+                changeOrder.uuid
+              ][costCode].laborFeeIds as string[])
+            : [];
+        }
 
-      // if we know we are dealing with a change order initialize these objects
-      // with the change order id. Treat change orders like their own stand alone budgets
-      budgetActualsChangeOrders[changeOrder.uuid] =
-        budgetActualsChangeOrders[changeOrder.uuid] || {};
-      // init the invoice change order object
-      invoiceBudgetActualsChangeOrders[changeOrder.uuid] =
-        invoiceBudgetActualsChangeOrders[changeOrder.uuid] || {};
-      invoiceBudgetActualsChangeOrders[changeOrder.uuid][uuid] =
-        invoiceBudgetActualsChangeOrders[changeOrder.uuid][uuid] || {};
+        // if we know we are dealing with a change order initialize these objects
+        // with the change order id. Treat change orders like their own stand alone budgets
+        budgetActualsChangeOrders[changeOrder.uuid] =
+          budgetActualsChangeOrders[changeOrder.uuid] || {};
+        // init the invoice change order object
+        invoiceBudgetActualsChangeOrders[changeOrder.uuid] =
+          invoiceBudgetActualsChangeOrders[changeOrder.uuid] || {};
+        invoiceBudgetActualsChangeOrders[changeOrder.uuid][uuid] =
+          invoiceBudgetActualsChangeOrders[changeOrder.uuid][uuid] || {};
 
-      amount = iterateAmountOnCostCode({
-        budgetObj: budgetActualsChangeOrders,
-        costCode,
-        isCredit,
-        isInvoice: false,
-        isLaborFee: false,
-        uuid,
-        amount,
-        changeOrder,
-      });
-      amountInvoice = iterateAmountOnCostCode({
-        budgetObj: invoiceBudgetActualsChangeOrders,
-        costCode,
-        isCredit,
-        isInvoice,
-        isLaborFee,
-        uuid,
-        amount: amountInvoice,
-        changeOrder,
-      });
-
-      const budgetObject = createFullBudgetObject({
-        budgetTotals,
-        totalAmt: formatNumber(amount.toFixed(2)),
-        costCode,
-        qtyAmt: '1',
-        rateAmt: formatNumber(amount.toFixed(2)),
-        description: getCostCodeDescriptionFromNumber(
+        amount = iterateAmountOnCostCode({
+          budgetObj: budgetActualsChangeOrders,
           costCode,
-          costCodeNameList
-        ),
-        vendor: vendorName,
-        changeOrder: changeOrder.name,
-        group: 'Change Orders',
-      });
-      const budgetObjectInvoice = createFullBudgetObject({
-        budgetTotals,
-        totalAmt: formatNumber(amount.toFixed(2)),
-        costCode,
-        qtyAmt: '1',
-        rateAmt: formatNumber(amount.toFixed(2)),
-        description: getCostCodeDescriptionFromNumber(
+          isCredit,
+          isInvoice: false,
+          isLaborFee: false,
+          uuid,
+          amount,
+          changeOrder,
+        });
+        amountInvoice = iterateAmountOnCostCode({
+          budgetObj: invoiceBudgetActualsChangeOrders,
           costCode,
-          costCodeNameList
-        ),
-        vendor: vendorName,
-        changeOrder: changeOrder.name,
-        group: 'Change Orders',
-      });
-      // the current line item amount
-      budgetActualsChangeOrders[changeOrder.uuid][costCode] = budgetObject;
-      invoiceBudgetActualsChangeOrders[changeOrder.uuid][uuid][costCode] =
-        budgetObjectInvoice;
-      // add this to the invoice object as well
-      // need to updat the iterate amount function to include the invoice object
-      if (isInvoice && invoiceIds) {
-        invoiceIds.push(uuid);
-      }
-      if (isLaborFee && laborFeeIds) {
-        laborFeeIds.push(uuid);
-      }
-      if (isInvoice) {
-        (budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
-          changeOrder.uuid
-        ][costCode] = {
-          ...(budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
-            changeOrder.uuid
-          ][costCode],
-          invoiceIds: [...new Set(invoiceIds)],
-        };
-      }
-      if (isLaborFee) {
-        (budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
-          changeOrder.uuid
-        ][costCode] = {
-          ...(budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
-            changeOrder.uuid
-          ][costCode],
-          laborFeeIds: [...new Set(laborFeeIds)],
-        };
-      }
-    }
+          isCredit,
+          isInvoice,
+          isLaborFee,
+          uuid,
+          amount: amountInvoice,
+          changeOrder,
+        });
 
-    // NOT CHANGE ORDER
-    else {
-      let invoiceIds: string[] = [];
-      let laborFeeIds: string[] = [];
-      if (isInvoice) {
-        invoiceIds = budgetActuals[costCode]?.invoiceIds
-          ? (budgetActuals[costCode].invoiceIds as string[])
-          : [];
-      }
-      if (isLaborFee) {
-        laborFeeIds = budgetActuals[costCode]?.laborFeeIds
-          ? (budgetActuals[costCode].laborFeeIds as string[])
-          : [];
-      }
-
-      // here we are iterating the overall currenActuals so we just force
-      // isInvoice and isLaborFee to false even though it would be one of those two.
-      // We only care about the invoice or laborFee for the `amountInvoice`
-      amount = iterateAmountOnCostCode({
-        budgetObj: budgetActuals,
-        costCode,
-        isCredit,
-        isInvoice: false,
-        isLaborFee: false,
-        uuid,
-        amount,
-        changeOrder: null,
-      });
-
-      amountInvoice = iterateAmountOnCostCode({
-        budgetObj: invoiceBudgetActuals,
-        costCode,
-        isCredit,
-        isInvoice,
-        isLaborFee,
-        uuid,
-        amount: amountInvoice,
-        changeOrder: null,
-      });
-
-      const budgetObj = createFullBudgetObject({
-        budgetTotals,
-        totalAmt: formatNumber(amount.toFixed(2)),
-        costCode,
-        qtyAmt: '1',
-        rateAmt: formatNumber(amount.toFixed(2)),
-        description: getCostCodeDescriptionFromNumber(
+        const budgetObject = createFullBudgetObject({
+          budgetTotals,
+          totalAmt: formatNumber(amount.toFixed(2)),
           costCode,
-          costCodeNameList
-        ),
-        vendor: vendorName,
-        changeOrder: null,
-        group: 'Invoices',
-      });
-
-      const budgetObjInvoice = createFullBudgetObject({
-        budgetTotals,
-        totalAmt: formatNumber(amountInvoice.toFixed(2)),
-        costCode,
-        qtyAmt: '1',
-        rateAmt: formatNumber(amountInvoice.toFixed(2)),
-        description: getCostCodeDescriptionFromNumber(
+          qtyAmt: isLaborFee ? (item.number_of_hours as string) : '1',
+          rateAmt: isLaborFee
+            ? formatNumber(rate)
+            : formatNumber(amount.toFixed(2)),
+          description: getCostCodeDescriptionFromNumber(
+            costCode,
+            costCodeNameList
+          ),
+          vendor: vendorName,
+          changeOrder: changeOrder.name,
+          group: 'Change Orders',
+        });
+        const budgetObjectInvoice = createFullBudgetObject({
+          budgetTotals,
+          totalAmt: formatNumber(amount.toFixed(2)),
           costCode,
-          costCodeNameList
-        ),
-        vendor: vendorName,
-        changeOrder: null,
-        group: 'Invoices',
-      });
-
-      budgetActuals[costCode] = budgetObj;
-
-      if (isInvoice) {
-        invoiceBudgetActuals.invoice[uuid][costCode] = budgetObjInvoice;
-        if (invoiceIds) {
+          qtyAmt: isLaborFee ? (item.number_of_hours as string) : '1',
+          rateAmt: isLaborFee
+            ? formatNumber(rate)
+            : formatNumber(amount.toFixed(2)),
+          description: getCostCodeDescriptionFromNumber(
+            costCode,
+            costCodeNameList
+          ),
+          vendor: vendorName,
+          changeOrder: changeOrder.name,
+          group: 'Change Orders',
+        });
+        // the current line item amount
+        budgetActualsChangeOrders[changeOrder.uuid][costCode] = budgetObject;
+        invoiceBudgetActualsChangeOrders[changeOrder.uuid][uuid][costCode] =
+          budgetObjectInvoice;
+        // add this to the invoice object as well
+        // need to updat the iterate amount function to include the invoice object
+        if (isInvoice && invoiceIds) {
           invoiceIds.push(uuid);
         }
-        budgetActuals[costCode] = {
-          ...budgetActuals[costCode],
-          invoiceIds: [...new Set(invoiceIds)],
-        };
-      }
-      if (isLaborFee) {
-        invoiceBudgetActuals.laborFee[uuid][costCode] = budgetObjInvoice;
-        if (laborFeeIds) {
+        if (isLaborFee && laborFeeIds) {
           laborFeeIds.push(uuid);
         }
-        budgetActuals[costCode] = {
-          ...budgetActuals[costCode],
-          laborFeeIds: [...new Set(laborFeeIds)],
-        };
+        if (isInvoice) {
+          (budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
+            changeOrder.uuid
+          ][costCode] = {
+            ...(budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
+              changeOrder.uuid
+            ][costCode],
+            invoiceIds: [...new Set(invoiceIds)],
+          };
+        }
+        if (isLaborFee) {
+          (budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
+            changeOrder.uuid
+          ][costCode] = {
+            ...(budgetActualsChangeOrders as CurrentActualsChangeOrdersV2)[
+              changeOrder.uuid
+            ][costCode],
+            laborFeeIds: [...new Set(laborFeeIds)],
+          };
+        }
+      }
+
+      // NOT CHANGE ORDER
+      else {
+        let invoiceIds: string[] = [];
+        let laborFeeIds: string[] = [];
+        if (isInvoice) {
+          invoiceIds = budgetActuals[costCode]?.invoiceIds
+            ? (budgetActuals[costCode].invoiceIds as string[])
+            : [];
+        }
+        if (isLaborFee) {
+          laborFeeIds = budgetActuals[costCode]?.laborFeeIds
+            ? (budgetActuals[costCode].laborFeeIds as string[])
+            : [];
+        }
+
+        // here we are iterating the overall currenActuals so we just force
+        // isInvoice and isLaborFee to false even though it would be one of those two.
+        // We only care about the invoice or laborFee for the `amountInvoice`
+        amount = iterateAmountOnCostCode({
+          budgetObj: budgetActuals,
+          costCode,
+          isCredit,
+          isInvoice: false,
+          isLaborFee: false,
+          uuid,
+          amount,
+          changeOrder: null,
+        });
+
+        amountInvoice = iterateAmountOnCostCode({
+          budgetObj: invoiceBudgetActuals,
+          costCode,
+          isCredit,
+          isInvoice,
+          isLaborFee,
+          uuid,
+          amount: amountInvoice,
+          changeOrder: null,
+        });
+
+        const budgetObj = createFullBudgetObject({
+          budgetTotals,
+          totalAmt: formatNumber(amount.toFixed(2)),
+          costCode,
+          qtyAmt: isLaborFee ? (item.number_of_hours as string) : '1',
+          rateAmt: isLaborFee
+            ? formatNumber(rate)
+            : formatNumber(amount.toFixed(2)),
+          description: getCostCodeDescriptionFromNumber(
+            costCode,
+            costCodeNameList
+          ),
+          vendor: vendorName,
+          changeOrder: null,
+          group: 'Invoices',
+        });
+
+        const budgetObjInvoice = createFullBudgetObject({
+          budgetTotals,
+          totalAmt: formatNumber(amountInvoice.toFixed(2)),
+          costCode,
+          qtyAmt: isLaborFee ? (item.number_of_hours as string) : '1',
+          rateAmt: isLaborFee
+            ? formatNumber(rate)
+            : formatNumber(amount.toFixed(2)),
+          description: getCostCodeDescriptionFromNumber(
+            costCode,
+            costCodeNameList
+          ),
+          vendor: vendorName,
+          changeOrder: null,
+          group: 'Invoices',
+        });
+
+        budgetActuals[costCode] = budgetObj;
+
+        if (isInvoice) {
+          invoiceBudgetActuals.invoice[uuid][costCode] = budgetObjInvoice;
+          if (invoiceIds) {
+            invoiceIds.push(uuid);
+          }
+          budgetActuals[costCode] = {
+            ...budgetActuals[costCode],
+            invoiceIds: [...new Set(invoiceIds)],
+          };
+        }
+        if (isLaborFee) {
+          invoiceBudgetActuals.laborFee[uuid][costCode] = budgetObjInvoice;
+          if (laborFeeIds) {
+            laborFeeIds.push(uuid);
+          }
+          budgetActuals[costCode] = {
+            ...budgetActuals[costCode],
+            laborFeeIds: [...new Set(laborFeeIds)],
+          };
+        }
       }
     }
-  });
+  );
 };
 
 const handleWholeInvoice = ({
@@ -599,11 +632,10 @@ const handleWholeInvoice = ({
   // grab cost code, if a change order and amount for the whole invoice
   // always subtract the tax from the amount.
   const costCode = invoice.processedData.cost_code as string;
-
   if (
-    Object.keys(budgetTotals).findIndex(
-      (v) => v == costCode || v == (+costCode).toFixed(4)
-    ) === -1
+    Object.keys(budgetTotals).findIndex((v) => {
+      return v == costCode || v == (+costCode).toFixed(4);
+    }) === -1
   )
     return;
 

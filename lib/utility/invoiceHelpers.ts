@@ -95,7 +95,9 @@ export const groupLineItems = ({
       groupedLineItems[lineItemKey][suffix] =
         value?.value && value.value === 'None'
           ? '0.00'
-          : formatNumber(Number(value.value as string).toFixed(2));
+          : formatNumber(
+              Number((value.value as string).replaceAll(',', '')).toFixed(2)
+            );
     } else {
       if (isKeyOfLineItemItem(suffix)) {
         // the above function checks for a proper key, hack workaround to TS

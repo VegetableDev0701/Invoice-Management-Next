@@ -162,7 +162,7 @@ export const buildB2AReport = async ({
         },
       }
     );
-    const data = JSON.parse(result)[clientBillId]['current-actuals'];
+    const data = result[clientBillId]['current-actuals'];
     const { currentActuals, currentActualsChangeOrders } = data;
     clientBillActuals[clientBillId] = {
       currentActuals: currentActuals as CurrentActualsV2,

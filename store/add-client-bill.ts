@@ -66,7 +66,7 @@ export const deleteClientBillDataFromB2A = createAsyncThunk(
           },
         }
       );
-      const currentActuals = JSON.parse(data).currentActuals;
+      const currentActuals = data.currentActuals;
 
       const currentBudgetedTotal: number = state.projects[projectId].b2a
         ?.currentBudgetedTotal
@@ -315,6 +315,8 @@ export const createBudgetActuals = createAsyncThunk(
         summaryCostCodes: SUMMARY_COST_CODES,
         budgetTotals: budgetTotalsV2,
       });
+
+      // throw new Error('stop');
       // Same for CHANGE ORDERS, need to keep them separate; for ALL change orders combined
       const changeOrderProfitTaxes = getBillProfitTaxes({
         projectSummary,
@@ -440,7 +442,7 @@ export const createBudgetActuals = createAsyncThunk(
       });
 
       if (!result) {
-        dispatch(uiActions.setLoadingState({ isLoading: false }));
+        // dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
           uiActions.notify({
             content: 'Error when trying to create actuals data for chart.',
@@ -535,10 +537,6 @@ export const createBudgetActuals = createAsyncThunk(
         uuid: clientBillId,
         numInvoices,
         numChangeOrders,
-        // totalLaborFeesAmount: totalLaborFeesAmountWithoutChangeOrders.reduce(
-        //   (acc, curr) => acc + curr,
-        //   0
-        // ),
         laborFeeIds: [...laborFeeIds], // convert Set back to array
         invoiceIds: [...invoiceIds],
         changeOrderProfitTaxes,
@@ -572,15 +570,8 @@ export const createBudgetActuals = createAsyncThunk(
             }),
           }
         );
-        dispatch(
-          uiActions.notify({
-            content: 'Successfully added and saved new client bill.',
-            icon: 'success',
-          })
-        );
       } catch (error) {
         console.error(error);
-        dispatch(uiActions.setLoadingState({ isLoading: false }));
         dispatch(
           uiActions.notify({
             content: 'Error when trying to save budget to actuals data.',
@@ -589,7 +580,6 @@ export const createBudgetActuals = createAsyncThunk(
         );
         return false;
       }
-      dispatch(uiActions.setLoadingState({ isLoading: false }));
       return {
         clientBillObj: {
           actuals: invoiceCurrentActuals,
@@ -598,7 +588,6 @@ export const createBudgetActuals = createAsyncThunk(
       };
     } catch (error) {
       console.error(error);
-      dispatch(uiActions.setLoadingState({ isLoading: false }));
     }
   }
 );
@@ -716,6 +705,7 @@ export const updateBudgetActuals = createAsyncThunk(
       if (!currentActualsChangeOrders?.['profitTaxesLiability']) {
         currentActualsChangeOrders['profitTaxesLiability'] = {};
       }
+
       updateActuals({
         billProfitTaxesObject: currentChangeOrderProfitTaxesObject,
         actuals: currentActualsChangeOrders?.['profitTaxesLiability'],
@@ -1089,8 +1079,10 @@ export const moveBillDataInFirestore = createAsyncThunk(
           },
         }
       );
+      return { isSuccess: true, error: null };
     } catch (error) {
       console.error(error);
+      return { isSuccess: false, error: error };
     }
   }
 );

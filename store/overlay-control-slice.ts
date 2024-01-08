@@ -42,8 +42,9 @@ export const getCurrentProjectData = createAsyncThunk(
     }
   }
 );
-export const getCurrentVendor = createAsyncThunk(
-  'overlay/getCurrentVendor',
+
+export const getCurrentVendorFormData = createAsyncThunk(
+  'overlay/getCurrentVendorFormData',
   async ({ vendorId }: { vendorId: string }, thunkAPI) => {
     try {
       const state = thunkAPI.getState() as RootState;

@@ -12,11 +12,11 @@ export interface Customers {
   name: string;
   agave_uuid: string | null;
   email: string | null;
+  phone: string | null;
   uuid: string;
   sub_level: number;
 }
 
-// TODO seems costCodeList and costCodeNameList should be stored in project data slice?
 export interface CompanyData {
   forms: Forms;
   invoices: { status: string; allInvoices: Invoices };

@@ -389,6 +389,18 @@ const projectDataSlice = createSlice({
         ...{ [newData.uuid as string]: newData },
       };
     },
+    removeClientBillSummary(
+      state,
+      action: PayloadAction<{
+        projectId: string;
+        rowId: string;
+      }>
+    ) {
+      const { projectId, rowId } = action.payload;
+      delete (state[projectId]['client-bills-summary'] as ClientBillSummary)[
+        rowId
+      ];
+    },
     // TODO fix the any typescript workaround
     addFullData(
       state,

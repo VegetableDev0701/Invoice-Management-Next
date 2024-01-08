@@ -606,6 +606,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
                       {invoiceObj.clickedInvoice && (
                         <CenteredPagination
                           onChangePage={setPageIdx}
+                          handleUpdateData={handleUpdateData}
                           pageArray={invoiceObj.clickedInvoice.gcs_img_uri}
                           rows={rows}
                           currentRowIdx={invoiceObj.invoiceRowNumber}

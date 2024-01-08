@@ -238,9 +238,9 @@ export const updateInvoiceData = createAsyncThunk(
   ) => {
     try {
       const state = thunkAPI.getState() as RootState;
-      // because of how the componenets render, we need to take a snapshot of the current invoice
+      // because of how the components render, we need to take a snapshot of the current invoice
       // when moving through each process invoice step without closing the overlay.
-      const processInvoiceFormState = state.invoice
+      let processInvoiceFormState = state.invoice
         .currentInvoiceSnapShot as FormStateV2 & { doc_id: string };
       const costCodeList: CostCodeObjType[] = state.data.costCodeList;
       const costCodeNameList: CostCodeObjType[] = state.data.costCodeNameList;
@@ -255,6 +255,12 @@ export const updateInvoiceData = createAsyncThunk(
       const projectData = Object.values(
         state.data.projectsSummary.allProjects as SummaryProjects
       ).filter((project) => project.projectName === projectName)[0];
+
+      if (isObjectEmpty(processInvoiceFormState)) {
+        processInvoiceFormState = snapShotFormState as FormStateV2 & {
+          doc_id: string;
+        };
+      }
 
       const changeOrdersSummary = state.projects[projectData.uuid as string][
         'change-orders-summary'
@@ -398,8 +404,6 @@ export const updateInvoiceData = createAsyncThunk(
           throw new Error(`${id} was not matched to a cost code name.`);
         }
 
-        // you cannot choose a cost code when processing invoices that do not
-        // already exist so we can force the description type here
         changeOrderContentList.push({
           [getChangeOrderIdFromName({
             changeOrdersSummary,
@@ -485,7 +489,7 @@ export const updateInvoiceData = createAsyncThunk(
         })
       );
 
-      // in teh following logic groupedLineItems and the new or current ones,
+      // in the following logic groupedLineItems and the new or current ones,
       // while snapShotLineItems are the old ones to compare to
       type ChangeOrderCont = { name: string; uuid: string };
       let changeOrderObj: ChangeOrderCont | null = null;
@@ -501,7 +505,10 @@ export const updateInvoiceData = createAsyncThunk(
         const changeOrder = Object.values(changeOrdersSummary).find(
           (changeOrder) => {
             return (
-              changeOrder.name === processInvoiceFormState['change-order'].value
+              changeOrder.name ===
+              (processInvoiceFormState['change-order'].value as string)
+                .split('-')[0]
+                .trim()
             );
           }
         )!;

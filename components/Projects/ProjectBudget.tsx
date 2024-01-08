@@ -65,7 +65,7 @@ export default function ProjectBudget(props: Props) {
           );
         }
         const data = await response.json();
-        setBlankFormData(JSON.parse(data));
+        setBlankFormData(data);
       } catch (error) {
         console.error(error);
       }

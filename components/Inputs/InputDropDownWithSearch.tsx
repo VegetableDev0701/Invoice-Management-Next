@@ -18,7 +18,7 @@ import { Items, SelectMenuOptions } from '@/lib/models/formDataModel';
 import { Actions } from '@/lib/models/types';
 import { FormStateItem, FormStateItemV2 } from '@/lib/models/formStateModels';
 import {
-  getAllChangeOrderNames,
+  getChangeOrderNamesForDropDown,
   getProjectNamesForDropdown,
 } from '@/lib/utility/tableHelpers';
 import { sortArrayByObjKey } from '@/lib/utility/tableHelpers';
@@ -217,7 +217,7 @@ const DropDownWithSearch = (props: Props) => {
       if (changeOrdersSummary) {
         setDropDownChoices(
           sortArrayByObjKey(
-            getAllChangeOrderNames({ changeOrdersSummary }),
+            getChangeOrderNamesForDropDown({ changeOrdersSummary }),
             'label',
             'None'
           )

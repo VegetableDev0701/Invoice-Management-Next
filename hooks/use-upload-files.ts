@@ -55,6 +55,7 @@ export default function useUploadFilesHandler({
           taskId: uploadFilesTask,
         })
       );
+      dispatch(uiActions.lockUI());
       dispatch(sseActions.setUploadFileSuccess(false));
       setDuplicateFiles([]);
       try {
@@ -164,6 +165,7 @@ export default function useUploadFilesHandler({
         );
         console.error(error);
       } finally {
+        dispatch(uiActions.unLockUI());
         dispatch(
           uiActions.setTaskLoadingState({
             isLoading: false,

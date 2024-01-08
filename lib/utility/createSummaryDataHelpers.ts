@@ -428,16 +428,6 @@ export const createSingleClientBillSummary = ({
     Number(budgetedSalesTax.replaceAll(',', '')) +
     changeOrderProfitTaxes.salesTax;
 
-  // const subTotalOutput = subTotal
-  //   ? formatNumber((+subTotal).toFixed(2))
-  //   : '0.00';
-  // const changeOrdersOutput = changeOrdersTotal ? changeOrdersTotal : '0.00';
-  // const profitQty = subTotalOutput;
-  // const profitOutput = formatNumber((+profit).toFixed(2)) || '0.00';
-
-  // const insuranceLiabilityOutput = formatNumber((+liability).toFixed(2)) || '0.00';
-  // const insuranceLiabilityQty =
-
   const changeOrdersGrandTotal = Object.entries(
     changeOrderTotals.changeOrderTotals as Record<string, number>
   ).reduce((acc, [_, total]) => {
@@ -447,42 +437,31 @@ export const createSingleClientBillSummary = ({
   return {
     billTitle,
     changeOrders: changeOrdersGrandTotal
-      ? formatNumber(changeOrdersGrandTotal.toFixed(2))
+      ? formatNumber(
+          (changeOrdersGrandTotal - changeOrderProfitTaxes.salesTax).toFixed(2)
+        )
       : '0.00',
     totalsByChangeOrder: changeOrderTotals.changeOrderTotals,
     subTotal: subTotal
       ? formatNumber((+subTotal.replaceAll(',', '')).toFixed(2))
       : '0.00',
-    // profitQty: subTotal ? formatNumber((+subTotal).toFixed(2)) : '0.00',
-    budgetedSalesTax: formatNumber(totalSalesTax.toFixed(2)) || '0.00',
+    salesTax: formatNumber(totalSalesTax.toFixed(2)) || '0.00',
     profit: formatNumber((+profit.replaceAll(',', '')).toFixed(2)) || '0.00',
     insuranceLiability:
       formatNumber((+liability.replaceAll(',', '')).toFixed(2)) || '0.00',
     boTax: formatNumber((+boTax.replaceAll(',', '')).toFixed(2)) || '0.00',
     total: changeOrderTotals.changeOrderTotals
       ? formatNumber(
-          (+totals.total.replaceAll(',', '') + changeOrdersGrandTotal).toFixed(
-            2
-          )
+          (
+            Number(totals.total.replaceAll(',', '')) + changeOrdersGrandTotal
+          ).toFixed(2)
         )
       : totals.total,
     numInvoices: numInvoices ? numInvoices : 0,
     numChangeOrders: numChangeOrders ? numChangeOrders : 0,
-    // totalLaborFeesAmount: totalLaborFeesAmount
-    //   ? formatNumber((+totalLaborFeesAmount).toFixed(2))
-    //   : '0.00',
-    // totalSubInvoiceAmount: totalLaborFeesAmount
-    //   ? formatNumber(
-    //       +(+subTotal.replaceAll(',', '') - totalLaborFeesAmount).toFixed(2)
-    //     )
-    //   : formatNumber((+subTotal.replaceAll(',', '')).toFixed(2)),
     uuid,
     laborFeeIds,
     invoiceIds,
     createdAt: new Date().toString(),
-    // clientBillObj: {
-    //   actuals: invoiceCurrentActuals,
-    //   actualsChangeOrders: invoiceCurrentActualsChangeOrders,
-    // },
   };
 };

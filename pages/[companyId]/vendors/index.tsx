@@ -13,7 +13,7 @@ import {
   syncVendors,
 } from '@/store/add-vendor-slice';
 import {
-  getCurrentVendor,
+  getCurrentVendorFormData,
   overlayActions,
 } from '@/store/overlay-control-slice';
 import { companyDataActions } from '@/store/company-data-slice';
@@ -155,8 +155,7 @@ function Vendors() {
         stateKey: 'vendors',
       })
     );
-
-    dispatch(getCurrentVendor({ vendorId: uuid }));
+    dispatch(getCurrentVendorFormData({ vendorId: uuid }));
   };
 
   const addVendorHandler = () => {

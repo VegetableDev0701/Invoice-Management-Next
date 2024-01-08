@@ -118,7 +118,7 @@ export default function ClientBill() {
       // setIsLoading(true);
       setIsError(false);
       try {
-        let data = await fetchWithRetry(
+        const data = await fetchWithRetry(
           `/api/${
             (user as User).user_metadata.companyId
           }/projects/${projectId}/get-single-client-bill`,
@@ -130,7 +130,16 @@ export default function ClientBill() {
             },
           }
         );
-        data = JSON.parse(data);
+        if (data?.invoices && Object.keys(data.invoices).length === 9) {
+          throw new Error('lost an invoice');
+        }
+        if (
+          data?.['labor-summary'] &&
+          Object.keys(data['labor-summary']).length === 4
+        ) {
+          throw new Error('lost an labor');
+        }
+
         setClientBillData(data[clientBillId]);
         setInit(false);
       } catch (error) {
@@ -201,7 +210,7 @@ export default function ClientBill() {
           <div className="content-tiles shadow-none">
             {isLoading && !clientBillData && <FullScreenLoader />}
             {!isLoading && clientBillData && (
-              <Card className="h-full max-h-full w-full shadow bg-stak-white">
+              <Card className="h-full max-h-full w-full shadow bg-stak-white overflow-hidden">
                 <div
                   className="flex-grow flex-shrink flex flex-1 flex-col h-full self-stretch overflow-y-scroll"
                   id="scroll-frame"

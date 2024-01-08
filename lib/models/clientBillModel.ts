@@ -49,6 +49,7 @@ export interface WorkDescriptionContentItem {
   vendor: string;
   totalAmt: string;
   costCode: string;
+  rowType?: string;
 }
 
 export interface SubTotalsV2 {

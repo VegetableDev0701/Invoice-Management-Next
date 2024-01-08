@@ -41,6 +41,7 @@ interface Props {
 
 const ProjectButtons = (props: Props) => {
   const reportTaskId = 'Build_Report';
+  const buildTask = 'Build_Client_Bill';
 
   const { projectId, clientBillId, isClientBillPage } = props;
   const dispatch = useDispatch();
@@ -67,6 +68,13 @@ const ProjectButtons = (props: Props) => {
   const [reportType, setReportType] = useState('');
 
   const buildClientBillHandler = () => {
+    dispatch(
+      uiActions.setTaskLoadingState({
+        taskId: buildTask,
+        isLoading: true,
+      })
+    );
+    dispatch(uiActions.lockUI());
     const clientBillId = nanoid();
     // There are checks in each of these dispatches that will end the dispatch early,
     // so each subsequent dispatch should not run unless the previous one completed
@@ -263,6 +271,7 @@ const ProjectButtons = (props: Props) => {
               'px-10 py-2 md:text-2xl font-normal bg-stak-dark-green 2xl:text-3xl',
             onClick: buildClientBillHandler,
           }}
+          taskId={buildTask}
         />
       )}
     </div>

@@ -101,7 +101,7 @@ export interface ClientBillSummary {
 
 export interface ClientBillSummaryItem extends BaseSummary {
   billTitle: string;
-  budgetedSalesTax: string;
+  salesTax: string;
   boTax: string;
   changeOrders: string;
   changeOrder?: string;

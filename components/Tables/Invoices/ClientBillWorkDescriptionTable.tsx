@@ -23,6 +23,7 @@ interface Props {
   tableData: BillWorkDescriptionV2 | null;
   changeOrderSummary: ChangeOrderSummary;
   currentActualsChangeOrders: CurrentActualsChangeOrdersV2;
+  projectId: string;
   showExpiration?: boolean;
 }
 
@@ -38,6 +39,7 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
     clientBillSummary,
     changeOrderSummary,
     currentActualsChangeOrders,
+    projectId,
   } = props;
 
   const [activeHeading, setActiveHeading] = useState<string | null>(null);
@@ -65,6 +67,7 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
       clientBillSummary,
       changeOrderSummary,
       currentActualsChangeOrders,
+      projectId,
     });
 
   const areThereChangeOrders =
@@ -87,24 +90,27 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
   const lastColClasses = 'py-1 pr-4 pl-3 sm:pr-6 lg:pr-6';
 
   const subTotalColor = (element: any) => {
-    if (element.description?.toLowerCase() === 'subtotal') {
-      return 'bg-stak-orange/30 font-semibold h-10 text-lg';
-    }
-    if (element.description?.toLowerCase().includes('subtotal')) {
-      return 'bg-orange-100 font-semibold h-12';
-    }
-    if (element.description?.toLowerCase() === 'sales tax') {
-      return 'bg-stak-orange/30 font-semibold h-10';
+    if (
+      element.description?.toLowerCase().includes('subtotal') ||
+      element.description?.toLowerCase() === 'sales tax'
+    ) {
+      return 'bg-blue-500/30 font-semibold h-10';
     }
     if (element.description?.toLowerCase() === 'total') {
-      return 'bg-blue-500/30 font-semibold h-10';
+      return 'bg-stak-dark-green/60 font-bold h-10 text-md';
+    }
+    if (element?.rowType == 'changeOrderTitle') {
+      return 'bg-orange-200 font-bold';
     }
     return '';
   };
 
+  const groupClass =
+    'bg-gray-300 py-2 pl-4 pr-3 text-left text-md font-semibold text-gray-900 sm:pl-3';
+
   return (
     <>
-      <div className="px-4 grow sm:px-6 lg:px-8">
+      <div className="px-4 grow sm:px-6 lg:px-8 ">
         <div className="mt-2 flow-root">
           <div className="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full align-middle">
@@ -168,11 +174,11 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
                           return (
                             <Fragment key={group}>
                               {group !== 'Subtotal' && (
-                                <tr className="border-t border-gray-200">
+                                <tr className="border-t border-gray-500">
                                   <th
                                     colSpan={Object.keys(headings).length}
                                     scope="colgroup"
-                                    className="bg-gray-50 py-2 pl-4 pr-3 text-left text-md font-semibold text-gray-900 sm:pl-3"
+                                    className={groupClass}
                                   >
                                     {group}
                                   </th>
@@ -227,7 +233,7 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
                           <th
                             colSpan={Object.keys(headings).length}
                             scope="colgroup"
-                            className="bg-gray-50 py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-3"
+                            className={groupClass}
                           >
                             Change Orders
                           </th>
@@ -293,7 +299,7 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
                                 <tr
                                   key={`${i}_${j}`}
                                   className={classNames(
-                                    'hover:bg-slate-100 font-semibold',
+                                    'hover:bg-slate-100',
                                     subTotalColor(element)
                                   )}
                                 >
@@ -309,7 +315,9 @@ export default function ClientBillWorkDescriptionTable(props: Props) {
                                                 : j === value.length - 1
                                                 ? lastColClasses
                                                 : middleColClasses,
-                                              commonColClasses
+                                              commonColClasses,
+                                              element.description?.toLowerCase() ===
+                                                'total' && 'text-md'
                                             )}
                                           >
                                             {headingsKey.endsWith('Amt') &&
