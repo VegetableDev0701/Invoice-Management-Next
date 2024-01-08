@@ -86,6 +86,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
   const [openModal, setOpenModal] = useState<boolean>(false);
   const modalMessage = 'Please confirm that you want to delete.';
 
+  const [lastIndex, setLastIndex] = useState(0);
   useLayoutEffect(() => {
     if (!rows) return;
     const isIndeterminate =
@@ -312,12 +313,26 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                                       ) !== -1
                                     : selected.includes(element)
                                 }
-                                onChange={(e) => {
-                                  const v = e.target.checked
-                                    ? [...selected, element]
-                                    : selected.filter((el) => el !== element);
-                                  setSelected(v);
+                                onClick={(e) => {
+                                  let v;
+                                  if (e.shiftKey) {
+                                    const tmpAry = filteredSortedData.slice(
+                                      Math.min(lastIndex, i + 1),
+                                      Math.max(lastIndex, i + 1)
+                                    );
+                                    v = [...selected, ...tmpAry];
+                                    setSelected(v);
+                                  } else {
+                                    const isChecked = selected.findIndex(
+                                      (el) => el == element
+                                    );
+                                    v = isChecked
+                                      ? [...selected, element]
+                                      : selected.filter((el) => el !== element);
+                                    setSelected(v);
+                                  }
                                   onSelectItems && onSelectItems(v);
+                                  setLastIndex(i);
                                 }}
                               />
                             </td>
