@@ -8,6 +8,7 @@ import {
   InputElementWithAddressItems,
   LaborData,
   MainCategories,
+  SelectMenuOptions,
   isInputElementWithAddressElements,
 } from '@/lib/models/formDataModel';
 
@@ -16,8 +17,6 @@ import InputAddressAutocomplete from '@/components/Inputs/InputAddressAutocomple
 import LaborCostCodes from './LaborCostCode';
 
 import classes from '../InputFormLayout/FormLayout.module.css';
-import { useAppSelector as useSelector } from '@/store/hooks';
-import { VendorSummary } from '@/lib/models/summaryDataModel';
 
 interface EmptyAddLaborFormForTesting {
   mainCategories: MainCategories[];
@@ -31,15 +30,20 @@ export interface Props {
   actions: Actions;
   projectId: string;
   form: string;
+  vendorDropDownData?: SelectMenuOptions[];
   isNameDuped?: boolean;
 }
 
 function FormOverlay(props: Props) {
-  const { formData, formState, showError, actions, form, projectId } = props;
-
-  const vendorSummary = useSelector(
-    (state) => state.data.vendorsSummary.allVendors
-  ) as VendorSummary;
+  const {
+    formData,
+    formState,
+    showError,
+    actions,
+    form,
+    projectId,
+    vendorDropDownData,
+  } = props;
 
   return (
     <div className={classes['scroll-frame']} id="scroll-frame">
@@ -96,7 +100,7 @@ function FormOverlay(props: Props) {
                           icon={getFormIcon(item)}
                           showError={showError}
                           actions={actions}
-                          vendorSummary={vendorSummary}
+                          vendorDropDownData={vendorDropDownData}
                           form={form}
                           autofocus={
                             i === 0 && j === 0 && p === 0 ? true : false

@@ -11,10 +11,6 @@ function classNames(...classes: string[]) {
 }
 
 interface Props {
-  props: PropsItems;
-}
-
-interface PropsItems {
   input: Items;
   actions: Actions;
   form: string;
@@ -22,7 +18,7 @@ interface PropsItems {
   icon?: JSX.Element;
 }
 export default function SlideToggle(props: Props) {
-  const { input, actions, form } = props.props;
+  const { input, actions, form } = props;
 
   const dispatch = useDispatch();
 

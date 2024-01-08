@@ -180,8 +180,8 @@ export default function BudgetForm(props: Props) {
       item.index
     );
     let isSubDivision = false;
-    costCodeTreeDataList?.root?.children?.forEach((subDivision) => {
-      if (costCodeTreeDataList[subDivision].children?.includes(item.index)) {
+    costCodeTreeDataList?.root?.children?.forEach((subItem) => {
+      if (costCodeTreeDataList[subItem].children?.includes(item.index)) {
         isSubDivision = true;
       }
     });
@@ -189,45 +189,49 @@ export default function BudgetForm(props: Props) {
     const itemData = item;
     if (isDivision) {
       if (itemData.data.value !== '0.00') {
-        return (
-          itemData.data.number.toString().padStart(2, '0') +
-          ' - ' +
-          itemData.data.name +
-          ' $' +
-          formatNumber(itemData.data.value)
-        );
+        return itemData.data.number
+          ? itemData.data.number.toString().padStart(2, '0') +
+              ' - ' +
+              itemData.data.name +
+              ' $' +
+              formatNumber(itemData.data.value)
+          : itemData.data.name + ' $' + formatNumber(itemData.data.value);
       } else {
-        return (
-          itemData.data.number.toString().padStart(2, '0') +
-          ' - ' +
-          itemData.data.name
-        );
+        return itemData.data.number
+          ? itemData.data.number.toString().padStart(2, '0') +
+              ' - ' +
+              itemData.data.name
+          : itemData.data.name;
       }
     } else if (isSubDivision) {
       if (itemData.data.name) {
         if (itemData.data.value !== '0.00') {
-          return (
-            itemData.data.number.toString() +
-            ' - ' +
-            itemData.data.name +
-            ' $' +
-            formatNumber(itemData.data.value)
-          );
+          return itemData.data.number
+            ? itemData.data.number.toString() +
+                ' - ' +
+                itemData.data.name +
+                ' $' +
+                formatNumber(itemData.data.value)
+            : itemData.data.name + ' $' + formatNumber(itemData.data.value);
         } else {
-          return itemData.data.number.toString() + ' - ' + itemData.data.name;
+          return itemData.data.number
+            ? itemData.data.number.toString() + ' - ' + itemData.data.name
+            : itemData.data.name;
         }
       }
     }
     if (itemData.data.value !== '0.00') {
-      return (
-        itemData.data.number +
-        ' - ' +
-        itemData.data.name +
-        ' $' +
-        formatNumber(itemData.data.value)
-      );
+      return itemData.data.number
+        ? itemData.data.number +
+            ' - ' +
+            itemData.data.name +
+            ' $' +
+            formatNumber(itemData.data.value)
+        : itemData.data.name + ' $' + formatNumber(itemData.data.value);
     } else {
-      return itemData.data.number + ' - ' + itemData.data.name;
+      return itemData.data.number
+        ? itemData.data.number + ' - ' + itemData.data.name
+        : itemData.data.name;
     }
   };
 

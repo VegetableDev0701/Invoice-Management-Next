@@ -4,12 +4,14 @@ import { useAppSelector as useSelector } from '@/store/hooks';
 
 import { Items } from '@/lib/models/formDataModel';
 import { InvoiceProject } from '@/lib/models/invoiceDataModels';
-import { classNames } from '@/lib/utility/utils';
+import { classNames, isObjectEmpty } from '@/lib/utility/utils';
 import { Buttons } from '@/lib/models/uiModels';
 
 import FilterDropdown from '@/components/Inputs/InputFilterDropdown';
 import SimpleUploadForm from '@/components/Forms/FileForm/SimpleUploadForm';
 import ButtonWithLoader from '../Buttons/ButtonWithLoader';
+import { hasAnyExpiredDates } from '@/lib/utility/tableHelpers';
+import { VendorSummary } from '@/lib/models/summaryDataModel';
 
 interface SectionTabs {
   name: string;
@@ -26,20 +28,14 @@ interface Props {
   dropdownFilter?: ExtendedItems;
   title?: string;
   buttons?: Buttons[];
-  totalInvoices?: number;
+  totalNum?: number;
   onActiveTab: (activeTabKeyName: string) => void;
   onFilter?: (activeFilter: string) => void;
 }
 
 export default function SectionHeading(props: Props) {
-  const {
-    title,
-    buttons,
-    dropdownFilter,
-    totalInvoices,
-    onActiveTab,
-    onFilter,
-  } = props;
+  const { title, buttons, dropdownFilter, totalNum, onActiveTab, onFilter } =
+    props;
   const [tabs, setTabs] = useState(props.tabs);
 
   const uploadFilesTask = 'upload_files';
@@ -60,19 +56,33 @@ export default function SectionHeading(props: Props) {
   const updatedInvoiceProjects = useSelector(
     (state) => state.invoice.invoiceProjects
   );
+  const vendorSummary = useSelector(
+    (state) => state.data.vendorsSummary.allVendors
+  );
 
-  const getNumInvoicesBySection = (
+  const getNumBySection = (
     keyName: string,
-    updatedInvoices: { [invoiceId: string]: InvoiceProject }
+    updatedInvoices?: { [invoiceId: string]: InvoiceProject }
   ) => {
-    if (totalInvoices) {
+    if (keyName === 'expiredLicense' && !isObjectEmpty(vendorSummary)) {
+      return `(${
+        Object.values(hasAnyExpiredDates(vendorSummary as VendorSummary)).length
+      })`;
+    }
+    if (keyName === 'isSync' && !isObjectEmpty(vendorSummary)) {
+      return `(${
+        Object.values(vendorSummary).filter((vendor) => !vendor.agave_uuid)
+          .length
+      })`;
+    }
+    if (totalNum) {
       if (keyName === 'all') {
-        return `(${totalInvoices})`;
+        return `(${totalNum})`;
       }
-      if (keyName === 'unassigned') {
-        return `(${totalInvoices - Object.values(updatedInvoices).length})`;
+      if (keyName === 'unassigned' && updatedInvoices) {
+        return `(${totalNum - Object.values(updatedInvoices).length})`;
       }
-      if (keyName === 'assigned') {
+      if (keyName === 'assigned' && updatedInvoices) {
         return `(${Object.values(updatedInvoices).length})`;
       }
     }
@@ -155,7 +165,7 @@ export default function SectionHeading(props: Props) {
                   )}
                   aria-current={tab.current ? 'page' : undefined}
                 >
-                  {`${tab.name} ${getNumInvoicesBySection(
+                  {`${tab.name} ${getNumBySection(
                     tab.keyName,
                     updatedInvoiceProjects
                   )}`}

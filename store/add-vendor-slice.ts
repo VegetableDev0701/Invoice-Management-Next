@@ -1,5 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
+import { companyDataActions } from './company-data-slice';
 import { uiActions } from './ui-slice';
 import { RootState } from '.';
 
@@ -9,31 +10,24 @@ import {
   SetFormElementPayload,
 } from '@/lib/models/formStateModels';
 import { resetAllFormValidation } from '@/lib/utility/formHelpers';
-import { VendorData } from '@/lib/models/formDataModel';
-import {
-  createVendorFormData,
-  createVendorFormStateData,
-} from '@/lib/utility/vendorHelpers';
-import { createSingleVendorSummary } from '@/lib/utility/createSummaryDataHelpers';
-import { nanoid } from '@/lib/config';
 import {
   VendorSummary,
   VendorSummaryItem,
 } from '@/lib/models/summaryDataModel';
-import { companyDataActions } from './company-data-slice';
 import { RESET_STATE } from '@/lib/globals';
+import {
+  SyncAllVendorResponseData,
+  UpdateDocData,
+} from '@/lib/models/vendorModel';
+import { updateVendorDocs } from '@/lib/utility/vendorHelpers';
 
 export const getVendorsAgave = createAsyncThunk(
   'vendorUpdates/getVendorsAgave',
   async (
     { companyId, taskId }: { companyId: string; taskId: string },
-    thunkAPI
+    { dispatch }
   ) => {
-    const state = thunkAPI.getState() as RootState;
-    const addVendorFormData: Omit<VendorData, 'name' | 'vendorId' | 'uuid'> =
-      state.data.forms['add-vendor'];
-
-    thunkAPI.dispatch(
+    dispatch(
       uiActions.setTaskLoadingState({
         taskId,
         isLoading: true,
@@ -48,7 +42,7 @@ export const getVendorsAgave = createAsyncThunk(
       if (!response.ok) {
         const data = await response.json();
         if (data.error.includes('offline')) {
-          thunkAPI.dispatch(
+          dispatch(
             uiActions.setModalContent({
               openModal: true,
               message:
@@ -57,7 +51,7 @@ export const getVendorsAgave = createAsyncThunk(
             })
           );
         } else if (data.error.includes('Account-Token')) {
-          thunkAPI.dispatch(
+          dispatch(
             uiActions.setModalContent({
               openModal: true,
               message:
@@ -66,7 +60,7 @@ export const getVendorsAgave = createAsyncThunk(
             })
           );
         } else {
-          thunkAPI.dispatch(
+          dispatch(
             uiActions.notify({
               content: data.error,
               icon: 'error',
@@ -77,100 +71,32 @@ export const getVendorsAgave = createAsyncThunk(
           `Retrieving vendors from accounting software failed: ${response.status}`
         );
       }
+
       // if succeed
-      const data = await response.json();
+      const data: SyncAllVendorResponseData = await response.json();
 
-      const allVendorData:
-        | {
-            allVendorsSummary: VendorSummary;
-            allVendorsFormData: {
-              [vendorId: string]: Omit<VendorData, 'vendorId' | 'name'>;
-            };
-          }
-        | undefined =
-        data.agave_response_data &&
-        data.agave_response_data.data.reduce(
-          (
-            acc: {
-              allVendorsSummary: VendorSummary;
-              allVendorsFormData: {
-                [vendorId: string]: Omit<VendorData, 'vendorId' | 'name'>;
-              };
-            },
-            vendor: any
-          ) => {
-            const uuid = nanoid();
-            const formState = createVendorFormStateData({
-              agaveVendorData: vendor,
-            });
-            const formData = createVendorFormData({
-              formData: addVendorFormData,
-              formStateData: formState,
-            });
-            formData.uuid = uuid;
-            const summaryVendorData = createSingleVendorSummary(
-              formData,
-              uuid,
-              vendor.id as string | null
-            );
+      dispatch(
+        companyDataActions.addToVendorsSummaryData(data.agave_response_data)
+      );
 
-            acc.allVendorsFormData[uuid] = formData;
-            acc.allVendorsSummary[uuid] = summaryVendorData;
-            return acc;
-          },
-          { allVendorsFormData: {}, allVendorsSummary: {} }
-        );
-
-      if (allVendorData) {
-        thunkAPI.dispatch(
-          companyDataActions.addToVendorsSummaryData(
-            allVendorData.allVendorsSummary
-          )
-        );
-        thunkAPI.dispatch(
-          companyDataActions.addNewVendorsBulk(allVendorData.allVendorsFormData)
-        );
-
-        const requestConfig = {
-          url: `/api/${companyId}/vendors/add-vendors-bulk`,
-          method: 'POST',
-          body: JSON.stringify({
-            fullData: allVendorData.allVendorsFormData,
-            summaryData: allVendorData.allVendorsSummary,
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        };
-
-        const add_vendor_response = await fetch(requestConfig.url, {
-          method: requestConfig.method,
-          body: requestConfig.body,
-          headers: requestConfig.headers,
-        });
-        if (!add_vendor_response.ok) {
-          throw new Error(
-            `Something went wrong with posting new vendors: ${response.status}`
-          );
-        }
-        const add_vendor_response_data = await add_vendor_response.json();
-        thunkAPI.dispatch(
-          uiActions.notify({
-            content: add_vendor_response_data.message,
-            icon: 'success',
-          })
-        );
-      }
+      // updates all documents that have missing or unsynced vendor data
+      updateVendorDocs({ dispatch, data: data.update_doc_data });
+      dispatch(
+        uiActions.notify({
+          content: data.message,
+          icon: 'success',
+        })
+      );
     } catch (error: any) {
       console.error(error);
-      thunkAPI.dispatch(
+      dispatch(
         uiActions.notify({
           content: error.message,
           icon: 'error',
         })
       );
     } finally {
-      thunkAPI.dispatch(
+      dispatch(
         uiActions.setTaskLoadingState({
           taskId,
           isLoading: false,
@@ -184,15 +110,15 @@ export const syncVendors = createAsyncThunk(
   'vendorUpdates/syncVendors',
   async (
     { companyId, vendors }: { companyId: string; vendors: VendorSummaryItem[] },
-    thunkAPI
+    { getState, dispatch }
   ) => {
-    const state = thunkAPI.getState() as RootState;
+    const state = getState() as RootState;
     const vendorsSummary = state.data.vendorsSummary.allVendors;
 
     const vendorIds: string[] = [];
     vendors.forEach((vendorSummaryItem) => {
       vendorIds.push(vendorSummaryItem.uuid);
-      thunkAPI.dispatch(
+      dispatch(
         uiActions.setTaskLoadingState({
           taskId: vendorSummaryItem.uuid,
           isLoading: true,
@@ -225,6 +151,7 @@ export const syncVendors = createAsyncThunk(
             uuid?: string;
           };
         };
+        update_doc_data: UpdateDocData;
       } = await response.json();
       if (data.data) {
         Object.values(data.data).forEach((jsonResponse) => {
@@ -241,13 +168,13 @@ export const syncVendors = createAsyncThunk(
             throw new Error(`Your Account-Token is invalid. Make sure you have integrated Stak with 
             your Quickbooks Desktop Account.`);
           } else if (jsonResponse?.agave_uuid && jsonResponse?.uuid) {
-            thunkAPI.dispatch(
+            dispatch(
               companyDataActions.addAgaveUUIDToVendorSummary({
                 agave_uuid: jsonResponse.agave_uuid,
                 vendorId: jsonResponse.uuid,
               })
             );
-            thunkAPI.dispatch(
+            dispatch(
               uiActions.notify({
                 content: `Successfully added ${
                   (vendorsSummary as VendorSummary)[jsonResponse.uuid]
@@ -259,14 +186,14 @@ export const syncVendors = createAsyncThunk(
           }
         });
       }
+      // updates all documents that have missing or unsynced vendor data
+      updateVendorDocs({ dispatch, data: data.update_doc_data });
     } catch (error: any) {
       console.error(error);
-      thunkAPI.dispatch(
-        uiActions.notify({ content: error.message, icon: 'error' })
-      );
+      dispatch(uiActions.notify({ content: error.message, icon: 'error' }));
     } finally {
       vendorIds.forEach((uuid) => {
-        thunkAPI.dispatch(
+        dispatch(
           uiActions.setTaskLoadingState({
             taskId: uuid,
             isLoading: false,

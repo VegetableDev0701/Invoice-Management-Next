@@ -8,6 +8,7 @@
             {
               "label": "Vendor Name",
               "id": "vendor-name",
+              "summaryName": "vendorName",
               "type": "text",
               "required": true,
               "errormessage": "Vendor name is required.",
@@ -20,6 +21,7 @@
             {
               "label": "Primary Contact",
               "id": "primary-contact",
+              "summaryName": "primaryContact",
               "type": "text",
               "required": false,
               "errormessage": "Primary contact is required.",
@@ -32,6 +34,7 @@
             {
               "label": "Work Phone",
               "id": "work-phone",
+              "summaryName": "workPhone",
               "type": "text",
               "isPhoneNumber": true,
               "required": false,
@@ -41,8 +44,9 @@
               "validMessage": "Must input a valid 10 digit phone number."
             },
             {
-              "label": "Cell Phone",
+              "label": "Mobile Phone",
               "id": "cell-phone",
+              "summaryName": "cellPhone",
               "type": "text",
               "isPhoneNumber": true,
               "required": false,
@@ -57,6 +61,7 @@
             {
               "label": "Email",
               "id": "email",
+              "summaryName": "email",
               "type": "text",
               "required": false,
               "value": "",
@@ -74,6 +79,7 @@
                 {
                   "label": "Vendor's Address",
                   "id": "vendor-address",
+                  "summaryName": "address",
                   "type": "text",
                   "required": false,
                   "errormessage": "Project address is required.",
@@ -87,6 +93,7 @@
                 {
                   "label": "City",
                   "id": "city-vendor",
+                  "summaryName": "city",
                   "type": "text",
                   "required": false,
                   "isAddress": true,
@@ -95,6 +102,7 @@
                 {
                   "label": "State",
                   "id": "state-vendor",
+                  "summaryName": "state",
                   "type": "text",
                   "required": false,
                   "isAddress": true,
@@ -103,6 +111,7 @@
                 {
                   "label": "Zip Code",
                   "id": "zip-code-vendor",
+                  "summaryName": "zipCode",
                   "type": "text",
                   "inputmode": "numeric",
                   "required": false,
@@ -118,6 +127,7 @@
             {
               "label": "Vendor Type",
               "id": "vendor-type",
+              "summaryName": "vendorType",
               "inputType": "text",
               "value": "",
               "required": false
@@ -134,6 +144,7 @@
             {
               "label": "Business License Number",
               "id": "business-license-number",
+              "summaryName": "businessLicNumber",
               "type": "text",
               "required": false,
               "errormessage": "Business license number is required.",
@@ -142,6 +153,7 @@
             {
               "label": "License Expiration Date",
               "id": "license-expiration-date",
+              "summaryName": "businessLicExpirationDate",
               "type": "date",
               "data-testid": "date-input",
               "required": false,
@@ -155,6 +167,7 @@
             {
               "label": "General Liability/Insurance Company Name",
               "id": "insurance-name",
+              "summaryName": "insuranceName",
               "type": "text",
               "required": false,
               "errormessage": "Insurance name is required.",
@@ -163,6 +176,7 @@
             {
               "label": "General Liability Expiration Date",
               "id": "insurance-expiration-date",
+              "summaryName": "insuranceExpirationDate",
               "type": "date",
               "data-testid": "date-input",
               "required": false,
@@ -176,6 +190,7 @@
             {
               "label": "Labor and Industries License Number",
               "id": "landi-number",
+              "summaryName": "landiLicNumber",
               "type": "text",
               "required": false,
               "errormessage": "Labor and Industries license number is required.",
@@ -184,6 +199,7 @@
             {
               "label": "Labor and Industries License Expiration Date",
               "id": "landi-expiration-date",
+              "summaryName": "landiExpirationDate",
               "type": "date",
               "data-testid": "date-input",
               "required": false,
@@ -197,6 +213,7 @@
             {
               "label": "Tax Number",
               "id": "tax-number",
+              "summaryName": "taxNumber",
               "type": "text",
               "value": "",
               "required": false,
@@ -207,6 +224,7 @@
             {
               "label": "Worker's Compensation Expiration",
               "id": "workers-compensation-expiration",
+              "summaryName": "workersCompExpirationDate",
               "type": "date",
               "data-testid": "date-input",
               "value": "",
@@ -220,6 +238,7 @@
             {
               "label": "Bond Company Name",
               "id": "bond-company-name",
+              "summaryName": "bondCompanyName",
               "type": "text",
               "value": "",
               "required": false
@@ -228,6 +247,7 @@
             {
               "label": "Bond Amount",
               "id": "bond-amount",
+              "summaryName": "bondAmt",
               "type": "text",
               "isCurrency": true,
               "value": "",
@@ -240,6 +260,7 @@
             {
               "label": "W9 on File",
               "id": "w9-on-file",
+              "summaryName": "w9OnFile",
               "inputType": "slideToggle",
               "required": false,
               "value": false

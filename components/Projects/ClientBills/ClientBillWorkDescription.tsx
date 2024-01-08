@@ -66,6 +66,7 @@ export default function ClientBillWorkDescription(props: Props) {
       clientBillSummary={clientBillSummary}
       changeOrderSummary={changeOrderSummary}
       currentActualsChangeOrders={currentActuals.currentActualsChangeOrders}
+      projectId={projectId}
     />
   );
 }

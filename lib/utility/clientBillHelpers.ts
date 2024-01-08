@@ -1,4 +1,7 @@
 import { useMemo } from 'react';
+
+import { useAppSelector as useSelector } from '@/store/hooks';
+
 import {
   BillWorkDescriptionV2,
   SubTotalsV2,
@@ -12,6 +15,8 @@ import {
 import {
   ChangeOrderSummary,
   ClientBillSummaryItem,
+  ProjectSummary,
+  ProjectSummaryItem,
 } from '../models/summaryDataModel';
 import { SUMMARY_COST_CODES } from '../globals';
 
@@ -21,15 +26,22 @@ export const useCreateClientBillWorkDescription = ({
   clientBillSummary,
   changeOrderSummary,
   currentActualsChangeOrders,
+  projectId,
 }: {
   tableData: BillWorkDescriptionV2 | null;
   subTotals: SubTotalsV2 | null;
   clientBillSummary: ClientBillSummaryItem;
   changeOrderSummary: ChangeOrderSummary;
   currentActualsChangeOrders: CurrentActualsChangeOrdersV2;
+  projectId: string;
 }) => {
+  const projectSummary = useSelector(
+    (state) =>
+      (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
+  ) as ProjectSummaryItem;
   const profitTaxesOrders = ['profit', 'boTax', 'liability', 'salesTax'];
   const groupedRowCategories = ['Labor and Fees', 'Invoices', 'Change Orders'];
+
   const clientBillWorkDescription: {
     [group: string]: Record<string, WorkDescriptionContentItem[]>;
   } | null = useMemo(() => {
@@ -88,6 +100,7 @@ export const useCreateClientBillWorkDescription = ({
                 vendor: '',
                 totalAmt: '',
                 costCode: '',
+                rowType: 'changeOrderTitle',
               });
               changeOrderDescriptionRows[changeOrderId] = currentGroupRows;
 
@@ -112,13 +125,17 @@ export const useCreateClientBillWorkDescription = ({
               );
               let profitTaxesObject: WorkDescriptionContentItem[] = [];
               profitTaxesOrders.forEach((key) => {
+                // don't show sales tax for individual change orders
+                if (key === 'salesTax') return;
                 const changeOrderItem =
                   currentActualsChangeOrders[changeOrderId][
                     SUMMARY_COST_CODES[key as 'profit' | 'boTax' | 'liability']
                   ];
                 const rateAmt =
                   changeOrderItem.description === 'Overhead and Profit' ||
-                  changeOrderItem.description === 'Business and Occupation Tax'
+                  changeOrderItem.description ===
+                    'Business and Occupation Tax' ||
+                  changeOrderItem.description === 'Sales Tax'
                     ? `${changeOrderItem.rateAmt} %`
                     : (changeOrderItem.rateAmt as string);
                 profitTaxesObject.push({
@@ -133,15 +150,6 @@ export const useCreateClientBillWorkDescription = ({
               });
               profitTaxesObject = profitTaxesObject.sort((a, b) => {
                 return +a['costCode'] - +b['costCode'];
-              });
-              // space
-              profitTaxesObject.push({
-                description: '',
-                rateAmt: '',
-                vendor: '',
-                totalAmt: '',
-                qtyAmt: '',
-                costCode: '',
               });
 
               currentGroupRows.push(...profitTaxesObject);
@@ -220,7 +228,7 @@ export const useCreateClientBillWorkDescription = ({
         {
           qtyAmt: '',
           description: 'Sales Tax',
-          rateAmt: '',
+          rateAmt: `${Number(projectSummary.salesTax).toFixed(2)} %`,
           vendor: '',
           totalAmt: clientBillSummary.salesTax,
           costCode: '',

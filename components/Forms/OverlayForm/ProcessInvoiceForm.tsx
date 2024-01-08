@@ -14,13 +14,11 @@ import { FormState } from '@/lib/models/formStateModels';
 import {
   InputElementWithAddressItems,
   MainCategories,
+  SelectMenuOptions,
   isInputElementWithAddressElements,
 } from '@/lib/models/formDataModel';
 import { getCurrentInvoiceData } from '@/lib/utility/processInvoiceHelpers';
-import {
-  ChangeOrderSummary,
-  VendorSummary,
-} from '@/lib/models/summaryDataModel';
+import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
 import { BoundingBox, InvoiceTableRow } from '@/lib/models/invoiceDataModels';
 
 import classes from '../InputFormLayout/FormLayout.module.css';
@@ -42,6 +40,7 @@ export interface Props {
   actions: Actions;
   form: string;
   projectId: string;
+  vendorDropDownData: SelectMenuOptions[];
   onRenderComplete: () => void;
 }
 
@@ -54,6 +53,7 @@ function ProcessInvoiceForm(props: Props) {
     form,
     projectId,
     currentData,
+    vendorDropDownData,
     onRenderComplete,
   } = props;
   const dispatch = useDispatch();
@@ -63,9 +63,6 @@ function ProcessInvoiceForm(props: Props) {
   const changeOrdersSummary = useSelector(
     (state) => state.projects[projectId]?.['change-orders-summary']
   ) as ChangeOrderSummary;
-  const vendorSummary = useSelector(
-    (state) => state.data.vendorsSummary.allVendors
-  ) as VendorSummary;
 
   useEffect(() => {
     onRenderComplete();
@@ -223,7 +220,7 @@ function ProcessInvoiceForm(props: Props) {
                                 form={form}
                                 projectId={projectId}
                                 changeOrdersSummary={changeOrdersSummary}
-                                vendorSummary={vendorSummary}
+                                vendorDropDownData={vendorDropDownData}
                                 onMouseEnter={() =>
                                   onMouseEnterHandler(currentData, item.id)
                                 }

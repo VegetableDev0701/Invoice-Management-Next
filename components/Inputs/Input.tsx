@@ -1,11 +1,8 @@
 import { useEffect } from 'react';
 
-import { Items } from '@/lib/models/formDataModel';
+import { Items, SelectMenuOptions } from '@/lib/models/formDataModel';
 import { Actions } from '@/lib/models/types';
-import {
-  ChangeOrderSummary,
-  VendorSummary,
-} from '@/lib/models/summaryDataModel';
+import { ChangeOrderSummary } from '@/lib/models/summaryDataModel';
 
 import InputBaseWithValidation from './InputBaseWithValidation';
 import DropDownWithSearch from './InputDropDownWithSearch';
@@ -22,7 +19,7 @@ interface Props {
   showError?: boolean;
   icon?: JSX.Element;
   changeOrdersSummary?: ChangeOrderSummary;
-  vendorSummary?: VendorSummary;
+  vendorDropDownData?: SelectMenuOptions[];
   projectId?: string;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -31,7 +28,22 @@ interface Props {
 }
 
 export const Input = (props: Props) => {
-  const { input } = props;
+  const {
+    input,
+    classes,
+    showError,
+    actions,
+    form,
+    changeOrdersSummary,
+    icon,
+    autofocus,
+    projectId,
+    vendorDropDownData,
+    onFocus,
+    onBlur,
+    onMouseEnter,
+    onMouseLeave,
+  } = props;
   // disable the wheel scrolling effect and remove arrows from number input fields
   useEffect(() => {
     // Get the number input element
@@ -60,19 +72,66 @@ export const Input = (props: Props) => {
   let inputField;
   switch (true) {
     case input.inputType === 'dropdownWithSearch':
-      inputField = <DropDownWithSearch props={props} />;
+      inputField = (
+        <DropDownWithSearch
+          input={input}
+          classes={classes}
+          showError={showError}
+          actions={actions}
+          form={form}
+          vendorDropDownData={vendorDropDownData}
+          changeOrdersSummary={changeOrdersSummary}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+        />
+      );
       break;
     case input.inputType === 'dropdown':
-      inputField = <Dropdown props={props} />;
+      inputField = (
+        <Dropdown
+          input={input}
+          classes={classes}
+          showError={showError}
+          actions={actions}
+          form={form}
+        />
+      );
       break;
     case input.inputType === 'slideToggle':
-      inputField = <SlideToggle props={props} />;
+      inputField = <SlideToggle input={input} actions={actions} form={form} />;
       break;
     case input.inputType === 'toggleInput':
-      inputField = <InputToggleOnOff props={props} />;
+      inputField = (
+        <InputToggleOnOff
+          input={input}
+          classes={classes}
+          showError={showError}
+          actions={actions}
+          form={form}
+          icon={icon}
+        />
+      );
       break;
     default:
-      inputField = <InputBaseWithValidation props={props} />;
+      inputField = (
+        <InputBaseWithValidation
+          input={input}
+          classes={classes}
+          showError={showError}
+          actions={actions}
+          form={form}
+          icon={icon}
+          autofocus={autofocus}
+          projectId={projectId}
+          vendorDropDownData={vendorDropDownData}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+        />
+      );
   }
 
   return <>{inputField}</>;

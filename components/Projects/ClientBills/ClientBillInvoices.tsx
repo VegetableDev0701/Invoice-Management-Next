@@ -74,14 +74,13 @@ export default function ClientBillInvoices(props: Props) {
   }) => {
     if (invoices && invoices[doc_id]) {
       const snapShotInvoice = snapshotCopy(invoices[doc_id]) as InvoiceItem;
-
       dispatch(
         updateInvoiceData({
           invoiceId: doc_id,
           companyId: (user as User).user_metadata.companyId,
           projectName: formState['project-name'].value as string,
           snapShotInvoice,
-          snapShotFormState: snapShotFormState as FormStateV2,
+          snapShotFormState: formState || (snapShotFormState as FormStateV2),
         })
       ).then((result) => {
         if (result.payload) {

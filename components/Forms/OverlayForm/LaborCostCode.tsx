@@ -158,12 +158,14 @@ function LaborCostCodes(props: Props) {
           className="px-4 my-4 text-lg"
           onClick={incrementFee}
           buttonText="Add Work"
+          type="button"
         />
         {numCostCodes > 1 && (
           <Button
             className="px-4 my-4 text-lg"
             onClick={decrementFee}
             buttonText="Remove Work"
+            type="button"
           />
         )}
       </div>

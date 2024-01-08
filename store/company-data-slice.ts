@@ -16,11 +16,7 @@ import {
   createCostCodeList,
 } from '@/lib/utility/costCodeHelpers';
 import { RootState } from '.';
-import {
-  SelectMenuOptions,
-  VendorData,
-  Vendors,
-} from '@/lib/models/formDataModel';
+import { SelectMenuOptions } from '@/lib/models/formDataModel';
 import { getChangeOrderIdFromName } from '@/lib/utility/processInvoiceHelpers';
 import {
   CostCodeTreeData,
@@ -44,12 +40,18 @@ import {
   InvoiceLineItem,
   InvoiceLineItemItem,
   ProcessedInvoiceData,
+  PredictedSupplier,
 } from '@/lib/models/invoiceDataModels';
 import {
   ChangeOrderContent,
   ChangeOrderContentItem,
 } from '@/lib/models/changeOrderModel';
-import { ExtendedCompanyData, Forms } from '@/lib/models/companyDataModel';
+import {
+  Customers,
+  Employees,
+  ExtendedCompanyData,
+  Forms,
+} from '@/lib/models/companyDataModel';
 import { isObjectEmpty, snapshotCopy } from '@/lib/utility/utils';
 import { RESET_STATE } from '@/lib/globals';
 
@@ -67,6 +69,7 @@ export const fetchCompanyData = createAsyncThunk(
         forms: `/api/${companyId}/get-all-forms`,
         costCodes: `/api/${companyId}/get-cost-codes`,
         invoices: `/api/${companyId}/invoices/get-all-invoices`,
+        employeesCustomers: `/api/${companyId}/get-employees-customers`,
       };
 
       const promises = Object.values(urls).map((url) =>
@@ -204,6 +207,7 @@ export const addProcessedInvoiceData = createAsyncThunk(
     },
     thunkAPI
   ) => {
+    // thunkAPI.dispatch(uiActions.lockUI());
     // thunkAPI.dispatch(uiActions.lockUI());
     try {
       const state = thunkAPI.getState() as RootState;
@@ -506,13 +510,16 @@ export const addProcessedInvoiceData = createAsyncThunk(
         const changeOrder = Object.values(changeOrdersSummary).find(
           (changeOrder) => {
             return (
-              changeOrder.name === processInvoiceFormState['change-order'].value
+              changeOrder.name ===
+              (processInvoiceFormState['change-order'].value as string)
+                .split('-')[0]
+                .trim()
             );
           }
         )!;
         changeOrderObj = {
-          uuid: changeOrder.uuid as string,
-          name: changeOrder.name as string,
+          uuid: changeOrder.uuid,
+          name: `${changeOrder.name} - ${changeOrder.workDescription}`,
         };
         // make all line items change orders null
         updatedLineItems = Object.fromEntries(
@@ -761,7 +768,6 @@ export const removeChangeOrderFromInvoiceThunk = createAsyncThunk(
         };
         // send the needed data to update invoice to the backend here
         throw new Error('STOP');
-        return true;
       } else {
         console.error(`${invoiceId}: Does not exists`);
         return false;
@@ -773,9 +779,11 @@ export const removeChangeOrderFromInvoiceThunk = createAsyncThunk(
 const initialDataState = {
   forms: {} as Forms,
   invoices: { status: '', allInvoices: {} as Invoices },
-  vendors: { status: '', allVendors: {} as Vendors },
+  // vendors: { status: '', allVendors: {} as Vendors },
   projectsSummary: { status: '', allProjects: {} },
   vendorsSummary: { status: '', allVendors: {} },
+  employees: {},
+  customers: {},
   costCodes: {} as CostCodesData,
   costCodeList: [] as SelectMenuOptions[],
   costCodeNameList: [] as SelectMenuOptions[],
@@ -867,19 +875,6 @@ export const companyDataSlice = createSlice({
         ...summaryVendorData,
       };
     },
-    addNewVendor(
-      state,
-      action: PayloadAction<{
-        newVendor: VendorData;
-        vendorId: string;
-      }>
-    ) {
-      const { newVendor, vendorId } = action.payload;
-      state.vendors.allVendors[vendorId] = { ...newVendor };
-    },
-    addNewVendorsBulk(state, action: PayloadAction<Vendors>) {
-      state.vendors.allVendors = { ...action.payload };
-    },
     addAgaveUUIDToVendorSummary(
       state,
       action: PayloadAction<{ agave_uuid: string; vendorId: string }>
@@ -894,17 +889,6 @@ export const companyDataSlice = createSlice({
       const allVendorsSummary: VendorSummary = {
         ...state.vendorsSummary.allVendors,
       };
-      const allVendors: Vendors = {
-        ...state.vendors.allVendors,
-      };
-
-      const updatedVendors: Vendors = Object.keys(allVendors)
-        .filter((vendorId) => !action.payload.includes(vendorId))
-        .reduce((obj: Vendors, key: string) => {
-          obj[key] = allVendors[key];
-          return obj;
-        }, {});
-
       const updatedVendorsSummary: VendorSummary = Object.keys(
         allVendorsSummary
       )
@@ -913,7 +897,6 @@ export const companyDataSlice = createSlice({
           obj[key] = allVendorsSummary[key];
           return obj;
         }, {});
-      state.vendors.allVendors = { ...updatedVendors };
       state.vendorsSummary.allVendors = { ...updatedVendorsSummary };
     },
 
@@ -951,12 +934,10 @@ export const companyDataSlice = createSlice({
         ...state.invoices?.allInvoices,
       };
     },
-
     removeInvoicesFromState(state, action: PayloadAction<string[]>) {
       const allInvoices: Invoices = {
         ...state.invoices.allInvoices,
       };
-
       const updatedInvoices: Invoices = Object.keys(allInvoices)
         .filter((invoiceId) => !action.payload.includes(invoiceId))
         .reduce((obj: Invoices, key: string) => {
@@ -969,6 +950,7 @@ export const companyDataSlice = createSlice({
       const allInvoices: Invoices = { ...state.invoices.allInvoices };
       state.invoices.allInvoices = { ...allInvoices, ...action.payload };
     },
+    // update a single vendor in the invoice processedData vendor object
     updateProcessedVendor(
       state,
       action: PayloadAction<{
@@ -984,6 +966,36 @@ export const companyDataSlice = createSlice({
         ...(state.invoices.allInvoices[invoiceId]
           .processedData as ProcessedInvoiceData),
         ...{ vendor },
+      };
+    },
+    // update multiple invoice's vendors in both processedData (if exits) and
+    // the predicted_supplier_name object
+    updateMultipleInvoiceVendors(
+      state,
+      action: PayloadAction<{
+        [invoiceId: string]: {
+          project_id: null;
+          predicted_supplier_name: PredictedSupplier;
+          vendor: { name: string | null; uuid: string | null };
+        };
+      }>
+    ) {
+      const updateInvoices: Invoices = snapshotCopy(state.invoices.allInvoices);
+      Object.entries(action.payload).forEach(([invoiceId, updateData]) => {
+        if (updateInvoices[invoiceId].processedData) {
+          updateInvoices[invoiceId].processedData!.vendor = {
+            ...updateInvoices[invoiceId].processedData!.vendor,
+            ...updateData.vendor,
+          };
+        }
+        updateInvoices[invoiceId].predicted_supplier_name = {
+          ...updateInvoices[invoiceId].predicted_supplier_name,
+          ...updateData.predicted_supplier_name,
+        };
+      });
+      state.invoices.allInvoices = {
+        ...state.invoices.allInvoices,
+        ...updateInvoices,
       };
     },
     addProcessedInvoiceData(
@@ -1075,6 +1087,33 @@ export const companyDataSlice = createSlice({
       );
       state.invoices.allInvoices = { ...removedInvoices };
     },
+
+    // Customers and Employees
+    addEmployeeData(
+      state,
+      action: PayloadAction<{
+        isUpdate: boolean;
+        data: { [uuid: string]: Employees };
+      }>
+    ) {
+      const { isUpdate, data } = action.payload;
+      state.employees = isUpdate ? { ...state.employees, ...data } : data;
+    },
+    addCustomerData(
+      state,
+      action: PayloadAction<{
+        isUpdate: boolean;
+        data: { [uuid: string]: Customers };
+      }>
+    ) {
+      const { isUpdate, data } = action.payload;
+      state.customers = isUpdate ? { ...state.customers, ...data } : data;
+    },
+
+    // Load the initial cost codes
+    addInitCostCodes(state, action: PayloadAction<CostCodesData>) {
+      state.costCodes = { ...state.costCodes, ...action.payload };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -1094,17 +1133,15 @@ export const companyDataSlice = createSlice({
       .addCase(
         fetchCompanyData.fulfilled,
         (state, action: PayloadAction<any>) => {
-          const baseForms = JSON.parse(action.payload.forms.value);
+          // forms
+          const baseForms = action.payload.forms.value;
           const forms = {
             status: action.payload.forms.status,
             ...baseForms,
           } as Forms;
           state.forms = { ...forms };
 
-          const allInvoices: Invoices = JSON.parse(
-            action.payload.invoices.value
-          );
-
+          const allInvoices: Invoices = action.payload.invoices.value;
           // we want to preserve the order of line_items_1, line_item_2, etc.
           // because they are in order from top to bottom for each page of the invoice
 
@@ -1146,41 +1183,20 @@ export const companyDataSlice = createSlice({
 
           const vendorsPayload: {
             [id: string]: {
-              'vendor-details': VendorData;
               'vendor-summary': VendorSummaryItem;
             };
-          } = JSON.parse(action.payload.vendors.value);
-
-          const vendorsDetailsPayload = Object.fromEntries(
-            Object.entries(vendorsPayload).map(
-              ([key, value]: [
-                string,
-                {
-                  'vendor-details': VendorData;
-                  'vendor-summary': VendorSummaryItem;
-                },
-              ]) => [key, value['vendor-details']]
-            )
-          );
+          } = action.payload.vendors.value;
 
           const vendorsSummaryPayload = Object.fromEntries(
             Object.entries(vendorsPayload).map(
               ([key, value]: [
                 string,
                 {
-                  'vendor-details': VendorData;
                   'vendor-summary': VendorSummaryItem;
                 },
               ]) => [key, value['vendor-summary']]
             )
           );
-
-          state.vendors = {
-            ...{
-              status: action.payload.vendors.status,
-              allVendors: { ...vendorsDetailsPayload } || {},
-            },
-          };
 
           state.vendorsSummary = {
             ...{
@@ -1188,10 +1204,14 @@ export const companyDataSlice = createSlice({
               allVendors: { ...vendorsSummaryPayload } || {},
             },
           };
-
-          const costCodes = costCodeData2NLevel(
-            JSON.parse(action.payload.costCodes.value)
-          );
+          // only convert the old style. this will be phased out but takes care
+          // of old data format that is still in the database
+          let costCodes: CostCodesData = action.payload.costCodes.value;
+          if (
+            !costCodes.divisions.every((division) => 'subItems' in division)
+          ) {
+            costCodes = costCodeData2NLevel(action.payload.costCodes.value);
+          }
           const codes = {
             status: action.payload.costCodes.status,
             ...costCodes,
@@ -1203,6 +1223,15 @@ export const companyDataSlice = createSlice({
             createCostCodeList(costCodes);
           state.costCodeList = costCodeList;
           state.costCodeNameList = costCodeNameList;
+
+          // employees and customers
+
+          const employeesCustomersObject: {
+            employees: Employees;
+            customers: Customers;
+          } = action.payload.employeesCustomers.value;
+          state.employees = employeesCustomersObject.employees ?? {};
+          state.customers = employeesCustomersObject.customers ?? {};
         }
       );
   },

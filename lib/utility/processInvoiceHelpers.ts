@@ -88,7 +88,7 @@ export function getChangeOrderIdFromName({
   changeOrderName: string;
 }): string {
   const changeOrder = Object.values(changeOrdersSummary).find((co) => {
-    return co.name === changeOrderName;
+    return co.name === changeOrderName.split('-')[0].trim();
   });
   if (!changeOrder) {
     throw new Error(`${changeOrderName} was not found.`);

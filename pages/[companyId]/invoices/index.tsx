@@ -150,7 +150,7 @@ function Invoices() {
             />
             <SectionHeading
               tabs={tabs}
-              totalInvoices={invoiceRows.length}
+              totalNum={invoiceRows.length}
               buttons={[
                 {
                   label: 'Add Invoices',

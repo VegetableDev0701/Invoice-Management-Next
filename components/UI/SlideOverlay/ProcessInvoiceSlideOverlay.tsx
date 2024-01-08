@@ -43,6 +43,7 @@ import Button from '../Buttons/Button';
 import MagnifyImageOnHover from '@/components/Forms/OverlayForm/MagnifyImageOnHover';
 import SlideOverlayForm from './SlideOverlayForm';
 import ContractSlideOverlayImage from './ContractSlideOverlayImage';
+import { useCreateVendorSelectMenu } from '@/hooks/use-utils';
 
 interface ExtendedItems extends Partial<Items> {
   sortBy: 'label' | 'id';
@@ -122,9 +123,16 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
   );
   const addVendorFormStateData = useSelector((state) => state.addVendorForm);
   const vendorsOverlayContent = useSelector((state) => state.overlay.vendors);
-  const vendorsSummary = useSelector(
+  const vendorSummary = useSelector(
     (state) => state.data.vendorsSummary.allVendors
   );
+  const vendorDropDownData =
+    (vendorSummary &&
+      !isObjectEmpty(vendorSummary) &&
+      useCreateVendorSelectMenu({
+        vendorSummary: vendorSummary as VendorSummary,
+      })) ||
+    [];
 
   const closeAndSaveFormRef = useRef<HTMLButtonElement>(null);
 
@@ -199,8 +207,8 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
     if (contractData) {
       const matchedVendorContract = Object.values(contractData).find(
         (contract) => {
-          return contract.summaryData?.uuid
-            ? contract.summaryData.uuid ===
+          return contract.summaryData.vendor.uuid
+            ? contract.summaryData.vendor.uuid ===
                 (invoiceObj.clickedInvoice as InvoiceTableRow).vendor_uuid
             : null;
         }
@@ -343,11 +351,11 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
       })
     );
 
+    const isVendorSummary = vendorSummary && !isObjectEmpty(vendorSummary);
     const vendorUUID = vendorsOverlayContent?.currentId ?? nanoid();
     const agave_uuid =
-      (vendorsSummary &&
-        !isObjectEmpty(vendorsSummary) &&
-        (vendorsSummary as VendorSummary)[vendorUUID]?.agave_uuid) ||
+      (isVendorSummary &&
+        (vendorSummary as VendorSummary)[vendorUUID]?.agave_uuid) ||
       null;
 
     // create the form data to push to the DB
@@ -373,13 +381,6 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
       })
     );
 
-    dispatch(
-      companyDataActions.addNewVendor({
-        newVendor: dataToSubmit,
-        vendorId: vendorUUID,
-      })
-    );
-
     // when adding a new vendor from the process invoice step
     // this vendor should get attached to that invoice
     if (invoiceObj.clickedInvoice) {
@@ -392,6 +393,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
           },
         })
       );
+      dispatch(addProcessInvoiceFormActions.setIsUpdatedState(true));
       // force the current row and process invoice form component to render with new data
       setRenderRows((prevState) => !prevState);
       setKey((prevState) => prevState + 1);
@@ -442,6 +444,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
             form="addVendor"
             overlayStateKey="vendors"
             onProcessInvoiceForm={true}
+            vendorDropDownData={vendorDropDownData}
             onSubmit={(e) => submitFormHandler(e, addVendorFormStateData)}
           />
           <ContractSlideOverlayImage
@@ -593,6 +596,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
                             }
                             showError={false}
                             actions={addProcessInvoiceFormActions}
+                            vendorDropDownData={vendorDropDownData}
                             form="addProcessInvoice"
                             projectId={projectId}
                             onRenderComplete={handleChildRenderComplete}
@@ -602,6 +606,7 @@ export default function ProcessInvoiceSlideOverlay(props: Props) {
                       {invoiceObj.clickedInvoice && (
                         <CenteredPagination
                           onChangePage={setPageIdx}
+                          handleUpdateData={handleUpdateData}
                           pageArray={invoiceObj.clickedInvoice.gcs_img_uri}
                           rows={rows}
                           currentRowIdx={invoiceObj.invoiceRowNumber}

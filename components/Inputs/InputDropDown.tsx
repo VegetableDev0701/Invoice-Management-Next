@@ -18,11 +18,7 @@ import AgaveLinkComponent from '../Utilities/AgaveLinkComponent';
 
 import classes from './Input.module.css';
 
-interface Props {
-  props: PropsItems;
-}
-
-export interface PropsItems {
+export interface Props {
   input: Items;
   classes: string;
   form?: string;
@@ -36,7 +32,7 @@ interface Selected {
 }
 
 const Dropdown = (props: Props) => {
-  const { input, showError, actions, form, classes: addOnClass } = props.props;
+  const { input, showError, actions, form, classes: addOnClass } = props;
 
   const dispatch = useDispatch();
   const { user } = useUser();

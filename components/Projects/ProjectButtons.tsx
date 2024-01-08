@@ -29,6 +29,7 @@ import {
 } from '@/lib/models/summaryDataModel';
 import DropDownButton from '../UI/Buttons/DropDownButton';
 import { buildB2AReport } from '@/lib/utility/budgetReportHelpers';
+import { projectDataActions } from '@/store/projects-data-slice';
 
 interface Props {
   projectId: string;
@@ -38,6 +39,7 @@ interface Props {
 
 const ProjectButtons = (props: Props) => {
   const reportTaskId = 'Build_Report';
+  const buildTask = 'Build_Client_Bill';
 
   const { projectId, clientBillId, isClientBillPage } = props;
   const dispatch = useDispatch();
@@ -61,6 +63,13 @@ const ProjectButtons = (props: Props) => {
   ) as ProjectSummaryItem;
 
   const buildClientBillHandler = () => {
+    dispatch(
+      uiActions.setTaskLoadingState({
+        taskId: buildTask,
+        isLoading: true,
+      })
+    );
+    dispatch(uiActions.lockUI());
     const clientBillId = nanoid();
     // There are checks in each of these dispatches that will end the dispatch early,
     // so each subsequent dispatch should not run unless the previous one completed
@@ -84,19 +93,62 @@ const ProjectButtons = (props: Props) => {
             projectId,
             clientBillId,
           })
-        ).then(() =>
-          dispatch(
-            moveBillDataInFirestore({
-              projectId,
-              companyId: (user as User).user_metadata.companyId,
-              clientBillId,
-              clientBillObj,
-            })
+        )
+          .then(() =>
+            dispatch(
+              moveBillDataInFirestore({
+                projectId,
+                companyId: (user as User).user_metadata.companyId,
+                clientBillId,
+                clientBillObj,
+              })
+            )
           )
+          .then((result) => {
+            if (
+              (result.payload as { isSuccess: boolean; error: any }).isSuccess
+            ) {
+              dispatch(
+                uiActions.notify({
+                  content: 'Successfully added and saved new client bill.',
+                  icon: 'success',
+                })
+              );
+            } else {
+              dispatch(
+                uiActions.notify({
+                  content: (
+                    result.payload as { isSuccess: boolean; error: any }
+                  ).error.message,
+                  icon: 'error',
+                  autoHideDuration: 4000,
+                })
+              );
+              dispatch(
+                projectDataActions.removeClientBillSummary({
+                  projectId,
+                  rowId: clientBillId,
+                })
+              );
+            }
+            dispatch(
+              uiActions.setTaskLoadingState({
+                taskId: buildTask,
+                isLoading: false,
+              })
+            );
+            dispatch(uiActions.unLockUI());
+          });
+      } else {
+        dispatch(
+          uiActions.setTaskLoadingState({
+            taskId: buildTask,
+            isLoading: false,
+          })
         );
+        dispatch(uiActions.unLockUI());
       }
     });
-    dispatch(uiActions.setLoadingState({ isLoading: true }));
   };
 
   const buildB2AReportAsPDF = async () => {
@@ -248,6 +300,7 @@ const ProjectButtons = (props: Props) => {
               'px-10 py-2 md:text-2xl font-normal bg-stak-dark-green 2xl:text-3xl',
             onClick: buildClientBillHandler,
           }}
+          taskId={buildTask}
         />
       )}
     </div>

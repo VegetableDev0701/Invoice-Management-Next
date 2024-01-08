@@ -1,16 +1,18 @@
-import { Items } from '@/lib/models/formDataModel';
+import { useEffect, useMemo } from 'react';
+
+import { overlayActions } from '@/store/overlay-control-slice';
+import {
+  useAppDispatch as useDispatch,
+  useAppSelector as useSelector,
+} from '@/store/hooks';
+
+import { Items, SelectMenuOptions } from '@/lib/models/formDataModel';
 import { FormStateItem } from '@/lib/models/formStateModels';
 import {
   ChangeOrderSummary,
   VendorSummary,
 } from '@/lib/models/summaryDataModel';
-import { isDuplicated, isObjectEmpty } from '@/lib/utility/utils';
-import {
-  useAppDispatch as useDispatch,
-  useAppSelector as useSelector,
-} from '@/store/hooks';
-import { overlayActions } from '@/store/overlay-control-slice';
-import { useEffect } from 'react';
+import { isDuplicated } from '@/lib/utility/utils';
 
 /**
  * Will return true if the change order name chosen is already in use.
@@ -24,6 +26,7 @@ export const useCheckChangeOrderNameDuped = ({
   input?: Items;
   inputState: FormStateItem;
 }) => {
+  if (!projectId) return;
   const dispatch = useDispatch();
 
   const changeOrderSummary: ChangeOrderSummary | object | null = useSelector(
@@ -54,26 +57,22 @@ export const useCheckChangeOrderNameDuped = ({
     );
   }, [isNameDuped]);
 
-  if (!projectId) return;
   return isNameDuped;
 };
 
 export const useCheckVendorNameDuped = ({
   input,
   inputState,
+  vendorDropDownData,
 }: {
   input?: Items;
   inputState: FormStateItem;
+  vendorDropDownData?: SelectMenuOptions[];
 }) => {
   const dispatch = useDispatch();
 
-  const vendorSummary: VendorSummary | object = useSelector(
-    (state) => state.data.vendorsSummary.allVendors
-  );
-  const vendorNames = !isObjectEmpty(vendorSummary)
-    ? Object.values(vendorSummary as VendorSummary).map(
-        (vendor) => vendor.vendorName
-      )
+  const vendorNames = vendorDropDownData
+    ? Object.values(vendorDropDownData).map((vendor) => vendor.label)
     : null;
 
   let isNameDuped = false;
@@ -97,4 +96,26 @@ export const useCheckVendorNameDuped = ({
   }, [isNameDuped]);
 
   return isNameDuped;
+};
+
+export const useCreateVendorSelectMenu = ({
+  vendorSummary,
+}: {
+  vendorSummary: VendorSummary;
+}) => {
+  const vendorSelectMenuOptions = useMemo(() => {
+    let count = 0;
+    const vendorSelectMenuOptions: SelectMenuOptions[] = vendorSummary
+      ? Object.values(vendorSummary).map((vendor) => {
+          count++;
+          return {
+            id: count,
+            label: vendor.vendorName,
+            uuid: vendor.uuid,
+          };
+        })
+      : [];
+    return vendorSelectMenuOptions;
+  }, [Object.keys(vendorSummary).length]);
+  return vendorSelectMenuOptions;
 };

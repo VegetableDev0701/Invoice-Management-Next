@@ -36,8 +36,10 @@ export const isObjectEmpty = (object: object) => {
 };
 
 export function formatDateForInput(dateStr: string, dateTime = false) {
-  const date = new Date(dateTime ? dateStr : dateStr + 'T12:00:00');
-
+  let date = new Date(dateTime ? dateStr : dateStr + ' ');
+  if (isNaN(date.getTime())) {
+    date = new Date(dateStr);
+  }
   // JavaScript months are 0-indexed, so add 1
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -82,4 +84,27 @@ export function generateTitle(
   condition = (number: number | string) => Number(number) >= 0
 ) {
   return condition(number) ? `${number} - ${name}` : name || '';
+}
+
+function _findMode<T extends { toString(): string }>(arr: T[]): T {
+  const frequencyMap: Record<string, number> = {};
+  let maxFreq = 0;
+  const modes: T[] = [];
+
+  for (const item of arr) {
+    const key = item.toString();
+    frequencyMap[key] = (frequencyMap[key] || 0) + 1;
+    if (frequencyMap[key] > maxFreq) {
+      maxFreq = frequencyMap[key];
+    }
+  }
+
+  for (const key in frequencyMap) {
+    if (frequencyMap[key] === maxFreq) {
+      // Assuming the `toString` mapping is reversible and accurate for the type T
+      modes.push(arr.find((i) => i.toString() === key) as T);
+    }
+  }
+
+  return modes[0];
 }

@@ -1,15 +1,29 @@
 import { CostCodeTreeData, CostCodesData } from './budgetCostCodeModel';
-import { MainCategories, SelectMenuOptions, VendorData } from './formDataModel';
+import { MainCategories, SelectMenuOptions } from './formDataModel';
 import { Invoices } from './invoiceDataModels';
 import { ProjectSummary, VendorSummary } from './summaryDataModel';
 
-// TODO seems costCodeList and costCodeNameList should be stored in project data slice?
+export interface Employees {
+  full_name: string;
+  agave_uuid: string | null;
+  uuid: string;
+}
+export interface Customers {
+  name: string;
+  agave_uuid: string | null;
+  email: string | null;
+  phone: string | null;
+  uuid: string;
+  sub_level: number;
+}
+
 export interface CompanyData {
   forms: Forms;
   invoices: { status: string; allInvoices: Invoices };
-  vendors: { status: string; allVendors: { [vendorId: string]: VendorData } };
   projectsSummary: { status: string; allProjects: ProjectSummary | object };
   vendorsSummary: { status: string; allVendors: VendorSummary | object };
+  employees: Employees | object;
+  customers: Customers | object;
   costCodes: CostCodesData;
   costCodeList: SelectMenuOptions[];
   costCodeNameList: SelectMenuOptions[];

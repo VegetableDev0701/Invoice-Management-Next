@@ -42,6 +42,7 @@ import FullScreenLoader from '../Loaders/FullScreenLoader';
 import MagnifyImageOnHover from '@/components/Forms/OverlayForm/MagnifyImageOnHover';
 import CenteredPagination from '../Pagination/CenteredNumbersPagination';
 import FormOverlay from '@/components/Forms/OverlayForm/FormOverlay';
+import { useCreateVendorSelectMenu } from '@/hooks/use-utils';
 
 interface Props {
   projectId: string;
@@ -70,9 +71,16 @@ export default function ContractSlideOverlay(props: Props) {
 
   const addVendorFormStateData = useSelector((state) => state.addVendorForm);
   const vendorsOverlayContent = useSelector((state) => state.overlay.vendors);
-  const vendorsSummary = useSelector(
+  const vendorSummary = useSelector(
     (state) => state.data.vendorsSummary.allVendors
   );
+  const vendorDropDownData =
+    (vendorSummary &&
+      !isObjectEmpty(vendorSummary) &&
+      useCreateVendorSelectMenu({
+        vendorSummary: vendorSummary as VendorSummary,
+      })) ||
+    [];
   const { user, isLoading: userLoading } = useUser();
 
   const { response, successJSON, sendRequest } = useHttp({
@@ -148,8 +156,8 @@ export default function ContractSlideOverlay(props: Props) {
     if (!tableData || !overlayContent.currentId || !formStateData) return;
 
     const matchedVendorSummary: VendorSummaryItem =
-      !isObjectEmpty(vendorsSummary) &&
-      Object.values(vendorsSummary).find((vendor) => {
+      !isObjectEmpty(vendorSummary) &&
+      Object.values(vendorSummary).find((vendor) => {
         if (formStateData?.['vendor-name']?.value) {
           return vendor.vendorName === formStateData?.['vendor-name']?.value;
         }
@@ -238,9 +246,9 @@ export default function ContractSlideOverlay(props: Props) {
 
     const vendorUUID = vendorsOverlayContent?.currentId ?? nanoid();
     const agave_uuid =
-      (vendorsSummary &&
-        !isObjectEmpty(vendorsSummary) &&
-        (vendorsSummary as VendorSummary)[vendorUUID]?.agave_uuid) ||
+      (vendorSummary &&
+        !isObjectEmpty(vendorSummary) &&
+        (vendorSummary as VendorSummary)[vendorUUID]?.agave_uuid) ||
       null;
 
     // create the form data to push to the DB
@@ -266,15 +274,6 @@ export default function ContractSlideOverlay(props: Props) {
       })
     );
 
-    dispatch(
-      companyDataActions.addNewVendor({
-        newVendor: dataToSubmit,
-        vendorId: vendorUUID,
-      })
-    );
-    // TODO add a action creator for updating the contraqct data with the new vendor
-    // when adding a new vendor from the process invoice step
-    // this vendor should get attached to that invoice
     if (contractObj.clickedContract) {
       dispatch(
         projectDataActions.updateContractVendorOnAdd({
@@ -464,6 +463,7 @@ export default function ContractSlideOverlay(props: Props) {
                             showError={missingInputs}
                             projectId={projectId}
                             form={'editContract'}
+                            vendorDropDownData={vendorDropDownData}
                           />
                         </div>
                       </div>

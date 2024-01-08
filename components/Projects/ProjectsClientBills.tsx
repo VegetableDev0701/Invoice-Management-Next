@@ -99,6 +99,7 @@ export default function ProjectsClientBills(props: Props) {
         rows={clientBillRows}
         projectId={projectId}
         selectedRowId={null}
+        preSortKey="billTitle"
         baseUrl={`/${
           (user as User).user_metadata.companyId
         }/projects/${projectId}`}

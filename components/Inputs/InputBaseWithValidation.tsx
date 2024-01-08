@@ -14,7 +14,7 @@ import {
 
 import { formatNumber } from '@/lib/utility/formatter';
 import { useGetInputState } from '@/lib/utility/formHelpers';
-import { Items } from '@/lib/models/formDataModel';
+import { Items, SelectMenuOptions } from '@/lib/models/formDataModel';
 import { Actions } from '@/lib/models/types';
 import { FormStateItemV2 } from '@/lib/models/formStateModels';
 
@@ -24,13 +24,10 @@ import Button from '../UI/Buttons/Button';
 import { ContractVendorObject } from '@/lib/models/summaryDataModel';
 
 export interface Props {
-  props: PropsItems;
-}
-
-export interface PropsItems {
   input: Items;
   actions: Actions;
   form: string;
+  vendorDropDownData?: SelectMenuOptions[];
   disabled?: boolean;
   autofocus?: boolean;
   classes?: string;
@@ -52,12 +49,13 @@ const InputBaseWithValidation = (props: Props) => {
     form,
     autofocus,
     projectId,
+    vendorDropDownData,
     onBlur,
     onFocus,
     onMouseEnter,
     onMouseLeave,
     classes: addOnClass,
-  } = props.props;
+  } = props;
 
   const [mutatedState, setMutatedState] = useState<string | undefined>(
     undefined
@@ -84,7 +82,11 @@ const InputBaseWithValidation = (props: Props) => {
     inputState,
   });
 
-  const isVendorNameDuped = useCheckVendorNameDuped({ input, inputState });
+  const isVendorNameDuped = useCheckVendorNameDuped({
+    input,
+    inputState,
+    vendorDropDownData,
+  });
 
   const [inputValueState, changeHandler, blurHandler] = useInputChangeHandler(
     input,

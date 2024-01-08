@@ -14,7 +14,7 @@ import { contractActions } from '@/store/contract-slice';
 import { useKeyPressActionOverlay } from '@/hooks/use-save-on-key-press';
 
 import { FormStateV2, User } from '@/lib/models/formStateModels';
-import { InvoiceTableRow, Invoices } from '@/lib/models/invoiceDataModels';
+import { InvoiceTableRow } from '@/lib/models/invoiceDataModels';
 import { snapshotCopy } from '@/lib/utility/utils';
 
 import {
@@ -29,6 +29,13 @@ interface Props {
   rows: InvoiceTableRow[] | null;
   snapShotFormState?: FormStateV2;
   updateData?: boolean;
+  handleUpdateData?: ({
+    formState,
+    doc_id,
+  }: {
+    formState: FormStateV2;
+    doc_id: string;
+  }) => void;
   onChangePage: (activePage: number) => void;
 }
 
@@ -45,6 +52,7 @@ export default function CenteredPagination(props: Props) {
     open,
     snapShotFormState,
     updateData = true,
+    handleUpdateData,
     onChangePage,
   } = props;
   const [activePageIdx, setActivePageIdx] = useState(0);
@@ -55,15 +63,14 @@ export default function CenteredPagination(props: Props) {
   const { user } = useUser();
 
   const dispatch = useDispatch();
-  const allInvoices: Invoices = useSelector(
-    (state) => state.data.invoices.allInvoices
-  );
+  const allInvoices = useSelector((state) => state.data.invoices.allInvoices);
 
-  const processInvoiceFormState: FormStateV2 = useSelector(
+  const processInvoiceFormState = useSelector(
     (state) => state.addProcessInvoiceForm
   );
 
   const overlayContent = useSelector((state) => state.overlay);
+  const invoiceObj = useSelector((state) => state.invoice);
 
   useKeyPressActionOverlay({
     isActive:
@@ -125,6 +132,16 @@ export default function CenteredPagination(props: Props) {
           })
         );
       }
+      if (
+        processInvoiceFormState?.isUpdated.value &&
+        !updateData &&
+        handleUpdateData
+      ) {
+        handleUpdateData({
+          formState: snapshotCopy(processInvoiceFormState) as FormStateV2,
+          doc_id: (invoiceObj.clickedInvoice as InvoiceTableRow)?.doc_id,
+        });
+      }
       dispatch(
         invoiceActions.getInvoiceSnapshot({
           formState: snapshotCopy(processInvoiceFormState) as FormStateV2,
@@ -174,6 +191,17 @@ export default function CenteredPagination(props: Props) {
           })
         );
       }
+      if (
+        processInvoiceFormState?.isUpdated.value &&
+        !updateData &&
+        handleUpdateData
+      ) {
+        handleUpdateData({
+          formState: snapshotCopy(processInvoiceFormState) as FormStateV2,
+          doc_id: (invoiceObj.clickedInvoice as InvoiceTableRow)?.doc_id,
+        });
+      }
+
       dispatch(
         invoiceActions.getInvoiceSnapshot({
           formState: snapshotCopy(processInvoiceFormState) as FormStateV2,

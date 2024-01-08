@@ -17,37 +17,37 @@ export interface PredictedSupplier {
 }
 
 export interface InvoiceItem {
-  processedData?: ProcessedInvoiceData;
-  supplier_name: Entity;
-  supplier_id: string | null;
-  is_attached_to_bill: boolean;
-  predicted_supplier_name: PredictedSupplier;
-  gcs_uri: string;
-  pages: Page[];
-  number_of_pages: number;
-  currency: Entity;
-  receiver_address: Entity;
-  gcs_img_uri: string[];
   approved: boolean;
-  receiver_name: Entity;
-  project: InvoiceProject;
-  invoice_date: Entity;
   client_bill_id: string | null;
-  project_id: string | null;
-  doc_id: string;
-  predicted_project: PredictedProject;
-  invoice_type: Entity;
-  total_tax_amount: Entity | null;
-  line_items: Entity[];
-  supplier_address: Entity;
-  document_type: string | null;
-  payment_terms: Entity;
+  currency: Entity;
   date_received: string;
-  total_amount: Entity;
+  doc_id: string;
+  document_type: string | null;
+  gcs_img_uri: string[];
+  gcs_uri: string;
+  invoice_date: Entity;
   invoice_id: Entity;
-  processed: boolean;
+  invoice_type: Entity;
+  is_attached_to_bill: boolean;
+  line_items: Entity[];
   line_items_gpt: InvoiceLineItem;
   net_amount?: Entity;
+  number_of_pages: number;
+  pages: Page[];
+  payment_terms: Entity;
+  processed: boolean;
+  predicted_supplier_name: PredictedSupplier;
+  predicted_project: PredictedProject;
+  processedData?: ProcessedInvoiceData;
+  project: InvoiceProject;
+  project_id: string | null;
+  receiver_address: Entity;
+  receiver_name: Entity;
+  supplier_address: Entity;
+  supplier_id: string | null;
+  supplier_name: Entity;
+  total_amount: Entity;
+  total_tax_amount: Entity | null;
 }
 
 export interface InvoiceTableRows {

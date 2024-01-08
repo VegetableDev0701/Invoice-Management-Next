@@ -18,10 +18,6 @@ import classes from './Input.module.css';
 import { generateTitle } from '@/lib/utility/utils';
 
 export interface Props {
-  props: PropsItems;
-}
-
-export interface PropsItems {
   input: Items;
   actions: Actions;
   form: string;
@@ -31,14 +27,7 @@ export interface PropsItems {
 }
 
 const InputToggleOnOff = (props: Props) => {
-  const {
-    icon,
-    input,
-    showError,
-    actions,
-    form,
-    classes: addOnClass,
-  } = props.props;
+  const { icon, input, showError, actions, form, classes: addOnClass } = props;
 
   const dispatch = useDispatch();
 
