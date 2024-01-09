@@ -321,29 +321,57 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                                 }
                                 onClick={(e) => {
                                   if (e.shiftKey) {
-                                    const minIndex = Math.min(lastIndex, index) + 1
-                                    const maxIndex = Math.max(lastIndex, index)
-                                    
-                                    const isMinSel = selected.findIndex(ele => cmp(ele, filteredSortedData[index], keyField)) == -1
-                                    const tmpAry = filteredSortedData.slice(minIndex, maxIndex)
-                                    tmpAry.push(filteredSortedData[index])
-                                    tmpAry.push(filteredSortedData[lastIndex])
+                                    const minIndex =
+                                      Math.min(lastIndex, index) + 1;
+                                    const maxIndex = Math.max(lastIndex, index);
+
+                                    const isMinSel =
+                                      selected.findIndex((ele) =>
+                                        cmp(
+                                          ele,
+                                          filteredSortedData[index],
+                                          keyField
+                                        )
+                                      ) == -1;
+                                    const tmpAry = filteredSortedData.slice(
+                                      minIndex,
+                                      maxIndex
+                                    );
+                                    tmpAry.push(filteredSortedData[index]);
+                                    tmpAry.push(filteredSortedData[lastIndex]);
                                     if (!isMinSel) {
                                       // remove
-                                      const temp = selected.filter((el) => tmpAry.findIndex((ele) => cmp(ele, el, keyField)) == -1)
-                                      setSelected([...temp])
+                                      const temp = selected.filter(
+                                        (el) =>
+                                          tmpAry.findIndex((ele) =>
+                                            cmp(ele, el, keyField)
+                                          ) == -1
+                                      );
+                                      setSelected([...temp]);
                                     } else {
                                       // add
-                                      const temp = tmpAry.filter((el) => selected.findIndex((ele) => cmp(ele, el, keyField)) == -1)
-                                      setSelected([...selected, ...temp])
+                                      const temp = tmpAry.filter(
+                                        (el) =>
+                                          selected.findIndex((ele) =>
+                                            cmp(ele, el, keyField)
+                                          ) == -1
+                                      );
+                                      setSelected([...selected, ...temp]);
                                     }
                                   } else {
-                                    const isChecked = selected.findIndex(el => cmp(el, element, keyField)) == -1
+                                    const isChecked =
+                                      selected.findIndex((el) =>
+                                        cmp(el, element, keyField)
+                                      ) == -1;
                                     setSelected(
                                       isChecked
                                         ? [...selected, element]
-                                        : selected.filter((el) => cmp(el, element, keyField) == false)
-                                    )
+                                        : selected.filter(
+                                            (el) =>
+                                              cmp(el, element, keyField) ==
+                                              false
+                                          )
+                                    );
                                   }
                                   setLastIndex(index);
                                 }}
