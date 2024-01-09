@@ -470,8 +470,10 @@ const InvoicesTable = <H extends InvoiceTableHeadings>(props: Props<H>) => {
                                     setSelected(
                                       isChecked
                                         ? [...selected, invoice]
-                                        : selected.filter((el) => el !== invoice)
-                                    )
+                                        : selected.filter(
+                                            (el) => el !== invoice
+                                          )
+                                    );
                                   }
                                   setLastIndex(index);
                                 }}
