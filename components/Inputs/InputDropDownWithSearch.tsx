@@ -19,6 +19,8 @@ import { Actions } from '@/lib/models/types';
 import { FormStateItem, FormStateItemV2 } from '@/lib/models/formStateModels';
 import {
   getChangeOrderNamesForDropDown,
+  getCustomerNamesForDropDown,
+  getEmployeeNamesForDropDown,
   getProjectNamesForDropdown,
 } from '@/lib/utility/tableHelpers';
 import { sortArrayByObjKey } from '@/lib/utility/tableHelpers';
@@ -31,6 +33,7 @@ import classes from './Input.module.css';
 import AddInvoice from '@/public/icons/AddInvoiceSVG';
 import ButtonIcon from '../UI/Buttons/ButtonIcon';
 import AddVendorIcon from '@/public/icons/AddVendorSVG';
+import { Customers, Employees } from '@/lib/models/companyDataModel';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -106,6 +109,8 @@ const DropDownWithSearch = (props: Props) => {
     (state) => state.data.costCodeNameList
   );
   const contractObj = useSelector((state) => state.contract);
+  const customers = useSelector((state) => state.data?.customers) as Customers;
+  const employees = useSelector((state) => state.data?.employees) as Employees;
 
   const contractClickHandler = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -231,6 +236,22 @@ const DropDownWithSearch = (props: Props) => {
       } else {
         setDropDownChoices([{ id: 1, label: 'None' }]);
       }
+    } else if (input.id.includes('client-name')) {
+      setDropDownChoices(
+        sortArrayByObjKey(
+          getCustomerNamesForDropDown({ customers }),
+          'label',
+          'None'
+        )
+      );
+    } else if (input.id.includes('employee-name')) {
+      setDropDownChoices(
+        sortArrayByObjKey(
+          getEmployeeNamesForDropDown({ employees }),
+          'label',
+          'None'
+        )
+      );
     }
   }, [isLoading]);
 

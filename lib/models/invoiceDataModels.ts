@@ -58,6 +58,7 @@ export interface InvoiceTableRow {
   [key: string]: any;
   approved: string;
   approver?: string;
+  billable: boolean;
   change_order: { uuid: string; name: string } | null | undefined;
   cost_code?: [object]; // TODO remove from data???
   date_received: string;
@@ -111,6 +112,7 @@ export interface ProcessedInvoiceData {
   is_synced?: string;
   invoice_date?: string;
   billable: boolean;
+  expense_tax: boolean;
 }
 
 export interface InvoiceLineItem {

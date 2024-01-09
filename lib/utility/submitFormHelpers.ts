@@ -17,10 +17,15 @@ import { formatNameForID } from '@/lib/utility/formatter';
 import { NewUserData } from '@/components/Utilities/OnBoardUser/OnBoardNewUser';
 import { VendorSummaryItem } from '../models/summaryDataModel';
 
-export function createAuth0UserData(
-  formStateData: FormStateV2,
-  newUserData?: NewUserData
-) {
+export function createAuth0UserData({
+  formStateData,
+  newUserData,
+  user,
+}: {
+  formStateData: FormStateV2;
+  newUserData?: NewUserData;
+  user?: User;
+}) {
   const userData: User = {
     user_metadata: {
       companyName: '',
@@ -37,14 +42,30 @@ export function createAuth0UserData(
       };
     });
 
-  const name = `${formStateData['first-name-as'].value} ${formStateData['last-name-as'].value}`;
+  const name = `${(formStateData['first-name-as'].value as string).trim()} ${(
+    formStateData['last-name-as'].value as string
+  ).trim()}`;
   if (newUserData && newUserData.user_data) {
     userData.name = name;
     userData.user_metadata.companyName =
-      newUserData.user_data?.company_name ??
+      user && user?.user_metadata?.companyName
+        ? user.user_metadata.companyName
+        : newUserData.user_data?.company_name ??
+          (formStateData['company-name-as'].value as string);
+    userData.user_metadata.companyId =
+      user && user?.user_metadata?.companyId
+        ? user.user_metadata.companyId
+        : newUserData.user_data.company_id;
+    userData.user_metadata.userUUID =
+      user && user?.user_metadata?.userUUID
+        ? user.user_metadata.userUUID
+        : newUserData.user_data.user_id;
+  } else if (user) {
+    userData.user_metadata.companyName =
+      user.user_metadata?.companyName ??
       (formStateData['company-name-as'].value as string);
-    userData.user_metadata.companyId = newUserData.user_data.company_id;
-    userData.user_metadata.userUUID = newUserData.user_data.user_id;
+    userData.user_metadata.companyId = user.user_metadata?.companyId ?? '';
+    userData.user_metadata.userUUID = user.user_metadata?.userUUID ?? '';
   }
 
   return userData;

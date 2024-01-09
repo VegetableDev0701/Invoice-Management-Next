@@ -44,6 +44,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         : `${req.body.user_metadata.accountSettings['first-name-as'].value} \
         ${req.body.user_metadata.accountSettings['last-name-as'].value}`;
 
+      console.log(user_metadata);
+
       const updateCompanyNameResponse = await fetch(
         `${getAPIUrl()}/update_new_user_info`,
         {

@@ -351,6 +351,7 @@ export default function ProjectsLaborFees(props: Props) {
         tableType="laborFee"
         onConfirmModal={confirmModalHandler}
         onRowClick={rowClickHandler}
+        preSortKey="costCode"
       />
     </>
   );

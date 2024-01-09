@@ -238,19 +238,11 @@
         {
           "items": [
             {
-              "label": "Client's First Name",
-              "id": "client-first-name",
+              "label": "Client's Name",
+              "id": "client-name",
               "type": "text",
               "required": true,
               "errormessage": "Client's first name is required.",
-              "value": ""
-            },
-            {
-              "label": "Client's Last Name",
-              "id": "client-last-name",
-              "type": "text",
-              "required": true,
-              "errormessage": "Client's last name is required.",
               "value": ""
             }
           ]

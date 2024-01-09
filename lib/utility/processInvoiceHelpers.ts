@@ -75,6 +75,16 @@ export function getCurrentInvoiceData(
       ...item,
       ...{ value: currentData.line_items_toggle },
     };
+  } else if (item.id === 'billable') {
+    return {
+      ...item,
+      ...{ value: currentData.billable },
+    };
+  } else if (item.id === 'expense-tax') {
+    return {
+      ...item,
+      ...{ value: currentData.expense_tax },
+    };
   } else {
     return item;
   }

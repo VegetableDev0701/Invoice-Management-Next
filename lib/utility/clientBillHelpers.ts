@@ -19,6 +19,8 @@ import {
   ProjectSummaryItem,
 } from '../models/summaryDataModel';
 import { SUMMARY_COST_CODES } from '../globals';
+import { Items } from '../models/formDataModel';
+import { FormStateV2 } from '../models/formStateModels';
 
 export const useCreateClientBillWorkDescription = ({
   tableData,
@@ -254,3 +256,19 @@ export const useCreateClientBillWorkDescription = ({
   }, [tableData]);
   return clientBillWorkDescription;
 };
+
+export function getCurrentBillTitle({
+  item,
+  currentData,
+}: {
+  item: Items;
+  currentData: FormStateV2;
+}) {
+  if (item.id === 'bill-month') {
+    return { ...item, value: currentData['bill-month'].value };
+  } else if (item.id === 'bill-year') {
+    return { ...item, value: currentData['bill-year'].value };
+  } else {
+    return item;
+  }
+}

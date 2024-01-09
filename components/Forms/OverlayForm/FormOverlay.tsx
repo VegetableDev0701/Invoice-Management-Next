@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useAppSelector } from '@/store/hooks';
+
 import { formatNameForID } from '@/lib/utility/formatter';
 import { getFormIcon } from '@/lib/utility/formHelpers';
 import { Actions, AddLaborActions, FormData } from '@/lib/models/types';
@@ -11,6 +13,7 @@ import {
   SelectMenuOptions,
   isInputElementWithAddressElements,
 } from '@/lib/models/formDataModel';
+import { isObjectEmpty } from '@/lib/utility/utils';
 
 import { Input } from '../../Inputs/Input';
 import InputAddressAutocomplete from '@/components/Inputs/InputAddressAutocomplete';
@@ -44,6 +47,9 @@ function FormOverlay(props: Props) {
     projectId,
     vendorDropDownData,
   } = props;
+
+  const employees = useAppSelector((state) => state.data?.employees);
+  const customers = useAppSelector((state) => state.data?.customers);
 
   return (
     <div className={classes['scroll-frame']} id="scroll-frame">
@@ -90,6 +96,20 @@ function FormOverlay(props: Props) {
                     className="flex py-2 px-5 self-stretch gap-4"
                   >
                     {el.items.map((item, p) => {
+                      if (
+                        item.id === 'client-name' &&
+                        customers &&
+                        !isObjectEmpty(customers)
+                      ) {
+                        item = { ...item, inputType: 'dropdownWithSearch' };
+                      }
+                      if (
+                        item.id === 'employee-name' &&
+                        employees &&
+                        !isObjectEmpty(employees)
+                      ) {
+                        item = { ...item, inputType: 'dropdownWithSearch' };
+                      }
                       return (
                         <Input
                           classes="flex-1"

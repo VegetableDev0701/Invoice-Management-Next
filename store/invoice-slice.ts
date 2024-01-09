@@ -310,7 +310,8 @@ export const updateInvoiceData = createAsyncThunk(
         line_items_toggle: processInvoiceFormState?.['line-item-toggle']?.value
           ? (processInvoiceFormState['line-item-toggle'].value as boolean)
           : false,
-        billable: snapShotInvoice.processedData?.billable || false,
+        billable: snapShotInvoice.processedData?.billable || true,
+        expense_tax: snapShotInvoice.processedData?.expense_tax || false,
       };
 
       const numLineItems = +(state.addProcessInvoiceForm.numLineItems.value as
