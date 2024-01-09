@@ -128,9 +128,10 @@ export const createSingleProjectSummary = (
       'project-name',
       projectDetails.inputElements
     ) as string,
-    ownerName: `${
-      getTargetValue('client-first-name', ownerDetails.inputElements) as string
-    } ${getTargetValue('client-last-name', ownerDetails.inputElements)}`,
+    ownerName: getTargetValue(
+      'client-name',
+      ownerDetails.inputElements
+    ) as string,
     ownerPhone: getTargetValue(
       'client-phone-number',
       ownerDetails.inputElements
@@ -405,6 +406,7 @@ export const createSingleClientBillSummary = ({
   laborFeeIds,
   invoiceIds,
   changeOrderProfitTaxes,
+  projectSummary,
 }: {
   subTotal: string;
   billTitle: string;
@@ -418,6 +420,7 @@ export const createSingleClientBillSummary = ({
   laborFeeIds: string[];
   invoiceIds: string[];
   changeOrderProfitTaxes: ProfitTaxes;
+  projectSummary: ProjectSummaryItem;
 }): ClientBillSummaryItem => {
   const profit = currentActuals[SUMMARY_COST_CODES.profit].totalAmt;
   const liability = currentActuals[SUMMARY_COST_CODES.liability].totalAmt;
@@ -446,6 +449,7 @@ export const createSingleClientBillSummary = ({
       ? formatNumber((+subTotal.replaceAll(',', '')).toFixed(2))
       : '0.00',
     salesTax: formatNumber(totalSalesTax.toFixed(2)) || '0.00',
+    salesTaxPercent: projectSummary.salesTax,
     profit: formatNumber((+profit.replaceAll(',', '')).toFixed(2)) || '0.00',
     insuranceLiability:
       formatNumber((+liability.replaceAll(',', '')).toFixed(2)) || '0.00',
@@ -463,5 +467,6 @@ export const createSingleClientBillSummary = ({
     laborFeeIds,
     invoiceIds,
     createdAt: new Date().toString(),
+    payment: null,
   };
 };

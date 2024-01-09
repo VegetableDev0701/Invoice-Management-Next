@@ -95,25 +95,35 @@ export interface ClientBillData {
   actualsChangeOrders: InvoiceCurrentActualsChangeOrders;
 }
 
+interface Payment {
+  total_due: string;
+  paid_amount: string;
+  status: 'paid' | 'pending' | 'overdue';
+  date_payment: string;
+  date_due: string;
+}
+
 export interface ClientBillSummary {
   [clientBillId: string]: ClientBillSummaryItem;
 }
 
 export interface ClientBillSummaryItem extends BaseSummary {
   billTitle: string;
-  salesTax: string;
   boTax: string;
   changeOrders: string;
   changeOrder?: string;
   createdAt: string;
   insuranceLiability: string;
   invoiceIds: string[];
-  total: string;
   laborFeeIds: string[];
   numChangeOrders: number;
   numInvoices: number;
+  payment: Payment | null;
   profit: string;
+  salesTax: string;
+  salesTaxPercent: string;
   subTotal: string;
+  total: string;
   totalsByChangeOrder?: { [changeOrderId: string]: number };
 }
 

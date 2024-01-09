@@ -77,8 +77,11 @@ const AccountSettings = () => {
   ) => {
     e.preventDefault();
     // create the form data to push to the DB
-    const userData = createAuth0UserData(formStateData as FormState);
     if (!userLoading && user) {
+      const userData = createAuth0UserData({
+        formStateData: formStateData as FormState,
+        user,
+      });
       const requestConfig = {
         url: `/api/update-user-metadata`,
         method: 'PATCH',

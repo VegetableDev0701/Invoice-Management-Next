@@ -108,3 +108,46 @@ function _findMode<T extends { toString(): string }>(arr: T[]): T {
 
   return modes[0];
 }
+
+export function generateBillingDate({
+  // billingPeriod,
+  billingDay,
+  currentBillMonth,
+  currentBillYear,
+}: {
+  // billingPeriod: string;
+  billingDay: string;
+  currentBillMonth: string;
+  currentBillYear: string;
+}) {
+  const billingDayInt = parseInt(billingDay);
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentYear = currentDate.getFullYear();
+
+  const maxDaysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+
+  const currentBillDay =
+    billingDayInt > maxDaysInMonth ? maxDaysInMonth : billingDayInt;
+
+  return `${currentBillYear}-${currentBillMonth}-${currentBillDay}`;
+}
+
+export function getMonthNumber(monthName: string) {
+  const months: Record<string, number> = {
+    January: 0,
+    February: 1,
+    March: 2,
+    April: 3,
+    May: 4,
+    June: 5,
+    July: 6,
+    August: 7,
+    September: 8,
+    October: 9,
+    November: 10,
+    December: 11,
+  };
+
+  return months[monthName];
+}

@@ -78,7 +78,10 @@ export default function OnBoardForm({
   ) => {
     e.preventDefault();
     // create the form data to push to the DB
-    const newUserData = createAuth0UserData(formStateData, userData);
+    const newUserData = createAuth0UserData({
+      formStateData,
+      newUserData: userData,
+    });
 
     const requestConfig = {
       url: '/api/update-user-metadata',

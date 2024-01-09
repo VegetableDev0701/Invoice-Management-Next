@@ -8,6 +8,7 @@ import {
   VendorSummary,
   VendorSummaryItem,
 } from '../models/summaryDataModel';
+import { Customers, Employees } from '../models/companyDataModel';
 
 /**
  * Runs a quick check if the expriation date has passed.
@@ -270,6 +271,44 @@ export const getVendorNamesForDropDown = ({
       })
     : [];
   return vendorSelectMenuOptions;
+};
+
+export const getCustomerNamesForDropDown = ({
+  customers,
+}: {
+  customers: Customers;
+}) => {
+  let count = 0;
+  const customerSelectMenuOptions: SelectMenuOptions[] = customers
+    ? Object.values(customers).map((customer) => {
+        count++;
+        return {
+          id: count,
+          label: customer.name,
+          uuid: customer.uuid,
+        };
+      })
+    : [];
+  return [{ id: 0, label: 'None' }, ...customerSelectMenuOptions];
+};
+
+export const getEmployeeNamesForDropDown = ({
+  employees,
+}: {
+  employees: Employees;
+}) => {
+  let count = 0;
+  const employeeSelectMenuOptions: SelectMenuOptions[] = employees
+    ? Object.values(employees).map((employee) => {
+        count++;
+        return {
+          id: count,
+          label: employee.name,
+          uuid: employee.uuid,
+        };
+      })
+    : [];
+  return [{ id: 0, label: 'None' }, ...employeeSelectMenuOptions];
 };
 
 export const sortTableData = <T, H extends Partial<T>>(

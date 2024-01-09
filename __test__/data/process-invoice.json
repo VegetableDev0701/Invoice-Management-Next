@@ -102,6 +102,13 @@
               "required": false,
               "value": "",
               "isOnOverlay": true
+            },
+            {
+              "label": "Expense Tax",
+              "id": "expense-tax",
+              "inputType": "slideToggle",
+              "required": false,
+              "value": false
             }
           ]
         },

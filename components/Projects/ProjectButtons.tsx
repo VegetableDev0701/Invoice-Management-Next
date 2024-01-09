@@ -30,6 +30,10 @@ import {
 import DropDownButton from '../UI/Buttons/DropDownButton';
 import { buildB2AReport } from '@/lib/utility/budgetReportHelpers';
 import { projectDataActions } from '@/store/projects-data-slice';
+import ModalForm from '../UI/Modal/ModalForm';
+import { useState } from 'react';
+import { addBillTitleActions } from '@/store/add-bill-title-slice';
+import { getMonthNumber } from '@/lib/utility/utils';
 
 interface Props {
   projectId: string;
@@ -44,6 +48,9 @@ const ProjectButtons = (props: Props) => {
   const { projectId, clientBillId, isClientBillPage } = props;
   const dispatch = useDispatch();
   const { user } = useUser();
+
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [newClientBillId, setNewClientBillId] = useState<string>('');
 
   const projectBudget = useSelector(
     (state) => state.projects[projectId]?.budget
@@ -62,6 +69,38 @@ const ProjectButtons = (props: Props) => {
       (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
   ) as ProjectSummaryItem;
 
+  const addBillTitleFormState = useSelector((state) => state.addBillTitleForm);
+  const addBillTitleFormData = useSelector(
+    (state) => state.data.forms['bill-title']
+  );
+
+  const confirmModalHandler = () => {
+    const newClientBillSummary = clientBills[newClientBillId];
+    const billMonthName = addBillTitleFormState['bill-month'].value as string;
+    const billYear = addBillTitleFormState['bill-year'].value;
+    const monthNumber = (getMonthNumber(billMonthName) + 1)
+      .toString()
+      .padStart(2, '0');
+
+    const updatedClientBillSummary = {
+      ...newClientBillSummary,
+      billTitle: `${billYear}-${monthNumber} (${billMonthName})`,
+    };
+
+    dispatch(
+      projectDataActions.addSummaryTableRow({
+        newData: updatedClientBillSummary,
+        projectId,
+        stateKey: 'client-bills-summary',
+      })
+    );
+    setOpenModal(false);
+  };
+
+  const closeModalHandler = () => {
+    setOpenModal(false);
+  };
+
   const buildClientBillHandler = () => {
     dispatch(
       uiActions.setTaskLoadingState({
@@ -71,6 +110,7 @@ const ProjectButtons = (props: Props) => {
     );
     dispatch(uiActions.lockUI());
     const clientBillId = nanoid();
+    setNewClientBillId(clientBillId);
     // There are checks in each of these dispatches that will end the dispatch early,
     // so each subsequent dispatch should not run unless the previous one completed
     // successfully
@@ -114,6 +154,7 @@ const ProjectButtons = (props: Props) => {
                   icon: 'success',
                 })
               );
+              setOpenModal(true);
             } else {
               dispatch(
                 uiActions.notify({
@@ -274,36 +315,49 @@ const ProjectButtons = (props: Props) => {
   };
 
   return (
-    <div className="flex gap-2">
-      {isClientBillPage ? (
-        <DropDownButton
-          dropDownButton={{
-            label: 'Build B2A Report',
-            items: [
-              {
-                label: 'Export as PDF',
-                onClick: buildB2AReportAsPDF,
-              },
-              {
-                label: 'Export as Excel',
-                onClick: buildB2AReportAsExcel,
-              },
-            ],
-          }}
-          taskId={reportTaskId}
-        />
-      ) : (
-        <ButtonWithLoader
-          button={{
-            label: "Build Client's Bill",
-            className:
-              'px-10 py-2 md:text-2xl font-normal bg-stak-dark-green 2xl:text-3xl',
-            onClick: buildClientBillHandler,
-          }}
-          taskId={buildTask}
-        />
-      )}
-    </div>
+    <>
+      <ModalForm
+        onCloseModal={closeModalHandler}
+        onConfirm={confirmModalHandler}
+        openModal={openModal}
+        buttonText="Finish"
+        formData={addBillTitleFormData}
+        formState={addBillTitleFormState}
+        actions={addBillTitleActions}
+        form="addBillTitle"
+        title="Bill Title"
+      />
+      <div className="flex gap-2">
+        {isClientBillPage ? (
+          <DropDownButton
+            dropDownButton={{
+              label: 'Build B2A Report',
+              items: [
+                {
+                  label: 'Export as PDF',
+                  onClick: buildB2AReportAsPDF,
+                },
+                {
+                  label: 'Export as Excel',
+                  onClick: buildB2AReportAsExcel,
+                },
+              ],
+            }}
+            taskId={reportTaskId}
+          />
+        ) : (
+          <ButtonWithLoader
+            button={{
+              label: "Build Client's Bill",
+              className:
+                'px-10 py-2 md:text-2xl font-normal bg-stak-dark-green 2xl:text-3xl',
+              onClick: buildClientBillHandler,
+            }}
+            taskId={buildTask}
+          />
+        )}
+      </div>
+    </>
   );
 };
 

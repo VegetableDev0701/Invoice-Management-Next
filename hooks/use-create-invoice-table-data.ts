@@ -186,6 +186,7 @@ export default function useCreateInvoiceRows({
             gcs_img_uri: row.gcs_img_uri,
             doc_id: row.doc_id,
             billable: row?.processedData?.billable ?? true,
+            expense_tax: row?.processedData?.expense_tax ?? false,
             image_dim: {
               width: row.pages[0].width,
               height: row.pages[0].height,

@@ -37,9 +37,10 @@ export default function SlideToggle(props: Props) {
     );
   }, [enabled]);
 
-  const topClasses = input.id.includes('billable')
-    ? 'flex flex-col items-center my-2 w-[5rem]'
-    : 'flex items-center justify-between gap-10 my-2';
+  const topClasses =
+    input.id.includes('billable') || input.id.includes('expense-tax')
+      ? 'flex flex-col items-center my-2 w-[7rem]'
+      : 'flex items-center justify-between gap-10 my-2';
 
   return (
     <Switch.Group as="div" className={topClasses}>
@@ -47,7 +48,9 @@ export default function SlideToggle(props: Props) {
         <Switch.Label
           as="span"
           className={`block font-sans font-semibold text-md ${
-            input.id.includes('billable') ? '-mt-1' : ''
+            input.id.includes('billable') || input.id.includes('expense-tax')
+              ? '-mt-1'
+              : ''
           }`}
           passive
         >
@@ -82,7 +85,7 @@ export default function SlideToggle(props: Props) {
         id={input.id}
         className={classNames(
           enabled ? 'bg-stak-dark-green' : 'bg-gray-500',
-          'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none'
+          'relative inline-flex h-[1.55rem] w-11 flex-shrink-0 cursor-pointer rounded-full border-[3px] border-transparent transition-colors duration-200 ease-in-out focus:outline-none'
         )}
       >
         <span className="sr-only">Use setting</span>

@@ -31,6 +31,7 @@ import {
   InvoiceLineItem,
   InvoiceLineItemItem,
 } from '../models/invoiceDataModels';
+import { addBillTitleActions } from '@/store/add-bill-title-slice';
 
 export type MakeRequired<T, K extends keyof T> = Omit<T, K> &
   Required<Pick<T, K>>;
@@ -174,6 +175,21 @@ export const createBudgetActualsObject = ({
     });
     const maxYear = maxDate.getFullYear();
     const billTitle = `${maxYear}-${maxMonth} (${maxMonthName})`;
+
+    dispatch(
+      addBillTitleActions.setFormElement({
+        inputKey: 'bill-month',
+        inputValue: maxMonthName,
+        isValid: true,
+      })
+    );
+    dispatch(
+      addBillTitleActions.setFormElement({
+        inputKey: 'bill-year',
+        inputValue: maxYear,
+        isValid: true,
+      })
+    );
 
     const allInvoices = [
       ...new Set([

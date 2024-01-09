@@ -294,6 +294,8 @@ export const addProcessedInvoiceData = createAsyncThunk(
           false,
         billable:
           (processInvoiceFormState?.['billable']?.value as boolean) ?? true,
+        expense_tax:
+          (processInvoiceFormState?.['expense-tax']?.value as boolean) ?? false,
       };
 
       const numLineItems = +(state.addProcessInvoiceForm.numLineItems.value as

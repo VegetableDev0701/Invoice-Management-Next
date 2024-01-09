@@ -540,6 +540,7 @@ export const createBudgetActuals = createAsyncThunk(
         laborFeeIds: [...laborFeeIds], // convert Set back to array
         invoiceIds: [...invoiceIds],
         changeOrderProfitTaxes,
+        projectSummary,
       });
 
       dispatch(
@@ -873,6 +874,7 @@ export const updateBudgetActuals = createAsyncThunk(
         laborFeeIds: [...oldClientBillSummary.laborFeeIds],
         invoiceIds: [...oldClientBillSummary.invoiceIds],
         changeOrderProfitTaxes,
+        projectSummary,
       });
 
       dispatch(
