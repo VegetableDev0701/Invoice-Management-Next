@@ -131,6 +131,7 @@ function Modal(props: Props) {
                   selectedRowId={null}
                   selectedItems={selectedBills}
                   isSortable={false}
+                  keyField='uuid'
                   preSortKey="billTitle"
                   onSelectItems={handleSelectBills}
                 />

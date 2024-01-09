@@ -30,6 +30,10 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
+function cmp(a: any, b: any, keyField: string | undefined) {
+  return keyField ? a[keyField] === b[keyField] : a == b;
+}
+
 interface CheckBoxItems {
   label: string;
   buttonPath: string;
@@ -49,6 +53,7 @@ interface Props<T, H extends Partial<T>> {
   tableType?: TableType;
   vendorSummary?: VendorSummary | object;
   isSortable?: boolean;
+  keyField?: string;
   onConfirmModal?: (selected: T[]) => void;
   onRowClick?: (uuid: string, projectId: string) => void;
   onSelectItems?: (selected: T[]) => void;
@@ -70,6 +75,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
     tableType,
     vendorSummary,
     isSortable = true,
+    keyField,
     onConfirmModal,
     onRowClick,
     onSelectItems,
@@ -305,93 +311,40 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                                 className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-stak-dark-green focus:ring-0 focus:ring-offset-0"
                                 value={element.uuid as string}
                                 checked={
-                                  element?.id || element?.uuid
+                                  keyField
                                     ? selected.findIndex(
                                         (item) =>
-                                          (item as any)?.id === element.id ||
-                                          (item as any)?.uuid === element.uuid
+                                          (item as any)[keyField] ===
+                                          element[keyField]
                                       ) !== -1
                                     : selected.includes(element)
                                 }
                                 onClick={(e) => {
-                                  let v: T[] = [];
                                   if (e.shiftKey) {
-                                    const minIndex = Math.min(lastIndex, index) + 1;
-                                    const maxIndex = Math.max(lastIndex, index);
-                                    const tmpAry = filteredSortedData.slice(
-                                      minIndex,
-                                      maxIndex
-                                    );
-                                    const allSelectFlag: boolean = tmpAry.every(
-                                      (el) => {
-                                        return (
-                                          selected.findIndex(
-                                            (ele) => el == ele
-                                          ) == -1
-                                        );
-                                      }
-                                    );
-                                    let temp = [];
-                                    for (
-                                      let idx = 0;
-                                      idx < tmpAry.length;
-                                      idx++
-                                    ) {
-                                      const el = tmpAry[idx];
-                                      if (allSelectFlag) {
-                                        const isChecked = selected.findIndex(
-                                          (ele) => ele == el
-                                        );
-                                        if (isChecked === -1) {
-                                          temp.push(el);
-                                        }
-                                      }
-                                    }
-                                    const isMaxSel =
-                                      selected.findIndex(
-                                        (ele) =>
-                                          ele == filteredSortedData[lastIndex]
-                                      ) == -1;
-                                    const isMinSel =
-                                      selected.findIndex(
-                                        (ele) => ele == filteredSortedData[index]
-                                      ) == -1;
-                                    if (allSelectFlag) {
-                                      if (isMaxSel)
-                                        temp.push(
-                                          filteredSortedData[lastIndex]
-                                        );
-                                      if (isMinSel)
-                                        temp.push(filteredSortedData[index]);
-                                      setSelected([...selected, ...temp]);
+                                    const minIndex = Math.min(lastIndex, index) + 1
+                                    const maxIndex = Math.max(lastIndex, index)
+                                    
+                                    const isMinSel = selected.findIndex(ele => cmp(ele, filteredSortedData[index], keyField)) == -1
+                                    const tmpAry = filteredSortedData.slice(minIndex, maxIndex)
+                                    tmpAry.push(filteredSortedData[index])
+                                    tmpAry.push(filteredSortedData[lastIndex])
+                                    if (!isMinSel) {
+                                      // remove
+                                      const temp = selected.filter((el) => tmpAry.findIndex((ele) => cmp(ele, el, keyField)) == -1)
+                                      setSelected([...temp])
                                     } else {
-                                      temp = selected.filter((el) => {
-                                        return (
-                                          tmpAry.findIndex(
-                                            (ele) => el == ele
-                                          ) == -1
-                                        );
-                                      });
-                                      temp = temp.filter(
-                                        (el) =>
-                                          el != filteredSortedData[lastIndex]
-                                      );
-                                      temp = temp.filter(
-                                        (el) => el != filteredSortedData[index]
-                                      );
-                                      v = [...temp];
-                                      setSelected(v);
+                                      // add
+                                      const temp = tmpAry.filter((el) => selected.findIndex((ele) => cmp(ele, el, keyField)) == -1)
+                                      setSelected([...selected, ...temp])
                                     }
                                   } else {
-                                    const isChecked = selected.findIndex(
-                                      (el) => el == element
-                                    );
-                                    v = isChecked
-                                      ? [...selected, element]
-                                      : selected.filter((el) => el !== element);
-                                    setSelected(v);
+                                    const isChecked = selected.findIndex(el => cmp(el, element, keyField)) == -1
+                                    setSelected(
+                                      isChecked
+                                        ? [...selected, element]
+                                        : selected.filter((el) => cmp(el, element, keyField) == false)
+                                    )
                                   }
-                                  onSelectItems && onSelectItems(v);
                                   setLastIndex(index);
                                 }}
                               />
