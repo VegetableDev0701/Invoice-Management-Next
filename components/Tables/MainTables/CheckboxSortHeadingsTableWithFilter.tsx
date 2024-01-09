@@ -299,28 +299,46 @@ export default function CheckboxSortHeadingsTable<
                               checked={selected.includes(element)}
                               onClick={(e) => {
                                 if (e.shiftKey) {
-                                  const minIndex = Math.min(lastIndex, index) + 1
-                                  const maxIndex = Math.max(lastIndex, index)
-                                  const isMinSel = selected.findIndex(ele => ele == filteredSortedData[index]) == -1
-                                  const tmpAry = filteredSortedData.slice(minIndex, maxIndex)
-                                  tmpAry.push(filteredSortedData[index])
-                                  tmpAry.push(filteredSortedData[lastIndex])
+                                  const minIndex =
+                                    Math.min(lastIndex, index) + 1;
+                                  const maxIndex = Math.max(lastIndex, index);
+                                  const isMinSel =
+                                    selected.findIndex(
+                                      (ele) => ele == filteredSortedData[index]
+                                    ) == -1;
+                                  const tmpAry = filteredSortedData.slice(
+                                    minIndex,
+                                    maxIndex
+                                  );
+                                  tmpAry.push(filteredSortedData[index]);
+                                  tmpAry.push(filteredSortedData[lastIndex]);
                                   if (!isMinSel) {
                                     // remove
-                                    const temp = selected.filter((el) => tmpAry.findIndex((ele) => ele == el) == -1)
-                                    setSelected([...temp])
+                                    const temp = selected.filter(
+                                      (el) =>
+                                        tmpAry.findIndex((ele) => ele == el) ==
+                                        -1
+                                    );
+                                    setSelected([...temp]);
                                   } else {
                                     // add
-                                    const temp = tmpAry.filter((el) => selected.findIndex((ele) => ele == el) == -1)
-                                    setSelected([...selected, ...temp])
+                                    const temp = tmpAry.filter(
+                                      (el) =>
+                                        selected.findIndex(
+                                          (ele) => ele == el
+                                        ) == -1
+                                    );
+                                    setSelected([...selected, ...temp]);
                                   }
                                 } else {
-                                  const isChecked = selected.findIndex(el => el == element) == -1
+                                  const isChecked =
+                                    selected.findIndex((el) => el == element) ==
+                                    -1;
                                   setSelected(
                                     isChecked
                                       ? [...selected, element]
                                       : selected.filter((el) => el !== element)
-                                  )
+                                  );
                                 }
                                 setLastIndex(index);
                               }}
