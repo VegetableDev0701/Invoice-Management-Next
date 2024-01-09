@@ -13,7 +13,7 @@ export async function fetchWithRetry(
         throw new Error(`HTTP status ${response.status}`);
       }
 
-      const data = JSON.parse(await response.json());
+      const data = await response.json();
       return data; // if response is successful, return the data
     } catch (error) {
       // check status codes, only retry on these specific errors
