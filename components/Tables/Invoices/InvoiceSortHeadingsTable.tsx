@@ -429,84 +429,28 @@ const InvoicesTable = <H extends InvoiceTableHeadings>(props: Props<H>) => {
                                 checked={selected.includes(invoice)}
                                 onClick={(e) => {
                                   if (e.shiftKey) {
-                                    const minIndex =
-                                      Math.min(lastIndex, index) + 1;
-                                    const maxIndex = Math.max(lastIndex, index);
-                                    const tmpAry = filteredSortedData.slice(
-                                      minIndex,
-                                      maxIndex
-                                    );
-                                    const allSelectFlag: boolean = tmpAry.every(
-                                      (el) => {
-                                        return (
-                                          selected.findIndex(
-                                            (ele) => el == ele
-                                          ) == -1
-                                        );
-                                      }
-                                    );
-                                    let temp = [];
-                                    for (
-                                      let idx = 0;
-                                      idx < tmpAry.length;
-                                      idx++
-                                    ) {
-                                      const el = tmpAry[idx];
-                                      if (allSelectFlag) {
-                                        const isChecked = selected.findIndex(
-                                          (ele) => ele == el
-                                        );
-                                        if (isChecked === -1) {
-                                          temp.push(el);
-                                        }
-                                      }
-                                    }
-                                    const isMaxSel =
-                                      selected.findIndex(
-                                        (ele) =>
-                                          ele == filteredSortedData[lastIndex]
-                                      ) == -1;
-                                    const isMinSel =
-                                      selected.findIndex(
-                                        (ele) =>
-                                          ele == filteredSortedData[index]
-                                      ) == -1;
-                                    if (allSelectFlag) {
-                                      if (isMaxSel)
-                                        temp.push(
-                                          filteredSortedData[lastIndex]
-                                        );
-                                      if (isMinSel)
-                                        temp.push(filteredSortedData[index]);
-                                      setSelected([...selected, ...temp]);
+                                    const minIndex = Math.min(lastIndex, index) + 1
+                                    const maxIndex = Math.max(lastIndex, index)
+                                    const isMinSel = selected.findIndex(ele => ele == filteredSortedData[index]) == -1
+                                    const tmpAry = filteredSortedData.slice(minIndex, maxIndex)
+                                    tmpAry.push(filteredSortedData[index])
+                                    tmpAry.push(filteredSortedData[lastIndex])
+                                    if (!isMinSel) {
+                                      // remove
+                                      const temp = selected.filter((el) => tmpAry.findIndex((ele) => ele == el) == -1)
+                                      setSelected([...temp])
                                     } else {
-                                      temp = selected.filter((el) => {
-                                        return (
-                                          tmpAry.findIndex(
-                                            (ele) => el == ele
-                                          ) == -1
-                                        );
-                                      });
-                                      temp = temp.filter(
-                                        (el) =>
-                                          el != filteredSortedData[lastIndex]
-                                      );
-                                      temp = temp.filter(
-                                        (el) => el != filteredSortedData[index]
-                                      );
-                                      setSelected([...temp]);
+                                      // add
+                                      const temp = tmpAry.filter((el) => selected.findIndex((ele) => ele == el) == -1)
+                                      setSelected([...selected, ...temp])
                                     }
                                   } else {
-                                    const isChecked = selected.findIndex(
-                                      (el) => el == invoice
-                                    );
+                                    const isChecked = selected.findIndex(el => el == invoice) == -1
                                     setSelected(
                                       isChecked
                                         ? [...selected, invoice]
-                                        : selected.filter(
-                                            (el) => el !== invoice
-                                          )
-                                    );
+                                        : selected.filter((el) => el !== invoice)
+                                    )
                                   }
                                   setLastIndex(index);
                                 }}
