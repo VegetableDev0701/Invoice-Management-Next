@@ -5,11 +5,15 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useAppSelector as useSelector } from '@/store/hooks';
 
 import CheckboxSubTable from '@/components/Tables/SubTables/CheckboxSortHeadingsTableSub';
-import { ClientBillSummaryItem } from '@/lib/models/summaryDataModel';
+import {
+  ClientBillSummary,
+  ClientBillSummaryItem,
+} from '@/lib/models/summaryDataModel';
 import { formatDate } from '@/lib/utility/tableHelpers';
 import { classNames } from '@/lib/utility/utils';
 
 interface Props {
+  clientBillId: string;
   projectId: string;
   openModal: boolean;
   onConfirm: (clientBillIds: string[]) => void;
@@ -25,7 +29,7 @@ const tableHeadings = {
 };
 
 function Modal(props: Props) {
-  const { projectId, openModal, onConfirm, onCloseModal } = props;
+  const { projectId, clientBillId, openModal, onConfirm, onCloseModal } = props;
 
   const [selectedBills, setSelectedBills] = useState<ClientBillSummaryItem[]>(
     []
@@ -57,6 +61,19 @@ function Modal(props: Props) {
   useEffect(() => {
     setOpen(openModal);
   }, [openModal]);
+
+  useEffect(() => {
+    if (clientBills && clientBillId) {
+      const d = new Date(
+        (clientBills as ClientBillSummary)[clientBillId].createdAt || 0
+      );
+      setSelectedBills(
+        Object.values(clientBills as ClientBillSummary).filter(
+          (item) => new Date(item?.createdAt || 0) <= d
+        )
+      );
+    }
+  }, [clientBills, clientBillId]);
 
   const handleSelectBills = (selected: ClientBillSummaryItem[]) => {
     setSelectedBills(selected);
@@ -112,7 +129,9 @@ function Modal(props: Props) {
                   rows={clientBillRows}
                   projectId={projectId}
                   selectedRowId={null}
+                  selectedItems={selectedBills}
                   isSortable={false}
+                  preSortKey="billTitle"
                   onSelectItems={handleSelectBills}
                 />
 
@@ -166,6 +185,7 @@ export default function ClientBillListModal(props: Props) {
       {portal &&
         ReactDom.createPortal(
           <Modal
+            clientBillId={props.clientBillId}
             projectId={props.projectId}
             onCloseModal={props.onCloseModal}
             openModal={props.openModal}
