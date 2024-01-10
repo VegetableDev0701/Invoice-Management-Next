@@ -232,7 +232,7 @@ export const useCreateClientBillWorkDescription = ({
           description: 'Sales Tax',
           rateAmt: `${Number(projectSummary.salesTax).toFixed(2)} %`,
           vendor: '',
-          totalAmt: clientBillSummary.salesTax,
+          totalAmt: clientBillSummary.budgetedSalesTax,
           costCode: '',
         },
         {

@@ -228,7 +228,7 @@ export interface ContractVendorObject {
   uuid: string | null;
 }
 
-interface ContractSummaryData extends BaseSummary {
+interface ContractSummaryData {
   projectName: string;
   date: string;
   contractAmt: string;
