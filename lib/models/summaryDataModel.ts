@@ -111,7 +111,6 @@ export interface ClientBillSummaryItem extends BaseSummary {
   billTitle: string;
   boTax: string;
   changeOrders: string;
-  changeOrder?: string;
   createdAt: string;
   insuranceLiability: string;
   invoiceIds: string[];
