@@ -35,6 +35,9 @@ import DropDownButton from '../UI/Buttons/DropDownButton';
 import ModalForm from '../UI/Modal/ModalForm';
 
 import { useState } from 'react';
+import { projectDataActions } from '@/store/projects-data-slice';
+import { addBillTitleActions } from '@/store/add-bill-title-slice';
+import { getMonthNumber } from '@/lib/utility/utils';
 import ClientBillListModal from '../Budget/ClientBill/ClientBillListModal';
 
 interface Props {
@@ -70,6 +73,38 @@ const ProjectButtons = (props: Props) => {
     (state) =>
       (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
   ) as ProjectSummaryItem;
+
+  const addBillTitleFormState = useSelector((state) => state.addBillTitleForm);
+  const addBillTitleFormData = useSelector(
+    (state) => state.data.forms['bill-title']
+  );
+
+  const confirmModalHandler = () => {
+    const newClientBillSummary = clientBills[newClientBillId];
+    const billMonthName = addBillTitleFormState['bill-month'].value as string;
+    const billYear = addBillTitleFormState['bill-year'].value;
+    const monthNumber = (getMonthNumber(billMonthName) + 1)
+      .toString()
+      .padStart(2, '0');
+
+    const updatedClientBillSummary = {
+      ...newClientBillSummary,
+      billTitle: `${billYear}-${monthNumber} (${billMonthName})`,
+    };
+
+    dispatch(
+      projectDataActions.addSummaryTableRow({
+        newData: updatedClientBillSummary,
+        projectId,
+        stateKey: 'client-bills-summary',
+      })
+    );
+    setOpenModal(false);
+  };
+
+  const closeModalHandler = () => {
+    setOpenModal(false);
+  };
 
   const [openConfirmModal, setOpenConfirmModal] = useState<boolean>(false);
   const [reportType, setReportType] = useState('');
