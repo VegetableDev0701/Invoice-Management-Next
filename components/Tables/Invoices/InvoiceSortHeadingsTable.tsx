@@ -97,6 +97,7 @@ const InvoicesTable = <H extends InvoiceTableHeadings>(props: Props<H>) => {
   const [indeterminate, setIndeterminate] = useState(false);
   const [selected, setSelected] = useState<InvoiceTableRow[]>([]);
 
+  const [lastIndex, setLastIndex] = useState(0);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const modalMessage =
     'Please confirm that you want to delete these invoices from the database.';
@@ -396,7 +397,7 @@ const InvoicesTable = <H extends InvoiceTableHeadings>(props: Props<H>) => {
                   </thead>
                   <tbody>
                     {filteredSortedData &&
-                      filteredSortedData.map((invoice) => {
+                      filteredSortedData.map((invoice, index) => {
                         return (
                           <tr
                             key={invoice['doc_id'] as string}
@@ -426,14 +427,56 @@ const InvoicesTable = <H extends InvoiceTableHeadings>(props: Props<H>) => {
                                 className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-stak-dark-green focus:ring-0 focus:ring-offset-0"
                                 value={invoice.doc_id}
                                 checked={selected.includes(invoice)}
-                                onClick={stopPropClickHandler}
-                                onChange={(e) =>
-                                  setSelected(
-                                    e.target.checked
-                                      ? [...selected, invoice]
-                                      : selected.filter((el) => el !== invoice)
-                                  )
-                                }
+                                onClick={(e) => {
+                                  if (e.shiftKey) {
+                                    const minIndex =
+                                      Math.min(lastIndex, index) + 1;
+                                    const maxIndex = Math.max(lastIndex, index);
+                                    const isMinSel =
+                                      selected.findIndex(
+                                        (ele) =>
+                                          ele == filteredSortedData[index]
+                                      ) == -1;
+                                    const tmpAry = filteredSortedData.slice(
+                                      minIndex,
+                                      maxIndex
+                                    );
+                                    tmpAry.push(filteredSortedData[index]);
+                                    tmpAry.push(filteredSortedData[lastIndex]);
+                                    if (!isMinSel) {
+                                      // remove
+                                      const temp = selected.filter(
+                                        (el) =>
+                                          tmpAry.findIndex(
+                                            (ele) => ele == el
+                                          ) == -1
+                                      );
+                                      setSelected([...temp]);
+                                    } else {
+                                      // add
+                                      const temp = tmpAry.filter(
+                                        (el) =>
+                                          selected.findIndex(
+                                            (ele) => ele == el
+                                          ) == -1
+                                      );
+                                      setSelected([...selected, ...temp]);
+                                    }
+                                  } else {
+                                    const isChecked =
+                                      selected.findIndex(
+                                        (el) => el == invoice
+                                      ) == -1;
+                                    setSelected(
+                                      isChecked
+                                        ? [...selected, invoice]
+                                        : selected.filter(
+                                            (el) => el !== invoice
+                                          )
+                                    );
+                                  }
+                                  setLastIndex(index);
+                                }}
                               />
                             </td>
                             {Object.keys(headings).map((headingsKey, j) => {

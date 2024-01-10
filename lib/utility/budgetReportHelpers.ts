@@ -12,7 +12,6 @@ import {
 } from '../models/budgetCostCodeModel';
 import {
   ChangeOrderSummary,
-  ClientBillSummary,
   ProjectSummaryItem,
 } from '../models/summaryDataModel';
 import { getBillProfitTaxes } from './budgetHelpers';
@@ -136,31 +135,22 @@ interface ClientBillActuals {
 }
 
 export const buildB2AReport = async ({
-  projectId,
   companyId,
-  clientBillId,
-  clientBills,
+  clientBillIds,
+  projectId,
   projectBudget,
   changeOrderSummary,
   projectSummary,
 }: {
-  projectId: string;
   companyId: string;
-  clientBillId: string;
-  clientBills: ClientBillSummary;
+  clientBillIds: string[];
+  projectId: string;
   projectBudget: CostCodesData;
   changeOrderSummary: ChangeOrderSummary;
   projectSummary: ProjectSummaryItem;
 }) => {
   const clientBillActuals: ClientBillActuals = {};
 
-  // fetch current and previous client bill data from backend
-  const clientBillIds = Object.keys(clientBills).filter(
-    (key) =>
-      key === clientBillId ||
-      new Date(clientBills[clientBillId].createdAt || 0) >=
-        new Date(clientBills[key].createdAt || 0)
-  );
   for (const clientBillId of clientBillIds) {
     const result = await fetchWithRetry(
       `/api/${companyId}/projects/${projectId}/get-single-client-bill`,

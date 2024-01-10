@@ -12,6 +12,19 @@ export interface Customers {
   name: string;
   agave_uuid: string | null;
   email: string | null;
+  uuid: string;
+  sub_level: number;
+}
+
+export interface Employees {
+  full_name: string;
+  agave_uuid: string | null;
+  uuid: string;
+}
+export interface Customers {
+  name: string;
+  agave_uuid: string | null;
+  email: string | null;
   phone: string | null;
   uuid: string;
   sub_level: number;

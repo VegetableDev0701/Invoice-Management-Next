@@ -875,6 +875,7 @@ export const updateBudgetActuals = createAsyncThunk(
         invoiceIds: [...oldClientBillSummary.invoiceIds],
         changeOrderProfitTaxes,
         projectSummary,
+        createdAt: oldClientBillSummary.createdAt,
       });
 
       dispatch(

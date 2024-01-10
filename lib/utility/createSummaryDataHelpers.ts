@@ -407,6 +407,7 @@ export const createSingleClientBillSummary = ({
   invoiceIds,
   changeOrderProfitTaxes,
   projectSummary,
+  createdAt,
 }: {
   subTotal: string;
   billTitle: string;
@@ -421,6 +422,7 @@ export const createSingleClientBillSummary = ({
   invoiceIds: string[];
   changeOrderProfitTaxes: ProfitTaxes;
   projectSummary: ProjectSummaryItem;
+  createdAt?: string;
 }): ClientBillSummaryItem => {
   const profit = currentActuals[SUMMARY_COST_CODES.profit].totalAmt;
   const liability = currentActuals[SUMMARY_COST_CODES.liability].totalAmt;
@@ -466,7 +468,7 @@ export const createSingleClientBillSummary = ({
     uuid,
     laborFeeIds,
     invoiceIds,
-    createdAt: new Date().toString(),
+    createdAt: createdAt ?? new Date().toString(),
     payment: null,
   };
 };

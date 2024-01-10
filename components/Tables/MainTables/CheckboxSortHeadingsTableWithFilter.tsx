@@ -90,6 +90,7 @@ export default function CheckboxSortHeadingsTable<
   const [indeterminate, setIndeterminate] = useState(false);
   const [selected, setSelected] = useState<T[]>([]);
 
+  const [lastIndex, setLastIndex] = useState(0);
   useLayoutEffect(() => {
     if (!rows) return;
     const isIndeterminate =
@@ -267,10 +268,10 @@ export default function CheckboxSortHeadingsTable<
                 </thead>
                 {filteredSortedData && (
                   <tbody>
-                    {filteredSortedData.map((element: T, i) => {
+                    {filteredSortedData.map((element: T, index) => {
                       return (
                         <tr
-                          key={`${element.uuid as string}_${i}`}
+                          key={`${element.uuid as string}_${index}`}
                           className={`hover:bg-slate-50 hover:cursor-pointer ${
                             selected.includes(element)
                               ? 'bg-slate-50'
@@ -296,13 +297,51 @@ export default function CheckboxSortHeadingsTable<
                               className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-stak-dark-green focus:ring-0 focus:ring-offset-0"
                               value={element.uuid as string}
                               checked={selected.includes(element)}
-                              onChange={(e) =>
-                                setSelected(
-                                  e.target.checked
-                                    ? [...selected, element]
-                                    : selected.filter((el) => el !== element)
-                                )
-                              }
+                              onClick={(e) => {
+                                if (e.shiftKey) {
+                                  const minIndex =
+                                    Math.min(lastIndex, index) + 1;
+                                  const maxIndex = Math.max(lastIndex, index);
+                                  const isMinSel =
+                                    selected.findIndex(
+                                      (ele) => ele == filteredSortedData[index]
+                                    ) == -1;
+                                  const tmpAry = filteredSortedData.slice(
+                                    minIndex,
+                                    maxIndex
+                                  );
+                                  tmpAry.push(filteredSortedData[index]);
+                                  tmpAry.push(filteredSortedData[lastIndex]);
+                                  if (!isMinSel) {
+                                    // remove
+                                    const temp = selected.filter(
+                                      (el) =>
+                                        tmpAry.findIndex((ele) => ele == el) ==
+                                        -1
+                                    );
+                                    setSelected([...temp]);
+                                  } else {
+                                    // add
+                                    const temp = tmpAry.filter(
+                                      (el) =>
+                                        selected.findIndex(
+                                          (ele) => ele == el
+                                        ) == -1
+                                    );
+                                    setSelected([...selected, ...temp]);
+                                  }
+                                } else {
+                                  const isChecked =
+                                    selected.findIndex((el) => el == element) ==
+                                    -1;
+                                  setSelected(
+                                    isChecked
+                                      ? [...selected, element]
+                                      : selected.filter((el) => el !== element)
+                                  );
+                                }
+                                setLastIndex(index);
+                              }}
                             />
                           </td>
                           {Object.keys(headings).map((headingsKey, j) => {

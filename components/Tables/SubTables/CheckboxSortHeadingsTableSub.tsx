@@ -1,4 +1,11 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Link from 'next/link';
 
 import {
@@ -23,6 +30,10 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
+function cmp(a: any, b: any, keyField: string | undefined) {
+  return keyField ? a[keyField] === b[keyField] : a == b;
+}
+
 interface CheckBoxItems {
   label: string;
   buttonPath: string;
@@ -34,14 +45,18 @@ interface Props<T, H extends Partial<T>> {
   headings: H;
   projectId: string;
   selectedRowId?: string | undefined | null;
+  selectedItems?: T[];
   checkboxButtons?: CheckBoxItems[];
   showExpiration?: boolean;
   baseUrl?: string;
   preSortKey?: keyof H;
   tableType?: TableType;
   vendorSummary?: VendorSummary | object;
+  isSortable?: boolean;
+  keyField?: string;
   onConfirmModal?: (selected: T[]) => void;
   onRowClick?: (uuid: string, projectId: string) => void;
+  onSelectItems?: (selected: T[]) => void;
 }
 
 export default function CheckboxSubTable<T, H extends Partial<T>>(
@@ -53,13 +68,17 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
     checkboxButtons,
     projectId,
     selectedRowId,
+    selectedItems,
     showExpiration,
     baseUrl,
     preSortKey,
     tableType,
     vendorSummary,
+    isSortable = true,
+    keyField,
     onConfirmModal,
     onRowClick,
+    onSelectItems,
   } = props;
 
   const checkbox = useRef<HTMLInputElement | null>(null);
@@ -69,10 +88,11 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
-  const [selected, setSelected] = useState<T[]>([]);
+  const [selected, setSelected] = useState<T[]>(selectedItems || []);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const modalMessage = 'Please confirm that you want to delete.';
 
+  const [lastIndex, setLastIndex] = useState(0);
   useLayoutEffect(() => {
     if (!rows) return;
     const isIndeterminate =
@@ -84,9 +104,14 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
     }
   }, [selected]);
 
+  useEffect(() => {
+    selectedItems && setSelected(selectedItems);
+  }, [selectedItems]);
+
   function toggleAll() {
     if (!rows) return;
     setSelected(checked || indeterminate ? [] : rows);
+    onSelectItems && onSelectItems(checked || indeterminate ? [] : rows);
     setChecked(!checked && !indeterminate);
     setIndeterminate(false);
   }
@@ -156,7 +181,7 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
         title="Delete"
       />
 
-      <div className="relative px-4 grow sm:px-6 lg:px-8">
+      <div className="relative w-full px-4 grow sm:px-6 lg:px-8">
         {((filteredSortedData && filteredSortedData.length === 0) ||
           !filteredSortedData) && (
           <EmptyTableNotification tableType={tableType} />
@@ -214,28 +239,39 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                             )}
                           >
                             <div
-                              onClick={() => handleHeadingClick(heading)}
-                              className="group inline-flex hover:cursor-pointer"
+                              onClick={() =>
+                                isSortable && handleHeadingClick(heading)
+                              }
+                              className={classNames(
+                                isSortable
+                                  ? 'group hover:cursor-pointer'
+                                  : 'cursor-default',
+                                ' inline-flex '
+                              )}
                             >
                               {heading}
-                              <span
-                                className={classNames(
-                                  activeHeading === heading ? '' : 'invisible',
-                                  'ml-2 flex-none rounded bg-gray-100 text-gray-400 group-hover:visible group-focus:visible'
-                                )}
-                              >
-                                {sortOrder === 'desc' ? (
-                                  <ChevronDownIcon
-                                    className="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                ) : (
-                                  <ChevronUpIcon
-                                    className="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                )}
-                              </span>
+                              {isSortable && (
+                                <span
+                                  className={classNames(
+                                    activeHeading === heading
+                                      ? ''
+                                      : 'invisible',
+                                    'ml-2 flex-none rounded bg-gray-100 text-gray-400 group-hover:visible group-focus:visible'
+                                  )}
+                                >
+                                  {sortOrder === 'desc' ? (
+                                    <ChevronDownIcon
+                                      className="h-5 w-5"
+                                      aria-hidden="true"
+                                    />
+                                  ) : (
+                                    <ChevronUpIcon
+                                      className="h-5 w-5"
+                                      aria-hidden="true"
+                                    />
+                                  )}
+                                </span>
+                              )}
                             </div>
                           </th>
                         );
@@ -244,10 +280,10 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                   </thead>
                   {filteredSortedData && (
                     <tbody>
-                      {filteredSortedData.map((element: any, i) => {
+                      {filteredSortedData.map((element: any, index) => {
                         return (
                           <tr
-                            key={`${element.uuid as string}_${i}`}
+                            key={`${element.uuid as string}_${index}`}
                             className={`active:bg-slate-300 hover:cursor-pointer ${
                               selected.includes(element) ? 'bg-slate-50' : ''
                             } ${
@@ -274,14 +310,71 @@ export default function CheckboxSubTable<T, H extends Partial<T>>(
                                 type="checkbox"
                                 className="absolute left-4 top-1/2 -mt-2 h-4 w-4 rounded border-gray-300 text-stak-dark-green focus:ring-0 focus:ring-offset-0"
                                 value={element.uuid as string}
-                                checked={selected.includes(element)}
-                                onChange={(e) =>
-                                  setSelected(
-                                    e.target.checked
-                                      ? [...selected, element]
-                                      : selected.filter((el) => el !== element)
-                                  )
+                                checked={
+                                  keyField
+                                    ? selected.findIndex(
+                                        (item) =>
+                                          (item as any)[keyField] ===
+                                          element[keyField]
+                                      ) !== -1
+                                    : selected.includes(element)
                                 }
+                                onClick={(e) => {
+                                  if (e.shiftKey) {
+                                    const minIndex =
+                                      Math.min(lastIndex, index) + 1;
+                                    const maxIndex = Math.max(lastIndex, index);
+
+                                    const isMinSel =
+                                      selected.findIndex((ele) =>
+                                        cmp(
+                                          ele,
+                                          filteredSortedData[index],
+                                          keyField
+                                        )
+                                      ) == -1;
+                                    const tmpAry = filteredSortedData.slice(
+                                      minIndex,
+                                      maxIndex
+                                    );
+                                    tmpAry.push(filteredSortedData[index]);
+                                    tmpAry.push(filteredSortedData[lastIndex]);
+                                    if (!isMinSel) {
+                                      // remove
+                                      const temp = selected.filter(
+                                        (el) =>
+                                          tmpAry.findIndex((ele) =>
+                                            cmp(ele, el, keyField)
+                                          ) == -1
+                                      );
+                                      setSelected([...temp]);
+                                    } else {
+                                      // add
+                                      const temp = tmpAry.filter(
+                                        (el) =>
+                                          selected.findIndex((ele) =>
+                                            cmp(ele, el, keyField)
+                                          ) == -1
+                                      );
+                                      setSelected([...selected, ...temp]);
+                                    }
+                                  } else {
+                                    const isChecked =
+                                      selected.findIndex((el) =>
+                                        cmp(el, element, keyField)
+                                      ) == -1;
+                                    setSelected(
+                                      isChecked
+                                        ? [...selected, element]
+                                        : selected.filter(
+                                            (el) =>
+                                              cmp(el, element, keyField) ==
+                                              false
+                                          )
+                                    );
+                                  }
+                                  setLastIndex(index);
+                                }}
                               />
                             </td>
                             {Object.keys(headings).map((headingsKey, j) => {

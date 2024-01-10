@@ -1,5 +1,4 @@
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { useState } from 'react';
 
 import {
   useAppDispatch as useDispatch,
@@ -10,13 +9,12 @@ import {
   moveAllBillData,
   moveBillDataInFirestore,
 } from '@/store/add-client-bill';
-import { projectDataActions } from '@/store/projects-data-slice';
-import { addBillTitleActions } from '@/store/add-bill-title-slice';
 import { uiActions } from '@/store/ui-slice';
 
 import { User } from '@/lib/models/formStateModels';
 import { getAPIUrl, nanoid } from '@/lib/config';
 import {
+  B2AReport,
   InvoiceCurrentActualsChangeOrdersV2,
   InvoiceCurrentActualsV2,
 } from '@/lib/models/budgetCostCodeModel';
@@ -28,12 +26,16 @@ import {
   ProjectSummary,
   ProjectSummaryItem,
 } from '@/lib/models/summaryDataModel';
-import { getMonthNumber } from '@/lib/utility/utils';
 import { buildB2AReport } from '@/lib/utility/budgetReportHelpers';
 
 import DropDownButton from '../UI/Buttons/DropDownButton';
 import ModalForm from '../UI/Modal/ModalForm';
 
+import { useState } from 'react';
+import { projectDataActions } from '@/store/projects-data-slice';
+import { addBillTitleActions } from '@/store/add-bill-title-slice';
+import { getMonthNumber } from '@/lib/utility/utils';
+import ClientBillListModal from '../Budget/ClientBill/ClientBillListModal';
 
 interface Props {
   projectId: string;
@@ -68,6 +70,9 @@ const ProjectButtons = (props: Props) => {
     (state) =>
       (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
   ) as ProjectSummaryItem;
+
+  const [openConfirmModal, setOpenConfirmModal] = useState<boolean>(false);
+  const [reportType, setReportType] = useState('');
 
   const addBillTitleFormState = useSelector((state) => state.addBillTitleForm);
   const addBillTitleFormData = useSelector(
@@ -192,8 +197,61 @@ const ProjectButtons = (props: Props) => {
     });
   };
 
-  const buildB2AReportAsPDF = async () => {
-    if (!clientBillId || !clientBills) return;
+  const saveAsExcel = async ({ b2aReport }: { b2aReport: B2AReport }) => {
+    const result = await fetchWithRetry(
+      `/api/${
+        (user as User).user_metadata.companyId
+      }/projects/${projectId}/build-b2a-report`,
+      {
+        method: 'POST',
+        body: JSON.stringify(b2aReport),
+      }
+    );
+    fetch(`${getAPIUrl()}/static/${result.download_url}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', result.download_url);
+        document.body.appendChild(link);
+        link.click();
+      });
+  };
+
+  const saveAsPDF = async ({
+    b2aReport,
+    title,
+  }: {
+    b2aReport: B2AReport;
+    title: string;
+  }) => {
+    const { renderPDF } = await import('@/components/PDF/B2AReport');
+    const url = window.URL.createObjectURL(
+      await renderPDF({
+        b2aReport: b2aReport,
+        billTitle: title,
+      })
+    );
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      `${
+        new Date()
+          .toISOString()
+          .replace('T', '_')
+          .replace(':', '-')
+          .split('.')[0]
+      }.pdf`
+    );
+    document.body.appendChild(link);
+    link.click();
+  };
+
+  const handleBuildB2AReport = async (clientBillIds: string[]) => {
+    setOpenConfirmModal(false);
+    if (!clientBillId || !clientBillIds || !clientBillIds.length) return;
     dispatch(
       uiActions.setTaskLoadingState({
         taskId: reportTaskId,
@@ -202,8 +260,7 @@ const ProjectButtons = (props: Props) => {
     );
     try {
       const b2aReport = await buildB2AReport({
-        clientBillId,
-        clientBills,
+        clientBillIds,
         projectId,
         projectBudget,
         changeOrderSummary,
@@ -211,27 +268,28 @@ const ProjectButtons = (props: Props) => {
         projectSummary,
       });
 
-      const { renderPDF } = await import('@/components/PDF/B2AReport');
-      const url = window.URL.createObjectURL(
-        await renderPDF({
-          b2aReport: b2aReport,
-          billTitle: clientBills[clientBillId].billTitle,
+      if (reportType === 'pdf')
+        await saveAsPDF({
+          b2aReport,
+          title:
+            clientBillIds.length > 1
+              ? `${clientBills[clientBillIds[0]].billTitle} - ${
+                  clientBills[clientBillIds[clientBillIds.length - 1]].billTitle
+                }`
+              : clientBills[clientBillIds[0]].billTitle,
+        });
+      else if (reportType === 'excel') {
+        await saveAsExcel({
+          b2aReport,
+        });
+      }
+
+      dispatch(
+        uiActions.notify({
+          content: 'Successfully built b2a report.',
+          icon: 'success',
         })
       );
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute(
-        'download',
-        `${
-          new Date()
-            .toISOString()
-            .replace('T', '_')
-            .replace(':', '-')
-            .split('.')[0]
-        }.pdf`
-      );
-      document.body.appendChild(link);
-      link.click();
     } catch (error) {
       console.error(error);
       dispatch(
@@ -251,67 +309,14 @@ const ProjectButtons = (props: Props) => {
     }
   };
 
-  const buildB2AReportAsExcel = async () => {
-    if (!clientBillId || !clientBills) return;
-    dispatch(
-      uiActions.setTaskLoadingState({
-        taskId: reportTaskId,
-        isLoading: true,
-      })
-    );
-    try {
-      const reportData = await buildB2AReport({
-        clientBillId,
-        clientBills,
-        projectId,
-        projectBudget,
-        changeOrderSummary,
-        companyId: (user as User).user_metadata.companyId,
-        projectSummary,
-      });
-      const result = await fetchWithRetry(
-        `/api/${
-          (user as User).user_metadata.companyId
-        }/projects/${projectId}/build-b2a-report`,
-        {
-          method: 'POST',
-          body: JSON.stringify(reportData),
-        }
-      );
-      dispatch(
-        uiActions.notify({
-          content: 'Successfully built b2a report.',
-          icon: 'success',
-        })
-      );
+  const buildB2AReportAsPDF = () => {
+    setReportType('pdf');
+    setOpenConfirmModal(true);
+  };
 
-      fetch(`${getAPIUrl()}/static/${result.download_url}`)
-        .then((response) => response.blob())
-        .then((blob) => {
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', result.download_url);
-          document.body.appendChild(link);
-          link.click();
-        });
-    } catch (error) {
-      console.error(error);
-      dispatch(
-        uiActions.notify({
-          content: 'Error when trying to build b2a report.',
-          icon: 'error',
-        })
-      );
-      return false;
-    } finally {
-      dispatch(
-        uiActions.setTaskLoadingState({
-          taskId: reportTaskId,
-          isLoading: false,
-        })
-      );
-    }
+  const buildB2AReportAsExcel = () => {
+    setReportType('excel');
+    setOpenConfirmModal(true);
   };
 
   return (
@@ -328,23 +333,32 @@ const ProjectButtons = (props: Props) => {
         title="Bill Title"
       />
       <div className="flex gap-2">
-        {isClientBillPage ? (
-          <DropDownButton
-            dropDownButton={{
-              label: 'Build B2A Report',
-              items: [
-                {
-                  label: 'Export as PDF',
-                  onClick: buildB2AReportAsPDF,
-                },
-                {
-                  label: 'Export as Excel',
-                  onClick: buildB2AReportAsExcel,
-                },
-              ],
-            }}
-            taskId={reportTaskId}
-          />
+        {isClientBillPage && clientBillId ? (
+          <>
+            <DropDownButton
+              dropDownButton={{
+                label: 'Build B2A Report',
+                items: [
+                  {
+                    label: 'Export as PDF',
+                    onClick: buildB2AReportAsPDF,
+                  },
+                  {
+                    label: 'Export as Excel',
+                    onClick: buildB2AReportAsExcel,
+                  },
+                ],
+              }}
+              taskId={reportTaskId}
+            />
+            <ClientBillListModal
+              clientBillId={clientBillId}
+              projectId={projectId}
+              openModal={openConfirmModal}
+              onCloseModal={() => setOpenConfirmModal(false)}
+              onConfirm={handleBuildB2AReport}
+            />
+          </>
         ) : (
           <ButtonWithLoader
             button={{
