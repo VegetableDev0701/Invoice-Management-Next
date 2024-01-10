@@ -71,6 +71,9 @@ const ProjectButtons = (props: Props) => {
       (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
   ) as ProjectSummaryItem;
 
+  const [openConfirmModal, setOpenConfirmModal] = useState<boolean>(false);
+  const [reportType, setReportType] = useState('');
+
   const addBillTitleFormState = useSelector((state) => state.addBillTitleForm);
   const addBillTitleFormData = useSelector(
     (state) => state.data.forms['bill-title']
@@ -102,9 +105,6 @@ const ProjectButtons = (props: Props) => {
   const closeModalHandler = () => {
     setOpenModal(false);
   };
-
-  const [openConfirmModal, setOpenConfirmModal] = useState<boolean>(false);
-  const [reportType, setReportType] = useState('');
 
   const buildClientBillHandler = () => {
     dispatch(
