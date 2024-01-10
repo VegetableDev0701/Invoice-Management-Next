@@ -338,7 +338,7 @@ export default function CheckboxSortHeadingsTable<
                                     isChecked
                                       ? [...selected, element]
                                       : selected.filter((el) => el !== element)
-                                  );
+                                  )
                                 }
                                 setLastIndex(index);
                               }}
