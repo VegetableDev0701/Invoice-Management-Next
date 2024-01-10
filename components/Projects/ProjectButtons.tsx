@@ -34,8 +34,8 @@ import { buildB2AReport } from '@/lib/utility/budgetReportHelpers';
 import DropDownButton from '../UI/Buttons/DropDownButton';
 import ModalForm from '../UI/Modal/ModalForm';
 
-import ClientBillListModal from '../Budget/ClientBill/ClientBillListModal';
 import { useState } from 'react';
+import ClientBillListModal from '../Budget/ClientBill/ClientBillListModal';
 
 interface Props {
   projectId: string;
