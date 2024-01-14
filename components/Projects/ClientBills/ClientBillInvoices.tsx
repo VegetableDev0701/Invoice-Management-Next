@@ -10,7 +10,7 @@ import {
   Invoices,
 } from '@/lib/models/invoiceDataModels';
 import { FormStateV2, User } from '@/lib/models/formStateModels';
-import { singleInvoiceFormActions } from '@/store/process-invoice-slice';
+import { singleClientBillInvoiceFormActions} from '@/store/single-client-bill-invoice-slice';
 import { overlayActions } from '@/store/overlay-control-slice';
 import InvoicesTable from '@/components/Tables/Invoices/InvoiceSortHeadingsTable';
 import ProcessInvoiceSlideOverlay from '@/components/UI/SlideOverlay/ProcessInvoiceSlideOverlay';
@@ -56,10 +56,10 @@ const checkBoxButtons = [
 export default function ClientBillInvoices(props: Props) {
   const { projectId, invoices, handleUpdateClientBill } = props;
   const dispatch = useDispatch();
-  const { data: singleInvoiceFormData } = usePageData(
+  const { data: ProjectInvoiceFormData } = usePageData(
     'data',
     'forms',
-    'process-invoice'
+    'single-client-bill-invoice'
   );
   const { user } = useUser();
 
@@ -68,8 +68,8 @@ export default function ClientBillInvoices(props: Props) {
     invoices,
     projectId,
   });
-  const singleInvoiceFormStateData = useSelector(
-    (state) => state.singleInvoiceForm
+  const singleClientBillInvoiceForm = useSelector(
+    (state) => state.singleClientBillInvoiceForm
   );
   const overlayContent = useSelector(
     (state) => state.overlay['process-invoices']
@@ -120,8 +120,8 @@ export default function ClientBillInvoices(props: Props) {
   };
 
   const onSingleInvoice = () => {
-    dispatch(singleInvoiceFormActions.clearFormState());
-    dispatch(singleInvoiceFormActions.resetFormValidation());
+    dispatch(singleClientBillInvoiceFormActions.clearFormState());
+    dispatch(singleClientBillInvoiceFormActions.resetFormValidation());
     dispatch(
       overlayActions.setOverlayContent({
         data: {
@@ -143,10 +143,10 @@ export default function ClientBillInvoices(props: Props) {
     );
   };
 
-  // const onSubmitClientBillInvoice = async (
-  //   e: React.FormEvent,
-  //   formStateData: FormStateV2
-  // ) => {};
+  const onSubmitSingleClientInvoice = async (e: React.FormEvent, formStateData: FormStateV2) => {
+    console.log('Clicked');
+  }
+
   return (
     <>
       <ProcessInvoiceSlideOverlay
@@ -159,16 +159,16 @@ export default function ClientBillInvoices(props: Props) {
         isClientBill={true}
       />
       <SlideOverlayForm
-        formData={singleInvoiceFormData}
-        formState={singleInvoiceFormStateData}
-        actions={singleInvoiceFormActions}
+        formData={ProjectInvoiceFormData}
+        formState={singleClientBillInvoiceForm}
+        actions={singleClientBillInvoiceFormActions}
         showError={missingInputs}
         overlayContent={overlayContent}
         form="singleInvoice"
         overlayStateKey="process-invoices"
-        // onSubmit={(e) =>
-        //   onSubmitClientBillInvoice(e, singleInvoiceFormStateData)
-        // }
+        onSubmit={(e) =>
+          onSubmitSingleClientInvoice(e, ProjectInvoiceFormData)
+        }
       />
       <SectionHeading
         tabs={[{ name: 'Invoice Table', keyName: 'all', current: true }]}

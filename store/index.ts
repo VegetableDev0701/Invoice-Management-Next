@@ -39,6 +39,7 @@ import autoMergeLevel1 from 'redux-persist/lib/stateReconciler/autoMergeLevel1';
 import editContractFormSlice from './edit-contract';
 import addBillTitleSlice from './add-bill-title-slice';
 import singleInvoiceSlice from './process-invoice-slice';
+import singleClientBillInvoiceSlice from './single-client-bill-invoice-slice';
 import singleContractSlice from './single-contract-slice';
 const rootReducer = combineReducers({
   path: currentPathSlice.reducer,
@@ -55,6 +56,7 @@ const rootReducer = combineReducers({
   accountSettingsForm: accountSettingsFormSlice.reducer,
   singleInvoiceForm: singleInvoiceSlice.reducer,
   singleContractForm: singleContractSlice.reducer,
+  singleClientBillInvoiceForm: singleClientBillInvoiceSlice.reducer,
   user: userSlice.reducer,
   data: companyDataSlice.reducer,
   projects: projectDataSlice.reducer,

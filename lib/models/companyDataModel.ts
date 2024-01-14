@@ -57,5 +57,6 @@ export interface Forms {
   'add-vendor': { mainCategories: MainCategories[] };
   'change-order': { mainCategories: MainCategories[] };
   'process-invoice': { mainCategories: MainCategories[] };
+  'single-client-bill-invoice': { mainCategories: MainCategories[] };
   'bill-title': { mainCategories: MainCategories[] };
 }

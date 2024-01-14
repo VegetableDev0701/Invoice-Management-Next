@@ -6,6 +6,7 @@ import {
   ProjectFormData,
   VendorData,
   InvoiceFormData,
+  ProjectInvoiceFormData
 } from '@/lib/models/formDataModel';
 
 // import { ProcessedInvoiceData } from '@/lib/models/invoiceDataModels';
@@ -24,6 +25,7 @@ import { onboardUserActions } from '@/store/onboard-user-slice';
 import { addBillTitleActions } from '@/store/add-bill-title-slice';
 import { singleInvoiceFormActions } from '@/store/process-invoice-slice';
 import { singleContractFormActions } from '@/store/single-contract-slice';
+import { singleClientBillInvoiceFormActions} from '@/store/single-client-bill-invoice-slice';
 
 export type AddProjectActions = typeof addProjectFormActions;
 type AddVendorActions = typeof addVendorFormActions;
@@ -37,6 +39,8 @@ type OnboardUserActions = typeof onboardUserActions;
 type AddBillTitleActions = typeof addBillTitleActions;
 type SingleInvoiceAction = typeof singleInvoiceFormActions;
 type singleContractActions = typeof singleContractFormActions;
+type singleClientBillInvoiceActions = typeof singleClientBillInvoiceFormActions;
+
 export type Actions =
   | AddProjectActions
   | AddVendorActions
@@ -48,7 +52,8 @@ export type Actions =
   | AddProcessInvoiceActions
   | AddBillTitleActions
   | singleContractActions
-  | SingleInvoiceAction;
+  | SingleInvoiceAction
+  | singleClientBillInvoiceActions
 
 export type FormData =
   | ProjectFormData
@@ -57,7 +62,8 @@ export type FormData =
   | AccountSettingsData
   | LaborData
   | ChangeOrderData
-  | ContractsData;
+  | ContractsData
+  | ProjectInvoiceFormData;
 
 /**
  * I have two interfaces with the same entry called value and totalAmt,
