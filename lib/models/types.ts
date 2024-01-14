@@ -5,7 +5,10 @@ import {
   LaborData,
   ProjectFormData,
   VendorData,
+  InvoiceFormData,
 } from '@/lib/models/formDataModel';
+
+// import { ProcessedInvoiceData } from '@/lib/models/invoiceDataModels';
 
 import { addProjectFormActions } from '@/store/add-project-slice';
 import { addVendorFormActions } from '@/store/add-vendor-slice';
@@ -19,6 +22,8 @@ import { BudgetTotalItem, BudgetTotalItemV2 } from './budgetCostCodeModel';
 import { InvoiceLineItemItem } from './invoiceDataModels';
 import { onboardUserActions } from '@/store/onboard-user-slice';
 import { addBillTitleActions } from '@/store/add-bill-title-slice';
+import { singleInvoiceFormActions } from '@/store/process-invoice-slice';
+import { singleContractFormActions } from '@/store/single-contract-slice';
 
 export type AddProjectActions = typeof addProjectFormActions;
 type AddVendorActions = typeof addVendorFormActions;
@@ -30,7 +35,8 @@ export type AddProcessInvoiceActions = typeof addProcessInvoiceFormActions;
 export type InvoiceActions = typeof invoiceActions;
 type OnboardUserActions = typeof onboardUserActions;
 type AddBillTitleActions = typeof addBillTitleActions;
-
+type SingleInvoiceAction = typeof singleInvoiceFormActions;
+type singleContractActions = typeof singleContractFormActions;
 export type Actions =
   | AddProjectActions
   | AddVendorActions
@@ -40,10 +46,13 @@ export type Actions =
   | EditContractFormActions
   | OnboardUserActions
   | AddProcessInvoiceActions
-  | AddBillTitleActions;
+  | AddBillTitleActions
+  | singleContractActions
+  | SingleInvoiceAction;
 
 export type FormData =
   | ProjectFormData
+  | InvoiceFormData
   | VendorData
   | AccountSettingsData
   | LaborData

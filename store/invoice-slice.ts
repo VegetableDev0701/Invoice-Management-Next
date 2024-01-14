@@ -78,14 +78,15 @@ export const autoAssignSelectedInvoices = createAsyncThunk(
         const predicted_project = allInvoices[invoice.doc_id].predicted_project;
 
         if (
+          predicted_project &&
           predicted_project.name !== null &&
           predicted_project.name !== 'unknown'
         ) {
           invoiceProjects[invoice.doc_id] = {
-            name: predicted_project.name,
-            address: predicted_project.address,
+            name: predicted_project ? predicted_project.name : null,
+            address: predicted_project ? predicted_project.address : null,
             // project_key: predicted_project.project_key,
-            uuid: predicted_project.uuid,
+            uuid: predicted_project ? predicted_project.uuid : null,
           };
           return {
             [invoice.doc_id]: invoiceProjects[invoice.doc_id],
@@ -593,7 +594,10 @@ export const updateInvoiceProjectObject = createAsyncThunk(
     // const newProjectName = projectSummary.projectName;
     // const newProjectAddress = projectSummary.address;
     const invoicesToUpdate = Object.entries(state.data.invoices.allInvoices)
-      .filter(([_, invoice]) => invoice.project.uuid === projectId)
+      .filter(
+        ([_, invoice]) =>
+          invoice.project != null && invoice.project.uuid === projectId
+      )
       .reduce((updatedInvoices, [invoiceId, invoice]) => {
         const updatedInvoice = {
           ...invoice,
@@ -603,7 +607,9 @@ export const updateInvoiceProjectObject = createAsyncThunk(
             address: newProjectAddress,
           },
         };
-        updatedInvoices[invoiceId] = updatedInvoice;
+        if (updatedInvoice.project.uuid != undefined) {
+          updatedInvoices[invoiceId] = updatedInvoice;
+        }
         return updatedInvoices;
       }, {} as Invoices);
 
@@ -614,7 +620,9 @@ export const updateInvoiceProjectObject = createAsyncThunk(
       // create the invoice project object
       const updateInvoiceProjects = Object.entries(invoicesToUpdate).reduce(
         (acc, [invoiceId, invoice]) => {
-          acc[invoiceId] = invoice.project;
+          if (invoice.project != null) {
+            acc[invoiceId] = invoice.project;
+          }
           return acc;
         },
         {} as { [invoiceId: string]: InvoiceProject }

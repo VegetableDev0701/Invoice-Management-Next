@@ -50,6 +50,7 @@ export interface Forms {
   status: string;
   'account-settings': { mainCategories: MainCategories[] };
   'add-contract': { mainCategories: MainCategories[] };
+  'single-contract': { mainCategories: MainCategories[] };
   'edit-contract': { mainCategories: MainCategories[] };
   'add-labor': { numCostCodes: number; mainCategories: MainCategories[] };
   'add-project': { numRecurringFees: number; mainCategories: MainCategories[] };

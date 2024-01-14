@@ -23,7 +23,12 @@ export interface Props {
 export default function FormComponent(props: Props) {
   const { formData, formState, pageTitle, subTitle, showError, actions, form } =
     props;
-  const anchorScrollElement = formatNameForID(formData.mainCategories[0].name);
+  const anchorScrollElement = Object.prototype.hasOwnProperty.call(
+    formData,
+    'mainCategory'
+  )
+    ? formatNameForID(formData.mainCategories[0].name)
+    : '';
 
   // HACK - This is just dummy state to force this componenet to rerender
   // at EVERY side link click. This fixed a bug where if the same
@@ -31,9 +36,12 @@ export default function FormComponent(props: Props) {
   const [state, setState] = useState(false);
   const [clickedLinkId, setClickedLinkId] = useState('');
 
-  const sideLinks = formData.mainCategories.map(
-    (category: MainCategories) => category.name
-  );
+  const sideLinks = Object.prototype.hasOwnProperty.call(
+    formData,
+    'mainCategories'
+  )
+    ? formData.mainCategories.map((category: MainCategories) => category.name)
+    : [];
 
   const clickLinkHandler = (linkId: string) => {
     setState((prevState) => !prevState);

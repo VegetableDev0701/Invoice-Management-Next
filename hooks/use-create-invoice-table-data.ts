@@ -70,6 +70,7 @@ export default function useCreateInvoiceRows({
           }
         })
         .map((row) => {
+          console.log('time formate', row);
           return {
             vendor_name:
               row?.processedData?.vendor?.name ??
@@ -84,7 +85,7 @@ export default function useCreateInvoiceRows({
               : null,
             vendor_uuid:
               row?.processedData?.vendor?.uuid ??
-              row.predicted_supplier_name.uuid,
+              row.predicted_supplier_name?.uuid,
             invoice_id:
               row?.processedData?.invoice_id ??
               row.invoice_id?.entity_value_raw,
@@ -134,7 +135,9 @@ export default function useCreateInvoiceRows({
                     ]
                   : null
                 : null,
-            predicted_project: row.predicted_project.name,
+            predicted_project: row.predicted_project
+              ? row.predicted_project.name
+              : '',
             project: row.project.name,
             project_id: row.project.uuid,
             invoice_date:
@@ -152,7 +155,13 @@ export default function useCreateInvoiceRows({
               : null,
             date_received:
               row?.processedData?.date_received ??
-              convertUtcToLocalTime(row.date_received, 'US/Pacific', true),
+              convertUtcToLocalTime(
+                row.date_received == ''
+                  ? new Date().toUTCString()
+                  : row.date_received,
+                'US/Pacific',
+                true
+              ),
             cost_code: row?.processedData?.cost_code,
             line_items_toggle:
               'line_items_toggle' in (row.processedData || {})
@@ -188,8 +197,8 @@ export default function useCreateInvoiceRows({
             billable: row?.processedData?.billable ?? true,
             expense_tax: row?.processedData?.expense_tax ?? false,
             image_dim: {
-              width: row.pages[0].width,
-              height: row.pages[0].height,
+              width: row.pages[0] ? row.pages[0].width : 0,
+              height: row.pages[0] ? row.pages[0].height : 0,
             },
           } as InvoiceTableRow;
         });

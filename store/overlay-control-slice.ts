@@ -8,7 +8,10 @@ import {
 import { FormData } from '@/lib/models/types';
 import { createSectionBox } from '@/lib/utility/processInvoiceHelpers';
 import { ContractEntry, VendorSummary } from '@/lib/models/summaryDataModel';
-import { BoundingBox } from '@/lib/models/invoiceDataModels';
+import {
+  BoundingBox,
+  ProcessedInvoiceData,
+} from '@/lib/models/invoiceDataModels';
 import { RESET_STATE } from '@/lib/globals';
 import { createVendorFormDataFromSummaryData } from '@/lib/utility/submitFormHelpers';
 
@@ -143,6 +146,15 @@ const overlayIntitialState: OverlayGroup = {
     currentId: null,
     currentBoundingBox: null,
   },
+  'single-contract': {
+    overlayTitle: '',
+    overlaySubtitle: '',
+    open: false,
+    isSave: true,
+    currentData: null,
+    currentId: null,
+    currentBoundingBox: null,
+  },
 };
 
 const overlaySlice = createSlice({
@@ -154,6 +166,7 @@ const overlaySlice = createSlice({
       action: PayloadAction<{ data: OverlayContent; stateKey: string }>
     ) {
       const { data, stateKey } = action.payload;
+      console.log('here', data);
       const newData = Object.entries(data).reduce(
         (obj: { [key: string]: string | boolean }, [key, value]) => {
           if (value !== undefined) {
@@ -164,6 +177,7 @@ const overlaySlice = createSlice({
         {}
       );
       state[stateKey] = { ...state[stateKey], ...newData };
+      console.log('here', newData, state[stateKey]);
     },
     setCurrentOverlayData(
       state,
@@ -174,6 +188,7 @@ const overlaySlice = createSlice({
             | ChangeOrderData
             | ContractEntry
             | ProjectFormData
+            | ProcessedInvoiceData
             | null;
           currentId: string | null;
         };

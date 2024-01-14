@@ -13,7 +13,7 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { sortArrayById, sortArrayByObjKey } from '@/lib/utility/tableHelpers';
 import { ProjectSummary } from '@/lib/models/summaryDataModel';
 import { InvoiceProject } from '@/lib/models/invoiceDataModels';
-
+import { defaultInvoiceProject } from '@/lib/models/initDataModels';
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
@@ -47,16 +47,20 @@ const TableDropdown = (props: Props) => {
     (state) => state.data.projectsSummary.allProjects,
     shallowEqual
   ) as ProjectSummary;
-  const invoiceProject: InvoiceProject = useSelector(
-    (state) => state.data.invoices.allInvoices[invoiceId]?.project,
-    shallowEqual
-  );
-  const updatedProject: InvoiceProject = useSelector(
-    (state) => state.invoice.invoiceProjects[invoiceId]
-  );
+  const invoiceProject: InvoiceProject = {
+    ...defaultInvoiceProject,
+    ...useSelector(
+      (state) => state.data.invoices.allInvoices[invoiceId]?.project,
+      shallowEqual
+    ),
+  };
+  const updatedProject: InvoiceProject = {
+    ...defaultInvoiceProject,
+    ...useSelector((state) => state.invoice.invoiceProjects[invoiceId]),
+  };
 
   const [selected, setSelected] = useState<Selected>({
-    label: updatedProject?.name ? updatedProject.name : invoiceProject?.name,
+    label: updatedProject.name ? updatedProject.name : invoiceProject?.name,
     project_uuid: updatedProject?.name
       ? updatedProject.uuid
       : invoiceProject?.uuid

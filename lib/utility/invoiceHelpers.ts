@@ -55,7 +55,7 @@ export const groupLineItems = ({
 }: {
   lineItems: { [key: string]: FormStateItem };
   changeOrdersSummary: ChangeOrderSummary;
-  lineItemBoundingBoxes?: InvoiceLineItem;
+  lineItemBoundingBoxes?: InvoiceLineItem | null;
   laborRate?: string;
   isProjectNameChanged?: boolean;
 }) => {

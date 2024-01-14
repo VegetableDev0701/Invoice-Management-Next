@@ -19,34 +19,34 @@ export interface PredictedSupplier {
 export interface InvoiceItem {
   approved: boolean;
   client_bill_id: string | null;
-  currency: Entity;
+  currency: Entity | null;
   date_received: string;
   doc_id: string;
   document_type: string | null;
   gcs_img_uri: string[];
   gcs_uri: string;
-  invoice_date: Entity;
-  invoice_id: Entity;
-  invoice_type: Entity;
+  invoice_date: Entity | null;
+  invoice_id: Entity | null;
+  invoice_type: Entity | null;
   is_attached_to_bill: boolean;
   line_items: Entity[];
   line_items_gpt: InvoiceLineItem;
-  net_amount?: Entity;
+  net_amount?: Entity | null;
   number_of_pages: number;
   pages: Page[];
-  payment_terms: Entity;
+  payment_terms: Entity | null;
   processed: boolean;
-  predicted_supplier_name: PredictedSupplier;
-  predicted_project: PredictedProject;
+  predicted_supplier_name: PredictedSupplier | null;
+  predicted_project: PredictedProject | null;
   processedData?: ProcessedInvoiceData;
   project: InvoiceProject;
   project_id: string | null;
-  receiver_address: Entity;
-  receiver_name: Entity;
-  supplier_address: Entity;
+  receiver_address: Entity | null;
+  receiver_name: Entity | null;
+  supplier_address: Entity | null;
   supplier_id: string | null;
-  supplier_name: Entity;
-  total_amount: Entity;
+  supplier_name: Entity | null;
+  total_amount: Entity | null;
   total_tax_amount: Entity | null;
 }
 
@@ -72,7 +72,7 @@ export interface InvoiceTableRow {
   is_credit: boolean;
   is_synced: string;
   line_items: Entity[];
-  line_items_gpt: InvoiceLineItem | null;
+  line_items_gpt: InvoiceLineItem;
   line_items_toggle: boolean;
   predicted_project: string;
   processed: string;
@@ -126,12 +126,12 @@ export interface InvoiceLineItemItem {
   work_description?: string;
   page: number | null;
   bounding_box: BoundingBox | null;
-  number_of_hours?: number;
+  number_of_hours?: string;
   billable: boolean;
   change_order: { name: string; uuid: string } | null;
 }
 
-interface Entity {
+export interface Entity {
   entity_value_raw: string;
   unit: string | null;
   entity_value_norm: string | null;
@@ -153,7 +153,8 @@ export interface InvoiceProject {
   uuid: string | null;
   name: string | null;
 }
-interface PredictedProject {
+
+export interface PredictedProject {
   address: string;
   top_scores: { [address: string]: number };
   score: number;

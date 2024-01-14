@@ -29,7 +29,7 @@ interface Props {
   title?: string;
   buttons?: Buttons[];
   totalNum?: number;
-  onActiveTab: (activeTabKeyName: string) => void;
+  onActiveTab?: (activeTabKeyName: string) => void;
   onFilter?: (activeFilter: string) => void;
 }
 
@@ -42,7 +42,7 @@ export default function SectionHeading(props: Props) {
 
   useEffect(() => {
     const currentTab = tabs.find((tab) => tab.current) as SectionTabs;
-    onActiveTab(currentTab.keyName);
+    onActiveTab && onActiveTab(currentTab.keyName);
   }, [tabs, onActiveTab]);
 
   const clickHandler = (name: string) => {

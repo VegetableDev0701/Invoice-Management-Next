@@ -318,7 +318,9 @@ export const addProcessedInvoiceData = createAsyncThunk(
         groupedLineItems = groupLineItems({
           lineItems,
           changeOrdersSummary,
-          lineItemBoundingBoxes,
+          lineItemBoundingBoxes: lineItemBoundingBoxes
+            ? lineItemBoundingBoxes
+            : null,
           isProjectNameChanged,
         });
       }
@@ -909,7 +911,7 @@ export const companyDataSlice = createSlice({
       // because they are in order from top to bottom for each page of the invoice
       Object.entries(newInvoices).forEach(
         ([invoiceId, invoiceObj]: [string, InvoiceItem]) => {
-          if (invoiceObj?.line_items_gpt) {
+          if (invoiceObj.line_items_gpt) {
             const orderedLineItemKeys = Object.keys(
               invoiceObj.line_items_gpt
             ).sort((a: string, b: string) => {
@@ -1021,6 +1023,16 @@ export const companyDataSlice = createSlice({
         ...{ project },
         ...{ processedData: processedInvoiceData },
         ...{ processed: isProcessed },
+      };
+    },
+    // Add Single Invoice with Invoice Item
+    addSingleInvoiceData(
+      state,
+      action: PayloadAction<{ invoice: InvoiceItem; uuid: string }>
+    ) {
+      state.invoices.allInvoices = {
+        ...state.invoices.allInvoices,
+        [action.payload.uuid]: action.payload.invoice,
       };
     },
     // TODO refactor this logic so that the following function can be used to complete this task as well

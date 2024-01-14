@@ -1,0 +1,46 @@
+{
+    "mainCategories": [
+      {
+        "name": "Contract Details",
+        "inputElements": [
+          {
+            "items": [
+              {
+                "label": "Vendor Name",
+                "id": "vendor-name",
+                "inputType": "dropdownWithSearch",
+                "value": "",
+                "sideButton": true,
+                "buttonText": "Contract",
+                "required": false,
+                "isOnOverlay": true,
+                "type": "text"
+              }
+            ]
+          },
+          {
+            "items": [
+              {
+                "label": "Contract Amount",
+                "id": "contract-amount",
+                "type": "text",
+                "isCurrency": true,
+                "required": false,
+                "errormessage": "Contract amount is required.",
+                "value": ""
+              },
+              {
+                "label": "Contract Date",
+                "id": "contract-date",
+                "type": "date",
+                "data-testid": "date-input",
+                "required": false,
+                "value": ""
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  

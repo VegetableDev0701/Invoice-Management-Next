@@ -1,15 +1,22 @@
 import useCreateInvoiceRows from '@/hooks/use-create-invoice-table-data';
-
-import { useAppDispatch as useDispatch } from '@/store/hooks';
+import { usePageData } from '@/hooks/use-page-data';
+import {
+  useAppSelector as useSelector,
+  useAppDispatch as useDispatch,
+} from '@/store/hooks';
 import {
   InvoiceItem,
   InvoiceTableHeadings,
   Invoices,
 } from '@/lib/models/invoiceDataModels';
 import { FormStateV2, User } from '@/lib/models/formStateModels';
-
+import { singleInvoiceFormActions } from '@/store/process-invoice-slice';
+import { overlayActions } from '@/store/overlay-control-slice';
 import InvoicesTable from '@/components/Tables/Invoices/InvoiceSortHeadingsTable';
 import ProcessInvoiceSlideOverlay from '@/components/UI/SlideOverlay/ProcessInvoiceSlideOverlay';
+import SlideOverlayForm from '@/components/UI/SlideOverlay/SlideOverlayForm';
+import SectionHeading from '@/components/UI/SectionHeadings/SectionHeading';
+import useUploadFilesHandler from '@/hooks/use-upload-files';
 import { Labor } from '@/lib/models/formDataModel';
 import { LaborSummary } from '@/lib/models/summaryDataModel';
 import { snapshotCopy } from '@/lib/utility/utils';
@@ -49,7 +56,11 @@ const checkBoxButtons = [
 export default function ClientBillInvoices(props: Props) {
   const { projectId, invoices, handleUpdateClientBill } = props;
   const dispatch = useDispatch();
-
+  const { data: singleInvoiceFormData } = usePageData(
+    'data',
+    'forms',
+    'process-invoice'
+  );
   const { user } = useUser();
 
   const invoiceRows = useCreateInvoiceRows({
@@ -57,13 +68,23 @@ export default function ClientBillInvoices(props: Props) {
     invoices,
     projectId,
   });
-
+  const singleInvoiceFormStateData = useSelector(
+    (state) => state.singleInvoiceForm
+  );
+  const overlayContent = useSelector(
+    (state) => state.overlay['process-invoices']
+  );
+  const [missingInputs] = useState<boolean>(false);
   const [snapShotFormState, setSnapShotFormState] =
     useState<FormStateV2 | null>(null);
 
   const getSnapShotFormState = (data: FormStateV2) => {
     setSnapShotFormState(data);
   };
+
+  const { handleFileChange } = useUploadFilesHandler({
+    uploadFileType: 'invoice',
+  });
 
   const handleUpdateData = ({
     formState,
@@ -98,6 +119,34 @@ export default function ClientBillInvoices(props: Props) {
     }
   };
 
+  const onSingleInvoice = () => {
+    dispatch(singleInvoiceFormActions.clearFormState());
+    dispatch(singleInvoiceFormActions.resetFormValidation());
+    dispatch(
+      overlayActions.setOverlayContent({
+        data: {
+          overlayTitle: 'Single Invoice',
+          open: true,
+          isSave: true,
+        },
+        stateKey: 'process-invoices',
+      })
+    );
+    dispatch(
+      overlayActions.setCurrentOverlayData({
+        data: {
+          currentData: null,
+          currentId: null,
+        },
+        stateKey: 'process-invoices',
+      })
+    );
+  };
+
+  // const onSubmitClientBillInvoice = async (
+  //   e: React.FormEvent,
+  //   formStateData: FormStateV2
+  // ) => {};
   return (
     <>
       <ProcessInvoiceSlideOverlay
@@ -108,6 +157,34 @@ export default function ClientBillInvoices(props: Props) {
         onGetSnapShotFormState={getSnapShotFormState}
         onUpdateData={handleUpdateData}
         isClientBill={true}
+      />
+      <SlideOverlayForm
+        formData={singleInvoiceFormData}
+        formState={singleInvoiceFormStateData}
+        actions={singleInvoiceFormActions}
+        showError={missingInputs}
+        overlayContent={overlayContent}
+        form="singleInvoice"
+        overlayStateKey="process-invoices"
+        // onSubmit={(e) =>
+        //   onSubmitClientBillInvoice(e, singleInvoiceFormStateData)
+        // }
+      />
+      <SectionHeading
+        tabs={[{ name: 'Invoice Table', keyName: 'all', current: true }]}
+        buttons={[
+          {
+            label: 'Single Invoice',
+            disabled: false,
+            onClick: onSingleInvoice,
+          },
+          {
+            label: 'Add Invoices',
+            disabled: false,
+            inputClick: handleFileChange,
+          },
+        ]}
+        // onActiveTab={() => {}}
       />
       <InvoicesTable
         isProjectPage={true}

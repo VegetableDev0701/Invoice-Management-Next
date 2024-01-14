@@ -5,6 +5,7 @@ export interface Buttons {
   taskId?: string;
   ref?: RefObject<HTMLButtonElement>;
   isShowingKeyName?: string;
+  isShowingSubName?: string;
   buttonPath?: string;
   disabled?: boolean;
   className?: string;

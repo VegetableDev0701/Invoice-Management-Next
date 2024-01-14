@@ -328,7 +328,7 @@ export const createSingleLaborSummary = ({
     lineItems,
     changeOrdersSummary,
     laborRate: rate,
-  }) as unknown as LaborLineItem;
+  }) as LaborLineItem;
 
   // we know there will be hours so we can assert the type
   const hours = Object.values(groupedLineItems).map(

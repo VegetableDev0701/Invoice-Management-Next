@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 
 import {
@@ -8,8 +8,9 @@ import {
 import { overlayActions } from '@/store/overlay-control-slice';
 import { projectDataActions } from '@/store/projects-data-slice';
 import { contractActions, deleteContracts } from '@/store/contract-slice';
+import { singleContractFormActions } from '@/store/single-contract-slice';
 import { editContractFormActions } from '@/store/edit-contract';
-
+import SectionHeading from '@/components/UI/SectionHeadings/SectionHeading';
 import { usePageData } from '@/hooks/use-page-data';
 import useHttp from '@/hooks/use-http';
 import useSetNotification from '@/hooks/use-set-notification';
@@ -26,7 +27,8 @@ import { convertContractEntry2FormData } from '@/lib/utility/contractHelper';
 import FullScreenLoader from '../UI/Loaders/FullScreenLoader';
 import CheckboxSubTable from '../Tables/SubTables/CheckboxSortHeadingsTableSub';
 import ContractSlideOverlay from '../UI/SlideOverlay/ContractSlideOverlay';
-
+import SlideOverlayForm from '@/components/UI/SlideOverlay/SlideOverlayForm';
+const tabs = [{ name: 'Project Contract', keyName: 'all', current: true }];
 interface Props {
   projectId: string;
   tableData: ContractData | null;
@@ -55,7 +57,11 @@ export default function ProjectsContracts(props: Props) {
   const { user } = useUser();
 
   const dispatch = useDispatch();
-
+  const { data: singleContractFormData } = usePageData(
+    'data',
+    'forms',
+    'single-contract'
+  );
   const projectName = useSelector(
     (state) =>
       (state.data.projectsSummary.allProjects as ProjectSummary)[projectId]
@@ -67,7 +73,12 @@ export default function ProjectsContracts(props: Props) {
   const vendorSummary = useSelector(
     (state) => state.data.vendorsSummary.allVendors
   );
-
+  const singleContractFormStateData = useSelector(
+    (state) => state.singleContractForm
+  );
+  const overlayContent = useSelector((state) => state.overlay['edit-contract']);
+  const [_activeTabKeyName, setActiveTabKeyName] = useState<string>('all');
+  const [missingInputs] = useState<boolean>(false);
   useEffect(() => {
     // initialize the is row clicked to false on first render
     dispatch(
@@ -99,6 +110,30 @@ export default function ProjectsContracts(props: Props) {
       return null;
     }
   }, [tableData]);
+
+  const handleSingleContract = () => {
+    dispatch(singleContractFormActions.clearFormState());
+    dispatch(singleContractFormActions.resetFormValidation());
+    dispatch(
+      overlayActions.setOverlayContent({
+        data: {
+          overlayTitle: 'Single Contract',
+          open: true,
+          isSave: true,
+        },
+        stateKey: 'single-contract',
+      })
+    );
+    dispatch(
+      overlayActions.setCurrentOverlayData({
+        data: {
+          currentData: null,
+          currentId: null,
+        },
+        stateKey: 'single-contract',
+      })
+    );
+  };
 
   const confirmModalHandler = (selected: ContractTableRow[]) => {
     const contractIds = selected.map((contract) => contract.uuid as string);
@@ -158,6 +193,29 @@ export default function ProjectsContracts(props: Props) {
       {isLoading && <FullScreenLoader />}
       {!isLoading && (
         <>
+          {
+            <SlideOverlayForm
+              formData={singleContractFormData}
+              formState={singleContractFormStateData}
+              actions={singleContractFormActions}
+              showError={missingInputs}
+              overlayContent={overlayContent}
+              form="singleContract"
+              overlayStateKey="edit-contract"
+              // onSubmit={(e) => submitFormHandler(e, addProjectFormStateData)}
+            />
+          }
+          <SectionHeading
+            tabs={tabs}
+            buttons={[
+              {
+                label: 'Single Contract',
+                disabled: false,
+                onClick: handleSingleContract,
+              },
+            ]}
+            onActiveTab={setActiveTabKeyName}
+          />
           <ContractSlideOverlay
             projectId={projectId}
             tableData={tableData}

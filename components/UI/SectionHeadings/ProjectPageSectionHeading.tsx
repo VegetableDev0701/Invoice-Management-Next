@@ -200,21 +200,25 @@ export default function ProjectsSectionHeading(props: Props) {
                       .map((tab) => tab.keyName)[0] === button.isShowingKeyName
                   ) {
                     return (
-                      <Button
-                        key={i}
-                        type="button"
-                        buttonText={button.label}
-                        className="2xl:px-6 md:px-3 py-1 md:text-md 2xl:text-xl font-normal bg-stak-dark-green"
-                        disabled={button.disabled}
-                        onClick={button.onClick}
-                        ref={
-                          button.label === 'Update Budget'
-                            ? updateBudgetRef
-                            : button.label === 'Update Project Details'
-                            ? updateProjectDetailsRef
-                            : undefined
-                        }
-                      />
+                      (button.isShowingKeyName == 'clientBill' &&
+                        button.isShowingSubName == 'invoices') ||
+                      (button.isShowingKeyName != 'clientBill' && (
+                        <Button
+                          key={i}
+                          type="button"
+                          buttonText={button.label}
+                          className="2xl:px-6 md:px-3 py-1 md:text-md 2xl:text-xl font-normal bg-stak-dark-green"
+                          disabled={button.disabled}
+                          onClick={button.onClick}
+                          ref={
+                            button.label === 'Update Budget'
+                              ? updateBudgetRef
+                              : button.label === 'Update Project Details'
+                              ? updateProjectDetailsRef
+                              : undefined
+                          }
+                        />
+                      ))
                     );
                   }
                 })}

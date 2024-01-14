@@ -42,6 +42,15 @@ export interface ProjectFormData {
   uuid: string;
 }
 
+export interface InvoiceFormData {
+  name: string;
+  isActive: boolean;
+  mainCategories: MainCategories[];
+  numRecurringFees: number;
+  pUUID: string;
+  iUUID: string;
+}
+
 export interface Vendors {
   [key: string]: VendorData;
 }
