@@ -1,0 +1,224 @@
+{
+  "mainCategories": [
+    {
+      "name": "Top",
+      "inputElements": [
+        {
+          "items": [
+            {
+              "label": "Invoice Number",
+              "id": "invoice-number",
+              "type": "text",
+              "value": "",
+              "required": false,
+              "isOnOverlay": true
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Vendor Name",
+              "id": "vendor-name",
+              "inputType": "dropdownWithSearch",
+              "value": "",
+              "sideButton": true,
+              "buttonText": "Contract",
+              "required": false,
+              "isOnOverlay": true,
+              "type": "text"
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Project Name",
+              "id": "project-name",
+              "inputType": "dropdownWithSearch",
+              "required": true,
+              "errormessage": "Project is required.",
+              "value": "",
+              "isOnOverlay": true
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Line Items",
+              "id": "line-item-toggle",
+              "inputType": "slideToggle",
+              "required": false,
+              "value": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Line Items",
+      "inputElements": []
+    },
+    {
+      "name": "Bottom",
+      "inputElements": [
+        {
+          "items": [
+            {
+              "label": "Work Description",
+              "id": "work-description",
+              "type": "text",
+              "inputType": "dropdownWithSearch",
+              "required": false,
+              "errormessage": "Work description is required.",
+              "value": "",
+              "isCurrency": false,
+              "isOnOverlay": true
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Cost Code",
+              "id": "cost-code",
+              "type": "text",
+              "inputType": "dropdownWithSearch",
+              "value": "",
+              "required": false,
+              "isOnOverlay": true
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Total Tax",
+              "id": "total-tax",
+              "type": "text",
+              "inputmode": "numeric",
+              "isCurrency": true,
+              "required": false,
+              "value": "",
+              "isOnOverlay": true
+            },
+            {
+              "label": "Expense Tax",
+              "id": "expense-tax",
+              "inputType": "slideToggle",
+              "required": false,
+              "value": false
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Invoice Total",
+              "id": "invoice-total",
+              "type": "text",
+              "inputmode": "numeric",
+              "isCurrency": true,
+              "required": false,
+              "value": "",
+              "isOnOverlay": true
+            },
+            {
+              "label": "Billable",
+              "id": "billable",
+              "inputType": "slideToggle",
+              "required": false,
+              "value": true
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Approver",
+              "id": "approver",
+              "inputType": "dropdownWithSearch",
+              "required": true,
+              "errormessage": "An approver must be set for this invoice.",
+              "value": "",
+              "isOnOverlay": true,
+              "selectMenuOptions": [
+                {
+                  "id": 1,
+                  "label": "Chris Christopher"
+                },
+                {
+                  "id": 2,
+                  "label": "Albert Albertson"
+                },
+                {
+                  "id": 3,
+                  "label": "Carl Carlson"
+                },
+                {
+                  "id": 4,
+                  "label": "Jacob Peach"
+                },
+                {
+                  "id": 5,
+                  "label": "Turner Hooch"
+                },
+                {
+                  "id": 6,
+                  "label": "Colin Anderson"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Change Order",
+              "id": "change-order",
+              "inputType": "dropdownWithSearch",
+              "required": false,
+              "value": "",
+              "isOnOverlay": true
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Invoice Date",
+              "id": "invoice-date",
+              "type": "date",
+              "data-testid": "date-input",
+              "value": "",
+              "required": false,
+              "errormessage": "Invoice date is required."
+            },
+            {
+              "label": "Date Loaded into Stak",
+              "id": "date-received",
+              "type": "date",
+              "data-testid": "date-input",
+              "value": "",
+              "required": false,
+              "errormessage": "Must include when the invoices was loaded into Stak."
+            }
+          ]
+        },
+        {
+          "items": [
+            {
+              "label": "Credit",
+              "id": "credit",
+              "inputType": "slideToggle",
+              "required": false,
+              "value": false,
+              "isOnOverlay": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
