@@ -7,7 +7,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const companyId = req.query.companyId as string;
   if (req.method === 'POST') {
     try {
-      console.log('api request 2');
       const auth0Session = await getSession(req, res);
       if (!auth0Session || !auth0Session.user) {
         res.status(401).json({ error: 'Not authenticated' });

@@ -39,7 +39,6 @@ const useHttp = ({ isClearData }: { isClearData: boolean }) => {
   }: AsyncSendRequest): Promise<void> => {
     latestRequestRef.current++;
     const currentRequest = latestRequestRef.current;
-    console.log('api arrived');
     // Initialize AbortController for this request
     abortController.current = new AbortController();
 

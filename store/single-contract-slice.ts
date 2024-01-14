@@ -38,7 +38,6 @@ const singleContractFormSlice = createSlice({
       };
     },
     resetFormValidation(state) {
-      console.log('state', state);
       return resetAllFormValidation(state);
     },
   },

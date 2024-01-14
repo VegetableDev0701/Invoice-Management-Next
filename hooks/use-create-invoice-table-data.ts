@@ -70,7 +70,6 @@ export default function useCreateInvoiceRows({
           }
         })
         .map((row) => {
-          console.log('time formate', row);
           return {
             vendor_name:
               row?.processedData?.vendor?.name ??

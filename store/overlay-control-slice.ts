@@ -166,7 +166,6 @@ const overlaySlice = createSlice({
       action: PayloadAction<{ data: OverlayContent; stateKey: string }>
     ) {
       const { data, stateKey } = action.payload;
-      console.log('here', data);
       const newData = Object.entries(data).reduce(
         (obj: { [key: string]: string | boolean }, [key, value]) => {
           if (value !== undefined) {
@@ -177,7 +176,6 @@ const overlaySlice = createSlice({
         {}
       );
       state[stateKey] = { ...state[stateKey], ...newData };
-      console.log('here', newData, state[stateKey]);
     },
     setCurrentOverlayData(
       state,

@@ -39,13 +39,11 @@ const singleInvoiceFormSlice = createSlice({
       };
     },
     setIsUpdatedState(state, action: PayloadAction<boolean>) {
-      console.log('setIsUpdatedState', state.isUpdated);
       Object.prototype.hasOwnProperty.call(state, 'isUpdated')
         ? (state.isUpdated.value = action.payload)
         : true;
     },
     resetFormValidation(state) {
-      console.log('state', state);
       return resetAllFormValidation(state);
     },
   },
