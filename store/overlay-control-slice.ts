@@ -155,6 +155,15 @@ const overlayIntitialState: OverlayGroup = {
     currentId: null,
     currentBoundingBox: null,
   },
+  'client-bill-single-invoice': {
+    overlayTitle: '',
+    overlaySubtitle: '',
+    open: false,
+    isSave: true,
+    currentData: null,
+    currentId: null,
+    currentBoundingBox: null
+  }
 };
 
 const overlaySlice = createSlice({

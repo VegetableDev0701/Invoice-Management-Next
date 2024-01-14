@@ -72,7 +72,8 @@ export default function ClientBillInvoices(props: Props) {
     (state) => state.singleClientBillInvoiceForm
   );
   const overlayContent = useSelector(
-    (state) => state.overlay['process-invoices']
+    (state) => {
+      return state.overlay['client-bill-single-invoice']}
   );
   const [missingInputs] = useState<boolean>(false);
   const [snapShotFormState, setSnapShotFormState] =
@@ -129,7 +130,7 @@ export default function ClientBillInvoices(props: Props) {
           open: true,
           isSave: true,
         },
-        stateKey: 'process-invoices',
+        stateKey: 'client-bill-single-invoice',
       })
     );
     dispatch(
@@ -138,7 +139,7 @@ export default function ClientBillInvoices(props: Props) {
           currentData: null,
           currentId: null,
         },
-        stateKey: 'process-invoices',
+        stateKey: 'client-bill-single-invoice',
       })
     );
   };
@@ -165,7 +166,7 @@ export default function ClientBillInvoices(props: Props) {
         showError={missingInputs}
         overlayContent={overlayContent}
         form="singleInvoice"
-        overlayStateKey="process-invoices"
+        overlayStateKey="client-bill-single-invoice"
         onSubmit={(e) =>
           onSubmitSingleClientInvoice(e, ProjectInvoiceFormData)
         }
