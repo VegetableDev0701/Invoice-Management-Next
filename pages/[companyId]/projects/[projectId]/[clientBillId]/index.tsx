@@ -218,6 +218,7 @@ export default function ClientBill() {
                   {activeTabKeyName === 'invoices' && (
                     <ClientBillInvoices
                       projectId={projectId}
+                      clientBillId={clientBillId}
                       invoices={clientBillData.invoices}
                       isLoading={isLoading}
                       handleUpdateClientBill={handleUpdateClientBill}
