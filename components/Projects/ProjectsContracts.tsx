@@ -60,7 +60,7 @@ export default function ProjectsContracts(props: Props) {
   const { data: singleContractFormData } = usePageData(
     'data',
     'forms',
-    'single-contract'
+    'add-contract'
   );
   const projectName = useSelector(
     (state) =>
@@ -76,7 +76,7 @@ export default function ProjectsContracts(props: Props) {
   const singleContractFormStateData = useSelector(
     (state) => state.singleContractForm
   );
-  const overlayContent = useSelector((state) => state.overlay['edit-contract']);
+  const overlayContent = useSelector((state) => state.overlay['single-contract']);
   const [_activeTabKeyName, setActiveTabKeyName] = useState<string>('all');
   const [missingInputs] = useState<boolean>(false);
   useEffect(() => {

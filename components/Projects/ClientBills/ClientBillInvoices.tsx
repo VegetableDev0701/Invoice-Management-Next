@@ -126,7 +126,7 @@ export default function ClientBillInvoices(props: Props) {
     dispatch(
       overlayActions.setOverlayContent({
         data: {
-          overlayTitle: 'Single Invoice',
+          overlayTitle: 'Project Single Invoice',
           open: true,
           isSave: true,
         },
@@ -165,7 +165,7 @@ export default function ClientBillInvoices(props: Props) {
         actions={singleClientBillInvoiceFormActions}
         showError={missingInputs}
         overlayContent={overlayContent}
-        form="singleInvoice"
+        form="client-bill-single-invoice"
         overlayStateKey="client-bill-single-invoice"
         onSubmit={(e) =>
           onSubmitSingleClientInvoice(e, ProjectInvoiceFormData)
