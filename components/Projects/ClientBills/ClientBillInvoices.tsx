@@ -10,10 +10,12 @@ import {
   Invoices,
 } from '@/lib/models/invoiceDataModels';
 import { FormStateV2, User } from '@/lib/models/formStateModels';
+import { checkAllFormFields } from '@/lib/validation/formValidation';
 import { singleClientBillInvoiceFormActions} from '@/store/single-client-bill-invoice-slice';
 import { overlayActions } from '@/store/overlay-control-slice';
 import InvoicesTable from '@/components/Tables/Invoices/InvoiceSortHeadingsTable';
 import ProcessInvoiceSlideOverlay from '@/components/UI/SlideOverlay/ProcessInvoiceSlideOverlay';
+import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
 import SlideOverlayForm from '@/components/UI/SlideOverlay/SlideOverlayForm';
 import SectionHeading from '@/components/UI/SectionHeadings/SectionHeading';
 import useUploadFilesHandler from '@/hooks/use-upload-files';
@@ -22,12 +24,20 @@ import { LaborSummary } from '@/lib/models/summaryDataModel';
 import { snapshotCopy } from '@/lib/utility/utils';
 import { useState } from 'react';
 import { updateInvoiceData } from '@/store/invoice-slice';
+import { companyDataActions } from '@/store/company-data-slice';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import useHttp from '@/hooks/use-http';
+import { nanoid } from '@/lib/config';
 
+import {
+  defaultInvoiceItem,
+  defaultProcessedInvoiceData,
+} from '@/lib/models/initDataModels';
 interface Props {
   projectId: string;
   invoices: Invoices;
   isLoading: boolean;
+  clientBillId: string;
   handleUpdateClientBill: ({
     updatedInvoices,
     updatedLabor,
@@ -54,14 +64,14 @@ const checkBoxButtons = [
 ];
 
 export default function ClientBillInvoices(props: Props) {
-  const { projectId, invoices, handleUpdateClientBill } = props;
+  const { projectId, invoices, handleUpdateClientBill,clientBillId } = props;
   const dispatch = useDispatch();
   const { data: ProjectInvoiceFormData } = usePageData(
     'data',
     'forms',
     'single-client-bill-invoice'
   );
-  const { user } = useUser();
+  const { user, isLoading: userLoading } = useUser();
 
   const invoiceRows = useCreateInvoiceRows({
     pageLoading: false,
@@ -75,7 +85,8 @@ export default function ClientBillInvoices(props: Props) {
     (state) => {
       return state.overlay['client-bill-single-invoice']}
   );
-  const [missingInputs] = useState<boolean>(false);
+  const { sendRequest } = useHttp({ isClearData: true });
+  const [missingInputs, setMissingInputs] = useState<boolean>(false);
   const [snapShotFormState, setSnapShotFormState] =
     useState<FormStateV2 | null>(null);
 
@@ -145,7 +156,70 @@ export default function ClientBillInvoices(props: Props) {
   };
 
   const onSubmitSingleClientInvoice = async (e: React.FormEvent, formStateData: FormStateV2) => {
-    console.log('Clicked');
+    e.preventDefault();
+    const allValid = checkAllFormFields(
+      ProjectInvoiceFormData,
+      singleClientBillInvoiceForm
+    );
+    if (!allValid) {
+      setMissingInputs(true);
+      // return
+    }
+    setMissingInputs(false);
+    dispatch(
+      overlayActions.setOverlayContent({
+        data: { open: false },
+        stateKey: 'client-bill-single-invoice',
+      })
+    );
+
+    const invoiceUUID = overlayContent?.currentId ?? nanoid();
+
+    const dataToSubmit = createFormDataForSubmit({
+      formData: ProjectInvoiceFormData,
+      formStateData: formStateData,
+      isAddProject: true,
+      isAddVendor: false,
+      isAddLabor: false,
+    }) as any;
+
+    dataToSubmit.invoice_id = invoiceUUID;
+
+    const sendingInvoiceData: InvoiceItem = {
+      ...defaultInvoiceItem,
+      client_bill_id: clientBillId,
+      project_id: projectId,
+      processedData: {
+        ...defaultProcessedInvoiceData,
+        ...dataToSubmit,
+      },
+    };
+
+    dispatch(
+      companyDataActions.addSingleInvoiceData({
+        invoice: sendingInvoiceData,
+        uuid: invoiceUUID,
+      })
+    );
+
+    if (!userLoading && user) {
+      const requestConfig = {
+        url: `/api/${
+          (user as User).user_metadata.companyId
+        }/projects/${projectId}/${clientBillId}/signle-client-bill-invoice`,
+        method: 'POST',
+        body: JSON.stringify({
+          ...sendingInvoiceData,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      await sendRequest({
+        requestConfig,
+        actions: singleClientBillInvoiceFormActions,
+      });
+    }
   }
 
   return (
