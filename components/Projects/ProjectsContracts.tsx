@@ -246,7 +246,7 @@ export default function ProjectsContracts(props: Props) {
         const requestConfig = {
           url: `/api/${
             (user as User).user_metadata.companyId
-          }/projects/${projectId}/add-single-contract`,
+          }/projects/add-single-contract&project_id=${projectId}`,
           method: 'POST',
           body: JSON.stringify({
             ...sendingContractData,
@@ -275,7 +275,7 @@ export default function ProjectsContracts(props: Props) {
               showError={missingInputs}
               overlayContent={overlayContent}
               form="singleContract"
-              overlayStateKey="edit-contract"
+              overlayStateKey="single-contract"
               onSubmit={(e) => handleSingleContractSubmit(e, singleContractFormStateData)}
             />
           }
