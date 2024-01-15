@@ -221,14 +221,14 @@ export interface ContractVendorObject {
   uuid: string | null;
 }
 
-export interface ContractVendorObject {
+/* export interface ContractVendorObject {
   name: string;
   agave_uuid: string | null;
   vendor_match_conf_score: number | null;
   uuid: string | null;
-}
+} */
 
-interface ContractSummaryData {
+export interface ContractSummaryData {
   projectName: string;
   date: string;
   contractAmt: string;

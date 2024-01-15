@@ -9,6 +9,12 @@ import {
   ProcessedInvoiceData,
 } from '@/lib/models/invoiceDataModels';
 
+import {
+  ContractSummaryData,
+  ContractVendorObject,
+  ContractEntry
+} from '@/lib/models/summaryDataModel';
+
 export const defaultBoundingBox: Pick<
   BoundingBox,
   'ul' | 'ur' | 'lr' | 'll' | 'page'
@@ -213,3 +219,22 @@ export const defaultInvoiceItem: Pick<
   project: defaultInvoiceProject,
   processedData: defaultProcessedInvoiceData,
 };
+export const  defaultContractVendorObject: Pick<ContractVendorObject, 'name' | 'agave_uuid' | 'vendor_match_conf_score' | 'uuid'> ={
+  name: '',
+  agave_uuid: '',
+  vendor_match_conf_score: 0,
+  uuid: ''
+}
+export const defaultContractSummaryData: Pick<ContractSummaryData, 'projectName' | 'contractAmt' |'date' | 'workDescription' | 'vendor'> = {
+  projectName: '',
+  date: '',
+  contractAmt: '',
+  workDescription: '',
+  vendor: defaultContractVendorObject
+}
+export const defaultContractEntry: Pick<ContractEntry, 'gcs_img_uri' | 'gcs_uri' | 'summaryData' | 'uuid' > = {
+  gcs_img_uri: [],
+  gcs_uri: '',
+  summaryData: defaultContractSummaryData,
+  uuid: ''
+}

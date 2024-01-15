@@ -37,6 +37,10 @@ const singleContractFormSlice = createSlice({
         isTouched: isTouched,
       };
     },
+    // TODO add created Contract to Redux
+/*     addSingleContractData(state, PayloadAction<{ invoice: InvoiceItem; uuid: string }) {
+
+    }, */
     resetFormValidation(state) {
       return resetAllFormValidation(state);
     },

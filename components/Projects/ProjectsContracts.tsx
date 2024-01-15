@@ -12,10 +12,11 @@ import { singleContractFormActions } from '@/store/single-contract-slice';
 import { editContractFormActions } from '@/store/edit-contract';
 import SectionHeading from '@/components/UI/SectionHeadings/SectionHeading';
 import { usePageData } from '@/hooks/use-page-data';
+
 import useHttp from '@/hooks/use-http';
 import useSetNotification from '@/hooks/use-set-notification';
-
-import { User } from '@/lib/models/formStateModels';
+import { checkAllFormFields } from '@/lib/validation/formValidation';
+import { User, FormStateV2 } from '@/lib/models/formStateModels';
 import {
   ContractData,
   ContractTableRow,
@@ -23,11 +24,16 @@ import {
 } from '@/lib/models/summaryDataModel';
 import { formatNumber } from '@/lib/utility/formatter';
 import { convertContractEntry2FormData } from '@/lib/utility/contractHelper';
-
+import { nanoid } from '@/lib/config';
+import { createFormDataForSubmit } from '@/lib/utility/submitFormHelpers';
 import FullScreenLoader from '../UI/Loaders/FullScreenLoader';
 import CheckboxSubTable from '../Tables/SubTables/CheckboxSortHeadingsTableSub';
 import ContractSlideOverlay from '../UI/SlideOverlay/ContractSlideOverlay';
 import SlideOverlayForm from '@/components/UI/SlideOverlay/SlideOverlayForm';
+const { sendRequest } = useHttp({ isClearData: true });
+import { defaultContractEntry,
+  defaultContractSummaryData } from '@/lib/models/initDataModels'
+
 const tabs = [{ name: 'Project Contract', keyName: 'all', current: true }];
 interface Props {
   projectId: string;
@@ -54,8 +60,8 @@ export default function ProjectsContracts(props: Props) {
 
   const { response, successJSON } = useHttp({ isClearData: true });
 
-  const { user } = useUser();
-
+  const { user, isLoading: userLoading } = useUser();
+  
   const dispatch = useDispatch();
   const { data: singleContractFormData } = usePageData(
     'data',
@@ -78,7 +84,7 @@ export default function ProjectsContracts(props: Props) {
   );
   const overlayContent = useSelector((state) => state.overlay['single-contract']);
   const [_activeTabKeyName, setActiveTabKeyName] = useState<string>('all');
-  const [missingInputs] = useState<boolean>(false);
+  const [missingInputs, setMissingInputs] = useState<boolean>(false);
   useEffect(() => {
     // initialize the is row clicked to false on first render
     dispatch(
@@ -188,6 +194,74 @@ export default function ProjectsContracts(props: Props) {
     overlayStateKey: 'contracts',
   });
 
+  const handleSingleContractSubmit = async (e: React.FormEvent,
+    formStateData: FormStateV2) => {
+      e.preventDefault();
+      const allValid = checkAllFormFields(
+        singleContractFormData,
+        formStateData
+      );
+      if (!allValid) {
+        setMissingInputs(true);
+        // return
+      }
+      setMissingInputs(false);
+      dispatch(
+        overlayActions.setOverlayContent({
+          data: { open: false },
+          stateKey: 'single-contract',
+        })
+      );
+  
+      const contractUUID = nanoid();
+  
+      const dataToSubmit = createFormDataForSubmit({
+        formData: singleContractFormData,
+        formStateData: formStateData,
+        isAddProject: false,
+        isAddVendor: false,
+        isAddLabor: false,
+      }) as any;
+  
+      // dataToSubmit.uuid = contractUUID;
+  
+      const sendingContractData = {
+        ...defaultContractEntry,
+        uuid: contractUUID,
+        summaryData: {
+          ...defaultContractSummaryData,
+          ...dataToSubmit,
+          vendor_match_conf_score: 0
+        }
+      };
+      // Add Redux Store 
+      /* dispatch(
+        singleContractFormActions.addSingleInvoiceData({
+          contractData: sendingInvoiceData,
+          uuid: invoiceUUID,
+        })
+      ); */
+  
+      if (!userLoading && user) {
+        const requestConfig = {
+          url: `/api/${
+            (user as User).user_metadata.companyId
+          }/projects/${projectId}/add-single-contract`,
+          method: 'POST',
+          body: JSON.stringify({
+            ...sendingContractData,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        };
+        await sendRequest({
+          requestConfig,
+          actions: singleContractFormActions,
+        });
+      }
+    }
+
   return (
     <>
       {isLoading && <FullScreenLoader />}
@@ -202,7 +276,7 @@ export default function ProjectsContracts(props: Props) {
               overlayContent={overlayContent}
               form="singleContract"
               overlayStateKey="edit-contract"
-              // onSubmit={(e) => submitFormHandler(e, addProjectFormStateData)}
+              onSubmit={(e) => handleSingleContractSubmit(e, singleContractFormStateData)}
             />
           }
           <SectionHeading
